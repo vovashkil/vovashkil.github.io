@@ -1,1 +1,4 @@
-# djiango related notes are here.
+#### back to repo's [README.md](../../README.md)
+
+## django related notes are here.
+
