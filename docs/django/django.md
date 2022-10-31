@@ -3,4 +3,5 @@
 ##### prerequisites
 ```
 pip3 install Django
+django-admin startproject PROJECT_NAME
 ```
