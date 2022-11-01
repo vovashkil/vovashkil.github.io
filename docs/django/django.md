@@ -37,7 +37,7 @@ def index(request):
     return HttpResponse("Hello!")
 
 def greet(request, name):
-    return HttpResponse(f"Hello, {name.capitalized()}!")
+    return HttpResponse(f"Hello, {name.capitalize()}!")
 ```
 ##### APP_NAME/urls.py
 ```
