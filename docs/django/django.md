@@ -34,10 +34,15 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 def index(request):
-    return HttpResponse("Hello!")
+    return render(request, "APP_NAME/index.html")
+
+def somebody(request):
+    return HttpResponse("Hello, Somebody!")
 
 def greet(request, name):
-    return HttpResponse(f"Hello, {name.capitalize()}!")
+    return render(request, "APP_NAME/greet.html", {
+        "name": name.capitalize()
+    })
 ```
 ##### APP_NAME/urls.py
 ```
@@ -47,7 +52,8 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("<str:name>", views.greet, name="greet")
+    path("<str:name>", views.greet, name="greet"),
+    path("somebody", views.somebody, name="somebody")
 ]
 ```
 ##### PROJECT_NAME/urls.py
@@ -59,4 +65,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('APP_NAME/', include("APP_NAME.urls")),
 ]
+```
+```
+python manage.py migrate
 ```
