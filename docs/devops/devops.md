@@ -3,6 +3,7 @@ DevOps is a combination of:
 * Cultural philosophies for removing barriers and sharing end-to-end responsibility
 * Processes developed for speed and quality, that streamline the way people work
 * Tools that align with processes and automate repeatable tasks, making the release process more efficient and the application more reliable
+
 #### DevOps culture
 Core principles to achieve a DevOps culture:
 * Create a highly collaborative environment
@@ -12,6 +13,7 @@ Core principles to achieve a DevOps culture:
 * Include security at every phase
 * Continuously experiment and learn
 * Continuously improve
+
 #### DevOps Practices
 * Communication and collaboration
 * Monitoring and observability
@@ -19,6 +21,7 @@ Core principles to achieve a DevOps culture:
 * Continuous delivery/continuous deployment (CD)
 * Microservices architecture
 * Infrastructure as code
+
 #### DevOps Tools
 Categories:
 * Cloud
