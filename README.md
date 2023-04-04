@@ -1,5 +1,7 @@
 ### Linux misc
 [Linux cheatsheet](docs/linux/linux-misc-cheatsheet.md)
+### DHCP troubleshooting
+[DHCP cheatsheet](docs/dhcp/dhcp.md)
 ### DevOps
 [What is DevOps?](docs/devops/devops.md)
 ### Django
