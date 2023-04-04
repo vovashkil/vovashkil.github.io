@@ -1,3 +1,5 @@
+### Linux misc
+[Linux cheatsheet](docs/linux/linux-misc-cheatsheet.md)
 ### DevOps
 [What is DevOps?](docs/devops/devops.md)
 ### Django
