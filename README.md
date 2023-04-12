@@ -1,5 +1,7 @@
 ### Linux misc
 [Linux cheatsheet](docs/linux/linux-misc-cheatsheet.md)
+### Zabbix Postgres with Timescaledb
+[Zabbix TimeScaleDB](docs/zabbix/timescaledb.md)
 ### DHCP troubleshooting
 [DHCP cheatsheet](docs/dhcp/dhcp.md)
 ### DevOps
