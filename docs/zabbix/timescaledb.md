@@ -84,7 +84,7 @@ NOTICE:  TimescaleDB is configured successfully
 DO
 ```
 ## Sidenotes
-In my case with ~730GB DB size and 1TB DB partition size, available space was enought to perform migration to chunks.
+In my case with ~730GB DB size and 1TB DB partition size, available space wasn't enough to perform migration to chunks.
 ```
 /dev/sdb1      1007G  726G  230G  76% /pgsql
 ```
