@@ -109,7 +109,7 @@ snmpwalk -v2c -c public  10.10.10.10 1.3.6.1.2.1.1.3
 sudo apt install acl
 sudo setfacl -R -m u:root:rx /var/log/kea/
 ```
-### dnsdist access letsencrrypt certs short
+### dnsdist access letsencrrypt certs
 ```
 sudo apt install acl
 sudo setfacl -R -m u:_dnsdist:rx /etc/letsencrypt/
