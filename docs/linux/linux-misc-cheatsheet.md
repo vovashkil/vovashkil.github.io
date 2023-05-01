@@ -8,7 +8,24 @@
 ```
 curl icanhazip.com
 ```
-### Change Default Network Name (ens33) to eth0 on Debian 10 / Debian 9
+### when "apt --fix-broken install" doesn't work
+This could happen when there are problems with dependencies when installing/removing packages.
+Double check the output of the following command:
+```
+dpkg --configure -a
+dpkg: dependency problems prevent configuration of package_XX:i386:
+ package_XXX:i386 depends on package_YYY (= <version>); however:
+  Package package_YYY:i386 is not installed.
+```
+Then run the following for all packages having problems:
+```
+dpkg --force depends -P package_XXX
+```
+And in the end try again:
+```
+apt --fix-broken install
+```
+### Change Default Network Name (ens33) to eth0 on Debian 10 / Debian 9 (this doesn't work in Debian 11(bullseye)
 1. Apply the change to /etc/default/grub
 ```
 GRUB_CMDLINE_LINUX="" -> GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"
