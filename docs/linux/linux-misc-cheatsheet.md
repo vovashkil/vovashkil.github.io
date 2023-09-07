@@ -8,6 +8,10 @@
 ```
 curl icanhazip.com
 ```
+### ping: socket: Operation not permitted
+```
+chmod 4711 `which ping`
+```
 ### when "apt --fix-broken install" doesn't work
 This could happen when there are problems with dependencies when installing/removing packages.
 Double check the output of the following command:
