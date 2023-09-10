@@ -1,5 +1,7 @@
 ### Linux misc
 [Linux cheatsheet](docs/linux/linux-misc-cheatsheet.md)
+### Proxmox troubleshooting
+[Proxmox/ceph cheatsheet](docs/proxmox/proxmox.md)
 ### Zabbix Postgres with Timescaledb
 [Zabbix TimeScaleDB](docs/zabbix/timescaledb.md)
 ### DHCP troubleshooting
