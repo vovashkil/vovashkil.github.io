@@ -7,3 +7,11 @@ In every cloud environment there're things that need to be managed. They are:
 * Performance
 * Scalability
 * Cost
+### AWS Well-Architected Framework
+#### The 6 Pillars of the AWS Well-Architected Framework
+* Operational Excellence
+* Security
+* Reliability
+* Performance Efficiency
+* Cost Optimization
+* Sustainability
