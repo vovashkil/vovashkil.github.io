@@ -2,6 +2,8 @@
 [Linux cheatsheet](docs/linux/linux-misc-cheatsheet.md)
 ### Cloud
 [Cloud cheatsheet](docs/cloud/cloud.md)
+### AWS Cloud Institute
+[AWS Cloud Institute](docs/aci/aci.md)
 ### Proxmox troubleshooting
 [Proxmox/ceph cheatsheet](docs/proxmox/proxmox.md)
 ### Zabbix Postgres with Timescaledb
