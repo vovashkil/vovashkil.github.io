@@ -16,7 +16,3 @@
 [Django cheatsheet](docs/django/django.md)
 ### DB
 [DB cheatsheet](docs/db/db.md)
-### AWS Cloud Institute
-#### AWS Business Foundations
-##### Professional Skills Week 1
-[Professional Skills](docs/aci/psw1.md)
