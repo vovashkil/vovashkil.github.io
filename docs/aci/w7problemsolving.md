@@ -5,6 +5,7 @@
 * Understand ambiguous problem statements.
 * Perform a problem analysis.
 * Define problems, interpret facts, and plan productive actions.
+
 ### Solving Business Problems
 ### Understanding The Problem
 ### Problem Analysis
