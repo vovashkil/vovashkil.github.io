@@ -7,4 +7,4 @@
 ### Week 4: [Professional Skills Part 1](./w4professionalskillsp1.md)
 ### Week 5: [Professional Skills Part 2]()
 ### Week 6: [Customer Coversations](./w6customerconversations.md)
-### Week 7: Problem Solving
+### Week 7: [Problem Solving](./w7problemsolving.md)
