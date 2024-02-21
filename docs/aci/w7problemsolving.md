@@ -190,6 +190,287 @@ To get the best results from the five why's technique, form a team that includes
 * Identifying appropriate decision making tools.
 
 ### Decision-Making Process
+Decision-making is a structured process that involves steps to choose the best option from different choices. The decision-making process is designed to ensure that decisions are well-informed, rational, and aligned with the needs and objectives of your problem's solution.
+
+#### Five steps of good decision-making
+* Create a productive environment for decision-making.
+* Generate appropriate options, ideas, and alternatives.
+* Investigate alternative choices.
+* Select appropriate decision-making tools.
+* Implement the decision.
+
+#### Creating a productive environment for decision-making
+A productive decision-making environment ensures clear communication, collaboration, and unbiased choices. It promotes informed decisions, efficient processes, conflict resolution, and innovation.
+
+To make a good decision, you need to create a productive environment that fosters creativity and participation from others while focusing on the key objective of the decision. When making decisions, it is fundamental to identify what you are trying to accomplish or achieve. In other words, you need to ascertain the objective of each decision. The objectives should be specific, measurable, achievable, realistic, and attainable within a certain time frame. A decision may be made with the objective of solving a problem.
+
+The decision-making process is entirely dependent on the following factors:
+* time
+* availability
+* experience
+* buy-in and commitment of the people involved
+* the relative importance of the decision
+
+Once these factors have been taken into consideration, the people involved in the decision-making also need to reach a consensus on the process or model to be adopted.
+
+##### Decision-making process or model
+* rational planning process
+* alternative recognition-primed decision-making model
+
+##### The rational planning process follows five steps:
+* One: Creating a productive environment
+* Two: Generating appropriate options and ideas
+* Three: Investigating alternative choices
+* Four: Selecting appropriate tools to help make the decision
+* Five: Implementing the choice
+
+##### The recognition-primed decision-making model proposed by Gary Klein
+It surmises that people with less time and more experience sense make decisions by picking up cues from the situation they face and forming these into recognized patterns based on previous experience. Based on these patterns, the decision-maker chooses a single course of action. There are no options or alternatives considered at any stage. Another consensus that decision-makers need to reach is whether the decision should be made by an individual or leader, or whether the decision is better suited for a group.
+
+##### The Vroom-Jago tool
+Proposed by Vroom and Jetton in in 1973 and later modified by Vroom and Jago.
+
+The tool distinguishes five different situations or processes that range from an individual or leader using available information to make a decision to the group as a whole, presenting alternatives and options, and making the decision with the leader acting as a facilitator. 
+
+The model poses seven questions you must answer to decide which situation or process best represents your circumstances. 
+* One: Autocratic one, or A1. The lead decision-maker uses all available information to make the decision.
+* Two: Autocratic two, or A2. The lead decision-maker asks for information from the group. The group members do not know for what purpose the information will be used. The group offers no opinion. The lead decision-maker makes the decision.
+* Three: Consultative one, or C1. The lead decision-maker explains the situation or problem to individual members, but they do not discuss it together as a group. The lead decision-maker makes the final decision.
+* Four: Consultative two, or C2. There is a group discussion where the lead decision-maker explains the situation and gathers ideas and suggestions. The lead decision-maker makes the final decision.
+* Five: Group two, or G2. The group as a whole makes the decision. The lead decision-maker presents the situation, and then the group defines alternatives and reaches a consensus. The leader is more of a facilitator.
+
+The Vroom Jago model uses a decision tree to outline the decision-making process. Working from left to right, for example, if you ask question one, "Is a good solution critically important?" and the answer is no, then you ask question four. The group members have to accept the decision for it to work. If the answer to this question is no, then you use process A1 where the lead decision-maker uses all available information to make the decision by themselves. However, if the answer to question four is yes, you then ask question five. If the leader makes the decision alone, will it be accepted? If the answer to this is no, then you use process G2, where the group as a whole makes the decision with the lead decision-maker acting as a facilitator. If the decision is to be a group decision, individuals need to work toward their decision as part of a team.
+
+##### Groupthink
+Groupthink is a way of thinking exhibited by a group of people focused on reaching an agreement without a conflict or excessive cost.
+
+###### The advantage of groupthink
+* Members of the decision-making team work together toward a common objective testing, analyzing, and evaluating the group's ideas.
+
+###### Disadvantages of groupthink
+* Can also lead to irrational or bad decisions.
+* It suppresses negative points of view.
+* Individuals with opinions different than that of the majority can feel ostracized.
+* Powerful leaders can suppress individuals' thoughts and opinions. Individuals stop asking questions.
+* Stereotypes are formed. Ideas are rejected before they are fully investigated.
+* Individuals who fit in are rewarded, whereas those whose opinions differ are not rewarded.
+* Solutions are not revisited once the majority of group members have accepted them.
+
+###### Factors to be introduced into the decision-making process to counter the disadvantages
+* Discourage the group leader from making his or her opinions known too soon in the discussions.
+* Critically evaluate each suggested solution.
+* Bring in an outsider to check the process, for example, an internal audit or the operational risk department.
+* Allow anonymous feedback.
+
+##### Role of Creativity in Decision-Making
+Creativity, when harnessed in decision-making, can help identify alternatives and options, which in turn optimize the decision-making process. Creativity can be defined as experimenting, taking risks, making mistakes, and inventing new ways of working to optimize creative thinking.
+
+Decision-makers need to feel comfortable and supported. To enable this feeling, you need to focus on two primary factors: decision-makers and the physical environment. Ask the decision-makers what gives them inspiration both in and out of the workplace. Listen to opinions and ideas without judging them. Encourage suggestions, no matter how irrelevant they first appear. Explain concepts and ideas rather than just forcing them on the team. Encourage cross-functional and vertical or horizontal two-way dialog and reward good ideas.
+
+##### Decisions that are being made to solve problems
+The decision-making process can be long and arduous and can use up valuable resources. You need to ensure that the correct issue is always addressed and the most appropriate questions are asked. 
+
+###### Techniques can help to identify underlying causes
+* Root Cause Analysis -  problems are solved not by treating the symptoms, but by drilling down to the actual root cause and addressing it. This should prevent the problem from recurring, rather than just instigating a quick fix.
+* Five Whys is a technique that originated in Japan and is used in a root cause analysis. Drill down into the problem by asking why up to five times until the true cause of the issue or problem is identified.
+* Fishbone analysis is a tool that provides a systematic way of looking at effects and their causes. The following steps are involved in creating the fishbone diagram.
+One: Put the problem or issue in the fish's head.
+ * Two: Label the bones of the fish according to major categories. For example, place procedure, people, policies or methods, material machines, and manpower.
+ * Three: For each category, identify factors that may affect the problem.
+ * Four: For each of these factors, ask why it is happening until no more useful information emerges.
+ * Five: Analyze the results. If items' appear in more than one key category, they tend to be the most likely causes of the problem, and the team should focus its attention on investigating these items.
+ 
+##### Meaning of productive decision-making environment
+* setting an appropriate objective or goal
+* agreeing whether the process is to be individual or group
+* whether it is to be a rational planning process or a recognition primed model
+* encouraging creativity
+* allowing everyone in the group to have their say
+* managing groupthink
+* asking the appropriate levels and types of questions
+
+### Generating solution options, ideas, and alternatives
+By taking the time to participate in a method for generating multiple solution options, you increase the creativity of the solution that will solve the identified problem.
+
+#### Creative thinking techniques and tools
+* brainstorming
+* reverse brainstorming
+* brain steering
+* reframing matrix
+
+A concept to be aware of when trying to identify the best options, ideas, and alternatives and to optimize decision-making is that of mindsets.
+
+A mindset is defined as a fixed mental attitude or disposition that predetermines responses and interpretations of a situation. There are many instances where a suitable alternative is suggested and someone will react, such as, "That's no good, we have tried it before." Or "There's no way that will work." Such reactions are based not on evidence or fact, but feelings based on mindsets.
+
+#### Brainstorming
+Brainstorming is a traditional method that suits extroverted, creative groups where group members are given a situation and asked, in a prescribed time, to think of and document as many ideas as they can. The aim of this approach is to stimulate a discussion and interest and to demonstrate the group's existing knowledge of the situation.
+
+#### Reverse brainstorming
+Reverse brainstorming works well with groups that prefer analysis. In this process, groups are given a question such as, "How can customer service be improved?" The question is then rephrased to "How can we cause customers to be dissatisfied?" By working on this reverse question, the group identifies what causes dissatisfaction so they can come up with solutions, which, in turn, improves customer satisfaction.
+
+#### Brain steering
+Brain steering is an approach that was first introduced by Kevin Coyne and Shane Coyne. This is a more structured approach, and it suits groups with an analytical and structured style. It is similar to brainstorming in that it takes the creative energy from brainstorming activity, but steers it in a more productive direction by asking groups to solve more specific questions and issues rather than just capturing any idea about the situation.
+
+#### The charette procedure, named after the French word for wagon
+The charette procedure works well for larger groups where people are sometimes inhibited in giving their opinions due to the size of the group. It works well to split the group into smaller teams and allow each team to review a question or issue related to the overall objective in a prescribed time. Each team captures its ideas, and then, at the end of a time period, the ideas each team has suggested are passed to the next team, and the process begins again. Think about how influential or famous people from history and industry, for example, Leonardo da Vinci, Condoleezza Rice, Steve Jobs, would approach the decision and what information they would require when doing so. Use this insight to seek your own options, ideas, and alternatives.
+
+#### A reframing matrix
+A reframing matrix is a tool that helps you examine the situation from a different view. The issue or situation is placed in the middle of a piece of paper. A grid is drawn around it to form four cells. Each cell contains approaches to the situation seen from a certain perspective. For example, the issue here is how to attract more customers to buy your product. Now you need to identify the approaches to this situation and write each approach in a new cell.
+
+These approaches may include:
+* Product: What does the product actually do?
+* Planning: Can we buy enough inventories to supply demand?
+* Potential: What will our customers want to include? and
+* People: What do our customers actually need from our product?
+
+#### The Pyramid Principle
+Developed by Barbara Minto, the pyramid principle helps to structure thoughts and ideas in such a way that the person looking at the pyramid immediately understands what the author is trying to say. The principle relies on logical analysis and reasoning. Its structure leads the reader through the pyramid by encouraging him or her to ask why each time he or she has moved through a level. The following three rules govern the pyramid structure:
+* The ideas are presented from the top down, with the main statement, issue, or question at the top.
+* Ideas at each level of the pyramid are summaries of the ideas grouped below.
+* These ideas can be either inductive or deductive.
+
+### Personality traits and their impact on creative thinking
+* Extroverted or Introverted
+* Analytical or Beliefs-Driven
+* Creative or Practical
+* Flexible or Structured
+
+### Generate solutions with mind mapping 
+Using a mind map, you can take a complex problem and break it down into smaller, more manageable segments
+
+#### Characteristics of mind mapping
+* At the center of your map is where you place the main idea, topic, or focus of the mapping project. It should be represented by a central image.
+* The principal themes branch out from the central image, or you could say that these themes radiate from that central location. This represents the concept of radiant thinking that we mentioned earlier. You should also connect an image or keyword with each theme that emerges.
+* Any lower-level topics branch out from the principal themes, so your map will be an arrangement of connected lines or branches, images, and words.
+
+#### Creating a mind map steps:
+# Create your initial map, which focuses on the main idea or central theme of the problem. 
+# Revise the map to fine tune its contents.
+# Take a break to allow new ideas and thoughts to emerge.
+# Reconstruct the map to add or remove ideas generated during the break.
+# Finalize your map.
+
+#### Potential solution: Conflict management
+Conflict management is the process of handling and resolving disagreements, disputes, or clashes that arise between individuals, groups, or organizations.
+
+#####  Mindsets and Skills that help in Effective Conflict Management
+* Self-respect
+* Respect for others
+* Appropriate assertiveness
+* Effective listening
+
+##### Conflict management strategies
+* Avoiding - Do not discuss the conflict.
+* Competing - I must get my way.
+* Accommodating - I will just give in to what others want.
+* Collaborating - Let's work together to find a solution that meets everyone's needs fully and also enhances our interpersonal relationships.
+* Compromising - I will give up something to get something in return. Halfway between assertiveness and cooperativeness; Balance between Competing and Accomodation.
+
+### Assess Alternative Solutions
+#### Investigate alternative solutions
+##### Risk Matrix
+The matrix helps you to plot the status of each outcome or risk by mapping it according to probability and impact. For example, if an outcome is in the bottom right corner, then the probability of that event happening is rare, but if it did happen it would have a huge impact on the business. You would want to put measures in place to manage that risk and estimate the cost of doing so. However, if an outcome is in the bottom left corner with a rare probability and an immaterial impact, then you would not expend time or money trying to manage it. 
+
+##### Premortem Approach - Technique to evaluate options, ideas, and alternatives
+The group works from the supposition that the idea has failed. Each member is asked to document independently his or her reasons for the failure. By doing this independently, people are less likely to be swayed by politics or groupthink. Each person is asked to read aloud one reason from his or her list, and each reason is collated in a master list.
+
+#### Assess whether the benefits to the organization of following a particular route outweigh the costs of doing so
+* Cost-Benefit Analysis (CBA), an economic-based approach popular in both private and state-run organizations.
+* The Categories of Pros and Cons, or advantages and disadvantages. 
+
+##### The Categories of Pros and Cons
+This approach involves the following steps:
+1. Draw a table with two columns for each option.
+2. Title the columns, one with pros and the other with cons for each option.
+3. Write down as many effects or implications of each option in the appropriate columns.
+4. Give each effect, awaiting according to its importance as per the original objective of the decision.
+5. Add up each column and write down the total.
+6. Compare the two columns for each option to evaluate whether the pros outweigh the cons and by how much. The bigger the difference, the more attractive the option.
+7. Each option can then be compared to evaluate which is the most attractive.
+
+#### Decision tree analysis
+Decision tree analysis simplifies complex decisions by mapping options, potential outcomes, and probabilities, such as costs and benefits.
+
+Most business models contain dependent, independent, controllable, and non-controllable factors or variables, while decision trees only contain controllable factors. The pathways of decision tree analysis often reveal options not considered or included in the business model, but that can affect the company's bottom line. Thus, these options need to be evaluated for practicality and probability to determine whether the logic and calculation sequences of the business model should be updated to incorporate these new functionalities to ensure the model's complete integrity.
+
+### Make a Decision
+#### Decision criteria
+##### Step 1. Establishing decision criteria
+* Clear deal-breakers
+* Lowcost solution
+* Key factors
+
+##### Step 2. Analyzing potential alternatives
+* Cost-prohibitive option
+* Trade-Offs and Lower-Cost Solutions
+* Expert insight
+
+#### Techniques to make a decision
+* Simple voting: Care must be taken here as the vote can be impacted by politics and groupthink.
+* Anonymous voting: Group members do not see each other casting their votes, but instead they write down their view. The views are then reviewed by the facilitator, who summarizes them and makes the final decision known to the whole group.
+* Decision matrix: Alternatives are considered according to the criteria and ranked accordingly.
+* Decision tree: The decision is mapped out on a structured diagram to help visualize the journey.
+
+##### A decision matrix or Pugh matrix
+1. Draw a table with the alternatives or options across the top as column headers and the criteria or factors down the left side as row headers.
+2. Weight the criteria so that the most important criterion gets the highest weighting, perhaps a five, and the least important gets the lowest weighting, perhaps a one.
+3. Rank the options in an order that fits the criteria best for each criterion, assign a score, for example, with one being the lowest and five being the highest.
+4. Calculate the overall score for each option by summing up the scores allocated.
+5. Choose the option with the highest score.
+
+##### A decision tree
+When designing a decision tree, adhere to the following principles:
+* Construct the tree from left to right.
+* Evaluate the tree from right to left, working backwards.
+
+Steps to design a decision tree:
+1. Draw a tree
+    A. On the left side of a piece of paper, draw a rectangle to represent the first decision.
+    B. Draw lines coming out of this rectangle, moving to the right to represent possible solutions.
+    C. Label your rectangle and lines carefully.
+    D. At the end of each line, draw the result. If it is an outcome, draw a triangle. If it is another decision, draw another rectangle, and if it is a possibility, draw a circle.
+    E. Continue drawing toward the right, labeling each point and line carefully until each line reaches an outcome or endpoint.
+
+2. Assign values
+    A. Assign cache values or scores to each outcome. 
+    B. Assign costs to each line where required. 
+    C. Assign probabilities to each possibility based on experience or research.
+
+3. Evaluate
+    A. Starting from the right side and moving to the left through the tree. At each decision point, calculate the value of that decision. It may be necessary to multiply outcomes by probabilities or cost by probabilities to get the expected value of a solution. Once an expected value has been calculated, this is then used in further calculations. 
+    B. Continue this calculation process from right to left until the first decision point is reached. The total value can then be calculated and used to help make the decision.
+
+#### The most common psychological traps
+* <b>The overconfidence trap</b>: Being too confident in the accuracy of predictions. For example, overconfidence can result in predicting a sales increase of 4% to 5%, when in reality the sales increase will be closer to 0.5%. 
+* <b>The recall ability trap</b>: Being overly influenced by dramatic events. For example, when asked for the probability of a plane crashing, respondents consistently overestimate the answer since a crash is so dramatic. 
+* <b>The prudence trap</b>: A factor is added or taken away just to be safe. For example, the amount of inventory to carry in the supply chain will often be far higher than required, just to be safe.
+* <b>The anchoring trap</b>: When making a decision, the decision-makers focus more on the first piece of information they receive. For example, past events or trends are often used as a way of estimating new figures without much regard to changing factors or circumstances.
+* <b>The sunk cost trap</b>: Choices are made that justify past choices even though they may no longer be valid. For example, continually putting more money into expanding a business even though the business is unlikely to recover. 
+* <b>The confirming evidence trap</b>: Decision-makers seek out information to confirm their current point of view rather than contradict it. For example, asking sales analysts to provide evidence to back up sales forecasts when looking to expand production.
+* <b>The framing trap</b>: Problems are poorly framed so that incorrect decisions are made. For example, if a salesperson was asking for approval on a new product and said there is a one in ten chance of this product succeeding, there would likely be a different reaction from his manager than if he said there is a 90% chance this product will fail, although the actual outcomes are identical. 
+* <b>The status quo trap</b>: Decision-makers display a bias toward options that continue the current position. For example, when designing a new product, the resulting design is very similar to the existing one.
+
+### Knowledge Check
+* <b>A single idea can spark innovation and a cutting-edge solution</b>. Mind mapping contributes to a company’s competitive advantage in many ways like, one simple idea that can spark powerful innovation and a cutting-edge solution.
+* <b>The ideas are presented from the top down</b>. In the pyramid principle, the ideas are presented top down with ideas at each grouping logically ordered. Ideas at each level are summaries of the ideas grouped below.
+* <b>I must get my way</b>. The underlying intent of competing as a strategy for managing conflict is, “I must get my way.”
+* <b>People base decisions on recognized patterns from prior experiences</b>. The recognition-primed decision-making model proposed by Gary Klein, a research psychologist on decision-making, surmises that people with less time and more experience sense make decisions by picking up cues from the situation they face and forming these into recognized patterns based on previous experience
+* <b>Let's collaborate to find a mutually satisfying solution</b>. The underlying intent of collaborating as a strategy for managing conflict is, let’s work together to find a solution that meets everyone’s needs fully.
+
+### Summary
+* Creating a productive environment for decision-making.
+* The process of generating appropriate solutions, mind mapping process, and conflict management strategies.
+* The importance of choosing appropriate decision making tools.
 
 ## Decision-Making Best Practices
+### Pre-assessment
+* <b>A high degree of interrelatedness among alternatives and/or resources<b>. A high degree of interrelatedness among alternatives and/or resources can make a decision more complex. Therefore, a small number of alternatives, a concise plan and involvement of a few people would not make a decision more complex.
+* <b>Contemplating only one option</b>. While contemplating a decision, all available options should be given equal consideration. Therefore, contemplating only one option will not help to focus on decision quality, but rather it will dilute it. Avoiding result is helpful in decision-making because it assumes the relationship between decision quality and outcome quality is correlated to a much greater extent than it actually is. Considering decision-making parameters is helpful to decision-making.
+* <b>Developing community goodwill</b>. While the goal of any decision-making process or method is to make good decisions, collaborative decision making is generally not a quick process. Achieving unanimous support for decisions and making decisions that ensure 100% buy-in are not the goals for using collaborative decision-making for communities and organizations. The main goal is to develop community goodwill, both toward leaders and other community members.
+* <b>A group dynamic that discourages individual thinking in favor of group consensus</b>. A group dynamic that discourages individual thinking in favor of group consensus is a key component of a popular groupthink definition.
+* <b>Failing</b>. The best way to reduce overconfidence is to fail. The more one succeeds, the more confident one may become.
+
+### Collaborative Decision-Making
+
+
 ## Design Thinking And The Power Of AND
