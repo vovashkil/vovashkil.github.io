@@ -344,11 +344,11 @@ Using a mind map, you can take a complex problem and break it down into smaller,
 * Any lower-level topics branch out from the principal themes, so your map will be an arrangement of connected lines or branches, images, and words.
 
 #### Creating a mind map steps:
-# Create your initial map, which focuses on the main idea or central theme of the problem. 
-# Revise the map to fine tune its contents.
-# Take a break to allow new ideas and thoughts to emerge.
-# Reconstruct the map to add or remove ideas generated during the break.
-# Finalize your map.
+1. Create your initial map, which focuses on the main idea or central theme of the problem. 
+2. Revise the map to fine tune its contents.
+3. Take a break to allow new ideas and thoughts to emerge.
+4. Reconstruct the map to add or remove ideas generated during the break.
+5. Finalize your map.
 
 #### Potential solution: Conflict management
 Conflict management is the process of handling and resolving disagreements, disputes, or clashes that arise between individuals, groups, or organizations.
@@ -424,7 +424,9 @@ When designing a decision tree, adhere to the following principles:
 * Evaluate the tree from right to left, working backwards.
 
 Steps to design a decision tree:
+
 1. Draw a tree
+
     A. On the left side of a piece of paper, draw a rectangle to represent the first decision.
     B. Draw lines coming out of this rectangle, moving to the right to represent possible solutions.
     C. Label your rectangle and lines carefully.
@@ -432,11 +434,13 @@ Steps to design a decision tree:
     E. Continue drawing toward the right, labeling each point and line carefully until each line reaches an outcome or endpoint.
 
 2. Assign values
+
     A. Assign cache values or scores to each outcome. 
     B. Assign costs to each line where required. 
     C. Assign probabilities to each possibility based on experience or research.
 
 3. Evaluate
+
     A. Starting from the right side and moving to the left through the tree. At each decision point, calculate the value of that decision. It may be necessary to multiply outcomes by probabilities or cost by probabilities to get the expected value of a solution. Once an expected value has been calculated, this is then used in further calculations. 
     B. Continue this calculation process from right to left until the first decision point is reached. The total value can then be calculated and used to help make the decision.
 
@@ -471,6 +475,241 @@ Steps to design a decision tree:
 * <b>Failing</b>. The best way to reduce overconfidence is to fail. The more one succeeds, the more confident one may become.
 
 ### Collaborative Decision-Making
+Collaborative decision-making can be used for making decisions that affect whole organizations or communities, for making decisions that are complex and involve stakeholders, and for solving problems. Collaborative decision-making is also used to increase accountability and buy-in.
 
+Decision-making and problem solving are sometimes confused, but they are not the same. Decision-making is centered on choosing between alternatives. Problem solving may involve decision-making, but it is a process used to resolve an issue or create change. Solving problems often involves making many decisions. 
+
+For example, you need to know:
+* the problem to be solved
+* who will be involved in solving the problem
+* what resources are available to solve the problem
+
+Collaborative decision-making is often utilized by organizational leaders who need to make decisions for the people they represent. Research has shown that including community and organization members in a collaborative decision-making process helps remove or reduce barriers to achieving collective goals and can sometimes enhance measurable outcomes. Collaborative decision-making also makes those included feel they contributed to decisions that affect them and other community members, creating enhanced community support, trust, and group morale. The net result is the development of community goodwill both toward leaders and other community members.
+
+Employee participation can vary from individual participation within a team to representative participation, wherein a group representative is directly involved with other group participants, helping provide research, input, and often the benefit of their own personal experience. Employees should also be encouraged to interact with anyone. In most of these cases, the inclusion of employees in the decision-making process is more important than the form of their participation.
+
+### Collaborative Decision-Making Methods
+* <b>Majority</b> - requires more than 50% of group members to agree on the chosen decision. It can lead to the oppression of minorities - known as tyranny of the majority/masses -> Modification: a two thirds supermajority vote is required.
+* <b>Consensus</b> - requires general agreement on the final decision and unified support for implementing the decision. It requires group members to agree <b>to support a decision</b> that the group collectively agrees upon, even though every group member <b>may not agree with the decision</b>.
+* <b>Unanimity</b> - requires all group members to agree on the chosen decision. Some groups who use this method implement constructive abstention, meaning that if a group member does not vote, and if everyone else who does vote is in agreement, it is considered a unanimous vote. The method could potentially bring the process to a halt.  
+* <b>Authority</b> - employs the collaborative efforts of others, while the final decision is made by the final decision maker like CEOs, CFOs, and department heads in large organizations. May not create strong accountability and buy-in.
+* <b>Delphi</b> - is generally used with expert participants and has four key characteristics: anonymity of participants, structured information flow, regular feedback, and a specific role of the group facilitator. Anonymity mitigates the effects of personal biases, provides greater freedom of expression, allows for more open and honest discussions, and mitigates the negative effects on participants of being wrong. The Delphi method can be very time consuming.
+
+### Collaborative Decision-Making Process
+#### Structured Process of Decision-Making
+* Stating the Decision
+* Gathering Information
+* Analyzing the Available Options
+* Choosing an Option and Acting On It
+* Evaluating the Results 
+
+##### Stating the Decision
+It is important to establish measurable objectives to evaluate the effectiveness of your decision. Although goals and objectives are not the same, objectives should follow the SMART criteria, be:
+* Specific
+* Measurable
+* Achievable
+* Realistic 
+* Time bound
+
+##### Gathering Information
+There is a delicate balance between not enough information and too much information.
+
+Information is only useful if it can be assimilated and analyzed to help make the decision.
+
+When gathering information during collaborative decision-making, consider two key factors.
+1. What information to gather?
+2. At what level of detail?
+
+##### Analyzing the Available Options
+First establish clear decision criteria and then analyze alternatives. After analyzing the available options, you need to choose one. To choose wisely, weigh the pros and cons of the alternatives based on how well they meet your stated decision-making criteria.
+
+##### Choosing an Option and Acting On It
+It is important to recognize the risks related to different alternatives. Erroneous assumptions and inaccurate estimates of probable outcomes are the main causes of risky decision-making. To choose an option, envision what will happen after the decision is made and consider any consequences.
+
+##### Evaluating the Results
+Evaluate to what degree the decision solved the problem, or possibly, the reason why the decision did not have the desired result. It is the human element of being open about the effectiveness of decisions that is often difficult.
+
+### Pros and cons of collaborative decision-making
+#### Advantages
+**Shared Information** - to ensure that information is effectively shared, you need to communicate the information in a way that provides context and allows people to ask questions. This feedback loop reduces miscommunications.
+**Diverse Skill Sets** - tp combine them to enhance decision outcomes.
+
+#### Disadvantages
+**Diffusion of Responsibility**
+**Inefficiency/Time Inefficiency**
+**Peer Pressure** - self-interest that are not aligned with group goals, and other social dynamics.
+
+##### Diffusion of Responsibility
+###### Defining Diffusion of Responsibility
+People feel less accountable.
+
+##### Avoiding Diffused Responsibility
+Set personal responsibility at the outset of the decision-making process and reinforce this responsibility throughout the process.
+
+#### Understanding groupthink
+Groupthink is a process that occurs when a group of people prioritize consensus over critical thinking.
+
+Princeton educated sociologist and author William H. White Jr. White described groupthink as the desire to conform to group values that results in irrational or dysfunctional decision-making results. 
+
+Irving Lester Janus was a researcher and professor at Yale University, stated that groupthink is an excessive form of concurrence seeking among group members. His study of groupthink included working on the American Soldier Project, which was the first comprehensive study of its kind that examined attitudes of soldiers in combat, as well as the book titled Groupthink, which was published in 1972. 
+
+##### Characteristics of Groupthink
+* conformity or agreement
+* overriding belief that the value of being a group member was good and right and more important than other decision-making criteria
+
+##### Processes to Avoid Groupthink
+* Ensure that your process clearly communicates the group goals, objectives.
+* Ensure decision alternatives that are being considered.
+* Develop Rapport and Trust - make sure the decision-making environment feels safe for those involved so that they can offer information and suggestions without hesitation.
+* State explicitly that it is acceptable and even encouraged to discuss dissenting opinions when they can add value to the decision-making process.
+* Check opinions for objectivity and encourage members to share different ideas.
+* Include a variety of personality types in the decision-making group.
+
+##### Groupthink Indicators
+* Quick decisions about alternatives
+* Poorly explained dismissals of alternatives
+* Ignoring or unreasonably downplaying risks, especially those of an alternative
+* Body language
+
+None of these, in isolation, would be a major red flag, but when considered together, they were telling indicators of groupthink in action. Groupthink can result in poor decision-making and can create dysfunction if it takes root.
+
+### Cognitive and Other Factors Impacting Decision-Making
+One of the major concepts supporting the idea that decision-making is steeped in emotions is called motivated reasoning. This type of reasoning causes people to approach, build, and assess arguments and other information in a biased way that is specifically aimed at achieving a desired conclusion. Motivated reasoning is more than confirmation bias.
+
+During decision-making, an individual's emotional and cognitive states help them to evaluate the perceived risks and benefits of the decision, which then leads to an outcome.
+
+Businesses regularly engage in decision-making amid uncertainty. Decision-makers often face the problem of incomplete or unknown information that could potentially affect their decisions and outcomes. 
+
+Known unknowns are factors that you are aware of but are not fully informed about. Unknown unknowns, also called blind spots, are factors you are not aware of. Unknown unknowns that have a major impact are called black swans.
+
+Rational decision-making involves sound judgment and reasoning. This is a good way to make decisions, but science suggests that human nature causes people to act irrationally all the time.
+
+Doctor Dan Ariely, professor of psychology and behavioral economics at Duke University, refers to irrational decision-making as the cost of zero cost. This concept encapsulates the consequences of acquiring items with a zero cost, even though it may be disadvantageous to do so.
+
+Another irrational behavior that is commonly encountered while making decisions involving large projects is the irrational attachment to money that has already been spent. This behavior is known as the sunk-cost fallacy, and it often leads to poor decisions because of an irrational valuation of money that cannot be recouped.
+
+Minimizing the impact of irrational behavior will positively affect your decision-making. Along with factoring in irrational decisions, mitigating known unknowns also improves desired outcomes from your decisions. Finally, among vital decision-making scenarios, understanding the important role emotions play and how to use them effectively will improve your decision-making.
+
+### Behavioral biases in decision-making 
+* **Representativeness bias** - leads people to extrapolate past trends, ignore reversion and sample sizes in making predictions, and develop misperceptions about chance.
+* **Overconfidence bias** - a universal trait in humans, often leading to unpleasant surprises.
+* **Anchoring and adjustment bias** - causes conservative adjustments in forecasts when given new information, and the anchor appears to matter even if it is irrelevant.
+* **Prospect theory and loss aversion** - demonstrates how people separate gains and losses into middle accounts and how they base their decisions with regard to risk-taking on these accounts. People tend to feel more pain with small losses than gratification with large gains. This could lead to people being reluctant to sell or abandon failing projects.
+
+#### Analyzing representativeness bias
+Representativeness bias occurs when people tend to make judgments or decisions based on how well they believe something or someone represents a certain category or prototype.
+
+##### Results of representativeness bias
+* People ignore reversions and extrapolate.
+* They ignore the sample size and predictions and have certain misperceptions of chance.
+
+#### Analyzing overconfidence bias
+Overconfidence bias occurs when individuals overestimate their own abilities, knowledge, or the accuracy of their judgments and predictions.
+
+Overconfidence leads to decisions that destroy value. Overconfident people make aggressive forecasts and take excessive risks.
+
+Overconfidence is beneficial too. If people were not overconfident, society would not have had as many life improving innovations.
+
+Overconfidence appears to be a universal trait in humans. Our overconfidence frequently leads us to unpleasant surprises.
+
+#### Analyzing anchoring and adjustment bias
+Anchoring and adjustment bias occurs when people make decisions or judgments based on initial reference points or anchors.
+
+When decision-makers need to respond to new information, they adjust their expectations based on an anchor. These anchors may not be relevant, and the adjustments may not be sufficient, but people still tend to use the anchors in their estimation. Anchors are preexisting opinions and facts that people use to form their expectations for the future. Surprises occur when the future does not reflect these expectations.
+
+#### Analyzing prospect theory and loss aversion
+Prospect theory is a behavioral economic theory, which aims to describe how people make decisions under uncertainty and how they evaluate potential gains and losses. One of the key elements of prospect theory is loss aversion, which refers to the tendency of people to weigh losses more heavily than equivalent gains.
+
+A loss-making or profitable situation is an example of a frame. People behave differently in different frames. Some are loss-averse, which means they do not like to recognize losses. They often take more risk in loss-making situations than they do in profitable situations.
+
+### Common Decision-Making Mistakes
+Common decision-making mistakes occur due to factors such as insufficient information, biases, rushed decisions, overconfidence, group dynamics, neglecting alternatives, ignoring feedback, anchoring, decision fatigue, external pressures, and unclear goals. Recognizing these reasons helps in addressing and minimizing such errors. 
+
+#### Ways to improve decision quality
+* learn how to change your decision-making mindset
+* document crucial decision assumptions
+* establish standards for good decisions
+* improve the chance of being successful at decision-making by rewarding quality decisions at the right time
+
+Focusing on **decision quality** rather than **outcome quality** is an important parameter to cultivate a habit of informed decision-making. 
+
+Assuming that the relationship between decision quality and outcome quality is correlated to a much greater extent than it actually is - this can cause you to inaccurately assess decision quality. So, assess decision quality at the time you make your decision.
+
+You must establish metrics and reward systems that focus on decision quality and assessing it **at the time of the decision**, not after outcomes are known. 
+
+Focus on how effectively people use the decision parameters, including frame of reference, well thought out options, good information, clearly stated desired outcomes, clear and logical reasoning, and the action taken on the decision. This focus shift is easier when you document the decision process and assumptions, which can then serve as both a checklist and assessment tool for good decision-making.
+
+#### Enhancing decision quality
+##### Documenting decision assumptions
+* Utilize a structured checklist format to record crucial information related to decision-making.
+* Focus on the "what, why, who, where, and source" of each assumption for clarity, rationale, accountability, and data integrity in decision-making.
+* Emphasize data-driven decision-making, rely on historical data while avoiding known variables.
+* Monitor continuously and update assumptions to keep decisions aligned with changing circumstances.
+
+##### Rewarding good decisions
+* Introduce incentives to motivate and recognize individuals or teams for prioritizing decision quality.
+* Acknowledge and appreciate those who make well-documented and informed decisions.
+* Set specific metrics for decision quality and reward those who consistently meet these metrics.
+* Establish a continuous feedback loop to encourage continuous
+improvement in decision quality.
+
+### Implementing a Decision
+The final step in the decision-making process is the implementation of the decision, where you need to communicate your chosen solution.
+
+#### Effective Communication Features
+* Repeating the key objectives and outcomes: Ideas become ingrained through the repetition of messages.
+* Dialogue: A two-way communication obtains buy-in and commitment.
+* Simplicity: Keep messages simple to avoid confusion.
+* Channels of communication: Use a number of channels to spread the information, including written, oral, visual, large meetings, small groups, or informal gatherings.
+* Consistency: Ensure that everyone understands the information in the same way and all decision-makers are committed to the outcome, even those individuals who may have voted against it in the process.
+* Stories: Use stories and analogies to help solidify the message.
+* Lead by example: The leader or project manager must show commitment to the decision. Any inconsistent messages will be noticed by the rest of the organization.
+
+#### Vital Steps for Gaining Buy-In and Commitment
+* Share a sense of importance and urgency with everyone impacted by the decision. Describe what the consequences will be at the proposed course of action is not followed.
+* Have a number of champions to spread the word who believe strongly in the outcome, and who have the power to share this passion.
+* Develop and share the goal or objective so that everyone understands where the decision is taking them or the organization.
+* Empower others for action through structural support, good management, technical support, and training to force through the decision and any changes required.
+* Generate short-term wins by including some short-term targets in the implementation phase. If people have to wait too long before they see any benefits from the decision, they will lose enthusiasm and faith in the change.
+* Consolidate gains and keep going. Don’t simply celebrate what has been achieved and stop.
+* Anchor the decision in the organization's or group's culture to ensure its long-term survival. Many decisions and changes can fail when the key decision-maker moves on to something new.
+
+#### The skills required to effectively drive through the implementation of a decision for the long term
+* Integrity, which is being true to one’s beliefs and values.
+* Relationship focus, which is gaining the trust of others.
+* Vision, which is both short term and long term.
+* Persuasion, which is being able to persuade others to follow your lead.
+* Motivation, which is encouraging others to perform well.
+* Adaptability, which is being able to change course, if required.
+* Team focus, which is being able to work in a team environment and bring out the best in others.
+* Communication, which is being able to enhance the flow of information both between people and throughout the organization.
+* Bravery, which is being able to take responsibility for things that may have gone wrong.
+
+#### Theory suggests that there are two dimensions of leadership behavior that impact leadership style
+* Task orientation: The extent that a leader engages in one-way communication, spells out tasks to others, and tells people what, how, and when to do something.
+* People orientation: Two-way communication, listening, supporting, encouraging, interacting, and involving others.
+
+#### Hersey and Blanchard's situational leadership model. This model proposes four styles of leadership that are effective in implementing a decision
+* **Directing**: The leader works with the teams, structuring and organizing them.
+* **Coaching**: The leader supports the team in making and implementing the decisions.
+* **Facilitating**: The leader’s main activity is to praise, support, and collate views.
+* **Delegating**: The leader gives full responsibility to others to make and implement the decision.
+
+#### If a person has the appropriate skills to be an effective leader, then the style adopted to implement the decision and subsequent required changes can flex depending on the following three key things:
+* The situation
+* The importance of the outcome
+* The experience or skills of the other people involved
+
+### Knowledge Check
+* **Create open discussions with group members**. **Provide feedback to group members**. **Keep group members informed during the decision-making process**. To increase accountability and buy-in, leaders should create open discussions with group members, provide feedback to them, and keep them informed throughout the decision-making process.
+* **Empowers employees, promotes innovation, leads to a inclusive and productive work environment**. Collaborative decision-making empowers employees, promotes innovation, enhances problem solving, and contributes to a more inclusive and productive work environment.
+* **Reducing the effects of diffusion of responsibility**. Collaborative decision-making includes advantages such as shared information and more diverse skill sets, and potential disadvantages of diffusion of responsibility and protracted decision-making. Time saving is not an advantage of collaborative decision making. The specific process described is most focused on reducing the effects of diffusion of responsibility.
+* **Clearly communicate group goals from the outset of the decision-making process**. Clearly communicating group goals from the outset of the decision-making process is an effective strategy for avoiding groupthink.
+* **Decision-making elements were ignored while the outcome was stressed**. The manager stressed the outcome rather than concentrating on the decision-making elements for making a sound and logical decision, which led to a poor result. Manager's assumptions and qualification to execute the task and employees’ competency are factors that could have been rectified with logical decision-making.
+
+### Summary
+* Collaborative decision-making empowers employees, promotes innovation, enhances problem solving, and contributes to a more inclusive and productive work environment. 
+* Common decision-making mistakes occur due to factors such as insufficient information, behavior biases, rushed decisions, overconfidence, group dynamics, neglecting alternatives, ignoring feedback, anchoring, decision fatigue, external pressures, and unclear goals. 
+* Implementing decisions and solutions is crucial as it turns strategies into reality, driving actual progress and determining the effectiveness of chosen courses of action
 
 ## Design Thinking And The Power Of AND
