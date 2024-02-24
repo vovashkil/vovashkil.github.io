@@ -713,3 +713,142 @@ The final step in the decision-making process is the implementation of the decis
 * Implementing decisions and solutions is crucial as it turns strategies into reality, driving actual progress and determining the effectiveness of chosen courses of action
 
 ## Design Thinking And The Power Of AND
+### Pre-Assesment
+* **Empathize, define, ideate, prototype, and test** are the five phases of design thinking and these phases don't always occur linearly, most teams begin with the empathize phase and move linearly through each phase at least once. However, Some steps may be repeated if necessary.
+* **Design thinking** process integrates designing skills and mindset into a practical and creative method for solving problems and generating innovative ideas.
+* **Design thinking maintains a user-centered focus throughout the process**. Design thinking starts from a person or user-centered place and maintains focus on the user throughout the process.
+* **Achieving cost reductions**. The primary goal of most improvement initiatives is to achieve cost reductions. 
+* **People, process, and technology**. People, process, and technology are the areas most often referenced in shared service process improvements.
+
+### Understanding design thinking
+#### Design thinking is a problem-solving approach that
+* emphasizes empathy
+* creativity
+* iterative processes to develop innovative solutions
+
+#### Design thinking involves
+* understanding and empathizing with the needs and perspectives of users
+* defining the problem
+* brainstorming a wide range of ideas
+* prototyping and testing those ideas
+* refining the solutions based on feedback
+
+### Principles of design thinking
+1. Empathize
+2. Define
+3. Ideate
+4. Prototype
+5. Test
+
+Design thinking is a recursive, five phase human-centric process. The phases do not have to occur linearly. Some steps may be repeated if necessary.
+
+The design thinking process focuses on humans and their expressed and latent needs and wants.
+
+Traditional business strategies focus on what a company produces and keeps customers separate.
+
+#### Empathize phase
+The design team
+* seeks to understand people's behaviors, needs, wants, and motivations
+* observes and interacts with people, asks questions, understands their point of view, experiences how they live, and clarifies what they truly desire
+
+#### Define phase
+* analyzes the data generated in the empathize phase
+* looks for patterns and connections that generate insights
+* all observations distilled from the empathize phase are filtered into a small number of promising problems to solve
+
+#### Ideate phase
+* brainstorm solutions to these problems including the people you serve and people from every area of your organization, from sales to HR to engineering to supply chain to design - you will hear the voice of these diverse functional roles and different cultures
+* the goal is to generate as many ideas as possible and having several perspectives helps
+* some ideas generated during the ideate phase will jump out as particularly viable and feasible
+
+##### Viable idea
+The business can profitably move forward and execute the idea.
+
+##### Feasable idea
+It is technically and technologically possible.
+
+#### Prototype phase
+* create prototypes of the high-value ideas
+
+A small subset of the ideas generated will be high-value, desirable, viable, and feasible, and become candidates for prototype development.
+
+#### Test phase
+* the people who actually use the product or service are allowed to interact with the prototypes
+* let the people play with and even try to break the prototypes
+* engage with these people, collect their feedback, observe them using the product or service
+* refine the prototypes and try again
+* look for links between the various prototypes
+* combining components into an entirely new prototype
+* further reduce the number of prototypes to a smaller set of viable ideas
+
+### Exploring the Power of AND
+#### Review conventional wisdom around trade-offs
+* any significant improvement in one area requires trade-offs and reductions in another
+* suggests that a trade-off is usually needed while implementing a change
+* trade-offs are to be expected, especially when difficult business challenges are addressed
+
+##### Total Quality Management (TQM) advocates
+* believed in the principle of quality being free of cost. To achieve improvements in quality, investments are needed. However, such investments are offset by the resulting savings that ultimately ensure quality is achieved free of cost. More often, it enables results that frequently exceed the investment made.
+* multiple objectives can be met simultaneously without the need for trade-offs
+* trade-offs are not required if the right expectations are set early in the project implementation process
+* trade-offs can be avoided if initiatives are pursued that utilize the power of AND
+
+#### Identify key principles and processes
+* Following the right principles and processes is critical to the successful implementation of initiatives that fulfill the power of AND.
+* It is important to set the right expectations at the beginning of any initiative.
+* Early efforts of organizations toward change were focused on the natural desire to continue to improve, later years' efforts were driven by the necessity to change.
+* The demanding business environment further added to the incentive for change.
+
+##### The three essential elements of successful change initiatives - ICE
+* Integrity
+* Customer Satisfaction
+* Efficiency
+
+Anything that compromises internal controls, honesty with customers and employees, or business integrity can have a negative impact on an organization's financial and operational health and therefore must not be tolerated.
+
+The successful implementation of technology initiatives demonstrates the power of And, proving that you need not trade-off one objective to achieve another.
+
+#### Utilize your power of And
+##### The project selection tool
+###### The goals of organization/criterias that are considered when utilizing ideas to captute the power of AND
+* annual savings 
+* internal controls
+* customer satisfaction
+* employee satisfaction
+* cost of implementation
+* the total score
+
+###### Ratings
+* high
+* medium
+* low
+
+###### Ratings of the Cost of Implementation are set up  in reverse
+* low
+* medium
+* high
+
+It is more important to obtain a full buy-in and commitment from the team rather than rigidly following the numerical results.
+
+##### The primary areas of focus in the process of enabling an improvement initiative in an organization
+* people
+* process
+* technology
+
+Of the three areas of focus, improving process is the single biggest driver of better overall results without trade-offs.
+
+Although technological change is often viewed as a primary tool, it is not essential in every case.
+
+##### A key tool to unlock the power of And
+* Employee involvement
+
+### Knowledge Check
+* The **define phase** analyzes the data generated in the empathize phase and looks for patterns and connections that generate insights.
+* **The power of And** is considered as the most useful tool in making necessary changes in business without trade-offs.
+* **Use of rapid prototyping** in design thinking differentiates it from business thinking, as prototyping allows to generate initial feedbacks and reduce changes at development phase.
+* During the **empathize phase**, the design team focuses on understanding the people's behaviors, needs, wants, and motivations.
+* **Integrity, Customer Satisfaction, and Efficiency (ICE)** are the three essential elements of successful change initiatives.
+
+### Summary
+* Design thinking is a recursive, five-phase, human-centric process for creating and delivering innovative products and services. The five phases are empathize, define, ideate, prototype, and test.
+* Trade-offs can be avoided if initiatives are pursued that utilize the power of And.

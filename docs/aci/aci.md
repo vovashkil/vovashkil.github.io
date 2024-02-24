@@ -8,3 +8,5 @@
 ### Week 5: [Professional Skills Part 2]()
 ### Week 6: [Customer Coversations](./w6customerconversations.md)
 ### Week 7: [Problem Solving](./w7problemsolving.md)
+### Week 8: [Sustainability Part 1](./w8sustainabilityp1.md)
+### Week 9: [Sustainability Part 2](./w9sustainabilityp2.md)
