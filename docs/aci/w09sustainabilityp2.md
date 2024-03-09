@@ -712,4 +712,27 @@ Reference in this course to any specific commercial product, process, or service
 * Hao, K. (2020). The computing power needed to train AI is now rising seven times faster than ever before. MIT Technology Review. [The computing power needed to train AI is now rising seven times faster than ever before.](https://www.technologyreview.com/2019/11/11/132004/the-computing-power-needed-to-train-ai-is-now-rising-seven-times-faster-than-ever-before/)
 
 ## Sustainability Part 2: Assessment
-
+* **Sustainable consumption** benefits the economy by opening up growth opportunities for businesses.
+* **Economy** sustainability pillar create growth opportunities for businesses.
+* **CoreIT and cloud operations, tech products and services, and partnerships and influence** are the three foundational areas that bussinesses should focus on in their efforts to reap the value of sustainable technologies.
+* **Understanding the needs of employees, such as training, in delivering sustainable customer products and experiences** is crucial to reducing the gap between strategy and action.
+* **Considering employee needs for sustainable customer experiences** agenda aids in bridging the gap between strategy and action for sustainable customer experience.
+* **Engaging with leadership on climate matters** - **Employees can engage where pertinent with leadership, support innovation for enterprise sustainability, and discuss climate crisis with colleagues.**
+* **The strategy phase*** of four-phased approach involves identifying ways to reduce the carbon footprint across the entire IT stack. Strategize areas of improvement usinf different decarbonization levers.
+* **Trustworthy, inclusive, accessible, and ethical** characteristics sustainable technologies should possess to fulfill their ptomise to society.
+* **A skincare brand uses glass containers instead of plastic tubes** - is an example of a **sustainable customer experience**.
+* **Environment** sustainability pillar ensures the consumption of natural resources at a replenishable rate.
+* **ESG materiality assessment** practice helps businesses in aligning with the United Nations (UN) Sustainable Development Goals (SDGs).
+* **By adopting eco-fiendly algorithms and green brockchain principles** a firm using Distributed Ledger Technology (DLT) can reduce its carbon footprint. 
+* **Blockchain** technology helps businesses know about a product's origin.
+* **Systems thinking** approach permits a **holistic** examination of a sustainability issue rather than a **fragmented** one.
+* **Reinforcement** type of learning involves an algorithm generating options and being rewarded for offering valid choices.
+* **Comparability** principle is identified by the Gloval Reporting Initiative (GRI) to represent good reporting.
+* **Reduced carbon emissions** sustainable benefit a company will attain through cloud migration.
+* **By providing usage data** digital and analytics influence consumer behavior around energy consumption.
+* **They can scale greatly** is the key impact of applying machine learning and artificial Intelligence (AI) in automating busines processes.
+* **They enable systems to adapt to constantly changing conditions** - the reason why machine learning and artificial intelligence (AI) algorithms are important for the clean technology industry.
+* **To reduce the energy, hardware, and carbon intensity of technology** is the primary goal of green software in relation to Information Technology (IT) infrastructure and digital technologies.
+* **Planning and designing for data exceptions in a dynamic physical environmant** is the biggest challenge in developing and adopting autonomous systems for clean technology companies.
+* **Increased reliance on renewable energy** lever is used in achieving sustainable IT operations, particularly in the context of cloud technology.
+* **Simplifying the software development life cycle** method can contribute to making software more environmentally friendly.
