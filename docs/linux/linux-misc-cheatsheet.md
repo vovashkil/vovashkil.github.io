@@ -48,6 +48,10 @@ reboot
 ```
 openssl x509 -enddate -noout -in server.crt
 ```
+or on a remote system
+```
+echo | openssl s_client -showcerts -servername gnupg.org -connect gnupg.org:443 2>/dev/null | openssl x509 -inform pem -noout -dates
+```
 #### SSL certificate and prtivate key match
 ```
 openssl x509 -noout -modulus -in server.crt | openssl md5
