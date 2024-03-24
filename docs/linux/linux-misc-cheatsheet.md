@@ -8,6 +8,16 @@
 ```
 curl icanhazip.com
 ```
+### ldap monitoring contextCSN
+```
+ldapsearch  -z 1 -H ldaps://ldap.example.com  -LLL -b 'dc=example,dc=com' -s base -x contextCSN
+```
+ldap server id's are 111 and 222 in the output:
+```
+dn: dc=example,dc=com
+contextCSN: 20231011231244.659412Z#000000#111#000000
+contextCSN: 20240322195804.558951Z#000000#222#000000
+```
 ### ping: socket: Operation not permitted
 ```
 chmod 4711 `which ping`
