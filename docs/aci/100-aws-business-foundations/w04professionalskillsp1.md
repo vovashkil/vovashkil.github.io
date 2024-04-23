@@ -1,5 +1,5 @@
-###### back to AWS Cloud Institute repo's root [aci.md](./aci.md)
-###### back to repo's main [README.md](../../README.md)
+###### back to AWS Cloud Institute repo's root [aci.md](../aci.md)
+###### back to repo's main [README.md](../../../README.md)
 # Professional Skills Week 1
 ## Emotional Intelligence in Business
 * Emotional intelligence refers to the ability to recognize, understand, manage, and effectively use one's own emotions and the emotions of others.

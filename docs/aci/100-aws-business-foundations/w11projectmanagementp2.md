@@ -1,5 +1,5 @@
-###### back to AWS Cloud Institute repo's root [aci.md](./aci.md)
-###### back to repo's main [README.md](../../README.md)
+###### back to AWS Cloud Institute repo's root [aci.md](../aci.md)
+###### back to repo's main [README.md](../../../README.md)
 # Project Management Part 2
 ## Change Management
 ### Pre-Assessment

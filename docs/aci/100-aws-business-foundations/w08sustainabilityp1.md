@@ -1,5 +1,5 @@
-###### back to AWS Cloud Institute repo's root [aci.md](./aci.md)
-###### back to repo's main [README.md](../../README.md)
+###### back to AWS Cloud Institute repo's root [aci.md](../aci.md)
+###### back to repo's main [README.md](../../../README.md)
 # Sustainability Part 1
 ## Climate and Carbon
 ### Pre-assessment
