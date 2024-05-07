@@ -73,11 +73,8 @@ These are the six main benefits of using Global Accelerator edge locations:
 1. **Instant regional failover**. Global Accelerator automatically checks the health of your applications and routes user traffic only to healthy application endpoints. If the health status changes, or you make configuration updates, Global Accelerator reacts instantly to route your users to the next available endpoint.
 2. **High availability**. Global Accelerator has a fault-isolating design that increases the availability of your application. It gives you two unique IP addresses that are serviced by separate physical infrastructure. This means that if one IP address becomes unavailable, your users can still access your application through the other healthy IP address. 
 3. **No variability around clients that cache IP addresses**. Some client devices cache DNS records for long periods of time. So, if you make a configuration change, there’s an application failure, or there’s a change in your routing preference, you won’t know how quickly your users will receive updated IP addresses. Global Accelerator quickly updates your users with new information, even if their devices have old information saved. Updates take only a few seconds to be reflected, so application downtime is reduced.
-
 4. **Improved performance**. Global Accelerator receives traffic from the edge location that is closest to your end-users. This traffic then travels through the fast and reliable AWS global network, which optimizes the path to your application that is running in an AWS Region. Global Accelerator chooses the optimal Region, based on the geography of end-users. This process helps reduce the time it takes for the first part of your application to load, and can improve performance.
-
 5. **Easy manageability**. The IP addresses provided by Global Accelerator are fixed and provide a single-entry point to your applications. This lets you easily move your endpoints between Availability Zones or between AWS Regions, without having to update your DNS configuration or client-facing applications. 
-
 6. **Fine-grained control**. Global Accelerator gives you the ability to control the amount of traffic that is sent to different regions. This is useful when you're conducting performance tests or making updates to your applications. Additionally, if your applications have to maintain a connection with a specific user, Global Accelerator allows you to direct all of their requests to the same endpoint. This provides you with detailed control over your applications.
 
 ### How is Amazon CloudFront different from AWS Global Accelerator?
@@ -198,7 +195,6 @@ Global Accelerator gives you the ability to control the amount of traffic that i
 An AWS Outpost is a fully managed service that extends AWS infrastructure, services, APIs, and tools on-premises to decrease latency and address local data-processing needs.
 
 #### AWS Local Zones
-
 A Local Zone is an extension of an AWS Region in geographic proximity to the end-users. Unlike Outposts, which you deploy within your data center, Local Zones are owned, managed, and operated by AWS.
 
 ## AWS Service Domains and Services
@@ -321,9 +317,25 @@ For example, Amazon S3 can send events to Amazon EventBridge whenever certain ev
 * Object storage class changed
 
 ### Business applications
-.
-.
-.
+AWS business application services are meant to increase business agility, improve employee collaboration, and improve the customer experience. These applications can be used for things like improving contact-center performance, financial planning, and workforce development.
+
+#### AMAZON CONNECT
+Amazon Connect is an omnichannel cloud contact center that helps companies provide better customer service at a lower cost. You can set up a contact center in a few steps, add agents who are located anywhere, and start engaging with your customers. Amazon Connect provides a seamless experience across voice and chat for customers and agents. This includes one set of tools for skills-based routing, powerful real-time and historical analytics, and easy-to-use intuitive management tools—all with pay-as-you-go pricing.
+
+#### AMAZON SES
+Amazon Simple Email Service (Amazon SES) is a cloud email service provider that can integrate into any application for bulk email sending. It can send transactional or marketing emails, and customers pay only for what they use. Amazon SES also supports a variety of deployments including dedicated, shared, or owned IP addresses. Reports on sender statistics and a deliverability dashboard help businesses make every email count. 
+
+##### Omnichannel/Multichannel
+Omnichannel refers to when a business' in-person and online operations work together, for example, when you can buy a product online but return it in-person. 
+
+Multichannel refers to when a business' in-person and online operations are separate, for example, when you buy a product online but cannot return it to a physical store in person. 
+
+### End-user computing services
+AWS End User Computing (EUC) services provide secure access to the applications and desktops the workforce needs to get their job done. With AWS EUC services, workers can be productive from any supported device while improving IT agility and organizational security. Resources can be scaled up or down on demand; providing teams with the resources they need, all without deploying and operating infrastructure.
+
+
+
+
 
 
 
