@@ -1727,3 +1727,10 @@ Correct. The answer is either ECS or EKS for this one. Because using containers 
 All right, there you have it. Different use cases for a few of the AWS compute services. Make sure you read up on AWS's other compute offerings and make informed decisions when architecting your solutions. You'll find there are a lot of options.
 
 Remembering that these services exist to best suit different use cases helps. Don't try to use the same compute service for all of your use cases. Instead, pick the right one for the job and consider reevaluating choices for existing workloads, as AWS continues to release new services and improve offerings.
+
+# Assessment
+## What is an Amazon ECS cluster?
+**A group of tasks**.
+
+The other options are incorrect because of the following:
+* An Amazon ECS cluster is a logical grouping of tasks hosted on AWS Fargate, Amazon EC2 instances, or external instances. One cluster can contain a mix of tasks hosted on different compute services. Tasks define the underlying infrastructure used to run containers. Amazon ECS does not manage container images; it pulls images from a registry, such as Amazon ECR to instantiate containers.

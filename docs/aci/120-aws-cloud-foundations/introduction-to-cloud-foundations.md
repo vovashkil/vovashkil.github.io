@@ -7,7 +7,7 @@
 ### Week 3: [Architecting on AWS 1](./w03architectingonaws1.md)
 ### Week 4: [Compute 1](./w04compute1.md)
 ### Week 5: [Databases 1](./w05databases1.md)
-### Week 6: 
+### Week 6: [Cloud Cost Management](./w06cloudcostmanagement.md)
 ### Week 7: 
 ### Week 8: 
 ### Week 9: 
