@@ -477,3 +477,360 @@ AWS Pricing Calculator is a web-based planning tool that you can use to create e
 #### [AWS Pricing Calculator](https://calculator.aws/)
 
 ## Cloud Cost Analyses and Tracking
+### Pre-assessment
+#### Which of these tools is part of the AWS Billing console?
+**Purchase orders**. The purchase orders tool is part of the AWS Billing console, all the other entries are part of the AWS Cost Mangement console.
+
+#### What is the delay for a tag to appear on the AWS Cost and Usage Report when you activate a user-defined tag for a given resource?
+**24 hours**. There is a 24 hour delay for an activated tag to appear on the Cost and Usage report.
+
+#### Which of these tools can you use to forecast your costs for your entire infrastructure?
+**AWS Cost Explorer**. You can use the AWS Cost Explorer to forecast your costs for your entire infrastructure, by product, and much more.
+
+### AWS Billing console
+With AWS Billing and Cost Management, you can pay your AWS bill, monitor your usage, and analyze and control your costs.
+
+The Billing and Cost Management service provides features that you can use to do the following: 
+* Estimate and plan your AWS costs.
+* Receive alerts if your costs exceed a threshold that you set.
+* Assess your biggest investments in AWS resources.
+* Simplify your accounting if you work with multiple accounts.
+
+**AWS account owners can delegate access to specific AWS Identity and Access Management (IAM) users who need to view or manage the billing and cost management data for an AWS account. If you create a single AWS account, only the AWS account owner (AWS account root user) has access to view and manage billing information. IAM users cannot access billing data until the account owner activates IAM access and attaches policies that provide billing actions to the user or role.**
+
+### AWS Billing console dashboard
+#### Menu
+Within the menu, you can navigate through the different features of Billing and Cost Management. 
+
+From here, you can visualize the number of available credits. You can also create an AWS Cost & Usage Report or use to create AWS Budgets. 
+
+#### Cost trend
+This space highlights the trends over a number of months that you chose (the last 3 or 6 months) so that you can see the evolution of your costs for the five most-used services. 
+
+You can customize the display to get another type of diagram or to extend or reduce the period of time that you want to view.
+
+#### Current costs
+This part displays your current costs at the current time of the month.
+
+#### Variation
+This part indicates the cost variation compared to the previous month.
+
+#### Previous month cost
+This part indicates the cost of the previous month at the same period of the month. This helps you to have an idea of the evolution of your costs and to forecast your final monthly costs.
+
+#### Your bill
+You can view your bill by choosing this button.
+
+### Features of AWS Billing
+To learn more about the AWS Billing console features, choose the arrow buttons to display each of the following seven steps.
+
+1. Manage your account
+
+Manage your account settings using the AWS Management Console and Billing console. This includes designating your default currency, editing alternate contacts, adding or removing Regions, updating your tax information, and closing your AWS account. The Close your account section calls out considerations such as terminating resources before you proceed with closing an account. This way, you aren't charged for unused services.
+
+2. View your bill
+
+You can use the Billing console to view your past bill details or your estimated charges for your current month. This section outlines how you can view your bills, download PDF copies of your charges, and set up monthly emails to receive your invoices. It also covers how you can use other resources such as AWS Cost and Usage Reports. 
+
+3. Managing your payments
+
+You can view your estimated bills and pay your AWS invoices in your preferred currency by setting a payment currency. AWS converts your bill to your preferred currency after your bill is finalized. Until then, all of the preferred currency amounts shown in the console are estimated in US dollars (USD). AWS guarantees your exchange rate. This is so that refunds use the same exchange rate as your original transaction.
+
+4. AWS Purchase Order Management
+
+Manage your AWS purchase orders in a self-service way by taking care of multiple purchase orders all in one place. This can help to reduce your overhead costs and increase the accuracy and efficiency of your overall procure-to-pay process. Use the Billing console to manage your purchase orders and configure how they reflect on your invoices.
+
+5. AWS Cost Categories
+
+Manage your AWS costs with AWS Cost Categories by mapping your cost and usage into meaningful categories. This section defines terms that are used in the console for supported dimensions, operations, rule types, and status. The section also provides more information on how you can create, edit, delete, and split the charges within cost categories.
+
+6. Payment profile
+
+You can use payment profiles to assign more than one payment method to your automatic payments. If you receive invoices from more than one AWS service provider (seller of record), you can use payment profiles to assign a unique payment method for each one. After you create a payment profile for a service provider, your payment profile pays your AWS bills automatically. In this section, learn how to use the Billing console to set up a custom payment profile.
+
+7. Consolidate billing for AWS Organizations
+
+Use the consolidated billing feature for AWS Organizations to combine your billing for multiple AWS accounts. This outlines the consolidated billing process, differences for Amazon Internet Services Pvt. Ltd accounts, and details for discounts.
+
+### Bills in AWS Billing console: Visualization
+1. Access your bill
+
+You can see details about your bill by selecting Bills in the menu.
+
+2. Download or print
+
+You can download your bill as a CSV file or print it.
+
+3. Expand for more details
+
+To obtain more details about the billing of the different services you used, you can choose Expand All.  For example, you can see your bill per service, per Region, which can be very useful to optimize your architecture.
+
+### AWS Purchase Order Management
+With the AWS Purchase Order Management service, you can manage your AWS purchase orders (POs) in a self-service manner. Centralize the management of multiple POs, reduce overhead costs in matching invoices with POs, and increase the accuracy and efficiency in your procure-to-pay process.
+
+AWS Purchase Order Management gives you the ability to define and manage POs in a way that meets your unique business needs. Manage your PO information from the Purchase Orders dashboard in the AWS Billing console, configure multiple POs, and define the rules of how they map to your AWS invoices. Monitor your PO status and balance on your Purchase Orders dashboard. Stay informed with email notifications when your POs approach expiration or run out of balance.
+
+#### Add a purchase order
+You can use the Billing and Cost Management console to add purchase orders to use in your invoices. Adding a purchase order is a two-step process involving purchase orders and line item configurations. First, you enter your purchase order details (for example, purchase order ID, shipping address, effective and expiration month). Then, you define the purchase order line item configurations that are used to match the purchase order with an invoice. If you add multiple purchase orders, we use the purchase order that has the line item best matching the invoice being generated.
+
+### AWS Cost Management Console
+The Billing console works closely with the AWS Cost Management console. The AWS Cost Management console features are useful to optimize your future costs. 
+
+#### Understanding your reports
+AWS Cost Explorer provides default reports, which you cannot modify, but you can use to create your own custom reports. 
+The default reports provided in AWS Cost Explorer are as follows:
+* Cost and usage reports
+* Reservation reports
+* Savings plans reports
+
+**An important difference between AWS Cost Explorer and AWS Cost and Usage Report (CUR) is that AWS Cost Explorer shows daily or monthly data granularity, whereas AWS CUR can have hourly data granularity. In addition, AWS CUR provides individual resource-level data for all services.**
+
+#### AWS Cost Explorer
+AWS Cost Explorer is a no-charge, data visualization tool that you can use to view graphs of your AWS costs (also known as your spend data). You can use it to view costs based on your AWS usage.
+
+### Control and monitor cloud costs
+#### AWS Cost Anomaly Detection 
+AWS Cost Anomaly Detection uses advanced Machine Learning technologies to identify anomalous spend and root causes, so you can quickly take action. With three simple steps, you can create your own contextualized monitor and receive alerts when any anomalous spend is detected. Let builders build and let AWS Cost Anomaly Detection monitor your spend and reduce the risk of billing surprises.
+
+##### Create pre-built or custom monitors
+With the cost monitor creation process, you can create spend segments and evaluate spend anomalies at a preferred, granular level. For example, you can build monitors for specific services, linked accounts, cost categories, or tags.
+
+##### Set alert subscription
+After you have created your cost monitor, you can choose your alerting preference by setting up a dollar threshold. For example, only alert on anomalies with impact greater than $1,000. You don’t need to define an anomaly, such as a percent or dollar increase, as Anomaly Detection does this automatically for you and adjusts over time.
+
+##### Receive alerts when anomalous spend is detected
+After cost monitors and alert subscriptions are created, you’re all set! Anomaly Detection will begin to work within 24 hours, and you will be notified if any anomaly meets your alert threshold. You can visit your Anomaly Detection dashboard to monitor the activities, including anomalies detected that are below your alert threshold.
+
+### AWS Budgets overview
+With AWS Budgets, you can set custom budgets to track your costs and usage and respond quickly to alerts received from email or Amazon Simple Notification Service (Amazon SNS) notifications when you exceed, or when you are forecasted to exceed, your thresholds. Another key feature of Budgets is that it also alerts on projected underutilization of usage of Reserved Instances (RIs) and Savings Plans.
+
+### Use cases
+#### Monitor costs and usage
+Set your preferred budget period to daily, monthly, quarterly, or annually, and create specific budget limits.
+
+#### Create scheduled reports
+Stay informed on how actual or forecasted costs and usage progress toward your budget threshold.
+
+#### Respond to thresholds
+Set up custom actions to run automatically, or through an approval process, when a budget target is exceeded.
+
+### Demo–Setting up a budget with AWS Budgets
+AWS Budgets is a tool that allows us to define and set expectations associated with spend inside of our account. With Budgets, we can manage the costs associated with different types of resources or architectures in our environment. We can plan our service usage, our service costs. We can look at information related to our reserved instances and savings plans, and provide alerts when something is not meeting our budget expectations.
+
+Here, we have an example of the AWS Budgets dashboard showing a list of the various budgets that have been configured for this account. And, based on the information provided, we can see which budgets are at risk of not meeting their budget expectations.
+
+Now, one of the great features of Budgets is that we can set up alerts. A best practice around budget alerts is to create notifications for those items, route them to SNS, where you can manage subscriptions on who should be receiving those individual budget alerts. Recommend that you set Budgets to alert for actual or forecasted values, depending on which of those different options makes the most sense for you.
+
+Where you're setting a budget alert for an actual amount, consider setting that threshold slightly lower than what you would for a forecasted amount. It gives you more time to react and make adjustments to hopefully meet your budget expectations.
+
+AWS requires approximately five weeks of usage data to generate your budget forecast, but as you are configuring your forecast, if it's related to resources already running in your environment for that period of time, it will provide you with data for what your prior usage or spend has been, and it provides a good measuring stick for determining where you should set your budget.
+
+Is your objective to reduce cost? If so, consider setting your budget threshold lower than that spend amount.
+
+If it's to contain or manage growth, consider which percentage of growth you want to accommodate, and then set your alerts accordingly.
+
+Remember that a budget must have permissions to send a notification to your topic.
+
+Permissions are required for a number of different services throughout AWS, and this one is no different.
+
+You can also configure your budget alerts to go to Amazon Chime or Slack.
+
+You can integrate the AWS Budgets with AWS Chatbot service to receive those alerts.
+
+You configure an SNS topic, navigate to the Chatbot console, and then map your topic to the appropriate channel or Chime room. Inside of the latest AWS account billing information, there are step-by-step instructions on how to integrate those services.
+
+AWS Budgets is a tool that allows us to define expectations around spend or usage in our AWS accounts.
+
+To access AWS Budgets, we can go directly from the AWS Management Console and search for AWS Budgets. We're presented with a dashboard of all the various budgets that have been established inside of our account. The dashboard lists individual budgets by name and by type, and gives us information related to current spend or usage, the budgeted spend or usage, and also the forecasted spend or usage for this period.
+
+We also have visual indicators comparing the variants for current versus budgeted and forecasted versus budgeted spend or usage.
+
+Now, to create a budget is very simple. Simply press the Create Budget button at the top right and select the type of budget that you'd like to create.
+
+We have the ability to create cost budgets, usage budgets, and also budgets related to reserved instances or savings plans.
+
+In this case, we're gonna create a usage budget. Simply select the type of budget you'd like to create, and press Set Your Budget. We have to provide it with a name. In this case, we're going to call it a demo budget. We define the period that this budget is valid for. In this case, we're looking to establish a monthly budget for usage.
+
+We can also determine whether this is a recurring budget, something that we want to track progress against every single month, or if it's something that expires, it's a short-term budget that we want to establish and track our spend or usage against.
+
+In this case, we're going to leave it as recurring. We have a default usage unit that is selected for us. In this case, it's EC2 running hours. We're going to go ahead and leave that there. If you wanted to use a different usage unit, maybe something like S3 storage, you can simply search for the service or unit that you'd like to track. For our budget amount, we have the ability to leverage a fixed amount, or we can specify individual amounts that are relevant for each month. We're going to select monthly budget planning. We wanna get a little bit more granular in the tracking of this information.
+
+Now, because we have EC2 usage going back for some time in this account, we have an estimate for what the last month's usage was. In this case, coming in just under 11,000 hours. I can take that information, break it up across the 12 months, and populate that data manually, or I can use an auto-fill feature to fill the budgeted amounts.
+
+So, based on last month's usage, I can use 11,000 hours as a starting point, and then I have the ability to include budget growth. In this case, I want to keep growth relatively small, so we're going to put 5% growth into our calculation. Press the auto-fill button, and the calculations are performed for us, and that data is populated in each of the individual monthly budgets.
+
+We press Apply. And, we have a visualization of what usage has been in the past that we can use in order to track against our budgeted amounts. If I had individual filters that I wanted to apply, restricting this budget data to a particular department, or environment, or workload,
+
+I have different filters that are available, including tags that I could use to tailor this to my specific use case.
+
+Once we've set up our budget amounts, we can press configure alerts to determine what we want to alert on. I have the ability to alert on actual usage or on forecasted usage. Remember that if you're using actual usage, you may want to have an earlier alert, set that threshold slightly lower, so that you have ample time to investigate and then remediate any situations which may have driven that alert.
+
+In this case, we're going to use a forecasted usage amount and we want to be alerted when we hit the 85% threshold of our budgeted amount. I can add email contacts directly into this particular alert.
+
+So, I'm going to go ahead and enter my email address. And then I can also leverage an SNS topic. If I would rather more centrally manage notifications based on SNS topics and subscriptions, I can also send those alerts to an SNS topic, if I would prefer.
+
+We're going to go ahead and click Confirm Budget here where we can review the information based on the configuration items that we've set, and then create that budget. We also have the ability with AWS Budgets to establish budget reports.
+
+And, budget reports can be created to present information related to different budgets that we select and email that data directly to a set of recipients.
+
+So here, for this particular daily report, I have selected four different budgets from inside of my account. And if I review the delivery settings, I can see that this report is delivered daily to my email address. So, each day that information would be sent to me.
+
+I don't have to log into the console to try to identify or review where I stand from a budgetary perspective.
+
+
+### Resource tagging
+You can assign metadata to your AWS resources in the form of tags. Each tag is a label consisting of a user-defined key and value. Tags can help you manage, identify, organize, search for, and filter resources. You can create tags to categorize resources by purpose, owner, environment, or other criteria. 
+
+Note that the maximum number of active cost allocation tag keys for each payer account is 500 tags, and that each AWS resource can have a maximum of 50 user created tags. System created tags that begin with aws: are reserved for AWS use, and do not count against this limit.
+
+### AWS tagging strategies
+#### TAGS FOR RESOURCE ORGANIZATION
+Tags are a good way to organize AWS resources in the AWS Management Console. You can configure tags to display with resources, and you can search and filter by tag. 
+
+With the AWS Resource Groups service, you can create groups of AWS resources based on one or more tags or portions of tags. You can also create groups based on their occurrence in an AWS CloudFormation stack. Using Resource Groups and Tag Editor, you can consolidate and view data for applications that consist of multiple services, resources, and Regions in one place. 
+
+#### TAGS FOR COST ALLOCATION
+With AWS Cost Explorer and detailed billing reports, you can break down AWS costs by tag. Typically, you use business tags such as cost center or business unit, customer, or project to associate AWS costs with traditional cost-allocation dimensions.
+
+In the AWS Cost and Usage report, you can use the Resource columns to find information about the specific resources covered by a line item. These columns include user-defined cost allocation tags.
+
+#### TAGS FOR AUTOMATION
+Resource or service-specific tags are used to filter resources during automation activities. Automation tags opt in or opt out of automated tasks. They also identify specific versions of resources to archive, update, or delete. For example, you can run automated start or stop scripts that turn off development environments during nonbusiness hours to reduce costs. 
+
+In this scenario, Amazon Elastic Compute Cloud (Amazon EC2) instance tags are a simple way to identify instances to opt out of this action. For scripts that find and delete stale, out-of-date, or rolling Amazon Elastic Block Store (Amazon EBS) snapshots, snapshot tags can add an extra dimension of search criteria. 
+
+#### TAGS FOR ACCESS CONTROL
+AWS IAM policies support tag-based conditions, letting you constrain IAM permissions based on specific tags or tag values. For example, IAM user or role permissions can include conditions to limit Amazon EC2 API calls to specific environments (such as development, test, or production) based on their tags. 
+
+The same strategy can be used to limit API calls to specific Amazon Virtual Private Cloud (Amazon VPC) networks. Support for tag-based, resource-level IAM permissions is service specific. When you use tag-based conditions for access control, be sure to define and restrict who can modify the tags.
+
+### Tagging: Best practices
+#### Best practice: Identifying tag requirements
+* Employ a cross-functional team to identify tag requirements.
+* Use tags consistently.
+* Assign owners to define tag value propositions.
+* Focus on required and conditionally required tags.
+* Start small; less is more.
+
+#### Best practice: Naming tags and resources
+* Adopt a standardize approach for tag names.
+* Standardize names for AWS resources.
+
+#### AWS-defined tag examples
+##### aws:createdBy
+aws:createdBy defined and applies to supported AWS resources for cost allocation purposes.
+
+##### aws:ec2spot:fleet-request-id 
+aws:ec2spot:fleet-request-id identifies the Amazon EC2 Spot Instance request that launched the instance.
+
+##### lambda-console:blueprint
+lambda-console:blueprint identifies the blueprint used as a template for an AWS Lambda function.
+
+##### aws:cloudformation:stack-name
+aws:cloudformation:stack-name identifies the AWS CloudFormation stack that created the resource.
+
+#### Best practice: Cost allocation tags
+* Align cost allocation tags with financial reporting dimensions.
+* Use linked accounts and cost allocation tags.
+* Avoid multi-valued cost allocation tags.
+* Tag everything possible.
+
+#### Align tags with financial reporting
+AWS provides detailed cost reports and data extracts to help you monitor and manage your AWS spend. When you designate specific tags as cost allocation tags in the AWS Billing and Cost Management console, billing data for AWS resources will include them. 
+
+Remember, billing information is point-in-time data, so cost allocation tags appear in your billing data only after you have performed the following:
+* Specified them in the AWS Billing and Cost Management console
+* Tagged resources with them
+
+A natural way to identify the cost allocation tags you need is by looking at your current IT financial reporting practices. Typically, financial reporting covers a variety of dimensions, such as business unit, cost center, product, geographic area, or department. Aligning cost allocation tags with these financial reporting dimensions simplifies and streamlines your AWS cost management. 
+
+#### Best practice: Tag governance and data management
+* Integrate with authoritative data sources.
+* Use compound tag values judiciously.
+* Use automation to proactively tag resources.
+* Constrain tag values with AWS Service Catalog.
+* Propagate tag values across related resources.
+* Lock down tags used for access control.
+* Remediate untagged resources.
+* Implement a tag governance process.
+
+### Using AWS Cost Explorer
+#### AWS Cost Management
+AWS Cost Management tools give you visibility into your AWS costs and usage. There are a range of AWS Cost Management tools to help you access, organize, understand, control and optimize your costs.
+
+#### Cost Explorer
+Cost Explorer is a tool you can use to view and analyze your costs and usage. You can explore your usage and costs using the main graph, the Cost Explorer cost and usage reports, or the Cost Explorer reserved instance reports. You can view data for the past 12 months, and forecast how much you're likely to spend for the next 12 months. You can also get recommendations for which reserved instances to purchase. 
+
+You can use Cost Explorer to identify areas that need further inquiry, and see trends you can use to understand your costs.
+
+First, let's go to Cost Explorer. To do so, in your account, choose Billing Dashboard, this brings you to your AWS Billing Dashboard.
+
+Now let's look at the left panel and more precisely the Cost management section. Choose Cost Explorer, and then choose Launch Cost Explorer. You can now create a new cost and usage report.
+
+By default, the report highlights the past six months. It gives you an overview of your cost per month per product.
+
+If you scroll down, you can get more details about your costs per products. You might want to customize your report. Imagine you want to generate a report for the past year. Go to date range, and modify the start date so that it corresponds to a period of one year.
+
+Choose Apply.
+
+You now have a view of your costs per month over the past year.
+
+Now let's focus on a shorter period of time. From April, 2022 to the end of May, 2022, for example.
+
+First, go to date range and select the corresponding period. Then for granularity, choose daily.
+
+You now have a view of your cost per day per service. You can zoom in by choosing hourly as the granularity.
+
+However, choosing hourly will reduce your data set to the past 14 days.
+
+You will need to turn on this feature through the Payer accounts Cost Explorer preferences page.
+
+To do so, go back to AWS Cost Management. In the navigation pane, choose Preferences.
+
+From there, you can select the corresponding checkbox and activate the hourly granularity level.
+
+You can also activate the right sizing recommendations for Amazon Elastic Compute Cloud or Amazon EC2 instances.
+
+Here, we will activate the two features. After you are done, choose Save preferences.
+
+A great advantage of Cost Explorer is that it lets you select precisely the services you want to investigate.
+
+Imagine we want to see the costs from the usage of Amazon Kinesis. For service, choose Includes. Select Kinesis, and then choose Apply. Now the dashboard displays only costs for Kinesis.
+
+Because this account mainly used Amazon SageMaker, we will use a filter to exclude SageMaker from the report, so we can better see the other products.
+
+One of the features of Cost Explorer is that you can select one, several, or all the linked accounts to visualize data more specifically. To do so, choose Linked account, and then select the account you are interested in visualizing. Now let's say you want to investigate a specific AWS region.
+
+You can select it by choosing the Region you want to visualize, for example, London.
+
+Another interesting feature is to select resources using their tags.
+
+For example, if we choose Amazon SageMaker, and then choose Notebook instances, we can see its associated tag at the bottom of the page.
+
+Here the key is machine_learning and its value is exploration_notebook_Python3.
+
+If we want to know precisely how much this instance cost, we need to go back to Cost Explorer.
+
+Here we can select the appropriate tag. We now have a precise view of the cost of one specific instance using its tag.
+
+AWS Cost Management also offers the possibility to generate reports for savings plans and reserved instances.
+
+Go back to the AWS Cost Management. In the navigation pane, choose Reports. Choose Create New Report.
+
+Here you will be asked to choose a report type. By default, the cost and usage type is selected.
+
+This is the same report type we used previously in this video, however you can see two additional categories, one for savings plans reports and another for reservation reports.
+
+In each of these two categories, you can choose between two types of reports.
+
+One is utilization and the other is coverage. Utilization will give you insights about the costs and usage of your savings plans or reserved instances.
+
+The coverage report, however, will indicate how much of your eligible spend was covered by your savings plans or reserved instances, based on the selected time period.
+
+This feature can be very useful to set target coverage and identify targets for savings.
+
+We are now reaching the end of this video. Let's review what you learned so far.
+
+You learned how to generate reports using Cost Explorer. You learned how to customize your report by changing the granularity, selecting specific services, accounts, or Regions and you learned to visualize resources using their tags. 
+
+Finally, you learned the differences between utilization and coverage reports for both savings plans and reservation reports.
