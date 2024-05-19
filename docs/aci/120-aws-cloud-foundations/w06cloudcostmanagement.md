@@ -1497,6 +1497,13 @@ AWS offers four different Support plans (Basic, Developer, Business, Enterprise)
 
 ## Assessment
 ### Which statement best describes data transfer between Regions?
+Options:
+* It is priced per LCU-hour.
+* The data transferred does not vary depending on the Region.
+* It requires VPC endpoints at the destination.
+* It costs the same as data transferred out to the internet.
+
+
 **Data transferred in does not vary per Region, as the transfer in cost is always 0.**
 
 The other options are incorrect because:
@@ -1559,6 +1566,12 @@ The other options are incorrect because:
 * AWS generated cost allocation tags cannot be changed by the master account.
 
 ### When are tags visible in the AWS Cost and Usage Reports?
+Options:
+* As soon as you create a tag.
+* When you create an AWS account.
+* After you activate the AWS-generated tags in AWS Config.
+* After you activate the AWS-generated tags in Billing and Cost Management.
+
 **After you activate the AWS-generated tags in Billing and Cost Management.**
 
 The other options are incorrect because:
@@ -1662,7 +1675,7 @@ The other options are incorrect because:
 **Tag policy** and **Consolidated billing**.
 
 The other options are incorrect because:
-* Service control Plicy won't help you to obtain shared billing functionality neither to track resource deployment.
+* Service Control Plicy won't help you to obtain shared billing functionality neither to track resource deployment.
 * Root account usage restrictions won't help you to obtain shared billing functionality neither to track resource deployment.
 * Compute Optimizer detailed monitoring won't help you to obtain shared billing functionality neither to track resource deployment.
 
