@@ -834,3 +834,849 @@ We are now reaching the end of this video. Let's review what you learned so far.
 You learned how to generate reports using Cost Explorer. You learned how to customize your report by changing the granularity, selecting specific services, accounts, or Regions and you learned to visualize resources using their tags. 
 
 Finally, you learned the differences between utilization and coverage reports for both savings plans and reservation reports.
+
+### Knowledge Check
+#### Which of these statements best describes AWS Budgets?
+**With AWS Budgets, you can set alarms that trigger when a cost limit is reached for a given resource.**  AWS Budgets lets you set alarms that trigger in the event of a resource exceeding your planned budget.  This tool does not only provide alerts for overutilization but also for underutilization of your resources. §
+
+#### Why is resource tagging part of the good practices for cost management?
+**With resource tagging, you can generate cost reports on specific parts of your architecture (a system for example).**
+
+With resource tagging, you can precisely identify resources that are part of a system of your architecture. For example, you might want to identify different resources used for a recommendation engine and resources used to host a web application. This way, you will be able to precisely track the cost of either your web app or your recommendation engine. 
+
+Resource tagging does not help you to visualize if your resources are right-sized or not and the same tag can be added to different product. For example, you can configure an Amazon Relational Database Service (Amazon RDS) database and an Amazon Elastic Compute Cloud (Amazon EC2) instance with the tag "webapp" to help you track that system in the costs reports.
+
+### Summary
+#### What is AWS Billing Console
+With AWS Billing and Cost Management, you can pay your AWS bill, monitor your usage, and analyze and control your costs. The Billing and Cost Management service provides features that you can use to do the following: 
+* Estimate and plan your AWS costs.
+* Receive alerts if your costs exceed a threshold that you set.
+* Assess your biggest investments in AWS resources.
+* Simplify your accounting if you work with multiple accounts.
+
+#### What is AWS Budget
+With AWS Budgets, you can set custom budgets to track your costs and usage and respond quickly to alerts received from email or Amazon Simple Notification Service (Amazon SNS) notifications when you exceed, or when you are forecasted to exceed, your thresholds. Another key feature of Budgets is that it also alerts on projected underutilization of usage of Reserved Instanecs (RIs) and Savings Plans.
+
+#### What is resource tagging
+You can assign metadata to your AWS resources in the form of tags. Each tag is a label consisting of a user-defined key and value. Tags can help you manage, identify, organize, search for, and filter resources. You can create tags to categorize resources by purpose, owner, environment, or other criteria.
+
+### Additional Resources
+#### [Resource tagging](https://docs.aws.amazon.com/tag-editor/latest/userguide/tagging.html)
+
+#### [AWS Billing](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-what-is.html)
+
+#### [AWS Budgets](https://aws.amazon.com/aws-cost-management/aws-budgets/?nc1=h_ls)
+
+## Optimizing Cloud Costs
+### Pre-assessment
+#### Which of the following options does AWS Compute Optimizer provide recommendations to rightsize? 
+**Amazon EC2 instances.**
+
+Compute Optimizer provides recommendations for four different products: Amazon EC2, AWS Fargate, AWS Lambda, and Amazon Elastic Block Store (Amazon EBS).
+
+#### Which of these statements is true about the Amazon EC2 pricing model? 
+**Compute Savings Plans are flexible across any instance family.**
+
+Compute Saving Plans are flexible across any instance family,  in contrast to EC2 Instance Saving Plans.
+
+Compute Saving Plans provides discounts of up to 66 percent.
+
+Savings Plans apply to usage after the Amazon EC2 Reserved Instances (RIs) are applied.
+
+### AWS Pricing Models
+### AWS Free Tier
+#### Always free
+These free-tier offers do not expire and are available to all AWS customers.
+
+#### 12 months free
+Enjoy these offers for 12 months following your initial sign-up date to AWS.
+
+#### Trials
+These short-term free trial offers start from the date you activate a particular service.
+
+* Exceeding free tier limits can result in charges. When you exceed the free tier or a free trial ends, standard rates apply.
+* Not all features are included in the AWS Free Tier offerings.
+* AWS Free Tier offerings might provision or use other services that are not free.
+
+### Basic pricing concepts
+AWS offers a range of cloud computing services with pay-as-you-go pricing.
+
+**Pay for what you use.** For each service, you pay for exactly the number of resources you actually use without requiring long-term contracts or complex licensing. 
+
+**Pay less when you reserve.** Some services offer reservation options that provide a significant discount compared to On-Demand pricing. For more information, [Amazon EC2 Reserved Instances and Other Reservation Models.](https://docs.aws.amazon.com/whitepapers/latest/cost-optimization-reservation-models/introduction.html)
+
+**Pay less with volume-based discounts when you use more.** Some services offer tiered pricing, so the per-unit cost is incrementally lower with increased usage.
+
+**Pay even less as AWS grows.** AWS passes savings back to you in the form of lower pricing. AWS does this by working to reduce data center hardware costs, improving operational efficiencies, lowering power consumption, and generally lowering the cost of doing business. These optimizations and growing economies of scale have resulted in AWS lowering pricing over 70 times since 2006. For more information, see [AWS Pricing.](https://aws.amazon.com/pricing/)
+
+When architecting for cost, make sure to consider the AWS Regions where your services are located. AWS service prices and data transfer costs vary by Region because of the costs associated with doing business in those different Regions.
+
+**Not all services are available in all Regions.**
+
+### Volume discount
+#### TIERED PRICING MODELS
+Considerations for tiered pricing models include the following:
+* Some services include automatic volume-based discounts, such as Amazon Simple Storage Service (Amazon S3), and Reserved Instances.
+* The more you use, the greater the discount.
+* With AWS Organizations, you can consolidate billing for multiple accounts. Tiered pricing is applied based on usage across accounts.
+
+#### AMAZON S3
+Amazon S3 offers different pricing tiers:
+
+S3 Standard as follows:
+* First 50 TB per month
+* Next 450 TB per month
+* Over 500 TB per month
+
+S3 Intelligent-Tiering as follows:
+* Frequent Access tier, first 50 TB per month    
+* Frequent Access tier, next 450 TB per month
+* Frequent Access tier, over 500 TB per month
+* Infrequent Access tier, all storage per month
+* Monitoring and automation, all storage per month
+
+Pricing varies depending on the Region.
+
+**Note:** S3 Intelligent-Tiering has a minimum eligible object size of 128 KB for auto-tiering. Smaller objects can be stored but will always be charged at the Frequent Access tier rates.
+
+#### DATA TRANSFER
+Data transferred out of AWS services to the internet is tiered for the following services:
+* Amazon S3
+* Amazon Elastic Compute Cloud (Amazon EC2)
+* Amazon Simple Queue Service (Amazon SQS)
+* Amazon Relational Database Service (Amazon RDS)
+* Amazon Virtual Private Cloud (Amazon VPC)
+* CloudFront
+
+For instance, price per gigabyte transferred out to the internet is reduced after the following:
+* 10 TB per month   
+* Next 40 TB per month
+* Next 100 TB per month
+* Over 150 TB per month
+
+### AWS pricing models
+#### On-demand pricing
+Most AWS services are available on demand. With Amazon EC2 On-Demand Instances, you can pay for compute capacity by the second or hour with no long-term commitments. On-Demand Instances are ideal for short-term, irregular workloads that cannot be interrupted. You can also choose on-demand pricing initially to determine your needs based on usage.
+
+On-demand pricing provides the following benefits:
+* It's flexible. You can use it any time.
+* There are no long-term commitments.
+* You pay only for what you consume.
+* It is priced at a premium compared to other options.
+
+#### Spot pricing
+Amazon EC2 Spot Instances are unused EC2 instance capacity in the AWS Cloud. Prices fluctuate with demand and can provide up to a 90-percent discount compared to the On-Demand Instance price. Spot Instances are ideal for fault-tolerant, instance-flexible, or time-insensitive workloads.
+
+Spot pricing provides the following benefits:
+* It offers the deepest discount for EC2 instances and AWS Fargate.
+* It provides variable price and availability.
+
+#### Commitment-based pricing
+Some AWS services offer commitment-based consumption models that provide a significant discount compared to on-demand pricing. For this purchase option, you commit to a specified amount of usage over a 1-year or 3-year period. You have the option to pay nothing up front, partial up front, or all up front. The more you pay up front, the greater the discount. The commitment-based consumption model is ideal for steady-state applications or predictable usage.
+
+#### Reserved Instances pricing
+The Reserved Instances (RIs) pricing model can provide significant discounts for several AWS services compared to on-demand pricing. AWS services that offer a reservation pricing model include the following:
+* Amazon EC2
+* Amazon RDS
+* DynamoDB
+* Amazon Redshift
+* Amazon ElastiCache Reserved Cache Nodes 
+* Amazon OpenSearch Service 
+* AWS Elemental MediaConvert (reserved transcode slots and reserved queues)
+
+### Savings Plans
+Savings Plans provide significant savings, similar to Amazon EC2 Reserved Instances, in exchange for a monetary commitment of 1 year or 3 years.
+
+#### Compute Savings Plans
+They offer the greatest flexibility, up to a 66 percent discount, and apply to Fargate and Lambda usage.
+
+Compute Savings Plans are flexible across the following:
+* Instance family, such as a move from a C5 to an M5 instance
+* Region, such as a change from Europe (Ireland) to Europe (London)
+* Operating system (OS)
+* Tenancy 
+* Compute options, such as a move from Amazon EC2 to Fargate
+
+#### EC2 Instance Savings Plans
+They provide the lowest prices and up to a 72-percent discount on the selected instance family in a specific Region.
+
+EC2 Instance Savings Plans are flexible across the following:
+* Size, such as a move from an m5.xlarge instance size to m5.4xlarge
+* OS, such as a change from m5.xlarge Windows to m5.xlarge Linux
+* Tenancy, such as modifying m5.xlarge Dedicated Instance tenancy to m5.xlarge default tenancy
+
+### How Savings Plans are applied
+In a Consolidated Billing Group, Savings Plans are applied to the owner account and then all other accounts combined. Amazon EC2 Reserved Instances are applied first, then EC2 Instance Savings Plans, and then Compute Savings Plans.
+
+Consolidated Billing Group (Owner account -> All other accounts combined]
+
+Amazon EC2 Reserved Instances -> EC2 Instance Savings Plans -> Compute Savings Plans
+
+Savings Plans apply to your usage after the Amazon EC2 Reserved Instances (RI) are applied.
+
+Your current Savings Plans are grouped together and applied to the eligible usage. EC2 Instance Savings Plans are applied before Compute Savings Plans because Compute Savings Plans have broader applicability.
+
+In a consolidated billing family, Savings Plans are applied first to the owner account's usage and then to other accounts' usage. This occurs only if you have sharing enabled.
+
+Your Savings Plans are applied to your highest savings percentage first. If there are multiple usages with equal savings percentages, Savings Plans are applied to the first usage with the lowest Savings Plans rate. Savings Plans continue to apply until there are no more remaining usages or your commitment is exhausted. Any remaining usage is charged at the On-Demand Instance rates.
+
+### Rightsizing Compute Resources
+Before rightsizing its important to understand the meaning of instance names and instance families. According to your application needs, the naming conventions will help you to choose the most appropriate instance.
+
+### Amazon EC2 naming
+c5n.xlarge
+
+* **c** - Instance family
+* **5** - Instance generation
+* **n** - Attribute
+* **xlarge** - Instance size
+
+### Amazon EC2 instance families
+Pick the optimal instance family for the type of workload you plan to deploy. Doing this from the start saves time and cost, and reduces the need to resize later.
+
+**Some instance types are only available in certain Regions.**
+
+#### General purpose
+Use cases for general purpose EC2 instances include the following:
+* Workloads requiring a balance of compute, memory, and networking
+* Diverse workloads
+* Web applications
+
+#### Compute optimized
+Use cases for compute optimized EC2 instances include the following:
+* Compute-bound applications
+* High performance processors
+* Media transcoding
+* Scientific modeling
+* Machine learning
+
+#### Memory optimized
+Use cases for memory optimized EC2 instances include the following:
+* Fast delivery of large datasets in memory
+* Database servers
+* Web caches
+* Data analytics
+
+#### Accelerated computing
+Use cases for accelerated computing EC2 instances include the following:
+* High-graphics processing
+* Graphics processing unit (GPU) bound
+* Machine learning
+* High-performance computing
+* Autonomous vehicles
+
+#### Storage optimized
+Use cases for storage optimized EC2 instances include the following:
+* High sequential read/write
+* Large datasets
+* NoSQL databases
+* Elasticsearch
+
+### Upgrade to the latest generation
+Upgrading to the latest generation instances can yield the following cost benefits:
+* Newer generations have a lower price per hour to operate compared to older generations.
+* Newer generations provide better performance, which can result in using fewer instances.
+
+Choosing the right resource from the beginning requires minimal effort. Upgrading later requires operational overhead and analysis that might not be financially feasible.
+
+### Instance sizing
+Instance types are available in different sizes. Each size has different number of resources allocated, such as CPU, memory, and network bandwidth. Benchmark your application and select the right size to balance performance and cost.
+
+When using an Amazon EC2 Auto Scaling group, smaller instances make it possible for your capacity to better match demand.
+
+### Rightsizing recommendations
+AWS Compute Optimizer and AWS Cost Explorer provide optimal EC2 instance recommendations for your workloads. Both tools use the same machine learning engine to analyze historical use metrics.
+
+#### AWS Compute Optimizer
+Compute optimizer provides recommendations from a performance perspective.
+
+It recommends changes that might result in a cost increase.
+
+#### AWS Cost Explorer
+Cost Explorer provides recommendations from a cost savings perspective.
+
+It only recommends changes that will yield estimated cost savings greater than or equal to $0.
+
+### AWS Compute Optimizer
+Based on your usage data, Compute Optimizer helps avoid overprovisioning and under provisioning the following four types of AWS resources:
+* EC2 instance types
+* Amazon Elastic Block Store (Amazon EBS) volumes
+* Amazon Elastic Container Service (Amazon ECS) services on AWS Fargate
+* AWS Lambda functions
+
+This process takes place in the cost optimization cycle. You need to continually refine your resources and optimize cost and performance according to your needs as they evolve.
+
+### Use cases
+#### Evaluate rightsizing recommendations
+Evaluate estimated savings and performance improvement opportunities at the account level for Amazon EC2, Amazon ECS, Amazon EBS, and Lambda resources. 
+
+#### Configure enhanced infrastructure metrics
+Get improved recommendations for optimizing EC2 instances and Auto Scaling groups by using 3 months of historical data.
+
+#### Streamline migration to AWS Graviton CPUs
+Find the Amazon EC2 workloads that will deliver the biggest return for the smallest migration effort in a shift to AWS Graviton CPUs.
+
+#### Configure external metrics
+Increase savings and performance awareness by configuring third-party metrics from your application performance monitoring (APM) tools.§
+
+### Using AWS Credits
+AWS credits are automatically applied to bills to help cover costs associated with eligible services. You can visualize your available credits in the Credits section of AWS Billing and Cost Management.
+
+### Selecting credits to apply
+If an AWS account has more than one credit, the available credits apply in the following order:
+1. The credits that expire soonest
+2. The credits with the least number of eligible services
+3. The oldest credits
+
+For example, John Doe has two credits available to him. Credit one is for $10. It expires in January 2024, and it can be used for either Amazon S3 or Amazon EC2. Credit two is for $5. It expires in December 2024, and it can be used only for Amazon EC2. John has sufficient AWS charges to apply all credits. AWS selects credit one for application first because it expires sooner than credit two.
+
+**If you have remaining, eligible usage after a credit is consumed, the process will repeat until your credits are consumed or your usage is covered.
+
+Credits are applied to the largest services charge (for example, Amazon EC2 or Amazon S3). Consumption will continue in a descending pattern for the remainder of the service charges.
+
+Credits don't require customer selection to apply during the billing process. AWS will automatically apply eligible credits to applicable services.***
+
+### Selecting where to apply credits
+When credit sharing is activated, credits are applied in AWS Organizations in the following order:
+1. The account that owns the credit is covered for the service charges.
+2. Credits are applied toward the AWS account with the highest spend.
+3. Credits are applied to the service with the highest spend in that account.
+4. Credits are applied to the Stock-Keeping Unit (SKU) with the highest spend in that service.
+
+The process repeats until the credit is consumed or all customer spend is covered.
+
+AWS applies the credit to the largest available charge across all eligible sellers of record. This means that AWS tries to apply your credits before they expire, so AWS might use a generic credit for a specific service.
+
+**Credits can be applied across single or multiple AWS accounts. It is also possible for an organization to stop sharing credits.**
+
+### AWS Activate
+Imagine you have an idea, and you want to launch a startup. You can build it with AWS Activate. As an AWS Activate member, you get free tools, resources, content, and expert support to accelerate your startup at every stage. Benefits include the following:
+* More than 40 solution templates to build and deploy your product
+* AWS expert curated tips for your business and technical needs
+* Best-practices training
+
+Startups can apply for up to $100,000 in AWS Activate credits. 
+
+### AWS Activate Console
+The AWS Activate Console is a personalized hub of tools, resources, and content tailored to startups’ needs. It is designed to support startups through every stage of their journey, from ideating to building, and beyond. AWS Activate Console is a one-stop-shop that delivers the tailored solutions needed to quickly get started on AWS and grow a business.
+
+In the AWS Activate Console, startups can get answers to technical problems and learn best practices. By matching AWS content with an AWS Activate profile's interests and AWS usage, the AWS Activate Console provides personalized content recommendations on a range of topics. After a startup has applied for and received AWS Activate credits, the AWS Activate Console makes it easy to do the following:
+* Track and monitor the AWS Activate credits and costs.
+* Deploy proven architectures, even with no previous infrastructure experience.
+* Take advantage of exclusive offers.
+* Get real-time updates about the health of your AWS environment.
+
+### AWS Activate credits
+Based on their stage, startups are eligible for different credit packages. They can select the package tier that best matches their profile. 
+
+#### FOUNDERS REQUIREMENTS
+Requirements for AWS Activate Founders include the following:
+* Must be new to AWS Activate Founders
+* Must not have previously received credits from an AWS Activate Portfolio partner
+* Must have an AWS Activate account
+* Must be an early-stage startup that is unfunded or funded up to and including Series A
+* Must not have institutional funding or affiliation with an AWS Activate Provider
+* Must have a company website or public company profile
+* Must have been founded in the past 10 years
+
+#### FOUNDERS BENEFITS
+AWS Activate Founder benefits include the following:
+* $1,000 in AWS Activate credits, which are valid for 2 years 
+* $350 in AWS Support Developer Support credits, which are valid for 1 year 
+* 7 core AWS Trusted Advisor best practice checks 
+* Email access to one primary cloud support associate and general architectural guidance
+
+#### PORTFOLIO REQUIREMENTS
+Requirements for AWS Activate Portfolio include the following:
+* Must be affiliated with an AWS Activate Provider that is unfunded or funded up to and including Series A
+* Must have an AWS Activate Provider organization ID (Org ID)
+* Must have a fully functioning company website
+* Must have an AWS Activate account
+* Must not have previously received AWS Activate credits at equal or greater value from the same AWS Activate Provider
+* Must not have exceeded $100,000 in redeemed AWS Activate credits
+* Must have been founded in the past 10 years
+
+#### PORTFOLIO BENEFITS
+AWS Activate Portfolio benefits include the following:
+* Up to $100,000 in AWS Activate credits that are valid for 1 year
+* AWS Support Business Support credits that are valid for 1 year
+* 24x7 phone, email, and chat access to cloud support engineers and premium response speed
+* AWS Support API, interoperability, and configuration guidance and troubleshooting
+
+### Knowledge Check
+#### Why did AnyCompany choose to use a lift-and-shift approach when moving to the AWS Cloud?
+It is the most straightforward approach because AnyCompany can follow an existing on-premises architecture.
+
+**Lifting and shifting** an architecture might not be the quickest approach, but it is straightforward because you can reproduce your on-premises architecture. However, it is not cost-optimized and you might not need all these resources all the time. With the AWS Cloud, your infrastructure will become agile, and you can scale up or down your resources based on demand, which is not possible using on-premises resources.
+
+#### Which tool can help AnyCompany optimize its cloud costs based on resource usage?
+**AWS Compute Optimizer.**
+
+With Compute Optimizer, you can avoid overprovisioning your resources. In the case of a lift and shift from an on-premises architecture, your architecture must handle traffic peak, so it might be overprovisioned for the usual demand. 
+
+Trusted Advisor is a serverless compute product. It will not help you optimize costs.
+
+With CloudWatch, you can program metrics that you need to monitor. Although it might help you visualize your traffic, it will not provide recommendations for downsizing your compute resources. 
+
+AWS Pricing Calculator is a simulation tools that helps you visualize the costs of your architecture before you build it. This won't help you here.
+
+#### What is the most cost-effective way for AnyCompany to provision its compute resources?
+**Using two Reserved Instances (RIs) for regular traffic and three additional On-Demand Instances for peak traffic.**
+
+Indeed, Spot Instances can give discounts of up to 90 percent compared to On-Demand Instances. However, Spot Instances can be terminated by AWS when being requested. 
+
+In this situation, because we have no information about the fault-tolerance of the infrastructure, we should choose On-Demand Instances for scaling. Because peak traffic does not appear every day, using Reserved Instances for this purpose doesn't work.
+
+### Summary
+#### AWS basic pricing concepts
+AWS offers a range of cloud computing services with pay-as-you-go pricing.
+
+**Pay for what you use.** For each service, you pay for exactly the number of resources you actually use without requiring long-term contracts or complex licensing. 
+
+**Pay less when you reserve.** Some services offer reservation options that provide a significant discount compared to On-Demand pricing. For more information, [Amazon EC2 Reserved Instances and Other Reservation Models.](https://docs.aws.amazon.com/whitepapers/latest/cost-optimization-reservation-models/introduction.html)
+
+**Pay less with volume-based discounts when you use more.** Some services offer tiered pricing, so the per-unit cost is incrementally lower with increased usage.
+
+**Pay even less as AWS grows.** AWS passes savings back to you in the form of lower pricing. AWS does this by working to reduce data center hardware costs, improving operational efficiencies, lowering power consumption, and generally lowering the cost of doing business. These optimizations and growing economies of scale have resulted in AWS lowering pricing over 70 times since 2006. For more information, see [AWS Pricing.](https://aws.amazon.com/pricing/)
+
+#### Which products offer right-sizing recommendations
+**AWS Compute Optimizer** and **AWS Cost Explorer** provide optimal EC2 instance recommendations for your workloads. Both tools use the same machine learning engine to analyze historical use metrics.
+
+#### AWS credits
+AWS credits are automatically applied to bills to help cover costs associated with eligible services.
+
+### Additional Resources
+#### [AWS Credits](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/useconsolidatedbilling-credits.html)
+#### [AWS Compute Optimizer](https://aws.amazon.com/compute-optimizer/?nc1=h_ls)
+#### [AWS pricing models](https://docs.aws.amazon.com/prescriptive-guidance/latest/strategy-sap-cost-optimization/pricing-models.html)
+#### [Right-sizing AWS resources](https://aws.amazon.com/aws-cost-management/aws-cost-optimization/right-sizing/)
+
+## Cloud Cost Management: AWS Organizations
+### Pre-assessment
+#### Which of these statements is true regarding AWS Organizations?
+**The management account can be inside of an organization unit (OU).**
+
+The other items are incorrect because: 
+* there can only be one management account
+* member accounts cannot be located in the root
+* the payer account is the same as the management account.
+
+### AWS Organizations
+AWS Organizations enables customers to manage a multi-account structure within AWS. This is great for viewing the billing associated with our different accounts and also for centrally managing security and controls for our account structure.
+
+You do this by building a hierarchical grouping of accounts inside of Organizations. There are several key components to consider when creating Organizations. 
+
+#### Management account
+This is also the **payer account**. This is the account that will be creating the Organization and its structure.
+
+#### Organization
+The Organization itself is created by the management account. This entity holds your consolidated AWS accounts, so that you can administer them as a single unit. 
+
+##### Root
+The root is a parent container for all of the accounts inside of your Organization.
+
+Organizations automatically creates it for you when you create an organization. 
+
+##### Organizational units (OUs)
+Organizational units are containers for the accounts inside of our organization. This allows us to group accounts together that will have similar controls applied to them.
+
+#### Member accounts
+Member accounts are standard AWS accounts that are deployed inside of the organization's structure that we have established. 
+
+One of the benefits of using Organizations is that we have the ability to apply policies to groups of accounts based on our organization's structure.
+
+While we do have the ability to apply policies to individual accounts, that would require maintenance of those policies for different individual accounts, resulting in multiple policies that have to be maintained to essentially achieve the same end result. 
+
+We do have the ability to apply policies to individual accounts. In this case, policy one would only impact a single account.
+
+We also have the ability to apply a policy to an OU. In this case, policy two will impact all of the accounts inside of OU1. If you apply a policy to an OU that has branch OUs, this policy applies to all the accounts in that sub-tree, meaning that OU, as well as the accounts in the branched OUs. So here policy three would impact the four accounts that make up OU2 and OU3. Here, we have applied policy four to just the three accounts that make up OU3. Finally, we have the ability to apply policies at the root level as well. This means that this policy will affect all of the accounts inside of our organization structure. 
+
+At the beginning of this module, we mentioned that Example Corp is doing well with their AWS deployment, so well that they've now created three different accounts that are supporting different workloads.
+
+Inline with best practices, Example Corp wants to deploy an organization structure. In order to do this, they create a fourth account. Here, it's labeled Account D. That will be the management payer account. Also, the account that's responsible for creating and defining the organization's structure. Now that we've established Organizations for Example Corp, our individual accounts will not be receiving an invoice. Instead, we'll get a consolidated bill that gets sent to the paying account. That paying account will be able to view a breakdown of spend associated with each account, but also the total spend for AWS. It's important to note in this diagram that the paying account does have some charges associated with it.
+
+From a best-practices perspective, we don't want to deploy and operate resources inside of that payer account. However, there are some components that will likely be deployed in order to support things, like consolidated logging and auditing, and therefore there will be some small charges associated with the operations of that account. 
+
+#### Benefits of using AWS Organizations
+* Consolidated billing.
+* We get to look at aggregate usage across the individual accounts in our organization in order to calculate the benefits associated with volume discounts for some products and services.
+* Where we have credits that are applied those are shared across the organization, and reserved instances can be leveraged by other accounts inside of our organizational structure, hopefully leading to better utilization rates of those RIs.
+
+### Components of AWS Organizations
+#### Management account and payer account
+The account that creates the organization. This is the account that manages the organization, adds organizational units (OUs) and accounts, pays charges accrued by the accounts, and applies policies to the entities. It is best practice to use your management account only for handling organizations, policies, and billing. You should not use it to create infrastructure. 
+
+NOTE: The account you use to create the organization is the management account; you can't change an organization's management account after it is created.
+
+#### Organization
+Created by the management account, this entity holds your consolidated AWS accounts so that you can administer them as a single unit. From the management account, you can centrally view and manage all of your accounts within your organization. You can organize the accounts in a hierarchical, tree-like structure with a root at the top and OUs nested under the root. 
+
+#### Root
+Root created at the start of an organization by the management account.
+
+The root is a parent container for all of the accounts for your organization. AWS Organizations automatically creates it for you when you create an organization. 
+
+Note: This organizational root is the top of your hierarchical tree in AWS Organizations; it has nothing to do with AWS root account users. Because the root is the top of the tree, if you apply a policy to the root, it applies to all OUs and accounts in the organization.
+
+#### OU
+This is a container for accounts within the organization. An OU can contain other OUs, so you can create a hierarchy that resembles an upside-down tree, with a root at the top and branches of OUs that reach down, ending in accounts that are the leaves of the tree. When you attach a policy to one of the nodes in the hierarchy, it flows down and affects all of the branches (OUs) and leaves (accounts) beneath it. An OU can have exactly one parent, and currently each account can be a member of exactly one OU.
+
+#### Member account
+This is a standard AWS account (that is not the management or paying account) that contains your AWS resources. You can attach a policy to an account to apply controls to only that account. An account can be a member of only one organization at a time. Each account can be directly in the root or placed in one of the OUs in the hierarchy.
+
+### Consolidated billing
+Now that you have an organization set up, you will use consolidated billing. This means that instead of each account receiving and paying its own bill, the management (or paying) account receives  and pays a single bill for all the member accounts in the organization. The bill includes a breakdown of all the spending for each account.
+
+In our example, this means that all billing goes to the management or paying account D with a summary of the spending per linked account: A, B, C.
+
+**The solution is designed to be a production-ready reference implementation that you can use as a starting point for deploying an AWS environment to run your scale-out workloads. For additional details, go to [Architecture overview.](https://docs.aws.amazon.com/solutions/latest/scale-out-computing-on-aws/overview.html)**
+
+### Volume discounts, credits, and RIs
+You can save money with AWS Organizations by doing the following:
+* Get volume discount rates based on total usage from all accounts in your organization. For example, if you use Amazon S3 storage across all of your accounts, you can receive a volume discount for your total usage instead of based on usage of individual accounts.
+* Share credits across all accounts in the organization.
+* Share Reserved Instances (RIs) and savings plans across the organization. You can receive the hourly cost benefit of Reserved Instances that are purchased by one account with any other account in the organization. For example, if one account has five RIs, but it only uses three, another account in the organization can use the last two. Note: To share the RI discount, the attributes of the instance you launch must match exactly to the attributes of the RI that the original account purchased.
+
+### Knowledge Check
+#### Which of these statements is true regarding AWS Organizations? (Select TWO.)
+**An OU can contain several OUs, and an OU can contain the payer account.** 
+
+The root is above all your OUs, it is created within the organization level. 
+
+An OU cannot contain several organizations, but an organization can contain several OUs.
+
+### Summary
+#### What is AWS Organizations
+AWS Organizations is an account management service that enables you to consolidate multiple AWS accounts into an organization that you create and centrally manage. AWS Organizations includes account management and consolidated billing capabilities that enable you to better meet the budgetary, security, and compliance needs of your business. As an administrator of an organization, you can create accounts in your organization and invite existing accounts to join the organization.
+
+#### What is consolidated billing
+Consolidated billing means instead of each account receiving and paying its own bill, the management (or paying) account receives and pays a single bill for all the member accounts in the organization. The bill includes a breakdown of the spending for each account.
+
+### Additional Resources
+#### [AWS Organizations](https://aws.amazon.com/organizations/?nc1=h_ls)
+
+## Cloud Cost Management: AWS Support plans
+### Pre-assessment
+#### Which support plan gives access to a designated Technical Account Manager to provide proactive guidance and coordinate access to programs and AWS experts
+**Enterprise.** The Enterprise plan gives you access to a dedicated TAM.
+
+### AWS Support Plans Overview
+Every customer automatically gets AWS Basic support, no cost at all. Any customer can access support functions like 24/7 access to customer service, documentation, whitepapers, support forums, AWS Trusted Advisor, and the AWS Personal Health Dashboard. It's a personalized view of the health of AWS services and any alerts when your resources might be impacted. These functions are free for everyone, but as you begin to move mission-critical workloads into AWS, we offer higher levels of support to match your levels of need. 
+
+The next tier is our Developer tier, which includes everything in the Basic support level. Plus, you can now email customer support directly with a 24-hour response time on any questions you have. And responses of less than 12 hours in case your systems are impaired. This is a great tier for businesses that are experimenting with AWS or setting up tests or proofs of concept. 
+
+Now, as you begin to take production workloads live, we find customers are more successful advancing to the Business tier. Everything in the previous tiers, plus Trusted Advisor now opens up the entire suite of checks for your account. You are given direct phone access to our support team that has a four-hour response SLA. If your production system is impaired, and a one-hour SLA for production systems down. Additionally, as part of the Business tier, we provide access to infrastructure event management, where for an extra fee, we can help you plan for massive events like brand-new launches or global advertising blitzes. 
+
+Finally, for companies running mission-critical workloads, we recommend the Enterprise level support. It has everything in the previous tiers. Plus a 15-minute SLA for business-critical workloads, a dedicated technical account manager, or TAM. They will coordinate access to programs and other AWS experts as needed. 
+
+Let's talk a bit more specifically about the job of a TAM. TAMs are part of the concierge support team that comes with Enterprise level support. They specialize not only in proactively monitoring your environment and assisting with optimizations, but provide infrastructure event management, Well-Architected reviews, and operations reviews. 
+
+What's a Well-Architected review, you ask? Well, keeping it simple, TAMs work with customers to review architectures using the Well-Architected Framework. Architectures are checked against the five pillars of the Well-Architected Framework: Operational Excellence, Security, Reliability, Performance Efficiency, and Cost Optimization. As you can see, the job of a TAM is much more than just handling trouble tickets. AWS Support looks at the customer holistically, not just if they have problems, but how can we help them be successful? 
+
+And that's the mission of AWS Support. To learn more about AWS Support, including pricing structures for the plans, go to [aws.amazon.com/premiumsupport](https://aws.amazon.com/premiumsupport).
+
+### AWS Support
+AWS offers four different Support plans(opens in a new tab) to help you troubleshoot issues, lower costs, and efficiently use AWS services. You can choose from the following Support plans to meet your company’s needs: 
+* Basic
+* Developer
+* Business
+* Enterprise On-Ramp
+* Enterprise
+
+#### Basic Support
+Basic Support is free for all AWS customers. It includes access to whitepapers, documentation, and support communities. You can also contact AWS for billing questions and service limit increases.
+
+With Basic Support, you have access to a limited selection of AWS Trusted Advisor checks. Additionally, you can use the AWS Health Dashboard, a tool that provides alerts and remediation guidance when AWS is experiencing events that may affect you. 
+
+#### Developer, Business, Enterprise On-Ramp, and Enterprise Support
+The Developer, Business, Enterprise On-Ramp, and Enterprise Support plans include all the benefits of Basic Support, in addition to the ability to open an unrestricted number of technical support cases. These Support plans have pay-by-the-month pricing and require no long-term contracts.
+
+The information in this course highlights only a selection of details for each Support plan. A complete overview of what is included in each Support plan, including pricing for each plan, is available on the [AWS Support](https://aws.amazon.com/premiumsupport/plans/) site.
+
+In general, for pricing, the Developer plan has the lowest cost, the Business and Enterprise On-Ramp plans are in the middle, and the Enterprise plan has the highest cost.
+
+#### Developer Support
+Customers with the Developer Support plan have access to the following features:
+* Best practice guidance
+* Client-side diagnostic tools
+* Building-block architecture support, which consists of guidance for how to use AWS offerings, features, and services together
+
+For example, suppose that your company is exploring AWS services. You’ve heard about a few different AWS services. However, you’re unsure of how to use them together to build applications that can address your company’s needs. In this scenario, the building-block architecture support that is included with the Developer Support plan could help you to identify opportunities for combining specific services and features.
+
+#### Business Support
+Customers with a Business Support plan have access to additional features, including the following: 
+* Use-case guidance to identify AWS offerings, features, and services that can best support your specific needs
+* All Trusted Advisor checks
+* Limited support for third-party software, such as common operating systems and application stack components
+
+Suppose that your company has the Business Support plan, and you want to install a common third-party operating system onto your Amazon Elastic Compute Cloud (Amazon EC2) instances. You could contact AWS Support for assistance with installing, configuring, and troubleshooting the operating system. For advanced topics, such as optimizing performance, using custom scripts, or resolving security issues, you may need to contact the third-party software provider directly.
+
+#### Enterprise On-Ramp Support
+In November 2021, AWS opened enrollment into the AWS Enterprise On-Ramp Support plan. In addition to all the features included in the Basic, Developer, and Business Support plans, customers with the Enterprise On-Ramp Support plan have access to the following:
+* A pool of Technical Account Managers to provide proactive guidance and coordinate access to programs and AWS experts
+* A Cost Optimization workshop (one per year)
+* A Concierge support team for billing and account assistance
+* Tools to monitor costs and performance through Trusted Advisor and the Health API and Dashboard
+
+The Enterprise On-Ramp Support plan also provides access to a specific set of proactive support services, which are provided by a pool of Technical Account Managers:
+* Consultant review and architecture guidance (once per year)
+* Infrastructure Event Management support (once per year)
+* Support automation workflows
+* **Thirty minutes** or less response time for business-critical issues
+
+#### Enterprise Support
+In addition to all features included in the Basic, Developer, Business, and Enterprise On-Ramp support plans, customers with Enterprise Support have access to the following:
+* Designated Technical Account Manager to provide proactive guidance and coordinate access to programs and AWS experts
+* Concierge support team for billing and account assistance
+* Operations reviews and tools to monitor health
+* Training and game days to drive innovation
+* Tools to monitor costs and performance through Trusted Advisor and the Health API and Dashboard
+
+The Enterprise plan also provides full access to proactive services, which are provided by a designated Technical Account Manager:
+* Consultative review and architecture guidance
+* Infrastructure Event Management support
+* Cost Optimization Workshop and tools
+* Support automation workflows
+* **Fifteen minutes** or less response time for business-critical issues
+
+### Technical Account Manager (TAM)
+The Enterprise On-Ramp and Enterprise Support plans include access to a Technical Account Manager (TAM).
+
+The TAM is your primary point of contact at AWS. If your company subscribes to Enterprise Support or Enterprise On-Ramp, your TAM will guide, empower, and evolve your cloud journey across the full range of AWS services. TAMs provide expert engineering guidance, help you design solutions that efficiently integrate AWS services, assist with cost-effective and resilient architectures, and provide direct access to AWS programs and a broad community of experts.
+
+For example, suppose that you are interested in developing an application that uses several AWS services together. Your TAM could provide insights into how to best use the services together in a way that aligns with the specific needs that your company is hoping to address through the new application.
+
+### Knowledge Check
+#### Which Support plan includes all AWS Trusted Advisor checks at the lowest cost?
+**Business.**
+
+Only the Business, Enterprise On-Ramp, and Enterprise Support plans include all AWS Trusted Advisor checks. Of these three Support plans, the Business Support plan has a lower cost.
+
+Learn more at the following link:
+* [Compare AWS Support plans](https://aws.amazon.com/premiumsupport/plans/)
+
+### Summary
+AWS offers four different [Support plans](https://aws.amazon.com/premiumsupport/plans/) to help you troubleshoot issues, lower costs, and efficiently use AWS services. 
+
+You can choose from the following Support plans to meet your company’s needs: 
+* Basic
+* Developer
+* Business
+* Enterprise On-Ramp
+* Enterprise
+
+### Additional Resources
+#### [AWS Support Plans](https://aws.amazon.com/premiumsupport/plans/)
+
+## Module Summary
+### Define business needs
+Identify the needs of an organization to choose the right deployment for an infrastructure.
+
+### Establish cloud strategy
+* Apply cloud financial management principles. 
+* Use AWS Pricing Calculator to simulate the cost of an infrastructure
+* Plan for data transfer charges.
+
+### Cloud cost analysis and tracking
+* Use the AWS Billing and Cost Management consoles.
+* Use AWS Purchase Order Management.
+* Use resource tagging for cost optimization.
+* Use AWS Cost Explorer.
+
+### Optimize cloud costs
+* Right-size AWS resources.
+* Use AWS Credits.
+* Choose the appropriate pricing models for your needs.
+* Use AWS Compute Optimizer.
+
+### AWS Organizations
+Centrally manage your AWS resources using AWS Organizations
+
+### AWS Support Plans
+AWS offers four different Support plans (Basic, Developer, Business, Enterprise) to help you troubleshoot issues, lower costs, and efficiently use AWS services.
+
+## Assessment
+### Which statement best describes data transfer between Regions?
+**Data transferred in does not vary per Region, as the transfer in cost is always 0.**
+
+The other options are incorrect because:
+* Data transferred out to the internet starts at 9 cents/GB.
+* Data transfer between Regions does not require VPC endpoints at the destination.
+* Data transfer between Regions is not prived per LCU-hour.
+
+### Which of the following are components of the Cloud Financial Management pillars? (Select TWO).
+* **Planning and forecasting**
+* **Cost optimization**
+
+The other options are incorrect because:
+* Business agility is not a component of the Cloud Financial Management pillars.
+* Right-sizing resources is a part of good practices for financial management, but it is not a component of the Cloud Financial Management pillars.
+* Smart purchasing is not a component of the Cloud Financial Management pillars.
+
+### Which statement is true regarding the concept of CAPEX, OPEX and TCO?
+** TCO corresponds to CAPEX + OPEX.**
+
+The other options are incorrect because:
+* TCP stands for Total Cost of Ownership. This corresponds to the sum of capital expenditures (CAPEX) and operational expenditures (OPEX).
+
+### Which of the following has a charge associated with data transfer in?
+***Data transferres between AWS services in the same Availability Zone using a public IPv4 address.**
+
+The other options are incorrect because:
+* AWS Snowball Edge, Amazon EC2, and AWS Direct Connect are not charged for data transferred in.
+
+### Which of the following statements is true regarding cloud computing?
+
+**Cloud computing allows you to increase speed and agility.**
+
+The other options are incorrect because:
+* Cloud computing allows you to trade upfront expense for variable expense.
+* Cloud computing allows you to stop guessing the capacity you need.
+* Cloud computing allows you to avoid running and maintaining data centers.
+
+### Which tool allows you to visualize the costs of your infrastructure before building it with AWS?
+**AWS Pricing Calculator.**
+
+The other options are incorrect because:
+* AWS Trusted Advisor helps you optimize your infrastructure in terms of security and good practices.
+* AWS Budgets helps you set alarms and budgets per service.
+* AWS Compute Optimizer helps you get recommendations to optimize your compute resources according to your usage.
+
+### Which component of the Cloud Financial Management pillars focuses on operational, people-related, and technological enablers of continuous cloud financial management?
+**Cloud financial operations.** To enable a successful financial management and business strategy, you need to ensure that people, process, automation, and governance are considered.
+
+The other options are incorrect because:
+* Measurement and accountability do not focus on people involved in running the financial operations tasks.
+* Planning and forecasting do not focus on people involved in running the financial operations tasks.
+* Cost optimization does not focus on people involved in running the financial operations tasks.
+
+### Which of the following statements are true about cost allocation tags? (Select TWO.)
+**Accounts are limited to 500 tags** and **Cost allocation tag keys are case sensitive**.
+
+The other options are incorrect because:
+* AWS generated tags are not activated by default.
+* User-defined cost allocation tags are not retroactive.
+* AWS generated cost allocation tags cannot be changed by the master account.
+
+### When are tags visible in the AWS Cost and Usage Reports?
+**After you activate the AWS-generated tags in Billing and Cost Management.**
+
+The other options are incorrect because:
+* After you create the tag, it needed to be activated to be visible.
+* To activate the AWS-generated tags you need to go in Billing and Cost Management, not in AWS Config.
+* Creating an AWS account does not create nor activate tags.
+
+### Which of the following statements are benefits of resource tagging? (Select TWO.)
+**Control and compliance** and **Cost and usage allocations**.
+
+The other options are incorrect because:
+* There is a limit of tagging per service.
+* There is no specific discount for tagged resources.
+* There is no specific economy of scale for tagged resources.
+
+### How long after you activate a tag will it take to appear on the Cost and Usage Report?
+**24 hours.**
+
+The other options are incorrect because:
+* The time it takes for a tagged resource to appear in the Cost and Usage Reports is 24 hours.
+
+### Which compute pricing model can provide the lowest resource cost?
+**Spot instances.**
+
+The other options are incorrect because:
+* Despite all these procing models provide substantial discounts, spot instances will always be cheaper. The drawback of spot instances is that they can be terminated at any time by AWS if there is a high demand.
+
+### Which of the following are requirements to get AWS Compute Optimizer recommendations?
+**Compute optimizer generates recommendations only for certain instance type (such as M, C, X etc.)**
+
+The other options are incorrect because:
+* Compute Optimizer requires at least 30 consecutive hours (not days) of metric data from your resource to generate recommendations.
+* Compute Optimizer does not require that CloudWatch is enabled for detailed monitoring.
+
+###  Which of the following is true regarding AWS Budgets? (Select TWO.)
+**Billing forecasts take approximately 5 weeks of historical data** abd **AWS billing data, which Budgets uses to monitor resources, is updated at least one per day**.
+
+The other options are incorrect because:
+* Usage alarms can only trigger once per billing cycle.
+* Budget Alerts cannot be sent to multiple Amazon SNS topics or to up to 20 individual email addresses.
+
+## In certain cases, a tiered orice reduction is available for data transfer out to the internet. Which of the following statements is true about the tiered pricing?
+**Tiered pricing is applied automatically starting at 10 TB of data transferred out to the internet per month.**
+
+The other options are incorrect because:
+* Tiered pricing is not included with Compute Saving Plans.
+* Tiered pricing does not relate to inbound data ytansfer but rather to outboud data trabsfer to the internet.
+* Using three qualifying services won't help to obtain tiered price reduction.
+
+### Which of the following is true about AWS Free Tier services?
+**Free Tier offerings might provision other services that aren't free.**
+
+The other options are incorrect because:
+* Trials are not activated when you create your AWS account.
+* Free Tier services are not always limited to 12 months, there are several free tier conditions, depemding on the service.
+* Free Tier services do incur outbound data transfer charges.
+
+### Which service provides right-sizing recommendations for cost savings?
+**AWS Cost Explorer.**
+
+The other options are incorrect because:
+* AWS Trusted Advisor helps you optimize your infrastructure in terms of security and good practices.
+* AWS Compute Optimizer helps you get recommendations to optimize your compute resources according to your usage.
+* Amazon CloudWatch allows you to create metrics to track usage, but it does not provide recommendations.
+
+### Which of the following statements is true about Compute Savings Plans?
+**They apply to Fargate and Lambda usage.**
+
+The other options are incorrect because:
+* Compute Savings Plans are applied after EC2 Instance Savings Plans.
+* Compute Savings Plans are more flexible than EC2 Instance Savings Plans as you can switch an instance family to another one.
+* Compute Savings Plans provide up to 66% off.
+
+### Spot instances are good choice if your architecture has which of the following characteristics? (Select TWO.)
+**Can withstand interruptions** and **has the flexibility to use multiple instance types**.
+
+The other options are incorrect because:
+* Stability, predictable or spiky traffic are not ideal for using Spot Instances.
+
+### AWS Cost Explorer provides which of the following default report types? (Select TWO.)
+**AWS Cost and Usage report** and **Savings Plans report**.
+
+The other options are incorrect because:
+* Compute, Storage or Spot Instances reports do not exist. However, another option is available: Reserved Instance utilization and coverage.
+
+### Which of the following statements are true about AWS Cost Explorer? (Select TWO.)
+**Cost Explorer recommneds downsizing instances only within the same instance family** and **The Cost Explorer API is charged per paginated request**.
+
+The other options are incorrect because:
+* Cost Explorer cannot recommend downsizing instances accross different instance families.
+* Cost and Usage reports do not automatically integrate with Athena and QuickSight; this needs to be manually configured.
+* You do not need to create a custom report to see multiple accounts within Cost Explorer.
+
+### Which additional services can you use with AWS Cost and Usage Reports to view, manage, monitor, or analyze data?
+**Amazon QuickSight.** QuickSight is a dashboard tool that allows you to create visualizations or analyses.
+
+The other options are incorrect because:
+* None of these services will help you to view, manage, monitor, or analyze data.
+
+### Which of the following features in AWS Organizations will help you to accomplish shared billing functionality and track resource deployment? (Select TWO.)
+**Tag policy** and **Consolidated billing**.
+
+The other options are incorrect because:
+* Service control Plicy won't help you to obtain shared billing functionality neither to track resource deployment.
+* Root account usage restrictions won't help you to obtain shared billing functionality neither to track resource deployment.
+* Compute Optimizer detailed monitoring won't help you to obtain shared billing functionality neither to track resource deployment.
+
+### Which account are included in the core organization unit (OU)? (Select TWO.)
+**Audit member account** and **Log archive account**.
+
+The other options are incorrect because:
+* Master and paying account are not part of any OU.
+* Other member accounts need to be placed in specific OUs, and not in the core OU.
+
+### Which of these statements is true regarding AWS Organizations (OUs)?
+**An OU can contain several other OUs.** Each sub OUs could also contain other OUs.
+
+The other options are incorrect because:
+* The root is above all your OUs, and is created at the Organizational level.
+* An OU cannot contain several Organizations, but and Organization can contain several OUs.
+* An OU can have only one management account.
