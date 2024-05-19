@@ -104,6 +104,7 @@ Business agility benefits of the cloud computing economy model include the follo
 **The total cost of ownership (TCO**) is the addition of the capex and the opex. It corresponds to the price for buying infrastructure components added to the cost of running them.
 
 ### Comparison of TCO elements for both on-premises or co-location and AWS infrastructures
+
 |            | On-premeses / Co-location | AWS |
 | ---------- | ------------------------- | --- |
 | Server / Compute | Purchase cost + annual maintenance fee | EC2 |
@@ -525,24 +526,15 @@ You can view your bill by choosing this button.
 To learn more about the AWS Billing console features, choose the arrow buttons to display each of the following seven steps.
 
 1. Manage your account
-
-Manage your account settings using the AWS Management Console and Billing console. This includes designating your default currency, editing alternate contacts, adding or removing Regions, updating your tax information, and closing your AWS account. The Close your account section calls out considerations such as terminating resources before you proceed with closing an account. This way, you aren't charged for unused services.
-
+  Manage your account settings using the AWS Management Console and Billing console. This includes designating your default currency, editing alternate contacts, adding or removing Regions, updating your tax information, and closing your AWS account. The Close your account section calls out considerations such as terminating resources before you proceed with closing an account. This way, you aren't charged for unused services.
 2. View your bill
-
-You can use the Billing console to view your past bill details or your estimated charges for your current month. This section outlines how you can view your bills, download PDF copies of your charges, and set up monthly emails to receive your invoices. It also covers how you can use other resources such as AWS Cost and Usage Reports. 
-
+  You can use the Billing console to view your past bill details or your estimated charges for your current month. This section outlines how you can view your bills, download PDF copies of your charges, and set up monthly emails to receive your invoices. It also covers how you can use other resources such as AWS Cost and Usage Reports. 
 3. Managing your payments
-
-You can view your estimated bills and pay your AWS invoices in your preferred currency by setting a payment currency. AWS converts your bill to your preferred currency after your bill is finalized. Until then, all of the preferred currency amounts shown in the console are estimated in US dollars (USD). AWS guarantees your exchange rate. This is so that refunds use the same exchange rate as your original transaction.
-
+  You can view your estimated bills and pay your AWS invoices in your preferred currency by setting a payment currency. AWS converts your bill to your preferred currency after your bill is finalized. Until then, all of the preferred currency amounts shown in the console are estimated in US dollars (USD). AWS guarantees your exchange rate. This is so that refunds use the same exchange rate as your original transaction.
 4. AWS Purchase Order Management
-
-Manage your AWS purchase orders in a self-service way by taking care of multiple purchase orders all in one place. This can help to reduce your overhead costs and increase the accuracy and efficiency of your overall procure-to-pay process. Use the Billing console to manage your purchase orders and configure how they reflect on your invoices.
-
+  Manage your AWS purchase orders in a self-service way by taking care of multiple purchase orders all in one place. This can help to reduce your overhead costs and increase the accuracy and efficiency of your overall procure-to-pay process. Use the Billing console to manage your purchase orders and configure how they reflect on your invoices.
 5. AWS Cost Categories
-
-Manage your AWS costs with AWS Cost Categories by mapping your cost and usage into meaningful categories. This section defines terms that are used in the console for supported dimensions, operations, rule types, and status. The section also provides more information on how you can create, edit, delete, and split the charges within cost categories.
+  Manage your AWS costs with AWS Cost Categories by mapping your cost and usage into meaningful categories. This section defines terms that are used in the console for supported dimensions, operations, rule types, and status. The section also provides more information on how you can create, edit, delete, and split the charges within cost categories.
 
 6. Payment profile
 
@@ -1521,13 +1513,13 @@ The other options are incorrect because:
 * Smart purchasing is not a component of the Cloud Financial Management pillars.
 
 ### Which statement is true regarding the concept of CAPEX, OPEX and TCO?
-** TCO corresponds to CAPEX + OPEX.**
+**TCO corresponds to CAPEX + OPEX.**
 
 The other options are incorrect because:
 * TCP stands for Total Cost of Ownership. This corresponds to the sum of capital expenditures (CAPEX) and operational expenditures (OPEX).
 
 ### Which of the following has a charge associated with data transfer in?
-***Data transferres between AWS services in the same Availability Zone using a public IPv4 address.**
+**Data transferres between AWS services in the same Availability Zone using a public IPv4 address.**
 
 The other options are incorrect because:
 * AWS Snowball Edge, Amazon EC2, and AWS Direct Connect are not charged for data transferred in.
