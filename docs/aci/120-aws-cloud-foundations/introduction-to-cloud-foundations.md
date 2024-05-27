@@ -9,7 +9,7 @@
 ### Week 5: [Databases 1](./w05databases1.md)
 ### Week 6: [Cloud Cost Management](./w06cloudcostmanagement.md)
 ### Week 7: [Networking 1](./w07networking1.md)
-### Week 8: 
-### Week 9: 
-### Week 10:
-### Week 11:
+### Week 8: [Security 1](./w08security1.md)
+### Week 9: [Storage 1](./w09storage1.md)
+### Week 10: [AWS Certified Cloud Practitioner Certification Preparation Week 1](./w10practitionercertprepw1.md)
+### Week 11: [AWS Certified Cloud Practitioner Certification Preparation Week 2](./w11practitionercertprepw2.md)
