@@ -10,6 +10,8 @@
 [Zabbix TimeScaleDB](docs/zabbix/timescaledb.md)
 ### DHCP troubleshooting
 [DHCP cheatsheet](docs/dhcp/dhcp.md)
+### DNS troubleshooting
+[DNS cheatsheet](docs/dns/dns.md)
 ### DevOps
 [What is DevOps?](docs/devops/devops.md)
 ### Django
