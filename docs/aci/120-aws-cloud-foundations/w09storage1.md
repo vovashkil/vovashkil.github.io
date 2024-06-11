@@ -444,4 +444,1799 @@ File transfer protocols are used in data exchange workflows across different ind
 * Integrations with enterprise resource planning and customer relationship management systems
 
 ### DataSync Service Overview
+### Transferring large amounts of data
+All organizations need to transfer data from one place to another, whether that need is occasional or frequent. Many organizations attempt do-it-yourself (DIY) data transfers to meet their needs. These DIY data transfers can be manageable with a few files and performed occasionally. However, the DIY solutions are not scalable solutions that can manage a data transfer involving hundreds, thousands, or millions of files. 
 
+When you need to transfer more than a few files, be sure to ask enough questions about your needs and the needs of your organization before you decide on the best approach. 
+* What transfer protocol should you use?
+* Do you have enough compute and infrastructure resources to actually transfer the data?
+* Are you going to compress the data in transfer?
+* Do you need to preserve your storage system metadata?
+* Do you need to be able to scale out the transfer?
+* How are you going to handle security?
+* How will you validate that all of your data got transferred properly? 
+
+**DataSync** is an AWS managed service that simplifies, automates, and accelerates the copying of large amounts of data to and from AWS Cloud storage services. DataSync is used to transfer data between on-premises storage and the AWS Cloud and transfer data between AWS Cloud storage services. As a managed service, DataSync reduces your requirements to modify applications, develop scripts, or manage infrastructure to copy data between storage systems and services.
+
+### What does DataSync do?
+iDataSync supports data copy or synchronization tasks from a supported source storage system or service to a supported destination storage system or service. DataSync tasks support data transfers in only one direction. The following are a few features of DataSync:
+* DataSync copies data between on-premises storage systems and AWS storage services in the AWS Cloud. On-premises storage systems include:
+* Storage systems that support Network File System (NFS) and server message block (SMB) file system protocols. On-premises storage systems can include network-attached storage systems, file shares, and file servers.
+* On-premises object storage systems that are Amazon S3 API compatible.
+* Storage systems that use Hadoop Distributed File System (HDFS) storage protocol.
+* DataSync is included with some Snow Family devices for data transfers from the devices to the AWS Cloud. DataSync is available when the devices are configured for local compute and storage jobs. Not all Snow Family devices include DataSync at this time.
+* DataSync copies or synchronizes data between supported AWS storage services within the same Region or between Regions.
+* You can use DataSync to copy between your in-cloud, self-managed NFS and SMB shares attached to your EC2 instances and supported AWS storage services.
+* Supported AWS Cloud storage systems include Amazon S3, Amazon EFS, Amazon FSx for Windows File Server, Amazon FSx for Lustre, and Amazon FSx for OpenZFS.
+
+With DataSync features, you can implement robust data transfers from on premises to the AWS Cloud and within the AWS Cloud for select data storage services. DataSync solves and streamlines the data transfer challenges experienced by many organizations.
+
+#### General features
+##### Seamless data transfer
+You can configure DataSync to perform seamless data copy transfers between on-premises NFS file shares, SMB file shares, on-premises Amazon S3 API compatible object storage, and HDFS data storage to AWS storage services. This can also be done between AWS storage services within the AWS Cloud. 
+
+You can configure DataSync to perform one-time data transfers or automate ongoing transfers between storage systems. With the available task configuration options, you can create different data copy tasks to meet a wide range of use cases.
+
+Each data transfer task provides a one-way transfer between the source storage location and the destination storage location. The transfer direction is established when you specify the source location and destination location when configuring your task.
+
+DataSync removes many of the challenges you face when developing and managing scripts or deploying commercial data transfer tools. DataSync improves your productivity and reduces your management time.
+
+##### Fully managed service
+DataSync is a fully managed service in the AWS Cloud. As a managed service, AWS manages the AWS resources required to optimize the service performance and protect your data. 
+
+DataSync transfers perform optimizations on how, when, and what data is sent over the network. Some of the DataSync service's optimizations include incremental transfers, in-line compression, and sparse-file detection. DataSync provides in-line data validation and encryption for data protection and security.
+
+Because it is a fully managed service, you can use DataSync to focus on your business instead of spending time managing data transfers.
+
+##### Security and compliance
+To secure any data you transfer between your on-premises storage and the AWS Cloud or between AWS storage services, DataSync encrypts data in transit using TLS version 1.2. 
+
+Each task performs integrity checks for all data in transit. Optionally, DataSync can perform integrity checks for data at rest. Integrity checks verify that your destination data matches your source data and validates data consistency.
+
+AWS KMS integrates with AWS storage services to encrypt data at rest in AWS Cloud storage. For most services, you can use system-generated AWS managed encryption keys or customer managed keys that you provide. For data stored in Amazon S3, you can use server-side encryption keys managed by Amazon S3 (SSE-S3).
+
+##### Native integration with AWS services
+DataSync supports integration with AWS Cloud storage services such as Amazon S3, Amazon EFS, Amazon FSx for Windows File Server, Amazon FSx for Lustre, and Amazon FSx for OpenZFS as a source and destination for copy tasks.
+
+DataSync integrates natively with many other AWS services, helping you manage across your AWS Cloud environment. Some of the key services include the following:
+* IAM provides access controls and security.
+* Amazon CloudWatch provides activity monitoring and logging.
+* AWS CloudTrail provides audit logging.
+* DataSync uses the network connections provided by AWS Site-to-Site VPN, AWS Direct Connect, AWS PrivateLink, and AWS Transit Gateway to provide secure connectivity from on-premises storage systems to the AWS Cloud.
+* DataSync can connect using private, public, and US Federal Information Processing Standards endpoints.
+
+##### Cost-effective pricing
+When using the DataSync service, you pay only for the amount of data that you copy on a flat per-gigabyte basis.
+
+Your service costs are predictable with no additional costs for increasing and decreasing resources to meet your demand requirements. You have no additional services to start, stop, manage, or pay for.
+
+For pricing information, refer to the [AWS DataSync Pricing](https://aws.amazon.com/datasync/pricing/) page on the AWS website.
+
+Note: Additional storage, request, transfer, logging, and monitoring fees for other services apply.
+
+##### Simple configuration and use
+You can use the AWS Management Console, AWS Command Line Interface (AWS CLI), or DataSync API to configure and manage your DataSync tasks.
+
+The console guides you through the configuration process. Using the console, you can create your source and destination locations, configure your copy tasks, and integrate DataSync with supported AWS services.
+
+With DataSync configuration options, you can quickly customize your transfer task. DataSync options include the following:
+* Data verification options – As DataSync transfers data, it always performs data integrity checks during the transfer. You can choose additional verification options to compare source and destination at the end of a transfer. 
+* Ownership and permissions-related options – DataSync preserves metadata between storage systems that have similar metadata structures. Different options are used to configure metadata preservation depending on the storage system type. 
+* File management and metadata options – You can configure DataSync tasks to copy file metadata, keep deleted files, and overwrite files in the destination. 
+* Content filtering – When you transfer data from your source to your destination location, you can apply filters to transfer only a subset of the files in your source location. 
+* Bandwidth throttling – You can configure a bandwidth limit for DataSync tasks. You can use all available bandwidth or set a bandwidth limit and schedule.
+* Task scheduling – You can schedule a DataSync task to be run at a specific time. If you are using a single agent to run multiple tasks, you can queue those tasks. 
+
+### Snow Family Overview
+Snow Family helps customers that need to run operations in harsh, non-data center environments and in locations with inconsistent network connectivity. Snow Family consists of Snowcone, Snowball Edge, and AWS Snowmobile. Each of these devices is designed to meet the unique compute and capacity challenges required by different use cases. These services help physically transport up to exabytes of data into and out of AWS. AWS owns and manages Snow Family devices. The devices integrate with AWS security, monitoring, storage management, and compute capabilities. 
+
+#### Snow Family options overview
+Snow Family offers three classifications of data transfer and edge computing solutions to solve different levels of challenges:
+* Snowcone, a small, rugged, portable, secure edge computing, storage, and data transfer device
+* Snowball Edge, a rugged petabyte-scale data transport device with onboard storage and compute capabilities
+* Snowmobile, a large truck to migrate or transport exabyte-scale datasets into and out of the AWS Cloud
+
+#### Snowcone
+Snowcone is the smallest member of the Snow Family edge computing and data transfer devices. Snowcone is portable, ruggedized, and secure. You can use Snowcone to collect, process, and move data to AWS. You can perform these operations offline by shipping the device to Amazon or online using DataSync.
+
+Running applications in disconnected environments and connected edge locations can be challenging. This is because these locations often lack the space, power, and cooling needed for data center information technology (IT) equipment. 
+
+Snowcone stores data securely in edge locations and can run edge computing workloads that use AWS IoT Greengrass or EC2 instances. Snowcone devices are small, so you can carry one in a backpack or fit it in tight spaces for Internet of Things (IoT), vehicular, or drone use cases.
+
+#### Snowball Edge
+Snowball Edge is a data migration and edge computing device that comes in two device options: Compute Optimized and Storage Optimized.
+
+**Snowball Edge Storage Optimized** devices provide 24 virtual CPUs (vCPUs) of compute capacity, coupled with 80 terabytes of usable block or Amazon S3 compatible object storage. It is well-suited for local storage and large-scale data transfers. In addition, you can order Snowball Edge Storage Optimized devices for data transfer-only jobs, without compute capacity activated, at a reduced cost.
+
+**Snowball Edge Compute Optimized** devices provide 52 vCPUs and 42 terabytes of usable block or object storage. They include an optional graphics processing unit (GPU) for use cases such as advanced machine learning and full motion video analysis in disconnected environments. 
+
+Customers can use these two options for data collection, machine learning and processing, and storage in the following environments before shipping the device back to AWS:
+
+Intermittent connectivity (such as manufacturing, industrial, and transportation)
+Extremely remote locations (such as military or maritime operations) 
+These devices can also be rack mounted and clustered together to build larger, temporary installations.
+
+#### Snowmobile
+Snowmobile moves up to 100 petabytes (PBs) of data in a 45-foot-long ruggedized shipping container pulled by a semi-trailer truck. Snowmobile is ideal for multi-petabyte or exabyte-scale data migrations. 
+
+A Snowmobile arrives at the customer site and appears as a network-attached data store for secure, high-speed data transfer. After data is transferred to Snowmobile, it is driven back to a Region, and the data is uploaded into Amazon S3.
+
+Snowmobile is tamper resistant, waterproof, and temperature controlled. It is made up of multiple layers of logical and physical security. For example, security includes encryption, fire suppression, dedicated security personnel, Global Positioning System tracking, alarm monitoring, 24/7 video surveillance, and an escort security vehicle during transit.
+
+#### Snow Family comparison
+
+| Description | Snowcone | Snowball Edge     | Snowball Edge     | Snowmobile |
+|             |          | Storage Optimized | Compute Optimized |            |
+| ----------- | -------- | ----------------- | ----------------- | ---------- |
+| Usable Hard Disk Drive (HDD) Storage | 8 TB usable HDD | 80 TB usable HDD | N/A | Customized configurations up to 100 PB |
+| Usable Solid-State Drive (SSD) Storage | 14 TB | 1 TB SSD | 28 TB | N/A |
+| Usable Compute | 2 vCPUs | 40 vCPUs | 104 vCPUs | N/A |
+| Usable Memory | 4 GB | 80 GB | 416 GB | N/A |
+| Device size L x W x H | 227 x 148.6 x 82.65 millimeter (mm) | 548 x 320 x 501 mm | 548 x 320 x 501 mm | 45-foot shipping container |
+| Device Weight | 4.5 pounds 2.1 kilograms (kg) | 49.7 pounds 22.54 kg | 49.7 pounds 22.54 kg | N/A |
+| Storage Clustering | No | Yes 5–10 nodes | Yes 5–10 nodes | N/A |
+| 256-bit Encryption | Yes, 256-bit | Yes, 256-bit | Yes, 256-bit | Yes, 256-bit |
+| Health Insurance Portability and Accountability Act (HIPPA) Compliant | No | Yes, eligible | Yes, eligible | Yes, eligible |
+
+#### [Snow Family](https://aws.amazon.com/snow/?nc2=h_ql_prod_mt_sno)
+
+#### [Snowball Edge](https://docs.aws.amazon.com/snowball/latest/developer-guide/specifications.html)
+
+### Transfer Family Overview
+#### Sharing files
+Organizations across every industry, vertical market, and organization type share critical files with their vendors, partners, and other organizations. In addition to the capability to transfer files, you need convenient access to the transferred files so that you can securely and cost-effectively process the data for a variety of use cases.
+
+AWS has seen that 39 percent of business data that is uploaded to the cloud is used for file sharing purposes. These shared files are then supplied to downstream applications for further use and processing. Close integration with other services is critical to support machine learning, data analytics, and other application and workflow processes.
+
+Transfer files securely and cost-effectively with the AWS Transfer Family.
+
+#### What is Transfer Family?
+Transfer Family offers you a managed file transfer (MFT) service used for transferring files over common file transfer protocols. Files are transferred directly into and out of AWS storage services. With Transfer Family related tools and resources, you can seamlessly migrate, automate, and monitor your file transfer workflows. 
+
+With Transfer Family, you maintain existing client-side configurations for authentication, access, and firewalls. This means your existing transfer solution configurations, clients, and processes continue to operate for your customers, partners, and internal teams, or their applications.
+
+#### Supported transfer protocol
+Transfer Family currently supports these protocols to meet your transfer workflow requirements:
+* **FTP**: Network protocol for transferring files without encryption over TCP/IP
+* **FTP Secure (FTPS)**: File transfer protocol over TCP/IP with SSL/TLS encryption
+* **SSH or Secure File Transfer Protocol (SFTP)**: File transfer protocol over SSH using industry standard strong encryption algorithms
+* **Applicability Statement 2 (AS2)**: HTTPS-based protocol to transmit messages (especially Electronic Data Interchange messages) safely, cheaply, and quickly 
+
+### Self-managed file transfer workload challenges
+Organizations can use the technology platform MFT to reliably exchange electronic data between systems and people in a secure way to meet compliance needs. These data movements can be both internal and external to an enterprise and include various types, including sensitive, compliance-protected, or high-volume data.
+
+Managing and maintaining these systems can be both time consuming and costly. Like many application and process workloads, MFT solutions vary from very limited use during the day or week to peak periods that can exceed the allocated resources for processing and support.
+
+#### Challenges
+* 24/7 operations and support
+* High availability and on-demand scaling
+* Maintenance for capacity and performance
+* Patching and auditing for compliance
+* End-user access provisioning
+* Limited visibility into the exchanged data
+* Dealing with bad actors, such distributed denial of service (DDoS) attacks and vulnerability scanners
+
+MFT services have the same challenges as other self-managed services. Maintenance, operations, and systems and end-user support are required to support the systems and workflows on a 24/7 basis. 
+
+### How Transfer Family works
+As a managed service, the Transfer Family service incorporates features and services to minimize or alleviate most of the challenges with self-managed file transfer solutions. 
+
+#### Secure data-in-transit encryption
+Transfer Family uses secure transfer protocols to secure data in transit.
+
+Transfer Family supports securing your data in transit between AWS and the client for all secure network transfer protocols. Each secure protocol manages the security between the client and the server. SFTP and FTPS use TLS, which is a cryptographic protocol designed to provide communications security over a computer network. 
+
+With FTP, which does not encrypt the data in transit, Transfer Family permits the protocol over secure connectivity only. This helps to prevent any unauthorized or unintended bad actors from intercepting and reading data in transit.
+
+#### Managed transfer servers
+As part of the Transfer Family service, AWS manages the server instances (servers) without your intervention. As needed, AWS adds or removes resources to meet your workflow requirements. In addition, AWS manages updating and patching software and hardware to keep them current and operating securely and efficiently. All AWS managed services are designed for reliability and for high availability.
+
+Transfer Family service is accessed using endpoints that you deploy in your account. An endpoint is the URL of the entry point for an AWS web service. Unlike standard AWS endpoints, Federal Information Processing Standard (FIPS) endpoints use a TLS software library that complies with FIPS 140-2. These endpoints might be required by enterprises that interact with the United States government. FIPS endpoints are available in selected Regions. 
+
+Endpoints are deployed in Availability Zones (AZs) within a Region. You can deploy endpoints in up to three AZs per Region per server for high availability within a Region. Endpoints are deployed in an Amazon VPC. Additionally you can deploy SFTP using a public endpoint.
+
+#### AWS storage services
+Transfer Family uses two of the most popular AWS storage services to store your files. You can choose between **Amazon S3 for object-based storage** or **Amazon EFS for POSIX-compliant Network File System (NFS) storage**.
+
+With the choice of AWS storage services, you can customize your file transfer solution to meet your use-case requirements. After your data is in your S3 buckets or EFS file systems, you can fully use the data with other applications or services in your AWS account.
+
+#### Integration with other services
+Transfer Family integrates with a variety of other services to create a complete managed file transfer solution to meet your workflow requirements. Some integration examples include the following:
+* Integration with different identity and access management services such as Microsoft Active Directory (AD), Lightweight Directory Access Protocol (LDAP), and IAM
+* Integration with CloudWatch to monitor service metrics, and integration with CloudTrail to log and audit service activity events
+* Integration with Amazon Route 53 to manage Domain Name System (DNS) configuration from your AWS account and DNS services outside of AWS
+
+### Transfer Family features
+#### Seamless migration
+The migration to Transfer Family is a seamless lift and shift off of existing datasets. You can seamlessly migrate your workflows by redirecting your DNS from on premises to the AWS Cloud.  
+
+You can use your existing file transfer client configurations and workflows that are already built in place. The migration is transparent to both your internal and external clients.
+
+#### Fully managed
+AWS transparently operates and manages all of the compute, storage, and other infrastructure necessary to maintain high availability and performance for your endpoint. Your endpoint is designed to be available 24 hours a day, 7 days a week, 365 days a year. You get full redundancy across multiple AZs within a Region.
+
+#### Secure and compliant
+Transfer Family is both secure and compliant with secure transfer standards. Transfer Family supports FTPS, SFTP, and AS2 secure protocols and permits FTP only over secure connections.
+
+Transfer Family helps you protect your business-to-business file exchanges with data encryption and scanning, audit trails, and compliance certifications including HIPAA, FedRAMP, and more.
+
+#### Native integration
+Transfer Family natively integrates with AWS services, including CloudWatch, CloudTrail, IAM, Amazon API Gateway, Route 53, Amazon S3, and Amazon EFS.
+
+With your data in Amazon S3 or Amazon EFS storage, you can further integrate your workflows into other workflows that you implement in AWS.
+
+#### Cost effective
+Transfer Family is cost-effective. Many customers spend a lot of money to manage their managed transfer service on premises, either through their own DIY solutions or through commercial licenses.
+
+With Transfer Family, you pay as you go for resources used instead of building out and maintaining servers, software, and infrastructure in advance.
+
+#### Simple to use
+An intuitive user interface and API makes it convenient for you to configure your SFTP, FTPS, FTP, or AS2 endpoint and set up client access. 
+
+For internal and external users, the service supports commonly used protocols and scripting file transfers. Users don’t need to change their behavior to continue sharing data with you in the cloud.
+
+#### Additional features and benefits
+##### Elastic resources
+Transfer Family can meet the needs of your dynamic workloads with elastic compute infrastructure. Built-in auto scaling means that you never need to worry about provisioning additional resources if your data loads grow over time. You don't need to worry if workloads spike during certain hours of the day or days of the month.
+
+##### Multiple user authentication methods support
+Transfer Family supports common user authentication systems, including Microsoft AD and LDAP. Alternatively, you can also choose to store and manage users’ credentials directly within the service. By connecting your existing identity provider to Transfer Family, you can be sure that your external users continue to have the correct, secure level of access to your data resources without disruption.
+
+##### Fine-grained authorization
+Authenticate and authorize individual line-of-business users with fine-grained access controls that level your operations, administration, and management workflows.
+
+##### Data stored natively in AWS storage services
+Store the files you exchange as objects in your S3 bucket or EFS file system so that you can extract business insights faster. The key piece that makes this exchange possible is that Transfer Family stores your data natively in Amazon S3 or Amazon EFS, while preserving relevant file metadata.
+
+For example, when your files are stored in Amazon S3, you can use Amazon Translate to make process documents more tailored for international audiences. You can also use Amazon Comprehend to extract relationships and insights from text files, or you can use Amazon Athena to query CSV files to analyze historical data. Similarly with files in Amazon EFS, you can directly integrate your enterprise resource planning system to access these files on arrival from your business partners.
+
+##### Familiar and comprehensive AWS management services
+With Transfer Family, you can use IAM for security and identity management and CloudWatch for monitoring and events to start post-upload processing. You can use AWS KMS, Amazon S3 server-side encryption, or Customer Managed Keys with Amazon EFS to control encryption at rest.
+
+Additionally, CloudTrail helps you meet compliance requirements with granular auditing of user and API activity.
+
+##### Low-code workflow automation
+Save time with low code, managed workflows that orchestrate common file processing steps and automatically detect data anomalies or errors. Transfer Family supports managed workflows for file processing of file transfers over SFTP, FTPS, and FTP. With managed workflows, you can create, automate, and monitor post-transfer file processing. 
+
+Using this feature, you can securely and cost effectively meet your compliance requirements for business-to-business (B2B) file exchanges by coordinating all the necessary steps required for file processing. In addition, you benefit from end-to-end auditing and visibility.
+
+### Knowledge Check
+#### An organization has begun migrating their on-premises data to cloud storage. Their intent is to move the terabytes of data they have on premises to the cloud using internet connections. Which AWS Service would be the ideal solution for the organization to transfer their data?
+**AWS DataSync.**
+
+* AWS Snowmobile transfers physical media and does not use internet connections for migration.
+* AWS Snowball uses a physical device rather than internet connections for migration.
+* Amazon S3 Transfer Acceleration is a migration feature at the S3 bucket-level. There is not bucket-level data migration in this scenario
+
+#### A network administrator is discussing viability of using AWS Transfer Family services for their organization's cloud migration with an AWS consultant. The network administrator wants to know which transfer protocols are supported by Transfer Family. Which protocols would be included in the consultant's response? (Select THREE.)
+**FTP**, **FTPS**, **Applicability Statement 2 (AS2)**.
+
+* Transfer Family does not currently support SSL and Trivial FTP (TFTP).
+
+#### A large company has decided to begin migrating petabytes of data to the cloud. One requirement they have is that their data must be migrated using physical media instead of internet connections. Which AWS service can the organization use to transfer their data?
+**AWS Snowmobile.**
+
+* Snowmobile moves up to 100 petabytes (PBs) of data in a 45-foot-long ruggedized shipping container pulled by a semi-trailer truck, transferring the physical media instead of using internet connections.
+* AWS DataSync, AWS Transfer Family, and Amazon S3 Transfer Acceleration use internet connections.
+
+### Summary
+* Describing the need for data migration into the cloud
+* Describing the benefits of migrating data into the cloud
+* Identifying cloud migration strategies
+* Describing the features and benefits of Datasync, Snow Family, Transfer Family, and AWS S3 Transfer Acceleration
+* Identifying use cases for AWS data migration services
+
+#### Migrating data into the cloud
+A cloud migration is the process of moving any workload or application into the cloud from:
+* An on-premises environment
+* A hosting facility
+* Another cloud environment
+
+The three-phase migration process is designed to help your organization approach a migration of applications. Each phase is an iterative process that contains a common component of a successful migration.
+
+##### ASSESS
+At the start of your journey, you assess your organization’s current readiness for operating in the cloud. Most importantly, you want to identify the desired business outcomes and develop the business case for migration.
+
+##### MOBILIZE
+Create a migration plan and refine your business case. Address gaps in your organization’s readiness that were uncovered in the assess phase, and focus on building your baseline environment (the “landing zone”), driving operational readiness, and developing cloud skills.
+
+##### MIGRATE AND MODERNIZE
+During the migrate and modernize phase, each application is designed, migrated, and validated. 
+
+#### AWS services for data migration
+AWS offers a wide variety of services and partner tools to help you migrate your data sets, whether they are files, databases, machine images, block volumes, or even tape backups. 
+
+##### AWS DataSync
+AWS DataSync is an online data transfer service that simplifies, automates, and accelerates moving data between storage systems and services. DataSync can copy data to and from Amazon S3 buckets and Amazon EFS file systems, as well as NFS file servers, SMB file servers, and object storage systems, among others.
+
+##### AWS Snow Family
+The AWS Snow Family uses purpose-built devices to move petabytes of data offline. Snow Family devices have computing resources to collect and process data at the edge. All data moved to AWS Snow Family devices is automatically encrypted with 256-bit encryption keys that are managed by the AWS Key Management Service (KMS).
+
+##### AWS Transfer Family
+AWS Transfer Family is a secure transfer service that enables you to transfer files into and out of AWS storage services. Transfer Family provides access to a file transfer protocol-enabled server in AWS without the need to run any server infrastructure, enabling you to migrate file transfer-based workflows to AWS while maintaining end users' clients and configurations as is.
+
+##### Amazon S3 Transfer Acceleration
+Amazon S3 Transfer Acceleration is a bucket-level feature that enables fast, easy, and secure transfers of files over long distances between a client and an S3 bucket. It is designed to optimize transfer speeds from across the world into S3 buckets, taking advantage of the globally distributed edge locations in Amazon CloudFront. As the data arrives at an edge location, the data is routed to Amazon S3 over an optimized network path.
+
+### Additional Resources
+#### [Snow Family](https://aws.amazon.com/snow/?nc2=h_ql_prod_mt_sno)
+
+#### [Snowball Edge](https://docs.aws.amazon.com/snowball/latest/developer-guide/specifications.html)
+
+## Hybrid Cloud and Edge Storage
+### Pre-assessment
+#### Which statement accurately describes hybrid cloud storage?
+**Hybrid cloud is an information technology (IT) infrastructure design that integrates an organization’s on-premises IT resources with a third-party cloud provider infrastructure and resources.**
+
+Hybrid cloud infrastructure design does not function to integrate local storage with local servers.
+
+#### Which statement accurately describes AWS Storage Gateway?
+**Storage Gateway is an AWS service that facilitates hybrid cloud usage.**
+
+The Storage Gateway service facilitates hybrid cloud storage use cases. It integrates with other AWS services for storage, backup, management, and security while still integrating with on-premises environments.
+
+#### Which AWS Storage Gateway type supports data ingestion to data lakes in AWS?
+**Amazon S3 File Gateway.**
+
+Amazon S3 File Gateway supports data lakes, backups, and machine learning workflows. Users can store file data as objects in Amazon S3 cloud storage using file protocols such as Network File System and server message block. Objects written through Amazon S3 File Gateway can be directly accessed in Amazon S3.
+
+### Benefits of Hybrid Cloud and Edge Storage
+Hybrid cloud is an IT infrastructure design that integrates a company’s internal IT resources with third-party cloud provider infrastructures and services. With hybrid cloud, you can store your data and run your applications across multiple environments. Your hybrid cloud environment helps you provision, scale, and centrally manage your compute resources.
+
+### Hybrid cloud with AWS
+AWS offers a broad set of cloud computing services, ranging from IT infrastructure services to business web services. Examples include compute, storage, database, analytics, networking, mobile, developer tools, management tools, IoT, security, and enterprise applications. These cloud computing resources are used in workloads ranging from running existing enterprise applications to deploying and managing new applications.
+
+Not all workloads are the same. Some workloads cannot quickly migrate to the cloud. Perhaps they need to work with large local datasets, share data with on-premises applications with single-digit-millisecond latency, or meet data residency requirements. In these use cases, constantly passing data to and from the cloud is too slow, too resource intensive, or not permitted. Hybrid cloud can be a useful alternative option for such workloads.
+
+#### When to consider hybrid cloud
+The following four use cases summarize several key situations for when to consider hybrid cloud:
+* You have an existing application that must run on premises, that uses databases or files, or that must perform backups, and you want to use cloud resources and scalability.
+* You need fast, local access to data, but you also want to take advantage of cloud compute and analytics engines.
+* You have years worth of security and compliance requirements, supported by processes and procedures in disparate systems on premises. And you want to use cloud management and monitoring capabilities, ideally from a single pane of glass.
+* You have many physical locations to manage with data and applications, and you want reliable connectivity and simplified maintenance.
+
+#### What hybrid cloud can do for you
+* Accelerate digital transformation by incorporating AWS infrastructure and services incrementally along your cloud journey.
+* Improve IT and developer productivity by providing infrastructure, services, and tools that support their workflows and goals.
+* Deliver differentiated services and experiences by using AWS services to create and deliver interactive and responsive operations faster.
+
+#### Hybrid cloud storage
+*Hybrid cloud storage* means that you can use your data on premises and store it durably in AWS Cloud storage services. You can access different data storage types such as files, volumes, and virtual tapes that are stored in the AWS Cloud.
+
+Hybrid cloud storage in AWS means more than just extending your data center to the cloud. It means that you can benefit from unlimited storage, existing compliance certifications, multilayered security, and the endless possibilities provided by the AWS services.
+
+With Storage Gateway, you can create hybrid cloud solutions and have on-premises data centers and applications use storage and services in the cloud. This way, you can take advantage of the durable low-cost storage, security, monitoring, and analytics services that AWS provides. 
+
+#### Edge storage
+The data that originates at the periphery of your network is susceptible to limited or no connectivity and issues because of increased latency. To address these issues, edge storage is placed as close as possible to the information that is generated in that network peripheral zone. Because of the nature of the locations they service, edge storage is often ruggedized, capable of withstanding environmental factors that wouldn't normally be found in a controlled environment like a data center. AWS has developed a number of services that are tailored to assist with your workload requirements.
+
+Snow Family can be used to help your organization run operations in locations where lack of consistent network connectivity would normally be a limiting factor. Snowcone and Snowball Edge can help you access the storage and compute power of the AWS Cloud locally and cost effectively in places where connecting to the internet might not be an option.
+
+##### Snowcone
+Snowcone is a portable, rugged, and secure device for edge computing and data transfer. You can use a Snowcone device to collect, process, and move data to the AWS Cloud, either offline by shipping the device to AWS, or online by using DataSync.
+
+Snowcone is available in two flavors:
+* Snowcone – Snowcone has two vCPUs, 4 GB of memory, and 8 TB of HDD-based storage.
+* Snowcone SSD – Snowcone SSD has two vCPUs, 4 GB of memory, and 14 TB of SSD-based storage.
+
+With two CPUs and terabytes of storage, a Snowcone device can run edge computing workloads that use EC2 instances and store data securely.
+
+##### Snowball Edge
+Snowball Edge is a type of Snowball device with on-board storage and compute power for select AWS capabilities. Snowball Edge can do local processing and edge-computing workloads in addition to transferring data between your local environment and the AWS Cloud.
+
+Each Snowball Edge device can transport data at speeds faster than the internet. This transport is done by shipping the data in the appliances through a regional carrier. The appliances are rugged, complete with e-ink shipping labels. Snowball Edge devices have three options for device configurations—Storage Optimized, Compute Optimized, and Compute Optimized with GPU.
+
+### Hybrid Cloud Storage with Storage Gateway
+### AWS Storage Gateway
+The Storage Gateway service facilitates hybrid cloud storage use cases. It integrates with other AWS services for storage, backup, management, and security while still integrating with on-premises environments. 
+
+Storage Gateway helps you store your on-premises data in the cloud, where you can take advantage of additional AWS Cloud services to help monitor and manage it:
+* **Storage** – Connect to storage services such as Amazon S3, Amazon S3 Glacier Flexible Retrieval, Amazon S3 Glacier Deep Archive, Amazon FSx, AWS Backup, and Amazon EBS.
+* **Management and monitoring** – Use the Storage Gateway management console to manage and monitor Storage Gateway and its associated resources. Also use other AWS services, such as the following:
+ * IAM to secure access to the service and resources
+ * AWS KMS for encrypting data
+ * CloudTrail for logging account activity
+ * CloudWatch for monitoring
+ * Amazon EventBridge for monitoring alarms
+
+#### Key features and benefits
+With Storage Gateway, you can bring your data into AWS for processing in the cloud. You can also back up, archive, and tier your storage or add it to your on-premises environment to help you meet your business and regulatory compliance requirements.
+
+#### Architecture and end-to-end data flow
+Storage Gateway consists of **in-cloud** and **on-premises** components. The component that deploys on premises is called a Storage Gateway appliance.
+
+##### On-premises environments that benefit from cloud storage
+* Windows or Linux file server or user workstation
+* Backup server
+* Storage area network (SAN) system or network-attached storage (NAS) device that must be expanded
+
+##### Standard protocols
+With standard storage protocols, your on-premises environment can access cloud storage much like local storage is accessed. These include the following:
+* NFS
+* SMB
+* Internet Small Computer Systems Interface (iSCSI)
+* iSCSI virtual tape library (VTL)
+
+##### Storage Gateway appliance
+The local appliance connects to Storage Gateway in the cloud securely over the internet or private networking. It is deployed on premises with a local cache, providing low-latency access to frequently accessed data.
+
+Deployment options include VMware, Microsoft Hyper-V, Linux Kernel-based Virtual Machine (KVM), an AWS managed hardware appliance, and Amazon EC2.
+
+##### Secure and optimized uploads
+Connect to AWS over the internet using HTTPS. 
+
+You can also use Direct Connect for an even more secure and private connection.
+
+You can use AWS virtual private network services for a private and dedicated network connection from your premises to the AWS Cloud.
+
+##### Storage Gateway service
+Storage Gateway is an AWS managed service that provides hybrid cloud solutions:
+* It integrates your on-premises environments with AWS storage.
+* Gateway types include Amazon S3 File Gateway, Amazon FSx File Gateway, Tape Gateway, and Volume Gateway.
+
+##### Storage
+With Storage Gateway, you can connect to and use cloud storage services such as Amazon S3, S3 Glacier Flexible Retrieval, S3 Glacier Deep Archive, Amazon EBS, FSx for Windows File Server, and AWS Backup.
+
+##### Security, management, and monitoring
+Storage Gateway integrates with other AWS services for security, management, and monitoring. 
+
+This includes services such as AWS KMS, IAM, CloudTrail, and CloudWatch.
+
+#### Storage protocols
+Storage Gateway uses standard storage protocols, namely, NFS, SMB, iSCSI, or iSCSI VTL to connect your local production or backup applications to AWS Cloud storage. Its protocol conversion and device emulation make it possible for you to do the following:
+* Access block data on volumes managed by Storage Gateway along with Amazon S3.
+* Store files as native S3 objects or in fully managed cloud file shares with Amazon FSx for Windows File Server.
+* Keep virtual tape backups online in a VTL backed by Amazon S3, or move the backups to a tape archive tier on S3 Glacier Flexible Retrieval and S3 Glacier Deep Archive. 
+
+#### Low-latency access to your data
+The Storage Gateway appliance provides your applications with low-latency access to data by maintaining a cache of recently written or read data. Data is removed from the cache according a least recently used algorithm.
+
+**As your applications write data to the AWS storage,** 
+* the gateway first stores the data in the on-premises disks that are used for cache storage. 
+* Then, the gateway uploads the data to AWS. 
+* The cache store acts as the on-premises durable store for data. If your application requests data, the gateway first checks the cache storage for the data before checking AWS. 
+
+#### Optimized data transfers
+Storage Gateway uses optimization such as multi-part management, automatic buffering, and delta transfers. Data compression is applied for block and virtual tape data. The data transfers are optimized to reduce cost and the amount of data that is transferred into and out of AWS.
+
+#### Security and compliance
+Storage Gateway supports security features, access control, and security compliance certifications. Data is encrypted in transit and at rest. Your data at rest is encrypted by default using Amazon S3 server-side encryption (S3-SSE) keys. Alternatively, Storage Gateway integrates with AWS KMS, so you can choose to encrypt your data using customer managed encryption keys. By integrating with IAM, you manage and secure access to your data.
+
+### Storage Gateway types
+To support numerous hybrid cloud use cases, the Storage Gateway service provides four different types of gateways: Amazon S3 File Gateway, Amazon FSx File Gateway, Tape Gateway, and Volume Gateway. They seamlessly connect on-premises applications to cloud storage and cache data locally for low-latency access.
+
+#### AMAZON S3 FILE GATEWAY
+Amazon S3 File Gateway provides native file access to Amazon S3 for backups, archives, and ingest for data lakes.
+
+Amazon S3 File Gateway presents a file-based interface to Amazon S3, which appears as a network file share. With it, you can store files that support your latency-sensitive applications and workloads that require local caching and file protocol access. Amazon S3 File Gateway moves your file data into an object format, which is highly durable and cost efficient.
+
+#### AMAZON FSX FILE GATEWAY
+Amazon FSx File Gateway provides native file access to Amazon FSx for on-premises group file shares and home directories.
+
+Amazon FSx File Gateway optimizes on-premises access to Windows file shares on Amazon FSx, which helps you to access FSx for Windows File Server data with low latency and conserve shared bandwidth. A local cache of frequently used data that you can access is stored, which provides faster performance and reduced data transfer traffic. Amazon FSx File Gateway stores your data natively as files instead of as objects.
+
+#### TAPE GATEWAY
+Tape Gateway replaces physical tape infrastructure using Amazon S3 archive tiers for long-term retention.
+
+Tape Gateway is a cloud-based VTL. It presents your backup application with a VTL interface consisting of a media changer and tape drives. You can create virtual tapes in your VTL using the Storage Gateway console. Your backup application can read data from or write data to virtual tapes by mounting them to virtual tape drives using the virtual media changer. 
+
+Virtual tapes are discovered by your backup application using its standard media inventory procedure. Virtual tapes are available for immediate access and are backed by Amazon S3. You can also archive tapes. Archived tapes are stored in S3 Glacier Flexible Retrieval or S3 Glacier Deep Archive.
+
+#### VOLUME GATEWAY
+Volume Gateway provides block storage volumes with snapshots, AWS Backup integration, and cloud recovery.
+
+Volume Gateway provides an iSCSI target, with which you can create block storage volumes and mount them as iSCSI devices from your on-premises or Amazon EC2 application servers. The Volume Gateway runs in either a cached or stored mode:
+* In the cached mode, your primary data is written to Amazon S3 while retaining your frequently accessed data locally in a cache for low-latency access.
+* In the stored mode, your primary data is stored locally and your entire dataset is available for low-latency access while asynchronously backed up to AWS.
+
+In either mode, you can take point-in-time copies of your volumes, which are stored as Amazon EBS snapshots in AWS. With this feature, you can make space-efficient versioned copies of your volumes for data protection, recovery, migration, and various other copy data needs.
+
+### Choosing the right file gateway
+Storage Gateway provides two gateway types for storing files that support your latency-sensitive applications and workloads that require local caching and file protocol access. If you want to move your file data into an object format that is highly durable and cost efficient, use Amazon S3 File Gateway. If you want to keep it stored natively as file data, use Amazon FSx File Gateway.
+
+**Amazon S3 File Gateway** supports data lakes, backups, and ML workflows. You can store file data as objects in Amazon S3 cloud storage using file protocols such as NFS and SMB. Objects written through Amazon S3 File Gateway can be directly accessed in Amazon S3.
+
+**Amazon FSx File Gateway** is a solution for replacing on-premises NAS, such as end-user home directories and departmental or group servers, with cloud storage. It facilitates user or team file shares and file-based application migration shares in FSx for Windows File Server, using the SMB protocol. Files written through FSx File Gateway can be directly accessed in FSx for Windows File Server.
+
+### Solution deploys as a stateless gateway appliance
+The gateway is straightforward to deploy and can use your existing virtual infrastructure and hypervisor investments. It can also be installed in your data center or remote offices as a hardware appliance. The gateway software running as a virtual machine (VM) or on the hardware appliance is stateless, so you can conveniently create and manage new instances of your gateway as your storage needs evolve.
+
+The Storage Gateway deployment consists of two components: **a cloud component** and **an on-premises component** called **the gateway appliance**.
+
+The gateway appliance that you use depends on the storage solution that you require and where you will be deploying the gateway appliance.
+
+The gateway appliance will need to be hosted, use a local cache, and securely connect to the Storage Gateway service in the cloud for native data storage in AWS.
+
+#### Host platform options
+Deployment options include the following:
+* Download, deploy, and activate the Storage Gateway VM image on any of the supported host platforms.
+* Create an EC2 instance to deploy your gateway in the AWS Cloud.
+* Order, deploy, and activate a Storage Gateway hardware appliance or in AWS as an Amazon EC2 instance.
+
+Storage Gateway provides public, Amazon VPC, and FIPS service endpoints. This provides you with options to deploy and connect your gateway to Storage Gateway in a framework that best suits your networking and security needs. You can connect a gateway to the service either using public internet or through Direct Connect.
+
+#### A quick look at Storage Gateway
+Some of your applications may need to remain on premises for performance or compliance reasons, or they may simply be too complex to move completely into the cloud. 
+
+While the cloud offers a large variety of services that can help modernize your IT infrastructure, you may also be considering a gradual transition to the cloud while still wanting to benefit from cloud capabilities in your data center. 
+
+AWS Storage Gateway is a fast, simple way to get started with using the cloud from your data centers, remote offices, and edge locations. Storage Gateway is a hybrid cloud storage service that provides low-latency, on-premises access to virtually unlimited cloud storage. Your file, database, and backup applications can continue to run without changes. And once your data is safely and securely in AWS, it's available for all your current and future cloud initiatives since it can be easily accessed and processed by many other AWS services. 
+
+In just minutes, you can be up and running in the cloud using AWS Storage Gateway. Using Storage Gateway, your on-premises applications can access data stored in the cloud via standard storage protocols, so there's no need to change application code. Storage Gateway works as a file share, as a virtual tape library, or as a block storage volume. Applications write data to the Amazon S3 File Gateway as files, which are stored in Amazon S3 as objects. Applications can also write data as files to the Amazon FSx File Gateway, which are stored in fully managed file shares in Amazon FSx for Windows File Server. The Tape Gateway presents a virtual tape library on your local network and is compatible with all major backup software. And the Volume Gateway attaches to your application servers as iSCSI block storage. No matter which type of gateway you're using, data is cached locally and moved to the cloud with optimized data transfers. 
+
+Many Storage Gateway customers begin to use AWS by moving backups to the cloud, shifting on-premises storage to cloud-backed file shares, and ensuring low latency access for on-premises applications to access and process cloud data. It has never been easier to move to the cloud. And AWS Storage Gateway is a fast and powerful way to get started. To learn more about each Storage Gateway type and to see how customers just like you are leveraging secure, durable, and virtually unlimited cloud storage, visit the Storage Gateway website at [aws.amazon.com/storagegateway](https://aws.amazon.com/storagegateway/).
+
+### Knowledge Check
+#### A consultant is working with a non-governmental organization that spends a large amount of time operating in remote areas that have little to no network infrastructure. Which AWS service will allow them to collect, process, and transfer data to AWS?
+* **AWS Snowcone**
+* AWS Snowmobile
+* AWS Transfer Family
+* AWS DataSync
+
+**Snowcone** can help users access the storage and compute power of the AWS Cloud locally and cost effectively in edge locations where connecting to the internet might not be an option.
+
+The other options are incorrect because of the following: 
+* Snowmobile is a solution for transporting large amounts of data (petabytes) using physical media.
+* Transfer Family relies on network connectivity to transfer data.
+* DataSync relies on network connectivity to transfer data.
+
+#### Which statement about Amazon S3 File Gateway is true?
+* Amazon S3 File Gateway provides a Small Computer Systems Interface (iSCSI) target for users to create block storage volumes and mount them as iSCSI devices.
+* Amazon S3 File Gateway replaces physical tape infrastructure using Amazon S3 archive tiers.
+* **Amazon S3 File Gateway presents a file-based interface to Amazon S3, which appears as a network file share.**
+* Amazon S3 File Gateway is a solution for replacing on-premises network-attached storage (NAS) with cloud storage.
+
+The other options are incorrect because of the following:
+* Volume Gateway provides an iSCSI target for users to create block storage volumes and mount them as iSCSI devices.
+* Tape Gateway replaces physical tape infrastructure using Amazon S3 archive tiers.
+* Amazon FSx File Gateway is a solution for replacing on-premises NAS with cloud storage.
+
+#### While reviewing their requirements for implementing AWS Storage Gateway, a company has determined that their solution will need to support data lakes on Amazon S3. Which type of Storage Gateway should they choose?
+* Amazon FSx File Gateway
+* **Amazon S3 File Gateway**
+* Volume Gateway
+* Tape Gateway
+
+Amazon S3 File Gateway supports data lakes, backups, and machine learning workflows. Users can store file data as objects in Amazon S3 cloud storage using file protocols such as Network File System and server message block. Objects written through Amazon S3 File Gateway can be directly accessed in Amazon S3.
+
+The other options are incorrect because of the following: 
+* Amazon FSx File Gateway is a solution for replacing on-premises network-attached storage, such as end-user home directories and departmental or group servers, with cloud storage. 
+* Volume Gateway does not function as a file gateway.
+* Tape Gateway does not function as a file gateway
+
+### Summary
+* Defining and describing the need for hybrid cloud and edge storage
+* Describing features and benefits of Storage Gateway
+* Discussing how to use Storage Gateway and Snow Family for hybrid cloud and edge storage
+* Describing how to use AWS at the edge (CloudFront)
+* Describing how to use AWS for media storage
+
+#### Hybrid cloud storage
+Hybrid cloud enables you to benefit from nearly unlimited storage, existing compliance certifications, multilayered security, and the endless possibilities provided by the AWS services.
+
+You can create hybrid cloud solutions that enable your on-premises data centers and applications to use storage and services in the cloud using Storage Gateway.
+
+#### Edge storage
+Edge storage allows you to address the data that originates at the periphery of your network where connectivity may be limited or non-existent. Edge storage devices are often ruggedized, capable of withstanding atypical environmental factors. Examples of edge storage include:
+* AWS Snowcone
+* AWS Snowball Edge
+
+#### Storage Gateway
+Storage Gateway is an AWS service that facilitates hybrid cloud storage use cases. It integrates with other AWS services for storage, backup, management, and security, while still integrating with on-premises environments. 
+
+Storage Gateway provides four different types of gateways:
+* **Amazon S3 File Gateway** - native file access to Amazon S3 for backups, archives, and ingest for data lakes.
+* **Amazon FSx File Gateway** - native file access to Amazon FSx for on-premises group file shares and home directories.
+* **Tape Gateway** - replaces physical tape infrastructure using Amazon S3 archive tiers for long-term retention.
+* **Volume Gateway** - provides block storage volumes with snapshots, AWS Backup integration, and cloud recovery.
+
+### Additional Resources
+#### [Hybrid cloud with AWS](https://aws.amazon.com/hybrid/)
+
+#### [Snowcone in Orbit](https://aws.amazon.com/blogs/aws/how-we-sent-an-aws-snowcone-into-orbit/)
+
+## Working with Amazon S3
+### Pre-assessment
+#### Which type of storage is provided by Amazon S3?
+* Block storage
+* **Object storage**
+* On-premises storage
+* File storage
+
+#### Which statement about Amazon S3 storage is true?
+* **Data is stored in buckets, which are virtually unlimited in size.**
+* Data is stored in buckets, each with a 100 TB limit.
+* Data is stored in hierarchical folders.
+* Data is stored in buckets, which can be in virtually unlimited amounts per account.
+
+Amazon S3 bucket sized are virtually unlimited, eliminating the need to predetermine storage allocation like when creating storage volumes or partitions.
+
+The other options are incorrect because of the following: 
+* In Amazon S3, data is stored in buckets, which can be virtually unlimited in size.
+* Amazon S3 does not use folders, and data is stored in a flat format rather than hierarchical.
+* Amazon S3 buckets are limited to 100 per account, which can be expanded to up to 1,000 per account.
+
+#### Which statements about bucket naming in Amazon S3 are true? (Select THREE.)
+* **Bucket names must be unique across all of Amazon S3.**
+* Bucket names cannot start with a lowercase letter or number.
+* **Bucket names must be 3–63 characters long.**
+* Bucket names can be formatted as an IP address (for example, 192.168.0.1).
+* **Bucket names must start with a lowercase letter or number.**
+* Bucket names must be unique only within each account.
+
+**Bucket names must be unique across all of Amazon S3**, **Bucket names must be 3–63 characters long**, and **Bucket names must start with a lowercase letter or number**. 
+
+The other response options are incorrect because of the following: 
+* Bucket names must start with a lowercase letter or number.
+* Bucket names cannot be formatted as an IP address.
+* Bucket names must be unique
+
+### Working with Amazon S3
+
+### Object storage in Amazon S3
+Object storage is a flat storage structure where objects are stored in buckets. Objects are any piece of data stored within a bucket. You can create a **pseudo folder structure** using **prefixes**. In Amazon S3 object storage, you can organize objects to imitate a hierarchy by using key name prefixes and delimiters. Prefixes and delimiters help you group similar items to visually organize and quickly retrieve your data. In the user interface, these prefixes give the appearance of a folder and subfolder structure, but in reality, the storage is still a flat structure. 
+
+In the following image, you have a bucket called *getting-started-with-s3*. Inside the bucket, there is an object called *dolphins.jpg*. To organize and group the oceanography data for the external vendor, you created a logical hierarchy using the prefix ocean. Ocean looks like a subfolder, but this is only to help make the structure readable.
+
+In reality, the key name of the dolphin object is a little longer, helping us locate the *ocean/dolphin.jpg* object. The object still sits in one single flat-storage structure.
+
+```
+https://getting-started-with-s3.s3-us-west-2.amazonaws.com/ocean/dolphins.jpg
+```
+
+### Bucket overview
+Buckets are containers that hold objects. You can create up to 100 buckets in each AWS account by default. You can increase the bucket limit to a maximum of 1,000 buckets by submitting a service limit increase. Bucket sizes are virtually unlimited, so you don't need to allocate a predetermined bucket size the way you would when creating a storage volume or partition. 
+
+An S3 bucket is a versatile storage option with the ability to host a static web site, retain version information about objects, and employ lifecycle management policies to balance version retention with bucket size and cost. 
+
+### Bucket limitations
+#### Bucket owner
+Amazon S3 buckets are owned by the account that creates them and cannot be transferred to other accounts.
+
+#### Bucket names
+Bucket names are globally unique. There can be no duplicate names within the entire S3 infrastructure.
+
+#### Bucket renaming
+Once created, you cannot change a bucket name.
+
+#### Permanent entities
+Buckets are permanent storage entities and only removable when empty. Deleted bucket names become available for reuse by any account after 24 hours.
+
+#### Object storage limits
+Store unlimited objects in a single bucket, or across several buckets. Note that you can't create a bucket within another bucket (nesting buckets).
+
+#### Bucket creation limits
+You can create up to 100 buckets in each of your AWS accounts, and your account can be increased to a bucket limit of 1,000 buckets using a service limit increase request.
+
+### Naming buckets
+When naming buckets, carefully determine how you want to structure your bucket names and how they will function. Will you use them only for data storage or hosting a static website? Your bucket names matter to Amazon S3, and based on how you use the bucket, your bucket names and characters will vary. Bucket names are globally viewable and need to be DNS-compliant. 
+
+Here are the rules to follow when naming your buckets. Bucket names must have the following characteristics:
+* Be unique across all of Amazon S3
+* Be 3–63 characters long
+* Consist only of lowercase letters, numbers, dots (.), and hyphens (-)
+* Start with a lowercase letter or number
+* Not begin with xn-- (beginning February 2020)
+* Not be formatted as an IP address (for example, 198.68.10.2)
+* Use a dot (.) in the name only if the bucket's intended purpose is to host an Amazon S3 static website; otherwise do not use a dot (.) in the bucket name
+
+### Object Overview
+#### Amazon S3 Object Introduction
+Amazon S3 is an object store that uses unique key-values to store as many objects as you want. You store these objects in one or more buckets, and each object can be up to 5 TB in size. 
+
+An object consists of the following: Key, version ID, value, metadata, and access control information. The object key (or key name) uniquely identifies the object in a bucket. Object metadata is a set of name-value pairs. You can set object metadata at the time you upload it. After you upload the object, you cannot modify object metadata. The only way to modify object metadata is to make a copy of the object and set the metadata. 
+
+#### What is an object?
+An object is a file and any optional metadata that describes the file. To store a file in Amazon S3, you upload it to a bucket. When you upload a file as an object, you can set permissions on the object and any metadata.
+
+#### What is a Key?
+When you create an object, you specify the key name. The key name uniquely identifies the object in the bucket. It is the full path to the object in the bucket.
+
+In Amazon S3, there is no hierarchy, as you would see in a file system. However, by using prefixes and delimiters in an object key name, the Amazon S3 console and the AWS SDKs can infer hierarchy and introduce the concept of folders. You do not get actual folders, what you get is a very long key name.
+
+#### Version ID
+Versioning is a means of keeping multiple variants of an object in the same bucket. You can use versioning to preserve, retrieve, and restore every version of every object stored in your Amazon S3 bucket. You can easily recover from both unintended user actions and application failures. If Amazon S3 receives multiple write requests for the same object simultaneously; it stores all of the objects.
+
+If you enable versioning for a bucket, Amazon S3 automatically generates a unique version ID for the object being stored. In one bucket, for example, you can have two objects with the same key, but different version IDs, such as the latest version of dolphins.jpg (version qNTCxBvI7p0pR39sw1sJhHyc59jx75HB) and the previous version of dolphins.jpg (version KWdgdZCncMiiPNs5LGHDz7zmf1QImseb).
+
+#### Value
+**Value (or size)** is the actual content that you are storing. An object value can be any sequence of bytes, meaning it can be the whole object or a range of bytes within an object that an application needs to retrieve. Objects can range in size from zero to 5 TB.
+
+#### Metadata
+This image shows three unique metadata values on the dolphins.jpg object.
+For each object stored in a bucket, Amazon S3 maintains a set of system metadata. Amazon S3 processes this system metadata as needed. For example, Amazon S3 maintains object creation date and size metadata and uses this information as part of object management.
+
+There are two categories of system metadata:
+* Metadata such as object creation date is system controlled, where only Amazon S3 can modify the value.
+* Other system metadata, such as the storage class configured for the object and whether the object has server-side encryption enabled, are examples of system metadata whose values you control.
+
+#### Access control information
+You can control access to the objects you store in Amazon S3. S3 supports both resource-based and user-based access controls. Access control lists (ACLs) and bucket policies are both examples of resource-based access control. 
+
+### Organizing data using tags
+A tag is a label that you assign to an AWS resource. Each tag consists of a key and an optional value, both of which you define to suit your company's requirements. Tags help you categorize your AWS resources or data in different ways. 
+
+For example, you can define a set of tags for your objects that help you track project data or owner. Amazon S3 tags are key-value pairs and apply to a whole bucket or to individual objects to help with identification, searches, and data classification. Using tags for your objects helps you to effectively manage your storage and provide valuable insight on how your data is used. Newly created tags assigned to a bucket are not retroactively applied to its existing child objects. 
+
+You can use two types of tags: bucket tags and object tags.
+
+#### Bucket tags
+One use case for bucket tags is to track storage costs by labeling your S3 buckets using cost allocation tags. A cost allocation tag is a key-value pair that you associate with an S3 bucket. After you activate cost allocation tags, AWS uses the tags to organize your resource costs on your cost allocation report. You can only use cost allocation tags on buckets and not on individual objects.
+
+AWS provides two types of cost allocation tags: an AWS generated tag and user-defined tag. AWS defines, creates, and applies the AWS generated tag, createdBy, for you after an S3 CreateBucket event. You define, create, and apply user-defined tags to your S3 bucket. 
+
+Once you have created and applied the user-defined tags, you can activate them by using the AWS Billing and Cost Management console for cost allocation tracking. Cost Allocation Tags appear on the console after enabling AWS Cost Explorer, AWS Budgets, AWS Cost and Usage reports, or legacy reports. 
+
+After you activate the AWS services, they appear on your cost allocation report. You can then use the tags on your cost allocation report to track your AWS costs. 
+
+Cost and Usage Reports are generated when using bucket tags.
+
+#### Bucket tag set
+Each S3 bucket has a tag set. A tag set contains all of the tags that are assigned to that bucket and can contain as many as 50 tags, or it can be empty.
+
+Keys must be unique within a tag set, but values don't need to be unique. In the following image, the value ocean-life is listed twice in tag sets named project/ocean-life and topic/ocean-life. Because values don't need to be unique, these entries are fine. However, when attempting to add a second key called items, an error occurs because the key must be unique within the tag set.
+
+Graphical interface for assigning keys and values to a bucket.
+
+#### Object tags
+Object tagging gives you a way to categorize and query your storage. You can add tags to an Amazon S3 object during the upload or after the upload. Each tag is a key-value pair that adheres to the following rules:
+* An object can have up to 10 tags using unique keys.
+* Tag keys can be up to 128 characters in length.
+* Tag values can be up to 255 characters in length.
+* Key and tag values are case sensitive.
+
+#### Additional benefits
+Adding tags to your objects offer benefits such as the following:
+* Object tags provide fine-grained access control of permissions. For example, you can grant an IAM user permission to read-only objects with specific tags.
+* Object tags provide fine-grained object lifecycle management in which you can specify a tag-based filter, in addition to a key name prefix, in a lifecycle rule.
+* When using Amazon S3 analytics, you can configure filters to group objects together for analysis by object tags, key name prefix, or both prefix and tags.
+* You can also customize CloudWatch metrics to display information by specific tag filters. 
+
+### Region location
+Amazon S3 is a globally viewable service. This means that in the console you do not need to specify a Region to view the buckets. Remember that when you initially create the bucket, you must choose a Region to indicate where you want the bucket data to reside. The Region you choose should be local to your users or consumers to optimize latency, minimize costs, and address regulatory requirements. 
+
+For example, if your users reside in Europe, you will want to create buckets in one of the European Regions, such as Ireland, London, or Frankfurt, instead of in Asia or South America. This way the data is closer to your users and consumers, reducing latency and ensuring regulatory and country legal requirements.
+
+#### Cross-Region Replication (CRR)
+If you need data stored in multiple Regions, you can replicate your bucket to other Regions using CRR. With this, you can automatically copy objects from a bucket in one Region to a different bucket in another, separate Region. You can replicate the entire bucket, or you can use tags to replicate only the objects with the tags you choose.
+
+#### Same-Region Replication (SRR)
+Amazon S3 supports automatic and asynchronous replication of newly uploaded S3 objects to a destination bucket in the same Region. 
+
+SRR makes another copy of S3 objects within the same Region, with the same redundancy as the destination storage class. This helps you to automatically aggregate logs from different S3 buckets for in-Region processing or configuring live replication between test and development environments. SRR helps you address data sovereignty and compliance requirements by keeping a copy of your objects in the same Region as the original.
+
+### Amazon S3 Lifecycle Policies
+Lifecycle management involves managing objects to ensure that they are stored cost effectively throughout their lifecycle, from data creation to retention. A lifecycle policy is a rule that moves objects between storage classes based on the object create date. With lifecycle management, objects automatically transition (move) to more economical storage classes as the content ages. Lifecycle management also helps you create rules to expire objects (delete them) based on the object’s age.
+
+### Supported transitions
+In an Amazon S3 Lifecycle configuration, you create rules to transition objects between storage classes for either cost management, retention requirements, or long-term compliance guidelines. These rules are configured based on your unique access patterns and business requirements. If you don't know the access patterns of your objects, or if your access patterns constantly change, your best option is to use the **S3 Intelligent-Tiering storage class**. This storage class is designed to optimize storage costs by automatically moving data to the most cost-effective access tier, based on access pattern, without manual intervention. 
+
+Object data in a lifecycle policy can transition between storage classes in a downward, waterfall model. You can transition objects from the S3 Standard storage class to any other storage class but you cannot create a lifecycle rule that moves objects from any storage class back into to the S3 Standard storage class. 
+
+* S3 Standard
+* S3 Standard-IA
+* S3 Intelligent-Tiering
+* S3 One Zone-IA
+* S3 Glacier Instant Retrieval
+* S3 Glacier Flexible Retrieval
+* S3 Glacier Deep Archive
+
+### Object size constraints  
+When using lifecycle policies to transition objects between storage classes, there are some considerations to remember when looking at the size of the objects. If the object is larger than 128 KB, there is a cost benefit for transitioning these larger objects from S3 Standard or S3 Standard-IA storage classes to the S3 Intelligent-Tiering. You also see cost benefits when moving large objects from S3 Standard storage class to the S3 Standard-IA or S3 One Zone-IA storage classes.
+
+Amazon S3 **does not transition** objects between storage classes if they are **smaller than 128 KB** because it's not cost effective to do so.
+
+#### Use cases
+With S3 Lifecycle configuration rules, you can tell Amazon S3 to transition objects to less expensive storage classes or archive or delete them. How do you know which objects to consider moving? Here are a few of the primary reasons you might decide to implement lifecycle management:
+* **Application logs**: If you upload periodic logs to a bucket, your application might need them for a week or a month. After that, you might want to delete them.
+* **Limited time access**: Some documents are frequently accessed for a short period of time for specific projects or business needs and then infrequently accessed when the need is over. These files can be archived and then permanently deleted after their retention periods have expired. 
+* **Archival**: Some companies import data to Amazon S3 primarily for archival purposes. For example, you might archive digital media, financial and healthcare records, raw genomics sequence data, long-term database backups, and data that must be retained for regulatory compliance.
+
+#### Things to consider
+##### Lifecycle configuration and versioning
+You can add S3 Lifecycle configurations to both unversioned buckets and versioning-enabled buckets. 
+You can define separate lifecycle rules for current and noncurrent object versions.
+
+##### Object expiration
+When an object reaches the end of its lifetime, Amazon S3 queues it for removal and removes it asynchronously. There might be a delay between the expiration date and the date at which Amazon S3 removes an object. You are not charged for storage time associated with an object that has expired. 
+
+* **Versioning-enabled bucket**. If the current object version is not a delete marker, the lifecycle expiration action causes Amazon S3 to add a delete marker with a unique version ID. 
+* **Versioning-suspended bucket**. In a versioning-suspended bucket, the expiration action causes Amazon S3 to create a delete marker with null as the version ID. This delete marker replaces any object version with a null version ID in the version hierarchy, which effectively deletes the object.
+* For non-version-enabled buckets, when an object expires, the object is permanently deleted.
+
+##### Minimums
+It's not cost effective to transition objects smaller than 128 KB from S3 Standard and S3 Standard-IA to S3 Intelligent-Tiering.
+Objects must remain for a minimum of 30 days in S3 Standard before they can transition to S3 Standard-IA and S3 One Zone-IA.
+Objects in S3 Intelligent-Tiering, S3 Standard-IA, and S3 One Zone-IA storage are charged for a minimum storage duration of 30 days, and objects deleted before 30 days incur a pro-rated charge equal to the storage charge for the remaining days.
+
+##### Configurations not supported
+Lifecycle configuration on buckets with multi-factor authentication (MFA) is not supported.
+Lifecycle actions are not captured by CloudTrail object-level logging. If logging is requried, you can use Amazon S3 Server access logs to capture S3 Lifecycle-related actions.
+Your overall costs for Amazon S3 are comprised of cost for both storage and access. The lower storage classes charge less for storage, but more for access. Lifecycle policies are most effective when age and are accessed infrequently.
+
+#### Multipart uploads
+Multipart uploads accelerate the uploading of large objects by splitting them into parts that are then uploaded in parallel. You can upload these parts independently and in any order. If the transmission of any part fails, you can retransmit just that part without affecting other parts. Once uploaded, Amazon S3 assembles these parts and creates the object. 
+
+##### WHEN TO USE
+You should consider using multipart uploads if the following apply:
+* Your object size is over 100 MB.
+* You are uploading files over a network with inconsistent or erratic uptime.
+
+To learn more about using multipart uploads, choose the following link: [Uploading and Copying Objects Using Multipart Upload](https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html)
+
+##### COST CONSIDERATIONS
+If you initiate a multipart upload but the upload does not complete, the in-progress upload occupies storage space and incurs storage charges. After you initiate a multipart upload, Amazon S3 retains all the parts until you either complete or stop the upload. Throughout its lifetime, you are billed for all storage, bandwidth, and requests for this multipart upload and its associated parts. 
+
+A Lifecycle rule can be configured to automatically remove incomplete uploads.
+
+For more information about multipart upload pricing, choose the following link: [Multipart Upload and Pricing](https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html#mpuploadpricing) 
+
+##### REMOVING INCOMPLETE UPLOADS
+S3 Lifecycle policies:
+
+In a lifecycle policy, you can use the *AbortIncompleteMultipartUpload* element to set a maximum number of  days for a multipart upload to remain in progress. If the upload doesn't complete within that specified number of days, it becomes eligible for a cancel operation. Amazon S3 stops the multipart upload and deletes the parts associated with the multipart upload.
+
+See the *Delete expired delete markers or incomplete multipart uploads* section in the configuration.
+
+#### Configuration elements example
+##### Lifecycle rule name
+This is the name of the individual Lifecycle rule.
+
+An S3 Lifecycle configuration can have up to 1,000 rules.
+
+##### Status
+The Status value can be either Enabled or Disabled. If a rule is disabled, Amazon S3 doesn't perform any of the actions defined in the rule.
+
+##### Scope of the rule
+The Lifecycle rule can be run on an entire bucket or on a subset of objects based of Object tags or prefixes.
+
+##### Prefix
+This rule is run only on objects that contain the prefix  /logs. If you are not using prefixes to organize your data, you can run the rule on the entire bucket.
+
+##### Transition rules
+Objects with the prefix /logs will be move to the Standard-IA storage class 30 days after creation.
+
+##### Second transition
+The object will transition from Standard-IA and to S3 Glacier Flexible Retrieval 100 days after the object was created.
+
+##### Lifecycle rule actions
+In addition to moving objects, Lifecycle rules can be configured with a number of options, such as expiring current versions or permanently deleting old versions, and here the rule will delete expired delete markers and any incomplete multipart uploads so that you are not charged for the storage of expired or partial uploads.
+
+### Amazon S3 Storage Classes
+Amazon S3 offers a range of storage classes optimized for different use cases. Each storage class offers different minimum billable object size limits, storage duration, cost structure, lifecycle management, and retrieval times. Amazon S3 offers you eight different storage classes, so you can choose which class of storage best fits your use cases, your data access frequency, your regulatory compliance requirements, and numerous other considerations that are unique to your business requirements. You can optimize both the cost of the storage and the performance efficiency of your applications by choosing the correct storage class for your data.
+
+#### Designed to fit data use requirements
+Amazon S3 offers a range of storage classes designed for different data use cases. Each object gets assigned a storage class, and each bucket can hold objects that reside in different storage classes. You can move or change storage classes as your data needs or access patterns change. Some storage classes have minimum billable object size requirements and storage-time durations that must be met.
+
+#### Before you choose
+Before you decide on a storage class, take the time to analyze your workloads, data access patterns, service level agreements, and performance requirements to determine the correct storage class or storage classes for your data. 
+
+Here are some questions to get you started:
+* What are the application's data requirements for performance? What is your latency tolerance, or do you need millisecond latency?
+* Is the data access pattern predictable or unpredictable? Is the data accessed every minute, every hour, or daily? Is it accessed only one week a year or is the access dependent on the project?
+* Does the business or the data have compliance or long-term-storage requirements?
+* What service levels are in place for your data access? Can users wait five hours for retrieval or does retrieval need to be faster?
+* What is the data access pattern?
+
+#### Storage class questions
+##### Do I need to choose a storage class?
+No, you don't need to choose a class; however, by default, Amazon S3 will store your data in the S3 Standard storage class. As you will discover later in this course, each storage class has its own cost and performance attributes. 
+
+For example, imagine you're working with an external vendor on an oceanographic research project that collects terabytes of data daily on seawater quality, currents, temperatures, and marine life distribution. Your project runs for only three months, and then you analyze and process the data and publish the results. You plan to start the next step of the study in two years. You might not want terabytes of research data sitting untouched in the S3 Standard storage class for two years. The cost of infrequently accessed data (cold data) in the default storage class might be prohibitive for your business or department. 
+
+Make sure you understand your data use cases. If you make the correct decision for storing your data, you will see both better performance and better cost savings.
+
+##### Can I choose more than one storage class?
+You can have as many storage classes for your data as you need, but each object can only be stored in one storage class as a time.
+
+Data can have many requirements and demands made on it, whether it's a performance need, an application edict, a country or site specific requirement, or a legal or compliance process. Because of these ever-changing demands, Amazon has multiple storage classes to meet your needs. 
+
+##### Which storage class will protect against data loss?
+All of the Amazon S3 storage classes are designed to provide 99.999999999 percent of durability. This durability level corresponds to an average annual expected loss of 0.000000001 percent of objects. 
+
+In addition, S3 Standard, S3 Standard-IA, and S3 Glacier storage classes are all designed to sustain data in the event of an entire Amazon S3 Availability Zone loss. As with any environment, the best practice is to have a backup and to put in place safeguards against malicious or accidental deletion. For Amazon S3 data, the best practices include secure access permissions, cross-Region replication, and versioning. 
+
+#####What if I have encryption requirements?
+Amazon S3 supports both server-side encryption and client-side encryption for data uploads. Amazon S3 offers flexible security features to block unauthorized users from accessing your data.
+
+##### Can I use Amazon S3 if my data has regulatory or compliance requirements?
+Amazon S3 maintains compliance programs, such as PCI-DSS, HIPAA/HITECH, FedRAMP, EU Data Protection Directive, and FISMA, to help you meet regulatory requirements. AWS also supports numerous auditing capabilities to monitor access requests to your Amazon S3 resources.
+
+For additional details, see Compliance Validation for Amazon S3 at [https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-compliance.html](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-compliance.html).
+
+##### Does the data permanently reside in the storage class I choose?
+You do not need to choose just one storage class and stick to it. Data can also move between the storage classes based on access patterns and lifecycle management rules. An object that hasn't been accessed for a month can be moved to a more cost-effective storage class. If you need access to the object, it can be moved back to a more active storage class. Data is as mobile and dynamic in Amazon S3 as you are in your need to manage it.
+
+#### Amazon S3 analytics – storage class analysis 
+With storage class analysis, you can analyze storage access patterns and transition the right data to the right storage class. This feature observes data access patterns to to help you determine when to transition to storage classes more appropriate for less frequently accessed data. 
+
+After storage class analysis observes the access patterns of a filtered set of data over a period of time, you can use the analysis results to help you improve your lifecycle policies. You can configure storage class analysis to analyze all the objects in a bucket. Or you can configure filters to group objects together for analysis by common prefix (that is, objects that have names that begin with a common string), object tags, or both prefix and tags. You will probably find that filtering by object groups is the best way to benefit from storage class analysis.
+
+Storage class analysis provides storage usage visualizations in the Amazon S3 console that are updated daily. You can also export this daily usage data to an S3 bucket and view them in a spreadsheet application or with business intelligence tools, like **Amazon QuickSight**.
+
+#### Coming up
+Each of the storage classes focus on different attributes of access patterns, retention times, object lifecycle, and cost. 
+
+### Storage Classes for Frequently Accessed Data
+#### S3 Standard (general purpose)
+S3 Standard is the default storage class for Amazon S3 and is automatically assigned to your objects if you do not choose a different storage class. S3 Standard is designed for performance-sensitive use cases, those that require millisecond access time, and your most frequently accessed data. This is the best storage class for a wide variety of use cases, including cloud applications, dynamic websites, content distribution, mobile and gaming applications, and big data analytics.
+
+#### Key features include the following:
+* Low latency and high throughput performance
+* Durability of 99.999999999 percent of objects across multiple Availability Zones
+* Resiliency against events that impact an entire Availability Zone
+* Availability of 99.99 percent over a given year
+* Amazon S3 service level agreement for availability
+* SSL support for data in transit and encryption of data at rest
+* Amazon S3 lifecycle management for automatic migration of objects to other Amazon S3 storage classes
+
+#### Object storage and retrieval limits
+##### MINIMUM DURATION
+S3 Standard has no data storage minimum or maximum duration. You can store an object in S3 Standard for one day, one year, or longer.
+
+However, if you plan to store an object for a long period of time with infrequent access, consider choosing a less expensive storage tier. 
+
+##### MINIMUM OBJECT SIZE
+S3 Standard has no minimum size requirement.
+
+##### RETRIEVAL TIMES
+With S3 Standard, you can immediately retrieve your objects. S3 Standard provides low latency for object access.
+
+#### Plan before you upload
+If you are new to Amazon S3, or if you have started using it without a defined strategy, consider your future data state. Even the best administrator struggles if they upload TBs of data into Amazon S3 without clear details about the data, access patterns, retention policies, or if they need the objects to be immutable (unchanging).
+
+Plan what you want to do with your data before you put it into the cloud. With this plan, you can  upload your data and set lifecycle rules; policies for retention, replication, and deletion; and procedures for archival and retrieval.
+
+#### Pricing for storage
+##### Storage-only pricing for **S3 Standard** (general purpose):
+
+| Tier | Amount Stored | Price |
+| -------------------- | ----------- | ------------- |
+| Frequent Access Tier | Up to 50 TB | $0.023 per GB |
+| Frequent Access Tier | 50–500 TB | $0.022 per GB |
+| Frequent Access Tier | Over 500 TB | $0.021 per GB |
+
+##### Requests and data retrieval pricing for **S3 Standard** (general purpose):
+
+| PUT, COPY, POST, LIST Requests (Per 1,000 Requests) | GET, SELECT, and All Other Requests(Per 1,000 Requests) | Data Retrieval Requests | Per 1,000 Requests) | Data Retrievals (Per GB) |
+| ------ | ------- | --- | --- |
+| $0.005 | $0.0004 | n/a | n/a |
+
+##### [Amazon S3 current pricing](https://aws.amazon.com/s3/pricing/?nc=sn&loc=4)
+
+### Storage Classes for Infrequently Accessed Data
+### S3 Standard-IA
+iS3 Standard-IA is for data that you access less frequently but for which you require rapid access when you do need it. S3 Standard-IA offers the high durability, high throughput, and low latency of S3 Standard with a **lower per-GB** storage price than standard storage, but **higher per request** charges and retrieval fees. The charges for each request and retrieval for S3 Standard-IA are higher than S3 Standard. This combination of low cost and high performance make S3 Standard-IA ideal for long-term storage, backups, and data stores for disaster recovery files. S3 Standard IA stores objects redundantly across multiple Availability Zones so that objects are resilient to the loss of an Availability Zone.
+
+S3 Standard-IA is suitable for objects **larger than 128 KB** that you plan to store for **at least 30 days**. If an object is less than 128 KB, Amazon S3 charges you for 128 KB. If you delete an object before the end of the 30-day minimum storage duration period, you are charged for 30 days. 
+
+#### Key features include the following:
+* Same low latency and high throughput performance of S3 Standard
+* Durability of 99.999999999 percent of objects across multiple Availability Zones
+* Resiliency against events that impact an entire Availability Zone
+* Data is resilient in the event of one entire Availability Zone destruction
+* Availability of 99.9 percent over a given year
+* Amazon S3 service level agreement for availability
+* SSL support for data in transit and encryption of data at rest
+* S3 Lifecycle management for automatic migration of objects to other Amazon S3 storage classes
+
+### S3 One Zone-IA
+S3 One Zone-IA is for data that you access less frequently but for which you require rapid access when you do need it. S3 One Zone IA stores the object data in only one Availability Zone. Because of this, the data is not resilient to the physical loss of the Availability Zone resulting from disasters, such as earthquakes and floods. The S3 One Zone-IA storage class is as durable as S3 Standard-IA, but it is less available and less resilient. Also, because the data resides in only a single Availability Zone, this storage class costs 20 percent less than S3 Standard-IA. 
+
+S3 One Zone-IA is ideal for customers who want a lower-cost option for infrequently accessed data but who do not require the availability and resilience of S3 Standard or S3 Standard-IA. This storage class is a good choice for storing secondary backup copies of on-premises data, data you can quickly recreate, or storage you have already replicated in another Region using Amazon S3 cross-Region replication for compliance or disaster recovery purposes.
+
+S3 One Zone-IA offers the same high durability, high throughput, and low latency of S3 Standard with a low per-GB storage price and per-GB retrieval fee. 
+
+The S3 One Zone-IA storage class is also suitable for objects larger than 128 KB that you plan to store for at least 30 days. Just like S3 Standard-IA, objects smaller than 128 KB will be charged at the 128 KB size. Any object deleted before the 30-day minimum storage duration period will be charged for 30 full days.
+
+#### Key features include the following:
+* Same low latency and high throughput performance of S3 Standard
+* Durability of 99.999999999 percent of objects in a single Availability Zone†
+* Availability of 99.5 percent over a given year
+* Amazon S3 service level agreement for availability
+* SSL support for data in transit and encryption of data at rest
+* S3 Lifecycle management for automatic migration of objects to other S3 storage classes
+
+**Because S3 One Zone-IA stores data in a single Availability Zone, data stored in this storage class will be lost in the event of Availability Zone destruction.**
+
+#### Storage and retrieval limits
+##### MINIMUM DURATION
+S3 Standard-IA and S3 One Zone-IA are both suitable for objects you plan to store for at least 30 days.
+
+##### MINIMUM OBJECT SIZE
+S3 Standard-IA and S3 One Zone-IA are both suitable for objects larger than 128 KB.
+
+##### RETRIEVAL TIMES
+There is no waiting to retrieve objects in S3 Standard-IA or S3 One Zone-IA. 
+
+For the following transitions, Amazon S3 does not transition objects that are **smaller than 128 KB**:
+* From the S3 Standard or S3 Standard-IA storage classes to S3 Intelligent-Tiering or S3 Glacier Instant Retrieval.
+* From the S3 Standard storage class to S3 Standard-IA or S3 One Zone-IA.
+
+#### Pricing information
+The following chart does not include data retrieval, transfer, or management costs. Storage-only pricing for **S3 Standard-IA** and **S3 One Zone-IA**:
+
+| Storage Class | Tier | Amount Stored | Price |
+| -------------- | --------------------- | ------------------------------- | -------------- |
+| S3 Standard-IA | Infrequently accessed | Total amount of storage a month | $0.0125 per GB |
+| S3 One Zone-IA | Infrequently accessed | Total amount of storage a month | $0.01 per GB |
+
+##### Requests and data retrieval pricing for **S3 Standard-IA** and  **S3 One Zone-IA**:
+
+| Storage Class | PUT, COPY, POST, LIST Requests (Per 1,000 Requests) | GET, SELECT, and All Other Requests (Per 1,000 Requests) | Data Retrieval Requests Per 1,000 Requests) | Data Retrievals (Per GB) |
+| -------------- | ----- | ------ | --- | ----- |
+| S3 Standard-IA | $0.01 | $0.001 | n/a | $0.01 |
+| S3 One Zone-IA | $0.01 | $0.01 | n/a | $0.01 |
+
+#### [Amazon S3 current pricing](https://aws.amazon.com/s3/pricing/?nc=sn&loc=4)
+
+### Storage Classes for Unknown or Changing Access Patterns
+#### S3 Intelligent-Tiering
+The S3 Intelligent-Tiering storage class optimizes storage costs by automatically moving data to the most cost-effective access tier, without performance impact or operational overhead. It is the only cloud storage that delivers automatic cost savings by moving data on a granular object level between access tiers when access patterns change. This is the perfect storage class when you want to optimize storage costs for data that has unknown or changing access patterns. There are no retrieval fees for S3 Intelligent-Tiering. There is a small monthly object monitoring and automation fee because S3 Intelligent-Tiering monitors the access patterns and moves the objects automatically from one tier to another. Finally, there are retrieval fees for expedited archive retrieval and request charges.
+
+#### How it works
+S3 Intelligent-Tiering uses your data access patterns to automatically move data **between three access tiers**, with the option **to activate a fourth and fifth archive and deep archival tier**. The first tier is optimized for frequent access, the next lower-cost tier is optimized for infrequent access, and the Archive Instant Access Tier is an even lower-cost tier optimized for rarely accessed data. 
+Additionally, there are two archive tiers that must be activated before using. Once activated, S3 Intelligent-Tiering moves data that has not been accessed for **90+ consecutive days** to the **Archive Access Tier**. This tier has the **same performance** as the **S3 Glacier Flexible Retrieval storage class**. The last optional tier, is the **Deep Archive Access Tier**. Once activated, objects that have not been accessed for **180 days** automatically move to this lowest cost tier. This tier has the same performance as the **S3 Glacier Deep Archive storage class**.
+
+#### Access time
+##### Milliseconds access (automatic)
+* Frequent Access Tier
+* Infrequent Access Tier
+* Archive Instant Access Tier
+
+##### Minutes to hours access (optional)
+* Archive Access Tier
+* Deep Archive Access Tier
+
+Objects uploaded or transitioned to S3 Intelligent-Tiering are automatically stored in the Frequent Access Tier. S3 Intelligent-Tiering works by monitoring access patterns and then moving the objects that have not been accessed in 30 consecutive days to the Infrequent Access Tier. Once you have activated one or both of the archive access tiers, S3 Intelligent-Tiering will automatically move objects that haven’t been accessed for 90 consecutive days to the Archive Access Tier and then after 180 consecutive days of no access to the Deep Archive Access Tier. If the objects are accessed at a later date, S3 Intelligent-Tiering moves the objects back to the Frequent Access Tier. There are no retrieval fees, so you won’t see unexpected increases in storage bills when access patterns change. 
+
+##### Key features include the following:
+Only cloud storage that delivers automated cost savings
+Monitors and optimizes costs at a granular object level
+Moves objects between four access tiers for a small monthly monitoring and automation fee
+Two low-latency access tiers for frequent and infrequent access and two new optional archive access tiers designed for access in minutes and hours
+No operational overhead, no lifecycle fees, and no retrieval fees
+Designed for 99.9 percent availability and 99.999999999 percent (11 nines) of durability 
+
+#### Feature integration 
+S3 Intelligent-Tiering works with all of the Amazon S3 features, such as object tagging, cross-region replication, and S3 Select. This is an Amazon S3 capability designed to pull out only the data you need from an object, which dramatically improves the performance and reduces the cost of applications that need to access data in Amazon S3. To manage S3-Intelligent-Tiering, you can use the Amazon S3 API or AWS CLI. You can also manage data through the console by putting objects directly into S3 Intelligent-Tiering or by using a S3 Lifecycle policy to move objects from S3 Standard or S3 Standard-IA to S3 Intelligent-Tiering. S3 Intelligent-Tiering is available today in all commercial Regions and AWS GovCloud (US). 
+
+#### Archival tier activation
+##### How do I activate S3 Intelligent-Tiering archive access tiers?
+You can activate the Archive Access Tier and Deep Archive Access Tier by creating a bucket, prefix, or object tag level configuration using the Amazon S3 API, AWS CLI, or the console. You should only activate one or both of the archive access tiers if your objects can be accessed asynchronously by your application. 
+
+##### Can I extend the time before objects are archived?
+Yes. In the bucket, prefix, or object tag level configuration, you can extend the last access time for archiving objects in S3 Intelligent-Tiering. When activated, by default objects that haven't been accessed for a minimum of 90 consecutive days automatically move to the Archive Access Tier. Objects that haven't been accessed for a minimum of 180 consecutive days automatically move to the Deep Archive Access Tier. The default configuration for the consecutive days since last access before automatic archiving in S3 Intelligent-Tiering can be extended for up to 2 years. 
+
+##### How do I identify in which tier my objects are located?
+You can use Amazon S3 Inventory to report the access tier of objects stored in the S3 Intelligent-Tiering storage class. Amazon S3 Inventory provides CSV, Optimized Row Columnar, or Apache Parquet output files that list your objects and their corresponding metadata on a daily or weekly basis for an S3 bucket or a shared prefix. You can also make a HEAD request on your objects to report the S3 Intelligent-Tiering archive access tiers. 
+
+#### Storage and retrieval limits
+##### MINIMUM DURATION
+S3 Intelligent-Tiering has no minimum storage duration.
+
+##### MINIMUM OBJECT SIZE
+S3 Intelligent-Tiering has no minimum billable object size, but objects smaller than 128 KB are not eligible for auto-tiering and will always be stored at the Frequent Access Tier rate.
+
+##### RETRIEVAL TIMES
+The retrieval time for moving the object back to the Frequent Access Tier depends on the tier from which the data is coming. The Frequent Access, Infrequent Access, and Archive Instant Access Tiers are designed for low latency and high throughput.
+
+Retrieval times are 3–5 hours for objects in the Archive Access Tier and within 12 hours if the objects are in the Deep Archive Access Tier.
+
+#### Fees
+With S3 Intelligent-Tiering, you incur a small monthly monitoring and automation fee per object. There are no retrieval fees in S3 Intelligent-Tiering. With the addition of automatic data archiving, you can now further reduce your Amazon S3 storage costs when access patterns change without any analysis, operational overhead, or retrieval fees.
+
+#### Use cases
+With S3 Intelligent-Tiering storage, you can focus on your business needs while Amazon S3 monitors and reacts to your data access patterns. If you're unsure about the access frequency of an object or bucket, S3 Intelligent-Tiering might be a good choice. If you know without doubt that objects are not frequently accessed, your best option is to store those infrequently accessed objects in a class dedicated to infrequently accessed data from both a performance and cost-savings perspective.
+
+Data lakes, big data analytics, and media applications are prime use cases for S3 Intelligent-Tiering because data in these instances is often used when first stored and then object access is reduced. When this happens, S3 Intelligent-Tiering can move that data down to less expensive storage tiers without administrator intervention, saving time and storage costs.
+
+#### Pricing information
+##### Storage-only pricing for **S3 Intelligent-Tiering**:
+
+| Tier | Amount Stored | Price |
+| ---- | ------------- | ----- |
+| Frequent Access Tier | First 50 TB a month | $0.023 per GB |
+| Frequent Access Tier | Next 450 TB per month | $0.022 per GB |
+| Frequent Access Tier | Over 500 TB per month | $0.021 per GB |
+| Infrequent Access Tier | All storage per month  | $0.0125 per GB |
+| Archive Access Tier | All storage per month | $0.004 per GB  |
+| Deep Archive Access Tier | All storage per month | $0.00099 per GB |
+
+##### Requests, lifecycle transitions, and data retrieval pricing for **S3 Intelligent-Tiering**:
+
+| PUT, COPY, POST, LIST Requests (Per 1,000 Requests) | GET, SELECT, and All Other Requests (Per 1,000 Requests) | Lifecycle Transition Requests Into (Per 1,000 Requests) | Data Retrieval Requests (Per 1,000 Requests) | Data Retrievals (Per GB) |
+| ------ | ------- | ----- | --- | --- |
+| $0.005 | $0.0004 | $0.01 | n/a | n/a |
+
+##### [Amazon S3 current pricing](https://aws.amazon.com/s3/pricing/?nc=sn&loc=4)
+
+### Storage Classes for Archiving Objects
+The Amazon S3 Glacier storage classes are purpose-built for data archiving, providing you with the highest performance, most retrieval flexibility, and lowest cost archive storage in the cloud. The S3 Glacier storage classes provide three different archival storage classes optimized for different access patterns and storage durations.
+
+#### S3 Glacier Instant Retrieval 
+S3 Glacier Instant Retrieval is an archive storage class delivering the lowest cost storage for long-lived, rarely accessed data that requires retrieval in milliseconds. S3 Glacier Instant Retrieval delivers the fastest access to archive storage, with the same throughput and milliseconds access as the S3 Standard and S3 Standard-IA storage classes. This storage class also has 99.999999999 percent (11 nines) of data durability and 99.9 percent availability by redundantly storing data across multiple physically separated Availability Zones. This storage class is designed for rarely accessed data that still needs immediate access in performance-sensitive use cases like image hosting, online file-sharing applications, medical imaging and health records, news media assets, and genomics.
+
+##### Key features include the following:
+* Data retrieval in milliseconds with the same performance as S3 Standard
+* Durability of 99.999999999 percent of objects across multiple Availability Zones
+* Data is resilient in the event of one entire Availability Zone destruction
+* Data availability of 99.9 percent in a given year
+* 128 KB minimum object size storage charge
+* SSL support for data in transit and encryption of data at rest
+* S3 PUT API for direct uploads to S3 Glacier Instant Retrieval
+
+Medical records, broadcasts, photographs can upload directly into S3 Instant Retrieval for long-term storage and use with data analytics tools. When the images are needed again, the access is instant, providing users with efficient access to their data and images.
+
+##### Storage and retrieval limits for S3 Glacier Instant Retrieval
+###### MINIMUM DURATION
+S3 Glacier Instant Retrieval has a minimum storage duration requirement of 90 days. Any objects you delete before 90 days incur a pro-rated charge equal to the storage charge for the remaining days. In the US East (Northern Virginia) Region, you would be charged a pro-rated early deletion fee of $0.012 per gigabyte deleted within 3 months. This means that if you delete the data on day 30, you will be charged a pro-rated fee of $0.008 for the remaining 60 days. If the data was deleted on day 60, you would be charged a $0.004 fee for the remaining 30 days. **Fees are for example purposes and subject to change**
+
+###### MINIMUM OBJECT SIZE
+S3 Glacier Instant Retrieval has a minimum billable object storage size requirement of 128 KB. Objects smaller than 128 KB can be stored, but you are charged for 128 KB of storage.
+
+###### RETRIEVAL TIMES
+S3 Glacier Instant Retrieval provides millisecond object retrieval.
+
+#### S3 Glacier Flexible Retrieval
+S3 Glacier Flexible Retrieval delivers a low-cost storage solution for archive data that is accessed 1–2 times per year. S3 Glacier Flexible Retrieval retrieves data asynchronously, meaning that after you have requested the data, you must wait for the data to restore. This storage class offers flexible retrieval times from minutes to hours based on your data and cost requirements. For archive data that does not require immediate access, S3 Glacier Flexible Retrieval provides free bulk retrievals. It is an ideal solution for backup, disaster recovery, offsite data storage needs, and for when some data occasionally needs to be retrieved in minutes and you don’t want to worry about costs. S3 Glacier Flexible Retrieval is designed for 99.999999999 percent (11 nines) of data durability and 99.99 percent availability. 
+
+Data stored in the S3 Glacier storage class has a minimum storage duration period of 90 days. Deleting data from S3 Glacier Flexible Retrieval is free if the archive being deleted has been stored for 3 months or longer. If an archive is deleted within 3 months of being uploaded, you will be charged an early deletion fee. In the US East (Northern Virginia) Region, you would be charged a pro-rated early deletion fee of $0.012 per gigabyte deleted within 3 months. So if you deleted 1 GB of data 1 month after uploading it, you would be charged a $0.008 early deletion fee. If instead you deleted 1 GB after 2 months, you would be charged a $0.004 early deletion fee. 
+
+##### Key features include the following:
+* Durability of 99.999999999 percent of objects across multiple Availability Zones
+* Data is resilient in the event of one entire Availability Zone destruction
+* SSL support for data in transit and encryption of data at rest
+* Low-cost design is ideal for long-term archive
+* Up to 10 percent lower cost (than S3 Glacier Instant Retrieval)
+* Configurable retrieval times, from minutes to hours
+* No minimum billable object size. S3 Glacier Flexible Retrieval requires 40 KB of additional metadata for each archived object, which will be added to the object size for billing purposes
+* S3 PUT API for direct uploads to S3 Glacier Flexible Retrieval, and S3 Lifecycle management for automatic migration of objects
+
+##### Storage and retrieval limits for S3 Glacier Flexible Retrieval
+###### MINIMUM DURATION
+S3 Glacier Flexible Retrieval has a minimum duration requirement of 90 days. Any objects you delete before 90 days incur a pro-rated charge equal to the storage charge for the remaining days.
+
+###### MINIMUM OBJECT SIZE
+S3 Glacier Flexible Retrieval has a minimum billable object storage size requirement of 40 KB. Objects smaller than 40 KB can be stored, but you will be charged for 40 KB of storage.
+
+###### RETRIEVAL TIMES
+S3 Glacier provides three retrieval options to fit your needs:
+* Expedited (1–5 mins)
+* Standard (3–5 hours)
+* Bulk (5–12 hours) free
+
+Expedited retrievals typically return data in 1–5 minutes and are great for active archive use cases. Standard retrievals typically complete in 3–5 hours and work well for less time-sensitive needs like backup data, media editing, or long-term analytics. Bulk retrievals are the lowest cost retrieval option, returning large amounts of data within 5–12 hours.
+
+#### S3 Glacier Deep Archive
+S3 Glacier Deep Archive is the lowest cost storage class in Amazon S3 and supports long-term retention and digital preservation for data that might be accessed once or twice a year. It is designed for highly regulated industries, such as the financial services, healthcare, and public sectors, that retain datasets for 7–10 years or longer to meet regulatory compliance requirements. S3 Glacier Deep Archive can also be used for backup and disaster recovery use cases and is a cost-effective and manageable alternative to magnetic tape systems, whether they are on-premises libraries or off-premises services. 
+
+Data stored in the S3 Glacier Deep Archive storage class has a minimum storage duration period of 180 days. Objects deleted, overwritten, or transitioned to a different storage class before the 180-day minimum incur a pro-rated charge from the time of deletion to the 180-day minimum.
+
+All objects stored in S3 Glacier Deep Archive are replicated and stored across at least three geographically dispersed Availability Zones, with 99.999999999 percent of durability protection and a default retrieval time of 12 hours.
+
+##### Key features include the following:
+* Durability of 99.999999999 percent of objects across multiple Availability Zones
+* Lowest cost storage class designed for long-term retention of data that will be retained for 7–10 years
+* Ideal alternative to magnetic tape libraries
+* Retrieval time within 12 hours
+* No minimum billable object size. S3 Glacier Deep Archive requires 40 KB of additional metadata for each archived object, which will be added to the object size for billing purposes
+* S3 PUT API for direct uploads to S3 Glacier Deep Archive, and S3 Lifecycle management for automatic migration of objects
+
+##### Storage and retrieval limits for Amazon S3 Glacier Deep Archive
+###### MINIMUM DURATION
+S3 Glacier Deep Archive has a minimum duration requirement of 180 days of storage. Any objects you delete before 180 days incur a pro-rated charge equal to the storage charge for the remaining days.
+
+###### MINIMUM OBJECT SIZE
+S3 Glacier Deep Archive has a minimum billable object storage size requirement of 40 KB. Objects smaller than 40 KB can be stored, but you will be charged for 40 KB of storage.
+
+###### RETRIEVAL TIMES
+S3 Glacier Deep Archive has retrieval times within 12 hours.
+
+#### Monitoring and compliance
+The S3 Glacier Flexible Retrieval and S3 Glacier Deep Archive storage classes offer sophisticated integration with CloudTrail to log, monitor, and retain storage API call activities for auditing and supports three different forms of encryption. 
+
+These storage classes also support security standards and compliance certifications. These include SEC Rule 17a-4, Payment Card Industry Data Security Standard, HIPAA, Health Information Technology for Economic and Clinical Health, FedRAMP, EU General Data Protection Regulation, and Federal Information Security Management Act. Amazon S3 Object Lock permits write once read many storage capabilities, helping satisfy compliance requirements for virtually every regulatory agency around the globe.
+
+#### Pricing information
+The following chart does not include data retrieval, transfer, or management costs.
+
+Storage-only pricing for the three Amazon S3 Glacier storage classes:
+
+| Storage Class | Storage Class | Amount Stored | Price |
+| ------------- | ------------- | ------------- | ----- |
+| S3 Glacier Instant Retrieval | For long-lived archive data accessed once a quarter with instant retrieval in milliseconds  | Total amount of storage per month | $0.004 per GB |
+| S3 Glacier Flexible Retrieval | For long-term backups and archives with retrieval options from 1 minute to 12 hours  | Total amount of storage per month | $0.0036 per GB |
+| S3 Glacier Deep Archive | For long-term data archiving that is accessed once or twice in a year and can be restored within 12–48 hours  | Total amount of storage per month | $0.00099 per GB |
+
+|        | PUT, COPY, POST, LIST requests (per 1,000 requests) | GET, SELECT, and all other requests (per 1,000 requests) | Data Retrieval Requests (per 1,000 requests) | Data retrievals (per GB) |
+| ----------------| --- | --- | --- | --- |
+| Archive Instant | N/A | N/A | N/A | N/A |
+| Archive Access, Standard | N/A | N/A | N/A | N/A |
+| Archive Access, Bulk | N/A | N/A | N/A | N/A |
+| Archive Access, Expedited | N/A | N/A | $10.00 | $0.03 |
+| Deep Archive Access, Standard | N/A | N/A | N/A | N/A |
+| Deep Archive Access, Bulk | N/A | N/A | N/A | N/A |
+
+*Prices are current as of March 2023 and are subject to change without notice. Pricing varies by Region.
+
+##### [Amazon S3 current pricing](https://aws.amazon.com/s3/pricing/?nc=sn&loc=4)
+
+### Knowledge Check
+#### What happens to users’ data if they are using S3 One Zone-IA and there is an Amazon S3 service outage in the Availability Zone? 
+* Nothing happens. Amazon S3 offers 11 nines of durability.
+* Users can access their data in another Availability Zone.
+* The data is replicated to another AWS Region for recovery.
+* **Without the Availability Zone, users cannot access their data until the service is restored in the Availability Zone.**
+
+Because S3 One Zone-IA stores data in a single Availability Zone, data stored in this storage class will be lost in the event of Availability Zone destruction.
+
+The other options are incorrect because S3 One Zone-IA stores data in a single Availability Zone. Data stored in this storage class will be lost in the event of Availability Zone destruction.
+
+#### Which of the following access patterns works best with S3 Intelligent-Tiering? (Choose TWO.) 
+* **Unknown access patterns**
+* **Unpredictable access patterns**
+* Daily access data patterns
+* Yearly data access patterns
+* Long-term storage access patterns
+
+**Unknown access patterns** and **Unpredictable access patterns**. 
+
+S3 Intelligent-Tiering is the ideal storage class for long-lived data with access patterns that are unknown or unpredictable.
+
+The other options are incorrect because they have predictable access patterns that can be directly addressed by other storage classes.
+
+#### Which scenario would restrict Amazon S3 lifecycle policies from moving objects between storage classes?
+* An object is larger than 128 GB.
+* **An object is smaller than 128 KB.**
+* An object is less than 30 days old.
+* An object is more than 30 days old.
+
+Amazon S3 does not move objects between storage classes if they are **smaller than 128 KB** because it is not cost-effective to do so.
+
+The other response options are incorrect because of the following: 
+* Objects larger than 128 GB can be moved between storage classes.
+* Lifecycle policies can be set to move objects of any age.
+
+### Summary
+* Discussing when to choose Amazon S3 and the consistency and Region implications
+* Explaining how to set up a bucket and upload files
+* Explaining the use of object URLs, file URLs, hosted URLs, and S3 ARNs
+* Discussing how to secure an S3 bucket
+* Describing how to manage Amazon S3 objects using tagging
+* Identifying Amazon S3 storage classes
+* Discussing how to use Amazon S3 storage classes for lifecycle management
+* Describing how to use Amazon S3 access points and multi-Region access points
+
+#### Object storage in Amazon S3
+In Amazon S3 object storage, you can organize objects to imitate a hierarchy by using key name prefixes and delimiters. Prefixes and delimiters allow you to group similar items to help visually organize and easily retrieve your data. In the user interface, these prefixes give the appearance of a folder/ subfolder structure but in reality, the storage is still a flat structure. 
+
+Buckets are containers that hold objects. You can create up to 100 buckets in each AWS account by default. You can increase the bucket limit to a maximum of 1,000 buckets by submitting a service limit increase. Bucket sizes are virtually unlimited so you don't have to allocate a predetermined bucket size the way you would when creating a storage volume or partition.
+
+Bucket names must have the following characterist:
+* Be unique across all of Amazon S3
+* Be between 3-63 characters long
+* Consist only of lowercase letters, numbers, dots (.), and hyphens (-)
+* Start with a lowercase letter or number
+* Not begin with xn-- (beginning February 2020)
+* Not be formatted as an IP address. (i.e. 198.68.10.2)
+* Use a dot (.) in the name only if the bucket's intended purpose is to host an Amazon S3 static website; otherwise do not use a dot (.) in the bucket name
+
+#### Region locations
+Amazon S3 is a globally viewable service. The region you choose should be local to your users or consumers to optimize latency, minimize costs, or to address regulatory requirements.
+
+#### Cross-Region Replication (CRR)
+If your data needs to be stored in multiple regions, your buckets can be replicated to other Regions using Cross-Region Replication. This enables you to automatically copy objects from a  bucket in one region to different bucket in a another, separate region
+
+#### Same-Region Replication (SRR)
+SRR makes another copy of S3 objects within the same AWS Region, with the same redundancy as the destination storage class. SRR helps you address data sovereignty and compliance requirements by keeping a copy of your objects in the same AWS Region as the original.
+
+#### Storage classes for frequently accessed data
+##### Amazon S3 Standard (general purpose)
+Amazon S3 Standard is the default storage class for Amazon S3 and is automatically assigned to your objects if you do not choose a different storage class. It is designed for performance-sensitive use cases, those that require millisecond access time, and for your most frequently accessed data.
+
+#### Storage classes for infrequently accessed data
+##### Amazon S3 Standard-Infrequent Access 
+Amazon S3 Standard-Infrequent Access (S3 Standard-IA) is for data that you access less frequently, but for which you require rapid access when you do need it. S3 Standard-IA offers the high durability, high throughput, and low latency of S3 Standard, with a lower per-GB storage price and per-GB retrieval. 
+
+##### Amazon S3 One Zone-Infrequent Access 
+Amazon S3 One Zone-Infrequent Access (S3 One Zone-IA) is for data that you access less frequently, but for which you rapid access when you do need it. S3 One Zone IA stores the object data in only one Availability Zone, which enables rapid access while sacrificing the resiliency of storing data across multiple Availability Zones.
+
+#### Storage Classes for Unknown or Changing Access Patterns
+##### Amazon S3 Intelligent-Tiering
+The S3 Intelligent-Tiering storage class optimizes storage costs by automatically moving data to the most cost-effective access tier, without performance impact or operational overhead. It is the only cloud storage that delivers automatic cost savings by moving data on a granular object level between access tiers when access patterns change.
+
+#### Storage Classes for Archiving Objects
+##### Amazon S3 Glacier Instant Retrieval 
+S3 Glacier Instant Retrieval is an archive storage class delivering the lowest-cost storage for long-lived, rarely accessed data, that requires retrieval in milliseconds. S3 Glacier Instant Retrieval delivers the fastest access to archive storage, with the same throughput and milliseconds access as the S3 Standard and S3 Standard-IA storage classes.
+
+##### Amazon S3 Glacier Flexible Retrieval (S3 Glacier)
+S3 Glacier Flexible Retrieval delivers a low-cost storage solution for archive data that is accessed 1-2 times per year. S3 Glacier Flexible Retrieval retrieves data asynchronously, meaning that once you have requested the data you must wait for the data to restore. 
+
+##### Amazon S3 Glacier Deep Archive (S3 Glacier Deep Archive)
+S3 Glacier Deep Archive is the lowest-cost storage class in Amazon S3 and supports long-term retention and digital preservation for data that may be accessed once or twice in a year. S3 Glacier Deep Archive can also be used for backup and disaster recovery use cases, and is a cost-effective and easy-to-manage alternative to magnetic tape systems, whether they are on-premises libraries or off-premises services. 
+
+### Additional Resources
+#### [Using a prefix and delimiter](https://docs.aws.amazon.com/AmazonS3/latest/dev/ListingKeysHierarchy.html)
+
+#### [Additional information](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/aws-tags.html)
+
+#### [Amazon S3 analytics](https://docs.aws.amazon.com/AmazonS3/latest/dev/analytics-storage-class.html)
+
+## Amazon EBS
+### Pre-assessment
+#### What is one of the common uses of Amazon Elastic Block Store (Amazon EBS)?
+* Amazon EBS is used for temporary storage that last only for the duration of an EC2 instance.
+* Amazon EBS is used for large-scale storage of unstructured data.
+* Amazon EBS is used for caching frequently accessed data close to the user.
+* **Amazon EBS is used for storage for database-style applications.**
+
+**Amazon EBS is used for storage for database-style applications.**
+
+The other options are incorrect because of the following: 
+* EBS volumes persist independently from the life of an EC2 instance. 
+* Amazon S3 is used for large-scale storage of unstructured data. Amazon EBS is used primarily for structured data.
+* Edge storage is used for caching frequently accessed data close to the user.
+
+#### What type of storage provides temporary, block-level storage for Amazon EC2?
+* **Instance storage**
+* Amazon Elastic Block Store (Amazon EBS) storage
+* Snapshots
+* Amazon S3
+
+**Instance storage provides temporary, block-level storage for Amazon EC2.**
+
+The other options are incorrect because of the following:
+* Amazon EBS storage persists independent of EC2 instances.
+* Snapshots are incremental copies of data stored in EBS volumes.
+* Amazon S3 provides object storage, not block-level storage.
+
+#### What are some of the benefits of using Amazon Elastic Block Store (Amazon EBS)? (Select TWO.)
+* **EBS volumes are persistent.**
+* EBS volumes are maintained on a single server.
+* Amazon EBS limits volumes to being attached to a single instance.
+* EBS volumes last only as long as the EC2 instance they are attached to.
+* **EBS volumes are elastic.**
+
+**EBS volumes are persistent** and **EBS volumes are elastic**.
+
+The other options are incorrect because of the following: 
+* EBS volume data is replicated across multiple servers in an Availability Zone.
+* Customers can activate Multi-Attach on an EBS Provisioned IOPS io1 or io2 volume, enabling a single EBS volume to be concurrently attached to up to 16 Nitro-based EC2 instances within the same Availability Zone.
+* EBS volumes persist independent of the EC2 instance they are attached to.
+
+### Amazon Elastic Block Store
+Amazon EBS is a user-friendly, high-performance block storage service designed for use with Amazon EC2 for both throughput and transaction-intensive workloads at any scale. 
+
+AWS recommends Amazon EBS for data that must be quickly accessible and requires long-term persistence. EBS volumes are particularly well suited for use as the primary storage for file systems, databases, or any applications that require fine granular updates and access to raw, unformatted, block-level storage. 
+
+Amazon EBS is well suited to both database-style applications that rely on random reads and writes and to throughput-intensive applications that perform long, sequential reads and writes. EBS volumes behave like raw, unformatted block devices. You can mount these block devices as EBS volumes on your EC2 instances. EBS volumes that are attached to an EC2 instance are exposed as raw block storage volumes that persist independently from the life of the instance. You can create a file system on top of these volumes or use them in any way you would use a block device (such as a hard drive). Finally, you can dynamically change the configuration of a volume attached to an EC2 instance, unlike traditional disk drives that come in fixed sizes.
+
+You can choose from six different EBS volume types to balance optimal price and performance. You can achieve single-digit millisecond latency for high-performance database workloads such as SAP HANA or gigabyte-per-second throughput for large, sequential workloads such as Apache Hadoop. You can change EBS volume types, tune performance, or increase volume size without disrupting your critical applications. Amazon EBS provides you cost-effective block storage when you need it.
+
+Designed for mission-critical systems, EBS volumes are replicated within an Availability Zone and can scale to petabytes of data. Also, you can use EBS snapshots with automated lifecycle policies to back up your volumes in Amazon S3 while ensuring geographic protection of your data and business continuity.
+
+With Amazon EBS, you pay for only the **storage and resources that you provision**.
+
+### AWS block storage portfolio
+The AWS block storage portfolio consists of two types of block storage services—instance storage and Amazon EBS—and an integrated snapshot service.
+
+#### INSTANCE STORAGE
+Instance storage is temporary block-level storage attached to host hardware that is ideal for storing information that frequently changes or is replicated across multiple instances. Instance storage units are called instance stores and are directly associated with an Amazon EC2 instance. Instance stores are also called EC2 instance stores.
+
+An instance store is non-persistent and is terminated when the associated EC2 instance is terminated. Instance stores resemble Amazon EBS storage in initial configuration options. However, they functionally most closely resemble a direct attached disk drive. The available storage type is directly tied to the EC2 instance type.
+
+#### AMAZON EBS STORAGE
+Amazon EBS is a block storage service designed for use with Amazon EC2. Amazon EBS scales to support virtually any workload and any volume size. EBS volumes attach to your EC2 instances and can be moved from one EC2 instance to a different EC2 instance.
+
+EBS volumes are persistent, which means they persist independently from the life of your EC2 instance. If an EC2 instance goes down, your volume and, most importantly, your data on that volume remain available to attach to a different EC2 instance.
+
+#### SNAPSHOTS
+Snapshots are incremental, point-in-time copies of your data stored on your EBS volumes. You can use snapshots to restore new volumes, expand the size of a volume, or move volumes across Availability Zones. 
+
+Snapshots let you geographically protect your data and achieve business continuity. You can use Amazon Data Lifecycle Manager to automate snapshot management without any additional overhead or cost.
+
+### Amazon EBS Features and Benefits
+### Amazon EBS foundation
+Amazon EBS is built on a service foundation to deliver block storage to meet your operational requirements. The core elements include performance, ease of use, reliability, scalability, security, and cost effectiveness.
+
+#### Performance for any workload
+The different EBS volume types deliver the right performance for your most demanding workloads.
+
+SSD and HDD backed volumes provide strong price to performance rations suitable for most workloads.
+
+For even higher storage performance per instance, use multiple volumes together.
+
+#### Convenience
+Creating, using, and protecting volumes is convenient using the console and the AWS APIs. 
+
+Elastic Volumes capability lets you increase storage, tune performance up and down, and change volume types without any disruption to your workloads. 
+
+You can use Amazon Data Lifecycle Manager for automated snapshot management based on your needs.
+
+#### High reliability
+The Amazon EBS architecture is built for mission-critical applications. EBS volumes are designed to protect against failures by replicating within the Availability Zone, offering 99.999 percent durability for io2 volume types, with all other volume types providing 99.8–99.9 percent durability. All volume types  provide an annual failure rate of 0.1–0.2 percent.
+
+#### Virtually unlimited scale
+Amazon EBS was launched in 2008 to provide persistent block storage for EC2 instances. Today millions of customers use Amazon EBS to store exabytes of data.
+
+The scalability lets you build applications that require as little as a single gigabyte of storage up to virtually unlimited scale.
+
+#### Secure
+Amazon EBS was designed with security as the number one priority. Amazon EBS includes advanced key management and volume encryption features. 
+
+Amazon EBS includes the ability to encrypt newly created EBS volumes by default with a single setting in your account. All data in newly created EBS volumes will be encrypted automatically. 
+
+#### Cost-effective
+Amazon EBS provides different options to keep costs as low as possible for your specific workload. There are four different volume types to choose from to balance optimal price and performance. 
+
+You pay for only the storage you use without long-term contracts or complex licensing agreements. 
+
+Backups using EBS snapshots are incremental and save on storage costs by not duplicating data.
+
+### Amazon EBS features and benefits
+#### Persistent
+Amazon EBS volumes are durable and persistent by default. Your EBS volume survives even if your EC2 instance is terminated. Your data is preserved for your future use and persists until you decide to delete it. 
+
+EBS volumes are managed independently from the Amazon EC2 instances to which they are attached. You can detach an existing EBS volume from an EC2 instance and reattach it to a different EC2 instance. This provides you the ability to change EC2 instance types to meet your performance requirements and optimize your Amazon EC2 costs. It also means that spot instances can be stopped or terminated without losing your data.
+
+#### Built-in encryption
+Amazon EBS encryption offers seamless encryption of EBS data volumes, boot volumes, and snapshots, eliminating the need to build and manage a secure key management infrastructure.
+
+Amazon EBS encryption provides data-at-rest security by encrypting your data volumes, boot volumes, and snapshots using AWS managed keys or keys that you create and manage using AWS KMS. You can also configure your profile so that encryption is activated by default for all newly created EBS volumes.  
+
+The encryption occurs on the servers that host EC2 instances, providing data-in-transit encryption of your data as it moves between EC2 instances and EBS data and boot volumes.
+
+With your data encrypted in transit and at rest, you are protected from unauthorized access to your data.
+
+#### High availability and high durability
+EBS volumes are designed to be highly available, reliable, and durable at no additional charge to you. EBS volume data is replicated across multiple servers in an Availability Zone to prevent the loss of data from the failure of any single component. 
+
+Amazon EBS offers a higher durability io2 volume that is designed to provide 99.999 percent durability with an annual failure rate (AFR) of 0.001 percent, where failure refers to a complete or partial loss of the volume. For example, if you have 100,000 EBS io2 volumes running for 1 year, you should expect only one io2 volume to experience a failure. This makes io2 ideal for business-critical applications such as SAP HANA, Oracle, Microsoft SQL Server, and IBM DB2 that will benefit from higher uptime. The io2 volumes are 2,000 times more reliable than typical commodity disk drives, which fail with an AFR of 2–4 percent. 
+
+All other EBS volumes are designed to provide 99.8–99.9 percent durability with an AFR of 0.1–0.2 percent. Amazon EBS also supports a snapshot feature, which is a good way to take point-in-time backups of your data. 
+
+#### Multiple volume type options
+Amazon EBS provides multiple volume types so that you can optimize storage performance and cost for a broad range of applications. These volume types are divided into two major categories: SSD-backed storage for transactional workloads, such as databases, virtual desktops, and boot volumes, and HDD-backed storage for throughput-intensive workloads, such as MapReduce and log processing. 
+
+SSD-based volumes include two levels to meet your application requirements:
+* General Purpose SSD volumes (gp3 and gp2) balance price and performance for transactional applications, including virtual desktops, test and development environments, and interactive gaming applications.
+* Provisioned IOPS SSD volumes are the highest performance EBS volumes (io2, io2 Block Express, and io1) for your most demanding transactional applications, including SAP HANA, Microsoft SQL Server, and IBM DB2.
+
+HDD-based volumes include Throughput Optimized HDD (st1) for frequently accessed, throughput-intensive workloads and the lowest cost Cold HDD (sc1) for less frequently accessed data.
+
+You can choose the volume type that best meets your application and use-case requirements. You can change from one volume type to another.
+
+#### Elastic Volumes
+Elastic Volumes is a feature that helps you quickly adapt your volumes as the needs of your applications change. The Elastic Volumes feature empowers you to dynamically increase capacity, tune performance, and change the type of any new or existing current generation volume with no downtime or performance impact. You can quickly right-size your deployment and adapt to performance changes.
+
+You can create a volume with the capacity and performance needed today, knowing that you have the ability to modify your volume configuration in the future. Elastic Volumes can save you hours of planning cycles.
+
+By using CloudWatch with AWS Lambda, you can automate volume changes to meet the changing needs of your applications.
+
+The Elastic Volumes feature makes it quicker to adapt your resources to changing application demands, giving you confidence that you can make modifications in the future as your business needs change.
+
+#### Multi-Attach
+Customers can activate Multi-Attach on an EBS Provisioned IOPS io2 or io1 volume. Multi-Attach permits a single EBS volume to be concurrently attached to up to 16 Nitro-based EC2 instances within the same Availability Zone.
+
+Multi-Attach helps you achieve higher application availability for applications that manage storage consistency from multiple writers. Each attached instance has full read and write permission to the shared volume. Applications using Multi-Attach need to provide I/O fencing for storage consistency. There is no additional fee to turn on Multi-Attach.
+
+#### Volume monitoring
+Performance metrics, such as bandwidth, throughput, latency, and average queue length, are available through the console. Using these metrics, provided by CloudWatch, you can monitor the performance of your volumes to make sure that you are providing enough performance for your applications without paying for resources you don't need.
+
+#### Snapshots
+Amazon EBS provides the ability to save point-in-time snapshots of your volumes to Amazon S3. EBS snapshots are stored incrementally. Only the blocks that have changed after your last snapshot are saved, and you are billed only for the changed blocks. 
+
+When you delete a snapshot, you remove only the data not needed by any other snapshot. All active snapshots contain all the information needed to restore the volume to the instant at which that snapshot was taken. The time to restore changed data to the working volume is the same for all snapshots.
+
+Snapshots can be used to instantiate multiple new volumes, expand the size of a volume, or move volumes across Availability Zones. When a new volume is created, you can choose to create it based on an existing EBS snapshot. In that scenario, the new volume begins as an exact replica of the snapshot.
+
+##### Key snapshot feature capabilities include the following:
+* Direct read access of EBS snapshots
+* Ability to create EBS snapshots from any block storage
+* Immediate access to EBS volume data
+* Instant full performance on EBS volumes restored from snapshots using Fast Snapshot Restore (FSR)
+ * Additional hourly charge for FSR
+* Ability to resize EBS volumes
+* Ability to share EBS snapshots
+* Ability to copy EBS snapshots across Regions
+
+#### Backups
+AWS Backup supports backing up your EBS volumes. AWS Backup helps you to centralize and automate data protection across AWS services. AWS Backup offers a cost-effective, fully managed, policy-based service that further simplifies data protection at scale. 
+
+AWS Backup also helps you support your regulatory compliance obligations and meet your business continuity goals. Together with AWS Organizations, AWS Backup helps you centrally deploy data protection (backup) policies to configure, manage, and govern your backup activity across your organization’s AWS accounts and resources. 
+
+AWS Backup supports many AWS services, including 
+* EC2 instances,
+* EBS volumes, 
+* Amazon RDS databases (including Amazon Aurora clusters), 
+* Amazon DynamoDB tables, 
+* Amazon EFS, 
+* FSx for Lustre, 
+* FSx for Windows File Server, 
+* and Storage Gateway volumes. 
+
+### Amazon EBS Volume Types
+Having an understanding of the different EBS volume types is critical when you are designing storage for your applications and workloads. In this section, you will learn more about EBS volume types, including minimum and maximum volume sizes; baseline, burst, and maximum performance; and ways to increase performance for the volume type.
+
+### Types of EBS Volumes
+Amazon EBS provides the following volume types: General Purpose SSD, Provisioned IOPS SSD, Throughput Optimized HDD, Cold HDD, and Magnetic (standard). They differ in performance characteristics and cost, which lets you to tailor your storage performance and cost to the needs of your applications. 
+
+* Your account has a limit on the number of EBS volumes that you can use and the total storage available to you. You can request an increase in your limits if required.
+* You can attach multiple EBS volumes to a single instance. The volume and instance must be in the same Availability Zone.
+* Depending on the EBS volume type and EC2 instance types, you can use multi-attach to mount a volume to multiple instances at the same time.
+
+### General Purpose SSDs
+General Purpose SSD-backed volumes provide a balance of price and performance. AWS recommends these for most workloads. The current General Purpose SSD offering includes gp2 and gp3 volume types. 
+
+#### gp2 General Purpose SSD volumes
+gp2 General Purpose SSD volumes offer cost-effective storage that is ideal for a broad range of workloads. These volumes deliver single-digit millisecond latencies and the ability for smaller volumes to burst to 3,000 IOPS for extended periods of time. gp2 volume performance scales with the volume size.
+
+* Baseline performance scales linearly at 3 IOPS per gibibyte (GiB) of volume size.
+* Performance ranges from a minimum of 100 IOPS at 33.33 GiB and below to a maximum of 16,000 IOPS at 5,334 GiB and above.
+* gp2 volumes are designed to deliver their provisioned performance 99 percent of the time.
+* gp2 volume size can range from 1 GiB to 16 tebibyte (TiB).
+* A flat-rate pricing model is based on the provisioned volume size.
+
+#### gp2 I/O burst credits and burst performance
+gp2 volume performance is tied to volume size, which determines the baseline performance level of the volume and how quickly it accumulates I/O or burst credits. I/O credits represent the available bandwidth that your gp2 volume can use to burst large amounts of I/O when more than the baseline performance is needed. 
+
+* Larger volumes have higher baseline performance levels and accumulate I/O credits faster.
+* The more credits your volume has for I/O, the more time it can burst beyond its baseline performance level and the better it performs when more performance is needed.
+* Each volume receives an initial I/O credit balance of 5.4 million I/O credits, which is enough to sustain the maximum burst performance of 3,000 IOPS for at least 30 minutes. This initial credit balance is designed to provide a fast initial boot cycle for boot volumes and to provide a good bootstrapping experience for other applications.
+* gp2 volumes earn I/O credits at the baseline performance rate of 3 IOPS per GiB of provisioned volume size.
+* When your volume uses fewer I/O credits than it earns in a second, unused I/O credits are added to the I/O credit balance.
+* When your volume requires more than the baseline performance I/O level, it draws on I/O credits in the credit balance to burst to the required performance level up to a maximum of 3,000 IOPS.
+* When the baseline performance of a volume is higher than maximum burst performance, I/O credits are never spent.
+
+#### gp3 General Purpose SSD volumes
+gp3 General Purpose SSD volumes offer cost-effective storage that is ideal for a broad range of workloads. gp3 volumes deliver a consistent baseline rate of 3,000 IOPS and 125 megabytes per second (MBps) of throughput included with the price of storage. With gp3, you scale IOPS and throughput independent from the volume size.
+
+* gp3 consistent baseline performance of 3,000 IOPS and 125 MBps throughput is included with the price of storage.
+* You can independently provision additional performance up to a total of 16,000 IOPS and 1,000 MBps throughput for an additional cost.
+ * The maximum ratio of provisioned IOPS to provisioned volume size is 500 IOPS per GiB.
+  * 32 GiB or larger volume size: 500 IOPS/GiB x 32 GiB = 16,000 IOPS
+ * The maximum ratio of provisioned throughput to provisioned IOPS is 0.25 MBps per provisioned IOPS.
+  * 8 GiB or larger volume size with 4,000 provisioned IOPS or higher: 4,000 IOPS x 0.25 MBps/IOPS = 1,000 MBps
+* There is flat-rate pricing for provisioned volume size and a tiered pricing model for provisioned IOPS and throughput.
+
+#### General Purpose SSD comparison
+
+| Description | gp3 Volumes | gp2 Volumes |
+| ----------- | ----------- | ----------- |
+| Durability | 99.8–99.9% durability (0.1–0.2% AFR) | 99.8–99.9% durability (0.1–0.2% AFR) |
+| Volume size | 1 GiB–16 TiB | 1 GiB–16 TiB |
+| Minimum/maximum IOPS at 16 kibibyte (KiB) I/O | 16,000 | 16,000 |
+| Maximum throughput per volume | 1,000 MBps | 250 MBps* |
+| Boot volume | Supported | Supported |
+| Multi-attached volumes  | Not supported | Not supported |
+ 
+*The throughput limit is 128–250 mebibytes per second (MiBps), depending on the volume size.
+
+* Volumes smaller than or equal to 170 GiB deliver a maximum throughput of 128 MiBps.
+* Volumes larger than 170 GiB but smaller than 334 GiB deliver a maximum throughput of 250 MiBps if burst credits are available. 
+* Volumes larger than or equal to 334 GiB deliver 250 MiBps regardless of burst credits. 
+
+### Provisioned IOPS SSDs
+Provisioned IOPS SSD-backed volumes provide high performance for mission-critical, low-latency, or high-throughput workloads. Provisioned IOPS SSD volumes are designed to meet the needs of I/O-intensive workloads, particularly database workloads, that are sensitive to storage performance and consistency. AWS recommends these for most of your demanding workloads.
+
+The current Provisioned IOPS SSD offering includes io1 and io2 volume types. io2 offers performance for I/O-intensive applications and databases, while io2 Block Express can be used for high-performance, business-critical applications and databases.
+
+#### io1 and io2 Provisioned IOPS SSD volume differences
+##### Durability
+* io1 volumes are designed to provide 99.8–99.9 percent volume durability with an AFR no higher than 0.2 percent, which translates to a maximum of two volume failures per 1,000 running volumes over a 1-year period.
+* io2/io2 Block Express volumes are designed to provide 99.999 percent volume durability with an AFR no higher than 0.001 percent, which translates to a single volume failure per 100,000 running volumes over a 1-year period. 
+
+##### Available EC2 instance types
+* Provisioned IOPS SSD io1 volumes are available for all EC2 instance types.
+* Provisioned IOPS SSD io2 volumes are available for all EC2 instance types.
+
+##### Maximum ratio of provisioned IOPS to requested volume size
+* The maximum ratio of provisioned IOPS to requested volume size (in GiB) is 50:1 for io1 volumes and 500:1 for io2 volumes.
+ * For example, a 100-GiB io1 volume can be provisioned with up to 5,000 IOPS, while a 100-GiB io2 volume can be provisioned with up to 50,000 IOPS.
+* On a supported instance type, io1 volumes require a 10 times greater volume size for provisioning up to the 64,000 IOPS maximum.
+ * io1 volume of 1,280 GiB or greater for maximum IOPS (50 × 1,280 GiB = 64,000 IOPS).
+ * io2 volume of 128 GiB or greater for maximum IOPS (500 × 128 GiB = 64,000 IOPS).
+
+#### Provisioned IOPS SSD comparison
+
+| Description | io1 | io2 | io2 Block Express |
+| ----------- | --- | --- | ----------------- |
+| Durability | 99.8–99.9% durability (0.1–0.2% AFR)  | 99.999% durability (0.001% AFR) | 99.999% durability (0.001% AFR) |
+| Volume size | 4 GiB–16 TiB | 4 GiB–16 TiB | 4 GiB–64 TiB |
+| Minimum/maximum IOPS at 16 KiB I/O | 100–64,000 | 64,000* | 256,000 |
+| Maximum throughput per volume | 1,000 MBps | 1,000 MBps* | 4,000 MBps |
+
+**Maximum IOPS and throughput are guaranteed only on instances built on the Nitro System and provisioned with more than 32,000 IOPS. Other instances guarantee up to 32,000 IOPS and 500 MBps. **
+
+### HDD-backed volumes
+The HDD-backed volumes that Amazon EBS provides fall into two categories: st1 Throughput Optimized HDD volumes and sc1 Cold HDD volumes.
+
+#### Throughput Optimized HDD
+Throughput Optimized HDD provides low-cost HDDs designed for frequently accessed, throughput-intensive workloads. Throughput Optimized HDD (st1) volumes provide low-cost magnetic storage that defines performance in terms of throughput instead of IOPS. st1 volumes are designed to support frequently accessed data. This volume type is optimized for workloads involving large, sequential I/O. AWS recommends that you use gp3 General Purpose SSD volumes for workloads performing small, random I/O.
+
+This volume type is a good fit for large, sequential workloads such as Amazon EMR; data warehouses; log processing; and extract, transform, and load (ETL) workloads.
+
+* Maximum IOPS is based on 1 MB I/O size, with a baseline throughput of 40 MBps per TB of volume size for st1 volumes. 
+* Sustained throughput performance ranges from 5 MBps at 125 GiB to a maximum of 500 MBps at 12,775 GiB and above.
+* Baseline burst performance scales from 40 MBps per tebibyte to 500 MBps.
+* st1 volumes are designed to deliver their expected throughput performance 99 percent of the time.
+* st1 volume size can range from 125 GiB to 16 TiB.
+
+##### st1 throughput credits and burst performance
+st1 volume performance is tied to volume size, which determines the baseline throughput of your volume and how quickly it accumulates throughput burst credits. Throughput burst credits represent the available bandwidth that your st1 volume can use to burst large amounts of throughput when more than the baseline performance is needed. 
+
+* Larger volumes have higher baseline performance levels and accumulate burst throughput credits faster.
+* The more credits your volume has, the more time it can burst beyond its baseline performance level and the better it performs when more performance is needed.
+* For a 1-TiB st1 volume, burst throughput is limited to 250 MBps. Larger volumes scale these limits linearly with throughput capped at a maximum of 500 MBps. 
+* The bucket fills with credits at 40 MBps, and it can hold up to 1 TiB of credits.
+* When your volume uses fewer burst credits than it earns in a second, unused burst credits are added to the throughput credit balance.
+* When your volume requires more than the baseline throughput performance level, it draws on burst credits in the credit balance to burst to the required performance level.
+* When the baseline performance of a volume is higher than maximum burst performance, I/O credits are never spent.
+
+#### Cold HDD
+Cold HDD provides the lowest cost HDD design for less frequently accessed workloads. Use cases include throughput-oriented storage for data that is infrequently accessed and scenarios where the lowest storage cost is important.
+
+* Maximum IOPS is based on 1 MB I/O size, with a baseline throughput of 12 MBps per terabyte of volume size for sc1 volumes. 
+* Sustained throughput performance ranges from 1.5 MBps at 125 GiB to a maximum of 192 MBps at 16,384 GiB.
+* Baseline burst performance scales from 12 MBps per tebibyte to 250 MBps.
+* sc1 volumes are designed to deliver their expected throughput performance 99 percent of the time.
+* sc1 volume size can range from 125 GiB to 16 TiB.
+
+##### sc1 throughput credits and burst performance
+sc1 volume performance is tied to volume size, which determines the baseline throughput of your volume and how quickly it accumulates throughput burst credits. sc1 throughput credit and burst performance behave the same as st1 volumes although at a lower scale.
+
+* Larger volumes have higher baseline performance levels and accumulate burst throughput credits faster.
+* The more credits your volume has, the more time it can burst beyond its baseline performance level and the better it performs when more performance is needed.
+* For a 1-TiB st1 volume, burst throughput is limited to 80 MBps. Larger volumes scale these limits linearly, with throughput capped at a maximum of 250 MBps.
+* The bucket fills with credits at 12 MBps, and it can hold up to 1 TiB of credits.
+
+#### HDD volume comparison
+
+| Description | Throughput Optimized HDD | Cold HDD |
+| ----------- | ------------------------ | -------- |
+| Durability | 99.8–99.9% durability (0.1–0.2% AFR) | 99.8–99.9% durability (0.1–0.2% AFR)  |
+| Volume size | 125 GiB–16 TiB | 125 GiB–16 TiB |
+| Minimum/maximum throughput at 1 MB I/O | 5–500 MBps | 2–192 MBps |
+| Maximum burst throughput per volume | 500 MBps | 250 MBps |
+| Boot volume | Not supported | Not supported |
+| Multi-attached volumes | Not supported | Not supported |
+
+### Choosing the Correct Amazon EBS Volume Type
+Choosing the correct EBS volume type to use for your workload can seem like an overwhelming task as you first begin configuring volumes for your workloads. AWS has simplified your challenge by making it possible to change volume types and performance characteristics. You can be assured that you can later modify the EBS volume type that you initially selected to meet your workflow requirements.
+
+### Preparing to make your decision
+Understanding your workload characteristics can help simplify the selection process of your EBS volume types for your workload. You can take some preliminary actions to help provide the information that you require for your decision.
+
+#### Existing on-premises workloads
+To prepare to move your on-premises workloads to the AWS Cloud, AWS recommends that you collect as much information about the workloads as you can:
+
+* Storage configuration information is helpful to plan your EBS volume use. How many volumes are used? What storage media are they stored on? What are the volume sizes?
+* Volume performance statistics assist in understanding your current volume performance requirements. Are any volumes experiencing 100 percent utilization? Are any volumes creating performance bottlenecks? What are the IOPS? What are the volume throughput requirements?
+* Understanding your current and future expected workload utilization or consumption helps you to plan for your current needs and future growth. How many overall clients access the workload at a time? What is your expected client growth rate? How will future application releases impact your performance requirements?
+
+#### New AWS Cloud native workloads
+Answering questions for new workloads involves a different type of planning. You don't always have the information available, so what steps can you take to assist your decision-making process? The following are a few options:
+* You can create a test or dev environment to try out the applications using different EBS volume types to measure performance requirements.
+* You can evaluate similar workloads as guidance for your new workload.
+* Use what is expected from your planning process. What is the expected demand? How many expected clients will there be? What is the underlying application or database? The application or database often provides insights into volume configuration and performance requirements.
+* Use monitoring tools available in AWS to monitor and optimize your EBS volumes for performance and costs on a regular schedule.
+
+### Select volume type for workload characteristics
+Your volume type decision is made at the individual volume level. You can connect multiple EBS volume types to your EC2 instance. 
+
+With EBS Elastic Volumes, you can make changes as needed to optimize your EBS volumes. EBS Elastic Volumes let you change the volume type, dynamically increase the volume size, and modify performance characteristics. For gp3 and io2 volumes types, you can dynamically change the provisioned IOPS or provisioned throughput performance settings for your volume.
+
+AWS encourages you to use actual test results and your actual performance data to optimize your EBS volume types for price and performance.
+
+#### Workload characteristics questions
+* Is your workload more IOPS-intensive or throughput-intensive? If your workload is IOPS-intensive, start with the SSD volume types and review the performance characteristics. If your workload is more throughput-intensive, you can start with HDD volume types to see if their performance can meet your requirements.
+* Do the workload requirements exceed the maximum performance characteristics for a selected EBS volume type? If yes, eliminate the volume type from consideration for that volume. Review characteristics for the next higher performing EBS volume type.
+* What is the application's latency sensitivity? If it is very low and sub-millisecond to single-digit millisecond latency is needed, io2 Provisioned IOPS might be required. If single-digit to low two-digit latency is tolerable, gp3 General Purpose SSD might be the correct choice. If your workload is not latency sensitive, HDD volume types can be the most cost-effective choice.
+* Do you prefer to optimize for price or performance? When comparing the EBS volume types, multiple volumes types can satisfy the requirements. Compare the EBS volume configurations required. Which configuration is more cost effective? Does a configuration offer additional desirable performance characteristics? Is there a trade-off and what is the value to your workload?
+
+### AWS Compute Optimizer for EBS volumes
+Once your EBS volumes are in operation, you can monitor them and verify that your volumes are providing optimal performance and cost effectiveness using Compute Optimizer.
+
+Compute Optimizer is a service that analyzes the configuration and utilization metrics of your AWS resources. It reports if your resources are optimized and generates optimization recommendations to reduce the cost and improve the performance of your workloads. 
+
+Compute Optimizer also provides graphs showing recent utilization metric data and projected utilization for recommendations. You can use this information to evaluate which recommendation provides the best price-performance trade-off. 
+
+The analysis and visualization of your usage patterns can help you decide when to move or resize your running resources and still meet your performance and capacity requirements.
+
+Compute Optimizer generates recommendations for EC2 instances, EC2 Auto Scaling groups, EBS volumes, and Lambda functions.
+
+For Compute Optimizer to generate recommendations for these resources, they must meet a specific set of requirements and must have accumulated sufficient metric data.
+
+You must opt in to have Compute Optimizer analyze your AWS resources. The service supports standalone AWS accounts, member accounts of an organization, and the management account of an organization.
+
+After you opt in, Compute Optimizer begins analyzing the specifications and the utilization metrics of your resources from CloudWatch. The Compute Optimizer dashboard displays the optimization findings for your resources.
+
+### Amazon EBS Snapshots
+Amazon EBS snapshots creates backup copies of your data in your EBS volumes. Snapshots are stored in a protected part of Amazon S3 as part of the managed service. Storing snapshots on Amazon S3 protects your data with 11 nines of durability and provides you regional access and availability.
+
+### Amazon EBS snapshots overview
+Using Amazon EBS snapshots, you can back up the data on your Amazon EBS volumes to Amazon S3 by taking point-in-time snapshot copies. Snapshots are incremental copies of the data, which means that only the blocks on your EBS volumes that have changed after your most recent snapshot are saved. Incremental snapshots minimize the time required to create the snapshot and saves on storage costs by not duplicating previously saved data. Collectively, the volume snapshots contain all of the information for that point in time that is needed to restore your data to a new EBS volume.
+
+When you create a new EBS volume based on a snapshot, the new volume begins as an exact replica of the original volume that was used to create the snapshot. Your data is loaded into the new replicated volume in the background. You can begin to use your new volume immediately while the EBS volume data loads. If you access data that hasn't been loaded yet, the volume immediately downloads the requested data from Amazon S3. Amazon EBS snapshots then continues loading the remainder of the volume's data in the background.
+
+Amazon EBS fast snapshot restore (FSR) lets you create a volume from a snapshot that is fully initialized at creation. FSR eliminates the latency of I/O operations on a block when it is accessed for the first time. Volumes that are created using FSR instantly deliver all of their provisioned performance. FSR must turned on for specific snapshots in specific Availability Zones, and it must be explicitly activated for each snapshot.
+
+When you delete a snapshot, only the data unique to that snapshot is removed. Any information contained in that snapshot that is required by other snapshots remains available and is not deleted.
+
+Snapshot events are tracked through CloudWatch events. An event is generated each time you create a single snapshot or multiple snapshots, copy a snapshot, or share a snapshot. 
+
+With snapshots, you can create backup copies of critical workloads, such as a large database or a file system that spans across multiple EBS volumes. Multi-volume snapshots let you take exact point-in-time, data-coordinated, and crash-consistent snapshots across multiple EBS volumes attached to an EC2 instance.
+
+#### HOW INCREMENTAL SNAPSHOTS WORK
+Incremental snapshots provide the point-in-time current state for your EBS volumes. Incremental snapshots use pointers to reference previous data that remains current in the incremental snapshot. Only the current data is retained in each incremental snapshot. 
+
+An initial point-in-time snapshot is created containing all of the data within your EBS volume.
+For each incremental snapshot after that, the following occurs:
+All new data is copied to the new incremental snapshot.
+Previously existing and unchanged data is not copied to the incremental snapshot. The new snapshot references the previously existing unchanged data. Any previously existing data that has been changed or deleted is not included in the new incremental snapshot.
+Any saved snapshot contains all of the data or references necessary to restore to that point in time.
+
+#### AVAILABLE SNAPSHOT ACTIONS
+Snapshots provide you the capabilities to manage your snapshots manually or by using an automated process. The following options are available: 
+* **Create snapshots** – You can create manual snapshots or create snapshot schedules. Snapshots occur asynchronously; the point-in-time snapshot is created immediately, but the status of the snapshot is pending until the snapshot is complete. The snapshot is complete when all modified blocks are transferred to Amazon S3. 
+* **Delete snapshots** – You can delete any snapshot whether it is a full or incremental snapshot. When you delete a snapshot, only the data that is referenced exclusively by that snapshot is removed. Unique data is only deleted if all of the snapshots that reference it are deleted.
+* **Copy a snapshot** – You can copy a completed snapshot within the same Region or from one Region to another. The snapshot copy receives an ID that is different from the ID of the original snapshot.
+* **View snapshot information** – You can view detailed information about your snapshot using the describe-snapshots AWS CLI command or Get-EC2Snapshot command using AWS Tools for PowerShell. You can filter the results based on various fields including tags, specific volume, date ranges, and snapshot owner.
+* **Share a snapshot** – By modifying the permissions of a snapshot, you can share it with other AWS accounts that you specify. Authorized users can use the shared snapshots as the basis for creating their own EBS volumes. Shared snapshot copies can be modified by the authorized user; however, your original snapshot remains unaffected.
+
+### Copy and share snapshots
+A snapshot is constrained to the Region where it was created. After you create a snapshot of an EBS volume, you can use it to create new volumes in the same Region. You can also copy snapshots across Regions, making it possible to use multiple Regions for geographical expansion, data center migration, and disaster recovery. You can copy any accessible snapshot that has a completed status.
+
+You can share a snapshot across AWS accounts by modifying its access permissions. You can also make copies of snapshots that have been shared with you.
+
+### Encryption support
+Snapshots fully support Amazon EBS encryption. To modify volume encryption, you must own the volume or have access to it. Snapshot encryption follows a set of prescribed rules to provide a predictable experience:
+* Snapshots of encrypted volumes are automatically encrypted.
+* Volumes created from encrypted snapshots are automatically encrypted.
+* Volumes created from an unencrypted snapshot can be encrypted during the creation process.
+* When you copy an unencrypted snapshot, you can encrypt it during the copy process.
+* When you copy an encrypted snapshot, you can re-encrypt it with a different encryption key during the copy process.
+* The first snapshot taken of an encrypted volume that was created from an unencrypted snapshot is always a full snapshot.
+* The first snapshot taken of a re-encrypted volume that has a different encryption key from the source snapshot is always a full snapshot.
+
+**A new full snapshot copies all of the data in your EBS volume, which results in additional storage costs and can result in additional delay.**
+
+### Amazon Data Lifecycle Manager
+You can use Amazon Data Lifecycle Manager to automate the creation, retention, and deletion of snapshots that you use to back up your EBS volumes and Amazon EBS-backed Amazon Machine Images (AMIs). 
+
+Amazon Data Lifecycle Manager uses a combination of elements to automate the lifecycle management process:
+* EBS snapshots are one of the primary resource and lifecycle policy types for Amazon Data Lifecycle Manager. 
+* Amazon EBS-backed AMIs provide the information that's required to launch an EC2 instance. Amazon EBS-backed AMIs are also primary resources and lifecycle policy types for Amazon Data Lifecycle Manager.
+* Target resource tags are used to identify the resources to back up. Tags are customizable metadata that you assign to your AWS resources, including EC2 instances, EBS volumes, and snapshots.
+* Amazon Data Lifecycle Manager tags are specific tags applied to all snapshots and AMIs created by a lifecycle policy. These tags distinguish them from snapshots and AMIs created by any other means. You can also specify custom tags to be applied to snapshots and AMIs on creation.
+* Lifecycle policies are created using core policy settings to define the automated policy action and behavior.
+* Policy schedules determine when and how often the lifecycle policy is ran.
+
+#### LIFECYCLE POLICIES
+Lifecycle policy consists of these core settings:
+* **Policy type** – Defines the type of resources that the policy can manage. Amazon Data Lifecycle Manager supports two types of lifecycle policies:
+ * **Snapshot lifecycle policy** – Used to automate the lifecycle of EBS snapshots. These policies can target EBS volumes and instances.
+  * **Cross-account copy event policy** – Used to automate the copying of snapshots across accounts. This policy type should be used with an EBS snapshot policy that shares snapshots across accounts.
+ * **EBS-backed AMI lifecycle policy** – Used to automate the lifecycle of EBS-backed AMIs. These policies can target instances only.
+* **Resource type** – Defines the type of resources that are targeted by the policy. **Snapshot lifecycle policies** can target **instances** or **volumes**. Use *VOLUME* to create snapshots of individual volumes, or use *INSTANCE* to create multi-volume snapshots of all of the volumes that are attached to an instance. **AMI lifecycle policies** can target **instances only**. One AMI is created that includes snapshots of all of the volumes that are attached to the target instance.
+* **Target tags** – Specifies the tags that must be assigned to an EBS volume or an EC2 instance for it to be targeted by the policy.
+* **Schedules** – The start times and intervals for creating snapshots or AMIs. The first snapshot or AMI creation operation starts within one hour after the specified start time. Subsequent snapshot or AMI creation operations start within one hour of their scheduled time. 
+* **Retention** – Specifies how snapshots or AMIs are to be retained. You can retain snapshots or AMIs based on their total count (count-based) or their age (age-based). 
+ * For snapshot policies, when the retention threshold is reached, the oldest snapshot is deleted.
+ * For AMI policies, when the retention threshold is reached, the oldest AMI is deregistered and its backing snapshots are deleted.
+
+Amazon Data Lifecycle Manager quotas are the following:
+* You can create up to 100 lifecycle policies for each Region.
+* You can add up to 45 tags for each resource.
+
+#### POLICY SCHEDULES
+Policy schedules define when snapshots or AMIs are created by the policy. Policies can have up to **four** schedules — **one mandatory** schedule and **up to three optional** schedules. 
+
+Adding multiple schedules to a single policy lets you create snapshots or AMIs at different frequencies using the same policy. For example, you can create a **single policy** that creates **daily**, **weekly**, **monthly**, and **yearly** snapshots. This eliminates the need to manage multiple policies. 
+
+For each schedule, you can define the frequency, fast snapshot restore settings (*fsnapshot lifecycle policies only*), cross-Region copy rules, and tags. The tags that are assigned to a schedule are automatically assigned to the snapshots or AMIs that are created when the schedule is activated. In addition, Amazon Data Lifecycle Manager automatically assigns a system-generated tag based on the schedule's frequency to each snapshot or AMI.
+
+Each schedule is activated individually based on its frequency. If multiple schedules are activated at the same time, Amazon Data Lifecycle Manager creates only one snapshot or AMI and applies the retention settings of the schedule that has the highest retention period. The tags of all of the activated schedules are applied to the snapshot or AMI.
+
+### Amazon EBS Architecture
