@@ -2240,3 +2240,687 @@ For each schedule, you can define the frequency, fast snapshot restore settings 
 Each schedule is activated individually based on its frequency. If multiple schedules are activated at the same time, Amazon Data Lifecycle Manager creates only one snapshot or AMI and applies the retention settings of the schedule that has the highest retention period. The tags of all of the activated schedules are applied to the snapshot or AMI.
 
 ### Amazon EBS Architecture
+Amazon EBS architecture is built to deliver block storage performance for Amazon EC2. You can use the same connectivity and access methods that you use to reach your EC2 instances to reach your EBS volumes. For example, you can connect using the Internet, a VPN, PrivateLink, or Direct Connect. You can access the service using AWS APIs, the AWS CLI, or the console. As you build your applications, you use a combination of the architectures to deliver the resources you need for your workloads.
+
+#### Basic architecture
+The basic Amazon EBS architecture consists of EBS volumes attached to an EC2 instance:
+* You can have multiple EBS volumes and different EBS volume types attached to the same instance.
+* The EC2 instance and the attached EBS volumes reside in a single Availability Zone. You cannot attach EBS volumes to EC2 instances in a different Availability Zone.
+* You can create Amazon EBS snapshots for each of your EBS volumes. The snapshots are stored in an AWS managed S3 bucket within the same Region where your EBS volume resides.
+* Access to the EC2 instances and the EBS volumes is controlled using IAM. Users, groups, and roles must have permissions to access the EC2 instance and the EBS volumes.
+* You can use any connectivity method to access your resources in your VPC in the Region.  
+
+#### Advanced architecture – Multi-Attach
+Amazon EBS Multi-Attach architecture consists of multiple EC2 instances connected to a single EBS volume:
+* Multi-Attach is only supported with provisioned IOPS SSD (io1, io2, and io2 Block Express) EBS volume types.
+* The EC2 instances and the attached EBS volumes reside in a single Availability Zone. You cannot attach EBS volumes to EC2 instances in a different Availability Zone.
+* Amazon EBS does not manage data consistency for multiple writers. Your application or operating system environment must manage data consistency operations.
+* You can create EBS snapshots for your Multi-Attach EBS volume. The snapshots are stored in an AWS managed S3 bucket within the same Region where your EBS volume resides.
+* Access to the EC2 instances and the EBS volumes is controlled using IAM. Users, groups, and roles must have permissions to access the EC2 instance and the EBS volumes.
+* You can use any connectivity method to access your resources in your VPC in the Region.  
+
+#### Advanced architecture – striped volumes
+Amazon EBS architecture consists of multiple EBS volumes in a striped redundant array of independent disks (RAID) type configuration. The striped configuration uses a RAID 0 style process to increase the volume size and increase performance for the combined EBS volumes:
+* In a striped configuration, the volumes operate as a single EBS volume. 
+* A striped EBS volume attaches to a single EC2 instance.
+* RAID systems are configured using the operating system of the EC2 instance.
+* The EC2 instances and the attached EBS volume reside in a single Availability Zone. You cannot attach EBS volumes to EC2 instances in a different Availability Zone.
+* You can create EBS snapshots for your striped EBS volume. The snapshots are stored in an AWS managed S3 bucket within the same Region where your EBS volume resides.
+* Access to the EC2 instances and the EBS volumes is controlled using IAM. Users, groups, and roles must have permissions to access the EC2 instance and the EBS volumes.
+* You can use any connectivity method to access your resources in your VPC in the Region.
+
+### Knowledge Check
+#### What are incremental, point-in-time copies of data stored in Amazon Elastic Block Store (Amazon EBS) volumes known as?
+* **Snapshots**
+* Instances
+* Tags
+* Snippets
+
+**Snapshots.** 
+
+The other options are incorrect because of the following: 
+* Instances are Amazon EC2 servers. 
+* Tags are keywords used for management of data.
+* Snippets are pieces of code.
+
+#### A company is working with a consultant in planning to migrate their database workload to the cloud. The database being migrated is I/O-intensive and sensitive to storage performance and consistency. Which Amazon Elastic Block Store (Amazon EBS) volumes would best fit their needs?
+* Volumes backed by gp2 General Purpose SSDs
+* **Volumes backed by io2 Provisioned IOPS SSDs**
+* Volumes backed by gp3 General Purpose SSDs
+* Volumes backed by st1 Throughput Optimized HDDs
+
+**io2 Provisioned IOPS SSD volumes** are designed to meet the needs of I/O-intensive workloads, particularly database workloads, that are sensitive to storage performance and consistency. 
+
+The other options are incorrect because of the following:
+* gp2 and gp3 General Purpose SSDs are adequate for general use, but they are not optimal for I/O-intensive databases.
+* st1 Throughput Optimized HDD-backed volumes are best suited as storage volumes for large, sequential workloads such as Amazon EMR or log processing. HDD-backed volumes are not ideal for database workloads.
+
+#### How are the resources to be backed up in a snapshot identified when using Amazon Data Lifecycle Manager?
+* Amazon Data Lifecycle Manager tags
+* Encryption keys
+* **Target resource tags**
+* Retention policies
+
+**Target resource tags** are used to identify the resources to back up. Tags are customizable metadata that users assign to their AWS resources, including EC2 instances, Amazon Elastic Block Store (Amazon EBS) volumes, and snapshots.
+
+The other options are incorrect because of the following: 
+* Amazon Data Lifecycle Manager tags are tags that are applied to all snapshots and Amazon Machine Images created by a lifecycle policy. 
+* Encryption keys are used to encrypt and decrypt snapshots, not to identify resources.
+* Retention policies apply to the snapshot as a whole and determine how long they are retained.
+
+### Summary
+* Describing the features and benefits of Amazon EBS
+* Identifying Amazon EBS volume types and their performance characteristics
+* Identifying the benefits of using Amazon EBS and Amazon EBS optimized instances
+* Discussing how to choose between the different types of Amazon EBS instances
+* Discussing the use and benefits of Amazon EBS snapshots
+* Discussing Amazon EBS lifecycle events
+
+#### Amazon EBS
+Amazon EBS is an easy-to-use, high performance, block storage service designed for use with Amazon EC2 for both throughput and transaction-intensive workloads at any scale. Amazon EBS is well suited to both database-style applications that rely on random reads and writes, and to throughput-intensive applications that perform long, sequential reads and writes. 
+
+EBS volumes behave like raw, unformatted block devices. You can mount these block devices as EBS volumes on your EC2 instances. EBS volumes that are attached to an EC2 instance are exposed as raw block storage volumes that persist independently from the life of the instance. 
+
+The AWS block storage portfolio consists of two types of block storage services—instance storage and Amazon EBS—and an integrated snapshot service.
+
+##### Instance store
+Instance storage is temporary block-level storage attached to host hardware that is ideal for storing information that frequently changes or is replicated across multiple instances. 
+
+##### Amazon EBS storage
+Amazon EBS is a block storage service designed for use with Amazon EC2.  Amazon EBS scales to support virtually any workload and any volume size.
+
+##### Snapshots
+Snapshots are incremental, point-in-time copies of your data stored on your EBS volumes. You can use snapshots to restore new volumes, expand the size of a volume, or move volumes across Availability Zones. 
+
+#### Amazon EBS volume types
+Amazon EBS provides the following volume types: General Purpose SSD, Provisioned IOPS SSD, Throughput Optimized HDD, Cold HDD, and Magnetic (standard). They differ in performance characteristics and cost, which lets you to tailor your storage performance and cost to the needs of your applications. 
+
+* General Purpose SSD-backed volumes provide a balance of price and performance. AWS recommends these for most workloads. The current General Purpose SSD offering includes gp2 and gp3 volume types.
+* Provisioned IOPS SSD-backed volumes provide high performance for mission-critical, low-latency, or high-throughput workloads. The current Provisioned IOPS SSD offering includes io1 and io2 volume types.
+* The HDD-backed volumes that Amazon EBS provides fall into two categories: st1 Throughput Optimized HDD volumes and sc1 Cold HDD volumes.
+* Magnetic (standard) volumes are not recommended and are generally only used to provide backward compatibility. 
+
+#### Amazon EBS Snapshots
+Amazon EBS Snapshots creates backup copies of your data in your EBS volumes. Snapshots are stored in a protected part of Amazon S3 as part of the managed service. You can back up the data on your Amazon EBS volumes to Amazon S3 by taking point-in-time snapshot copies. EBS Snapshots fully support EBS encryption.
+
+### Additional Resources
+#### [Amazon EBS](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonEBS.html)
+
+#### [Amazon EBS Elastic Volumes](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-modify-volume.html)
+
+## Amazon EFS
+### Pre-assessment
+#### Which throughput mode is the default for Amazon Elastic File System (Amazon EFS) and is recommended for most workloads?
+* Provisioned throughput
+* **Elastic throughput**
+* General purpose
+* Max I/O
+
+**Elastic throughput.**
+
+The other options are incorrect because of the following: 
+* Provisioned throughput is recommended for workloads requiring higher throughput-to-storage ratios.
+* General purpose and Max I/O are performance modes, not throughput modes.
+
+#### Amazon Elastic File System (Amazon EFS) offers two storage classes, each with their own subtypes. What are those storage classes? (Choose TWO.)
+* General Purpose
+* Elastic Throughput
+* **Standard**
+* **One Zone**
+* Max I/O
+
+**Standard** and **One Zone**.
+
+The other options are incorrect because General Purpose, Elastic Throughput, and Max I/O are performance and throughput modes.
+
+#### Which of these options are features and benefits provided by Amazon Elastic File System (Amazon EFS)? (Choose TWO.)
+* **Serverless**
+* Server-based
+* Direct-attached
+* **Fully managed**
+* Rigidity
+
+**Serverless** and **Fully managed**.
+
+The other options are incorrect because of the following: 
+* Amazon EFS is a serverless service. 
+* When used with Amazon EC2, Amazon EFS does not work as direct-attached storage.
+* A major benefit of Amazon EFS is its scalability.
+
+### Amazon EFS Features and Benefits
+### Amazon EFS overview
+Amazon EFS provides a practical, cloud-native, serverless shared file system that is optimized for cost and performance.
+
+We launched Amazon EFS back in 2016 to give customers a user-friendly, set-and-forget, fully managed, cloud-native file system. You can get up and running in seconds with just a few clicks and have petabyte-scale elastic storage that’s uncomplicated to use. Amazon EFS provides the capabilities and integrations you need to confidently run business-critical applications requiring shared file storage in the cloud.
+
+Let's look at the features and benefits of Amazon EFS:
+* Fully managed shared file system
+* Scalable storage and performance
+* High availability and durability
+* Security
+* Cost optimization
+
+**Amazon EFS is a shared set-and-forget file system that is convenient and serverless and opens up new possibilities.**
+
+#### Fully managed shared file system
+Amazon EFS is serverless, so you don’t need to provision or manage any infrastructure or capacity. 
+
+Amazon EFS file systems can be shared with up to tens of thousands of concurrent clients, no matter the type. These can be traditional EC2 instances. They can be containers running in one of your self-managed clusters. They can be containers running in one of the AWS container services—Amazon Elastic Container Service (Amazon ECS), Amazon EKS, or AWS Fargate. Or they can be in a serverless function running in Lambda.
+
+##### Mountable shared file storage
+With Amazon EFS, you can create a file system, mount the file system on your EC2 instances, and then read and write data with multiple clients in your account.
+
+##### File sharing across AWS services
+Amazon EFS file systems can be shared with traditional EC2 instances or containers running in one of the AWS container services—Amazon ECS, Amazon EKS, or Fargate. Or they can be in a serverless function running in Lambda.
+
+##### Amazon SageMaker
+You can also use Amazon EFS with the AWS machine learning platform SageMaker.
+
+##### Direct Connect and AWS VPN
+You can access your Amazon EFS file systems on premises with Direct Connect and AWS VPN.
+
+#### Scalable storage and performance
+Amazon EFS provides a scalable elastic file system for use with AWS Cloud services and on-premises resources. A file system can grow to store petabytes of data.
+
+As a managed service, the appropriate storage size is allocated so that you don’t need to worry about administration tasks. Amazon EFS automatically scales capacity out or in to meet your changing storage demands. This scalability means that you avoid overprovisioning storage, and you pay only for storage that you use.
+
+With Amazon EFS, your performance can scale along with your capacity. Your performance can scale to up to tens of gigabytes per second of throughput and over 500,000 IOPS.
+
+##### PERFORMANCE MODES
+For every Amazon EFS file system, you will need to choose between one of two performance modes.
+
+**General Purpose** is the default performance mode and is best suited for most workloads. We recommend the General Purpose performance mode for the majority of your Amazon EFS file systems. General Purpose is ideal for latency-sensitive use cases, like web serving environments, content management systems, home directories, and general file serving. If you don't choose a performance mode when you create your file system, Amazon EFS selects the General Purpose mode for you by default.
+
+The **Max I/O** performance mode is recommended for workloads that must scale to higher levels of aggregate throughput and IOPS. This scaling is done with a tradeoff of slightly higher latencies for file metadata operations. Highly parallelized applications and workloads, such as big data analytics, media processing, and genomic analysis, can often benefit from this mode.
+
+##### THROUGHPUT MODES
+For every Amazon EFS file system, you can also choose from one of three throughput modes.
+
+**Elastic Throughput** is the default throughput mode when you have spiky or unpredictable workloads and performance requirements that are difficult to forecast or when your application drives throughput at an average-to-peak ratio of 5 percent or less.
+
+**Bursting Throughput** is recommended for workloads that require performance to scale with the amount of data stored in the file system. The larger the file system, the better your performance will be.
+
+**Provisioned Throughput** is recommended for workloads requiring higher throughput-to-storage ratios. It provides higher levels of aggregate throughput for smaller file systems. With Provisioned Throughput mode, you can instantly provision the throughput of your file system (in MiBps) independent of the amount of data stored.
+
+#### High availability and durability
+Amazon EFS is highly available and designed to be highly durable. It offers a 99.99 percent availability service-level agreement and is designed for 11 nines of data durability.
+
+##### Availabilty Zones
+To achieve availability and durability, all files and directories are redundantly stored within and across multiple Availability Zones. This means that when you write data to Amazon EFS, the write isn’t acknowledged until that data is written across three Availability Zones. Amazon EFS file systems can withstand the full loss of a single Availability Zone while still providing the same quality of service in the other Availability Zones.
+
+##### AWS Backup
+For additional data protection, backup services are provided for your Amazon EFS file systems through close integration with AWS Backup. This will also protect data by storing it across multiple Availability Zones. This service is a completely independent software stack. So it provides you diversity in the physical infrastructure and software implementation of your data availability strategy.
+
+#### Security
+With Amazon EFS, you control access to your files in multiple ways. 
+
+You can control what network resources have access to your file systems using Amazon VPC routing and security group firewall rules. You can further control user and application access to your file systems using IAM policies and Amazon EFS Access Points. 
+
+##### POSIX PERMISSIONS
+You can use Portable Operating System Interface (POSIX)-compliant user-level and group-level permissions to control client access permissions to your file syste
+
+##### AMAZON VPC SECURITY GROUPS
+You can restrict access over the network with Amazon VPC security groups. Security groups determine which IP addresses have network visibility to an Amazon EFS endpoint.
+
+##### IAM ROLES
+You can create IAM roles to control both the creation and administration of your Amazon EFS file system, in addition to client permissions. For example, you can create an IAM role in your account that has specific permissions for the creation, deletion, or modification of file systems. Then you can grant them to the users in your AWS account. 
+
+Additionally, you can use roles to control client access to your data. NFS clients can identify themselves using an IAM role when connecting to an Amazon EFS file system. When a client connects to a file system through a role, Amazon EFS evaluates the AWS account permissions associated with the role and grants access to data accordingly. When you use IAM authorization for NFS clients, client connections and IAM authorization decisions are logged to CloudTrail for an additional layer of observability.
+
+##### AWS KMS
+To protect data at rest, use AWS KMS to manage the keys to encrypt the data that resides in the file system. To encrypt data in transit, you can turn on TLS when you mount the file system.
+
+#### Cost optimization
+With Amazon EFS, you pay only for the storage used by your file system, and there is no minimum fee or setup cost. The cost of EFS storage is determined according to the Amazon EFS storage class and the lifecycle management policy you select. By default, newly created EFS file systems use intelligent tiering, automatically cost optimizing the data stored by moving it to the lowest cost tier of storage or optimizing for performance based on how frequently the file is being accessed. The available storage classes include the following:
+
+##### Standard
+Amazon EFS Standard and Amazon EFS Standard-Infrequent Access (EFS Standard-IA) offer multi-AZ resilience and the highest levels of durability and availability.
+
+##### One Zone
+Amazon EFS One Zone and Amazon EFS One Zone-Infrequent Access (EFS One Zone-IA) offer customers the choice of additional savings by choosing to save their data in a single Availability Zone. Amazon EFS One Zone not only offers lower cost but also provides lower latencies because data replication occurs within a single Availability Zone.
+
+###### Lifecycle management
+Lifecycle management monitors your workload and file access patterns. It automatically saves you money by moving files that you’re not accessing frequently from EFS Standard into the lower cost EFS Standard-IA. There’s a generally accepted industry estimate that 80 percent of data isn’t accessed frequently. We actually analyzed our own usage data that we’ve gathered over the past 4.5 years of operation and validated this estimate. 
+
+###### Cost savings
+Consider that 80-20 rule, where 20 percent of your files are actively used and the other 80 percent are not. With built-in cost optimization, your effective price is just $0.08 per gigabyte per month for EFS Standard and $0.043 for EFS One Zone.
+
+###### EFS Intelligent-Tiering
+EFS Intelligent-Tiering lifecycle management monitors the access patterns of your file system. It moves files that have not been accessed for the duration of the lifecycle policy from EFS Standard or EFS One Zone to EFS Standard-IA or EFS One Zone-IA. This depends on whether your file system uses EFS Standard or EFS One Zone storage classes. If the file is accessed again, it is moved back to EFS Standard or EFS One Zone storage classes.
+
+###### Effective storage price
+With Amazon EFS, your effective storage price is just $0.08 per gigabyte per month. The price assumes that you take advantage of Amazon EFS data lifecycle policies. If you do a total cost of ownership analysis, comparing this to running your own file system storage infrastructure, you will find that Amazon EFS is 90 percent more cost effective than doing it yourself.
+
+### Amazon EFS Storage Classes
+Amazon EFS offers a range of storage classes designed for different use cases. These include EFS Standard, EFS Standard-IA, EFS One Zone, and EFS One Zone-IA.
+
+#### Before you choose
+Choosing a storage class for Amazon EFS is similar to the process you learned about for Amazon S3. Before you decide on a storage class, take the time to analyze your workloads, data access patterns, service-level agreements, and performance requirements to determine the correct storage class or storage classes for your data. 
+
+Here are some questions to get you started:
+* What are the application's data requirements for performance? What is your latency tolerance, or do you need millisecond latency?
+* Is the data access pattern predictable or unpredictable? Is the data accessed every minute, every hour, daily? Is it accessed only one week a year, or is the access dependent on the project?
+* What is the data access pattern?
+
+#### EFS Standard and EFS Standard-IA storage classes
+EFS Standard and EFS Standard-IA storage classes are regional storage classes that are designed to provide continuous availability to data, even when one or more Availability Zones in a Region are unavailable. They offer the highest levels of availability and durability by storing file system data and metadata redundantly across multiple geographically separated Availability Zones within a Region.
+
+The EFS Standard storage class is used for frequently accessed files. It is the storage class to which customer data is initially written for Standard storage classes.
+
+The EFS Standard-IA storage class reduces storage costs for files that are not accessed every day. It does this without sacrificing the high availability, high durability, elasticity, and POSIX file system access that Amazon EFS provides. EFS Standard-IA storage is recommended when you need your full dataset to be readily accessible and want to automatically save on storage costs for files that are less frequently accessed. Examples include keeping files accessible to satisfy audit requirements, performing historical analysis, or performing backup and recovery. EFS Standard-IA storage is compatible with all Amazon EFS features and is available in all Regions where Amazon EFS is available.
+
+#### EFS One Zone and EFS One Zone-IA storage classes
+EFS One Zone and EFS One Zone-IA storage classes are designed to provide continuous availability to data within a single Availability Zone. The EFS One Zone storage classes store file system data and metadata redundantly within a single Availability Zone in a Region. Because they store data in a single Availability Zone, data that is stored in these storage classes might be lost in the event of a disaster or other fault that affects all copies of the data within the Availability Zone or in the event of Availability Zone destruction.
+
+For added data protection, Amazon EFS automatically backs up file systems using EFS One Zone storage classes with AWS Backup. You can restore file system backups to any operational Availability Zone within a Region, or you can restore them to a different Region. Amazon EFS file system backups that are created and managed using AWS Backup are replicated to three Availability Zones and are designed for durability.
+
+EFS One Zone Standard is used for frequently accessed files. It is the storage class to which customer data is initially written for One Zone storage classes.
+
+The EFS One Zone-IA storage class reduces storage costs for files that are not accessed every day. EFS One Zone-IA storage is recommended when you need your full dataset to be readily accessible and want to automatically save on storage costs for files that are less frequently accessed. EFS One Zone-IA storage is compatible with all Amazon EFS features and is available in most of the Regions where Amazon EFS is available.
+
+#### Comparing Amazon EFS storage classes
+This table offers a quick comparison of Amazon EFS storage classes, providing you with use cases, durability, availability, and other considerations.
+
+| Storage class | Designed for | Durability (designed for) | Availability | Availability Zones | Other Considerations |
+| ------------- | ------------ | ------------------------- | ------------ | ------------------ | -------------------- |
+| EFS Standard | Frequently accessed data requiring the highest durability and availability. | 99.999999999% (11 9s) | 99.99% | >=3 | None |
+| EFS Standard-Infrequent Access (IA) | Long lived, infrequently accessed data requiring the highest durability and availability. | 99.999999999% (11 9s) | 99.99% | >=3 | Per GB retrieval fees apply |
+| EFS One Zone | Frequently accessed data that doesn't require highest levels of durability and availability. | 99.999999999% (11 9s) | 99.90% | 1 | Not resilient to the loss of the Availability Zone. |
+| EFS One Zone-IA | Long lived, infrequently accessed data that doesn't require highest levels of durability and availability. | 99.999999999% (11 9s) | 99.90% | 1 | Not resilient to the loss of the Availability Zone. Per GB retrieval fees apply. |
+
+### Knowledge Check
+#### Which **performance mode** is recommended for workloads that must scale to higher levels of aggregate throughput and IOPS?
+* Provisioned Throughput
+* General Purpose
+* Bursting Throughput
+* **Max I/O**
+
+The **Max I/O** performance mode is recommended for workloads that must scale to higher levels of aggregate throughput and IOPS.
+
+The other options are incorrect because of the following: 
+* Provisioned Throughput is a throughput mode that is recommended for workloads requiring higher throughput-to-storage ratios.
+* General Purpose performance mode is the default performance mode for Amazon Elastic File System (Amazon EFS), but Max I/O scales more efficiently.
+* Bursting Throughput is the default throughput mode that is recommended for most workloads.
+
+#### A customer requires an Amazon Elastic File System (Amazon EFS) storage class that provides a service-level agreement of 99.99 percent availability. Which storage class would meet that requirement?
+* EFS One Zone or EFS One Zone-IA
+* **EFS Standard or EFS Standard-IA**
+* Elastic Throughput
+* Max I/O
+
+**EFS Standard** or **EFS Standard-IA** guarantee an availability of 99.99 percent.
+
+The other options are incorrect because of the following: 
+* EFS One Zone or EFS One Zone-IA provide 99.90 percent availability.
+* Elastic Throughput and Max I/O are throughput and performance modes.
+
+#### A consultant is working with a client that has spiky and unpredictable workloads that have been difficult to accurately forecast. Which Amazon Elastic File System (Amazon EFS) throughput mode would be most suitable for the customer’s needs?
+* Bursting Throughput
+* Provisioned Throughput
+* Max I/O
+* **Elastic Throughput**
+
+**Elastic Throughput** is the default throughput mode when there are spiky or unpredictable workloads and performance requirements that are difficult to forecast or when an application drives throughput at an average-to-peak ratio of 5 percent or less.
+
+The other options are incorrect because of the following: 
+* Bursting Throughput is recommended for workloads that require performance to scale with the amount of data stored on the file system. 
+* Provisioned Throughput is recommended for workloads requiring higher throughput-to-storage ratios.
+* Max I/O is a performance mode that is recommended for workloads that must scale to higher levels of aggregate throughput and IOPS.
+
+### Summary
+* Describing the features and benefits of Amazon EFS
+* Describing the Amazon EFS storage classes and their uses
+
+#### Features and benefits of Amazon EFS
+Amazon EFS provides a practical, cloud-native, serverless shared file system that is optimized for cost and performance.
+
+Features and benefits of Amazon EFS include:
+* Fully managed shared file system
+* Scalable storage and performance
+* High availability and durability
+* Security
+* Cost optimization
+
+#### Amazon EFS storage classes
+Amazon EFS offers a range of storage classes designed for different use cases, including:
+* Amazon EFS Standard
+* Amazon EFS Standard-IA
+* Amazon EFS One Zone
+* Amazon EFS One Zone-IA
+
+### Additional Resources
+#### [Amazon EFS](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html)
+
+#### [Amazon EFS storage classes](https://docs.aws.amazon.com/efs/latest/ug/storage-classes.html)
+
+## Assessment
+### 1. What type of storage is the most likely to be used as the primary storage for a relational database?
+* **Block storage**
+* Archival storage
+* File storage
+* Object storage
+
+Relational databases may only need to retrieve a single piece of a file, such as an inventory tracking number or employee ID. **Block storage** enables you to retrieve individual blocks of a file rather than the entire file.
+
+The other options are incorrect because of the following:
+* File storage is used when files are shared across devices. Block storage offers lower latency for applications like databases.
+* Relational databases use a file system for storage and typically use block storage for backups.
+* Archival storage is used by databases for backups and compliance, but not as primary storage.
+
+### 2. How is storage throughput defined?
+* **The rate at which data can be written into and read from storage system.**
+* The number of input and output requests per second that a storage system can support.
+* The amount of data that can be stored in a storage system before errors are generated.
+* The amount of time to complete read and write requests.
+
+**Throughput is the read/write transfer rate, determined by IOPS x I/O size.**
+
+The other options are incorrect because of the following:
+* The amount of time to complete requests is called latency, not throughput.
+* The number of inputs and outputs per second (IOPS) is a part of storage throughput. The other part is the size of the data of each request.
+* Throughput is a measure of rate, not the amount of data stored.
+
+### 3. A company is preparing to migrate a workload to the AWS cloud. Which of the following steps are necessary to ensure that they choose the right storage type? (Select THREE.)
+* Select AWS Support Plan tier
+* **Design storage strategy**
+* Review capital expenditure requirements
+* **Define the workload requirements**
+* **Review storage options**
+* Review AWS Config recommendations
+
+The steps for choosing the right storage type are **define requirements**, **review your storage options**, and **design your storage strategy**.
+
+The other options are incorrect because of the following:
+* Capital expenditure is reduced or eliminated when migrating to any cloud storage option.
+* AWS Config does not make recommendations for storage options.
+* The Support plan does not directly impact storage decisions.
+
+### 4. When you configure a new Amazon FSx environment, what file systems can you choose? (Select THREE.)
+* EXT3
+* **Lustre**
+* **OpenZFS**
+* EXT4
+* **NetApp ONTAP**
+* Unix File system
+
+When building your Amazon FSx environment, you can choose between four widely-used files systems: **NetApp ONTAP**, **OpenZFS**, Windows File Server, and **Lustre**.
+
+The other options are incorrect because EXT3, EXT4, and Unix filesystems are not supported on FSx.
+
+### 5. A consultant is working with a company that is preparing to migrate their on-premises file system to fully managed storage in the AWS cloud. The on-premises file system uses Netapp ONTAP, and they do not want to modify application code or change how data is managed. Which AWS cloud storage service meets the requirements?
+* Amazon EBS
+* Amazon S3
+* Amazon EC2 instance store
+* **Amazon FSx**
+
+**Amazon FSx** lets you choose between four widely used file systems, including Netapp ONTAP. This allows the applications to continue to access the file system without application code or
+management
+
+The other options are incorrect because of the following:
+* S3 does not offer the full features of the Netapp filesystem.
+* EBS is block storage that could be used to host the file system, but this would be self-managed.
+* Instance store is ephemeral storage, and is not used for durable storage use cases.
+
+### 6. A student is using an Amazon EC2 instance confiqured with instance store volumes and an Amazon EBS volume attached. After terminating the EC2 instance, and reattaching the EBS volume to a new EC2 instance, the student has found that the data they saved is no longer available. What could be the cause of this data loss?
+* The EC2 instance was terminated before the first snapshot completed.
+* The EBS volume was automatically wiped when the instance was terminated.
+* The new EC2 instance is in a different Availability Zone than the original instance.
+* **The data was written to an instance store volume.**
+
+**Data written to the Amazon EC2 instance store persists only as long as the EC2 instance.**
+
+The other options are incorrect because of the following:
+* EBS volumes are not automatically wiped, but there is a configurable option to automatically delete them when the instance terminates.
+* Snapshots are not involved, since the same EBS volume is being reused.
+* It isn't possible to attach the same EBS volume to an instance in a different AZ.
+
+### 7. A company's networking team is planning an upcoming migration using AWS Transfer Family, and they need to know which transfer protocols can be used. The company requires end-to-end encryption of the data during the transfer. What secure transfer protocols are supported by AWS Transfer Family? (Select THREE.)
+* **Applicability Statement 2 (AS2)**
+* **File Transfer Protocol Secure (FTPS)**
+* Hypertext Transfer Protocol (HTTP)
+* Trivial File Transfer Protocol (TFTP)
+* **Secure File Transfer Protocol (SFTP)**
+* Server Message Block (SMB)
+
+AWS Transfer Family supports **FTPS**, **SFTP**, and **AS2** protocols, as well as File Transfer Protocol (FTP).
+
+The other options are incorrect because of the following:
+* SMB is not a supported protocol.
+* TFTP and HTTP are not supported and do not provide encryption.
+
+### 8. What AWS data migration service completes a migration job with a full erasure of the device that follows the National Institute of Standards and Technology (NIST) guidelines?
+* Amazon S3 Transfer Acceleration
+* AWS DataSync
+* **AWS Snow Family**
+* AWS Transfer Family
+
+**AWS Snow Family** uses purpose-built devices to transfer data offline. AWS performs a full erasure of the device that follows the National Institute of Standards and Technology guidelines for media sanitization.
+
+The other options are incorrect because of the following:
+* DataSync transfers your data over a network. It doesn't retain a local copy.
+* Transfer Family is typically for ongoing transfer of data into and out of the AWS cloud. It does not automatically wipe the storage.
+* S3 Transfer Acceleration transfers your data over a network. It doesn't retain a local copy.
+
+### 9. A consultant is working with an organization that conducts maritime research in remote sectors of the Atlantic Ocean. These areas have minimal satellite coverage, which limits network connectivity. The organization needs the ability to collect and process sensor data before shipping it to AWS. What data storage solution meets the requirements?
+* AWS Transfer Family
+* AWS DataSync
+* **AWS Snowball Edge**
+* AWS Snowmobile
+
+**AWS Snowball Edge** is purpose-built for extremely remote locations that have little to no connectivity. AWS Snowball Edge can be used for data collection, machine learning and processing, and storage.
+
+The other options are incorrect because of the followinq:
+* Snowmobile does not provide compute capability to process the data and is not for shipboard use.
+* DataSync requires a network connection to operate.
+* Transfer requires a network connection to operate.
+
+### 10. A large company is planning to migrate their data storage to the AWS cloud. What are the phases of a large migration process? (Select THREE.)
+* Discover
+* **Assess**
+* Deploy
+* **Mobilize**
+* **Migrate and Modernize**
+* Provision
+
+AWS defines the three-phase migration process as: **Assess**, **Mobilize**, and **Migrate and Modernize**.
+
+The other options are incorrect because of the following:
+* Backup and Restore is one possible migration strategy, but it is part of Migrate and Modernize.
+* Deploy is part of Migrate and Modernize.
+* Lift and Shift is part of Migrate and Modernize.
+* Account provisioning is done as part of the Mobilize phase.
+
+### 11. What cloud migration strategy is also known as lift and shift?
+* Refactor
+* **Rehost**
+* Repurchase
+* Retain
+
+The **Rehost** strategy is also known as lift and shift. Using this strategy, you move your applications from your source environment to the AWS cloud without making any changes to the application.
+
+The other options are incorrect because of the following:
+* Repurchase is used when you are purchasing an SaaS product to replace an application.
+* Retain is the strategy for applications you will not migrate.
+* Refactor is used when you modify your application architecture to use cloud-based services.
+
+### 12. While planning for a cloud migration, a company discovers that there has not been an inbound connection to one of their applications in 90 days. What migration strategy would be preferred in this situation?
+* **Retire**
+* Replatform
+* Rehost
+* Repurchase
+
+**Retire** is the strategy that best applies. ldle applications are often discovered during a migration. These should be retired to avoid paying to host an unused application and its associated storage.
+
+The other options are incorrect because of the following:
+* Rehost is used when migrating an application as-is.
+* Repurchase is used when you are purchasing an SaaS product to replace application.
+* Replatform is used when you optimize your application to leverage the cloud.
+
+### 13. A company wants to migrate to a hybrid storage solution but doesn't want to have to modify their existing applications. Which storage network protocols are part of the standard set supported by AWS Storage Gateway? (Select THREE.)
+* Fibre Channel over Ethernet (FCOE)
+* **Network File System (NFS)**
+* **Server Message Block (SMB)**
+* Fibre Channel (FC)
+* InfiniBand
+* **Internet Small Computer Systems Interface (iSCSI)**
+
+AWS Storage Gateway supports **NFS**, **SMB**, and **iSCSI** storage protocols.
+
+The other options are incorrect because of the following:
+* Fibre Channel isa storage protocol that usually uses fiber optic links connected to SAN storage and is not supported by Storage Gateway.
+* InfiniBand is typically used for High Performance Computing, which is not a use case for Storage Gateway, and not supported.
+* Similar to Fibre Channel, but uses an Ethernet network. Also not supported by Storage Gateway.
+
+### 14. A company's applications need low-latency access to frequently used data. Which deployment options for Storage Gateway will provide the LOWEST latency? (Select TWO.)
+* Deploy Storage Gateway on an Amazon EC2 instance in the AWS cloud.
+* **Deploy a Storage Gateway VM image locally on any supported host platform.**
+* Deploy a Storage Gateway container image on Amazon ECS.
+* Deploy a Storage Gateway docker container image as an AWS Lambda function.
+* **Deploy a Storage Gateway hardware appliance.**
+
+Storage Gateway can be configured to locally cache frequently accessed data running in the data center as a **VM** or **hardware appliance**.
+
+The other options are incorrect because deploying Storage Gateway in the cloud means the data will not be cached locally.
+
+### 15. Which factors would make a company consider a hybrid cloud rather than a full cloud migration? (Select TWO.)
+* Requirements to store data with high durability.
+* Requirements to store data with high availability.
+* Requirements to encrypt data at rest.
+* **Compliance requirements for data residency.**
+* **On-premises applications with single-millisecond latency requirements.**
+
+Use cases for hybrid cloud include **security and compliance requirements for data residency**, and the need **for on-premises application to have single-digit millisecond access to data**.
+
+The other options are incorrect because of the following:
+* Durability of data typically is typically far better on the cloud than on-premises.
+* Encryption is built in to AWS storage services.
+* Most AWWS storage services are highly available by default.
+
+### 16. A company that offers object storage for their customers has reached the limit of 100 buckets in their AWS account. How can they continue to create more buckets?
+* Configure the buckets to use S3 One Zone-IA for the storage class.
+* Log in to the account as the root user and create the additional buckets.
+* **Visit the Service Quotas console and request that the limit to be increased.**
+* Confiqure buckets in multiple AWS Regions.
+
+Amazon S3 has a maximum bucket limit of 100 per account, but this can be increased to a **maximum of 1,000 per account with a service limit increase request**.
+
+The other options are incorrect because of the following:
+* The limit is per account, which represents the total number of buckets in all Regions.
+* The root does not have privileges to exceed service limits.
+* One zone storage classes do not allow more buckets to be created.
+
+### 17. Which Amazon S3 storage class delivers the lowest cost storage for long-lived, rarely accessed data that requires retrieval in milliseconds?
+* S3 Glacier Deep Archive
+* S3 Standard-IA
+* S3 Glacier Flexible Retrieval
+* **S3 Glacier Instant Retrieval**
+
+**S3 Glacier Instant Retrieval** is an archive storage class that delivers the lowest cost storage for long-lived, rarely accessed data that requires retrieval in milliseconds.
+
+The other options are incorrect because of the following:
+* S3 Glacier Instant Retrieval is 5x less costly than Standard-IA.
+* S3 Glacier Flexible Retrieval has a minimum retrieval time of one minute.
+* S3 Glacier Deep Archive has a minimum retrieval time of 12 hours.
+
+### 18. AnyCompany (anycompany.com) is using Amazon S3 as their storage solution. An administrator has been asked to create a new bucket for a project, with the requested bucket name of any_company_planning. However, the bucket creation failed. What is a cause of the error?
+* The bucket name must contain both letters and numbers.
+* The bucket name must use the company's unique domain name.
+* **The bucket name cannot contain underscores.**
+* The bucket name must contain both lowercase and uppercase letters.
+
+Bucket names must consist of **only lowercase letters, numbers, dots, and hyphens**.
+
+The other options are incorrect because of the following:
+* Bucket names cannot contain uppercase letters.
+* Bucket names can contain the company's domain name, but it's not required.
+* Numbers are not required in bucket names.
+
+### 19. What are some common use cases for bucket tags?
+* To store encryption keys.
+* To classify the confidentiality level of objects.
+* **To allocate storage costs to specific projects.**
+* To categorize objects.
+
+**Cost allocation** is a primary use case for bucket tags. These can be viewed in AWS Cost Explore, AWS Budgets, and AWS Cost and Usage reports.
+
+The other options are incorrect because of the following:
+* Object tags are used for categorizing objects.
+* Object tags are used for data classification of objects.
+* Encryption keys are never stored in tags, since they are visible as plain text.
+
+### 20. In preparation for a new project, a Project Manager (PM) for AnyBank has just created an Amazon S3 bucket, and migrated 100 terabytes of data to the Amazon S3 Standard storage class. They also decommissioned the on-premises storage system. The project has just been put on hold for three months, and the data will not be accessed during this time. How can the PM minimize the storage costs, while the project is on hold, without lowering the durability?
+* Configure AWS Storage Gateway in the bucket Region, and immediately copy the data to the
+storage.
+* Immediately move the data to Amazon EBS Cold HDD volumes.
+* Wait 30 days and move the objects to the Amazon S3 Standard-lA storage class.
+* **Immediately move the objects to the Amazon S3 Glacier Deep Archive storage class.**
+
+The PM can save costs by immediately moving the objects to Amazon S3 Glacier Deep Archive.
+
+The other options are incorrect because of the following:
+* Using HDD volumes will lower the durability to 99.8%.
+* There is no reason to wait 30 days, since the Standard storage class does not have a minimum duration. Standard-IA is about half the cost of Standard, but since the objects don't need be accessed for three months, Glacier Deep Archive is the best option.
+* The costs for Storage Gateway will be greater than the costs for directly storing the data in S3.
+
+### 21. A company needs to share business-critical data across multiple EC2 instances. What requirements need to be met for a single EBS volume to be attached to multiple instances? (Select THREE.)
+* The EBS volume type must be General Purpose SSD (gp2 or gp3) volumes.
+* The instances must be running on the same host machine.
+* The instances must all be the sanme type and size.
+* **The EBS Volume type must be Provisioned IOPS SSD (io1 or io2) volumes.**
+* **The instances must be in the same Availability Zone.**
+* **The instances must be built on the Nitro System.**
+
+Multi-Attach supports a single EBS volume to be concurrently attached to up to 16 **Nitro-based EC2 instances** within the **same Availability Zone**. The EBS volume **must use Provisioned IOPS SSD (io1 and io2) volumes**.
+
+The other options are incorrect because of the following:
+* General purpose EBS volumes do not support Multi-Attach.
+* The instances can be on different hosts.
+* The instances can be different types and sizes.
+
+### 22. To save storage costs, a Systems Administrator deleted some of the Amazon EBS snapshots associated with a volume storing critical financial data. A Cloud Application Developer then tries to create a new volume using the latest snapshot for the financial data volume. What financial data will be available on the new EBS volume?
+* **All of the data that was on the volume at the time of the latest snapshot.**
+* None of the data will be available on the new volume.
+* Only the data that was not saved in the deleted snapshots.
+* Only the data contained on the oldest remaining snapshot.
+
+When snapshots are deleted, only the data that isn't needed to restore the remaining snapshots is deleted. **All of the data from the snapshot will be available.**
+
+The other options are incorrect because of the following:
+* Data needed to restore the remaining snapshots will not be deleted.
+* Any remaining snapshot can be restored, and it will contain all of the data at that point in time.
+
+### 23. What is the primary advantage of configuring multiple EBS volumes as a striped RAIDO array?
+* Increased availability of the data.
+* **Increased storage throughput and IOPS.**
+* Reduced boot time of the operating system
+* Increased durability of the data.
+
+With RAID 0, I/O is distributed across the volumes in a stripe. If you add a volume, you get the straight **addition of throughput and IOPS**.
+
+The other options are incorrect because of the following:
+* Since the data is not replicated across the volumes, there is no increase in durability or availability.
+* Booting from a RAID volume is not recommended, due to not being able to boot your system if one device fails. Since the boot loader typically runs on only one device in the array, and the RAID controller adds an additional step to the boot process, boot time is likely to increase.
+
+### 24. A consultant is working with a biotech company that specializes in genomic analysis.  They are migrating their highly parallelized workload to Amazon EFS, and the consultant is tasked with recommending the correct configurations for their new deployment. Which Amazon EFS performance mode is best suited for this workload?
+* Bursting Throughput
+* General Purpose
+* Elastic Throughput
+* **Max I/0**
+
+The **Max I/O** performance mode is recommended for highly parallelized applications and workloads.
+
+The other options are incorrect because of the following:
+* General Purpose performance is ideal for latency-sensitive use cases. It is not as efficient as Max I/O in scaling to higher levels of aggregate throughput and IOPS that is needed by highly parallelized workloads.
+* Elastic Throughput focuses on providing adequate throughput for spiky and unpredictable workloads. It is only available for file systems configured with the General Purpose performance mode.
+* Bursting Throughput focuses on providing adequate throughput for workloads that scale with the amount of data stored in the file system, but because bursting is based on a credit system, it cannot ensure consistent performance.
+
+### 25. A user is writing data to their Amazon EFS file system using the EFS Standard storage class. At what point is the write acknowledged by Amazon EFS?
+* After the data has been written to at least one Availability Zone.
+* After the data has been written to AWS Backup.
+* **After the data has been written across three Availability Zones.**
+* Immediately after the write request is received.
+
+When data is written to Amazon EFS using the EFS Standard storage class, the write isn't acknowledged **until the data is written across three Availability Zones**, providing for redundancy and high availability.
+
+The other options are incorrect because of the following:
+* When data is written to Amazon EFS using the EFS Standard storage class, the write isn't acknowledged until the data is written across three Availability Zones, providing for redundancy and high availability.
