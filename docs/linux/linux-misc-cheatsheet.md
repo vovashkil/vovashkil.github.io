@@ -8,6 +8,10 @@
 ```
 curl icanhazip.com
 ```
+### nfs performance measuring
+```
+sudo fio --name=fio-efs --filesize=2G --filename=./efs/fio-efs-test.img --bs=1M --nrfiles=1 --direct=1 --sync=0 --rw=write --iodepth=200 --ioengine=libaio
+```
 ### ldap monitoring contextCSN
 ```
 ldapsearch  -z 1 -H ldaps://ldap.example.com  -LLL -b 'dc=example,dc=com' -s base -x contextCSN
