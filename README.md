@@ -2,6 +2,8 @@
 [Linux cheatsheet](docs/linux/linux-misc-cheatsheet.md)
 ### Cloud
 [Cloud cheatsheet](docs/cloud/cloud.md)
+### AWS Certification Exam Preparation
+[AWS Certified Solutions Architect – Professional (SAP-C02)](docs/certs/certs.md)
 ### AWS Cloud Institute
 [AWS Cloud Institute](docs/aci/aci.md)
 ### Proxmox troubleshooting
