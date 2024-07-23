@@ -46,6 +46,37 @@ The security pillar encompasses the ability to protect data, systems, and assets
 * Application security
 
 #### Reliability Pillar
+The ability of a workload to perform its required function correctly and consistently over an expected period of time. 
+
+##### Reliability design principles
+* Automatically recover from failure.
+* Test recovery procedures.
+* Scale horizontally to increase aggregate workload ability.
+* Stop guessing capacity.
+* Manage change in automation.
+
+##### Reliability best practice areas
+* Foundations
+* Workload architecture
+* Change management
+* Failure management
+
+#### Performance efficiency
+The performance efficiency pillar focuses on the efficient use of computing resources to meet requirements, and how to maintain efficiency as demand changes and technologies evolve.
+
+##### Performance efficiency design principles
+* Democratize advanced technologies.
+* Go global in minutes.
+* Use serverless architectures.
+* Experiment more often.
+* Consider mechanical sympathy.
+
+##### Performance efficiency best practices areas
+* Selection
+* Review
+* Monitoring
+* Trade-offs
+
 
 
 
