@@ -49,6 +49,31 @@ sdb                                                                             
 # pvremove /dev/sdb
   Labels on physical volume "/dev/sdb" successfully wiped.
 ```
+```
+# /usr/sbin/wipefs -a /dev/sdb
+/dev/sdb: 8 bytes were erased at offset 0x00000218 (LVM2_member): 4c 56 4d 32 20 30 30 31
+```
+#### Ceph: class device change (hdd->sdd)
+```
+# ceph osd df
+ID  CLASS  WEIGHT   REWEIGHT  SIZE     RAW USE  DATA     OMAP  META    AVAIL    %USE  VAR   PGS  STATUS
+ 0    ssd  1.74599   1.00000  1.7 TiB   27 MiB  676 KiB   0 B  26 MiB  1.7 TiB  0.00  1.01   33      up
+ 1    ssd  1.74599   1.00000  1.7 TiB   27 MiB  676 KiB   0 B  26 MiB  1.7 TiB  0.00  1.00   33      up
+ 2    hdd  1.74599   1.00000  1.7 TiB   27 MiB  676 KiB   0 B  26 MiB  1.7 TiB  0.00  0.99   33      up
+                       TOTAL  5.2 TiB   81 MiB  2.0 MiB   0 B  79 MiB  5.2 TiB  0.00
+MIN/MAX VAR: 0.99/1.01  STDDEV: 0
+# ceph osd crush rm-device-class osd.2
+done removing class of osd(s): 2
+# ceph osd crush set-device-class ssd osd.2
+set osd(s) 2 to class 'ssd'
+# ceph osd df
+ID  CLASS  WEIGHT   REWEIGHT  SIZE     RAW USE  DATA     OMAP  META    AVAIL    %USE  VAR   PGS  STATUS
+ 0    ssd  1.74599   1.00000  1.7 TiB   27 MiB  692 KiB   0 B  26 MiB  1.7 TiB  0.00  1.00   33      up
+ 1    ssd  1.74599   1.00000  1.7 TiB   27 MiB  692 KiB   0 B  26 MiB  1.7 TiB  0.00  1.00   33      up
+ 2    ssd  1.74599   1.00000  1.7 TiB   27 MiB  692 KiB   0 B  26 MiB  1.7 TiB  0.00  1.00   33      up
+                       TOTAL  5.2 TiB   81 MiB  2.0 MiB   0 B  79 MiB  5.2 TiB  0.00
+MIN/MAX VAR: 1.00/1.00  STDDEV: 0
+```
 #### Ceph Crash
 ```
 ceph crash ls

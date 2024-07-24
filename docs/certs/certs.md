@@ -77,7 +77,34 @@ The performance efficiency pillar focuses on the efficient use of computing reso
 * Monitoring
 * Trade-offs
 
+##### Assessment
+###### What are the areas of focus for performance efficiency pillar questions? (Select THREE.)
+* Selecting the right resource types for compute, storage, database, and networking.
+* Reviewing your selection as AWS continues to innovate with new resource types and features.
+* Making architectural trade-offs to maximize your performance efficiency.
 
+###### What is an example of a performance efficiency best practice in compute, storage, database, and networking?
+* Select the appropriate resource type.
+
+###### What is an example of a performance efficiency best practice in trade-offs?
+* Position resources or cached dat closer to end users.
+
+#### Cost optimization
+A cost-optimized workload fully utilizes all resources, achieves an outcome at the lowest possible price point, and meets your functional requirements.
+
+##### Cost optimization design principles
+* Practice Cloud Financial Management.
+* Adopt a consumption model.
+* Measure overall efficiency.
+* Stop spending money on undifferentiated heavy-lifting.
+* Analyze and attribute expenditure.
+
+##### Cost Optimization Best Practice Areas
+* Practice Cloud Financial Management.
+* Expenditure and usage awareness.
+* Cost-effective resources.
+* Management of demand and supply resources.
+* Optimization over time.
 
 
 
