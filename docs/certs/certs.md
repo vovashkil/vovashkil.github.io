@@ -106,7 +106,22 @@ A cost-optimized workload fully utilizes all resources, achieves an outcome at t
 * Management of demand and supply resources.
 * Optimization over time.
 
+##### Assessment
+###### Which is an area of focus for the cost optimization pillar?
+* Use cost-efficient resources.
 
+Wrong answers:
+* Use serverless computing.
+* Control and understand where your money is being spent by conducting regular testing.
+* Use trade-offs.
+
+###### Which is a cost optimization best practice in expenditure awareness?
+* Use AWS Cost Explorer to categorize and track AWS costs.
+
+Wrong answers:
+* Manage access by creating user policies.
+* Have a third party review the spend.
+* Use spend manager to reduce data transfer costs.
 
 
 
