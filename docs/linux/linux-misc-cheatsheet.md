@@ -31,7 +31,7 @@ This could happen when there are problems with dependencies when installing/remo
 Double check the output of the following command:
 ```
 dpkg --configure -a
-dpkg: dependency problems prevent configuration of package_XX:i386:
+dpkg: dependency problems prevent configuration of package_XXX:i386:
  package_XXX:i386 depends on package_YYY (= <version>); however:
   Package package_YYY:i386 is not installed.
 ```
@@ -43,7 +43,10 @@ And in the end try again:
 ```
 apt --fix-broken install
 ```
-### Change Default Network Name (ens33) to eth0 on Debian 10 / Debian 9 (this doesn't work in Debian 11(bullseye)
+### Change Default Network Name (ens33) to eth0
+
+#### On Debian 10 / Debian 9 (this doesn't work in Debian 11(bullseye))
+
 1. Apply the change to /etc/default/grub
 ```
 GRUB_CMDLINE_LINUX="" -> GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"
@@ -57,6 +60,18 @@ grub-mkconfig -o /boot/grub/grub.cfg
 ```
 reboot
 ```
+
+#### On Debian 12
+
+1. Create corresponding files under `/etc/systemd/network/`
+```
+$ cat /etc/systemd/network/10-eth0.link
+[Match]
+MACAddress=bc:24:11:5d:ee:95
+[Link]
+Name=eth0
+```
+
 ### SSL certificate basic checks
 #### SSL certificate end date
 ```
@@ -138,6 +153,7 @@ sudo setfacl -R -m u:_dnsdist:rx /etc/letsencrypt/
 sudo dnsdist --check-config
 ```
 ### access letsencrrypt certs with salt
+
 ```
 ldap-access-to-machine-live-dir:
   acl.present:
