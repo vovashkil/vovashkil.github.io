@@ -113,7 +113,7 @@ The performance efficiency pillar focuses on the efficient use of computing reso
 * Select the appropriate resource type.
 
 ###### What is an example of a performance efficiency best practice in trade-offs?
-* Position resources or cached dat closer to end users.
+* Position resources or cached data closer to end users.
 
 #### Cost optimization
 A cost-optimized workload fully utilizes all resources, achieves an outcome at the lowest possible price point, and meets your functional requirements.
