@@ -260,6 +260,52 @@ Diagram:
 * Only IPv4 is supported.
 * Endpoints do not support UDP traffic.
 
+#### Route 53
+It can perform three main functions in any combination:
+* domain registration, 
+* DNS routing, 
+* and health checking.
+
+#### How does DNS route traffic to your web application?
+1.  Client: A user opens a web browser, enters www.example.com in the address bar, and chooses Enter.
+2. DNS resolver request: The request for www.example.com is routed to a DNS resolver, which is typically managed by the user's internet service provider (ISP).
+3. DNS root name server: The DNS resolver for the ISP forwards the request for www.example.com to a DNS root name server.
+4. Name server for .com TLD: The DNS resolver forwards the request for www.example.com again, this time to one of the TLD name servers for .com domains. The name server for .com domains responds to the request with the names of the four Route 53 name servers that are associated with the example.com domain. The DNS resolver caches the four Route 53 name servers.
+5. Route 53 name server: The DNS resolver chooses a Route 53 name server and forwards the request for www.example.com to that name server. The Route 53 name server looks in the example.com hosted zone for the www.example.com record, gets the associated value, such as the IP address for a web server, 192.0.2.44, and returns the IP address to the DNS resolver.
+6. DNS resolver response: The DNS resolver finally has the IP address that the user needs. The resolver returns that value to the web browser.
+7. Web browser request: The web browser sends a request for www.example.com to the IP address that it got from the DNS resolver. This is where your content is, for example, a web server running on an Amazon EC2 instance or an Amazon S3 bucket that's configured as a website endpoint.
+8. Web server response: The web server at 192.0.2.44 returns the web page for www.example.com to the web browser, and the web browser displays the page.
+
+#### LAB: Configuring DNS on Amazon EC2
+1. Start an EC2 Instance with `Auto-assign public IP: Disable`.
+2. Create a private hosted zone for your domain `anycompany.corp`.
+ * Route 53
+ * Hosted zones -> Create hosted zone.
+ * Configure the hosted zone:
+  * Domain name: `anycompany.corp`.
+  * Description.
+  * Type: `Private hosted zone`.
+  * VPCs to associate with the hosted zone:
+   * Region.
+   * VPC ID: `Any Company VPC`.
+ * `Create hosted zone` button.
+3. Create a record set.
+ * Create an A record:
+  * Route 53 -> Hosted zones -> `anycompany.corp`
+  * `Create record` button.
+  * Configure the record:
+   * Record name: `www`.
+   * Record type: `A`.
+   * Value: `the EIP of the EC2 Instance`.
+   * TTL: `300`.
+   * Routing policy: `Simple routing`.
+  * `Create record` button.
+
+
+
+
+
+
 ### Week 5: Storage 2 Part 1
 ### Week 6: Storage 2 Part 2
 ### Week 7: Storage 2 Part 3
