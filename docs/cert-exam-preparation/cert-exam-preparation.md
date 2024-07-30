@@ -322,3 +322,8 @@ Wrong answers:
 * Fire the engineer who built part of the workload that has a high-risk issue.
 * Pause the entire launch plan.
 
+### Design solutions for organizational complexity
+### Design for new solutions
+### Continuous improvement for existing solutions
+### Accelerate workload migration and modernization
+

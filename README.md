@@ -3,7 +3,7 @@
 ### Cloud
 [Cloud cheatsheet](docs/cloud/cloud.md)
 ### AWS Certification Exam Preparation
-[AWS Certified Solutions Architect – Professional (SAP-C02)](docs/certs/certs.md)
+[AWS Certified Solutions Architect – Professional (SAP-C02)](docs/cert-exam-preparation/cert-exam-preparation.md)
 ### AWS Cloud Institute
 [AWS Cloud Institute](docs/aci/aci.md)
 ### Proxmox troubleshooting
