@@ -945,6 +945,70 @@ Global Accelerator continuously monitors the health of all endpoints and instant
 
 Example: Global Accelerator directing traffic to several endpoints across two Regions, except for one marked as unhealthy.
 
+#### Week 4 Assessment
+##### What function does authoritative DNS have?
+* It translates domain names into IP addresses and responds to DNS queries of a given domain name.
+
+##### What function does recursive DNS have?
+* It provides a local client DNS service by accepting DNS queries from a client and returns an answer after completing a search.
+
+An authoritative nameserver holds the DNS records for a specific domain and responds to DNS queries. TLD nameservers maintain domain names that share a common domain extension. A domain registrar provides a way to purchase and manage a domain name.
+
+##### When dows a client use a session key during a TLS handshake?
+* The client uses a session key after it encrypts a random number with a web server's public key.
+
+The server decrypts the random number using its private key. The server and client now have all the components to calculate the session key. The client sends an encrypted message with the session key to the server for confirmation. The web server decrypts the message with its session key and confirms with the client. Subsequent messages between the client and server are encrypted with the sessions key.
+
+##### How does the API Gateway send REST API request to the appropriate backend endpoint?
+* It matches an incoming API request to a corresponding method request, then sends an integration request to the appropriate backend endpoint.
+
+The backend endpoint returns the result to the API Gateway as an integration response. A developer can optionally map an integration response to a method response to return to the client.
+
+##### How does AWS PrivateLink provide private connections between a VPC and other services?
+* It uses VPC endpoints that ensure network traffic from a VPC is routed over the AWS private network to the target service.
+
+AWS PrivateLink doesn't provide any kind of built-in network traffic encryption or use a VPN. PrivateLink also doesn't use a transit gateway, but rather VPC endpoints to route traffic to a target service.
+
+##### What request elements can be configured to change the cache behavior of an Amazon CloudFront distribution? (Select TWO.)
+* **Query strings** and **HTTP headers**.
+
+The web content distribution can serve different versions of content, depending on the query strings and headers.
+
+##### How does Amazon CloudFront enhance delivery of web content for applications?
+* Requests for content are routed to the nearest edge location.
+
+Edge locations serve out cached web content instead of the web servers, which means less networks to traverse for providing content to users.
+
+##### What purpose does Cross-Origin Resource Sharing (CORS) serve?
+* CORS allows a client browser to check with third-party servers if a request is authorized before any data transfers.
+
+In addition to being an extension of the same-origin policy that's enforced by modern browsers, CORS also mitigates against cross-site request forgery attempts.
+
+##### What is the next step in troubleshooting process after diagnostic data is collected?
+* Analyze the data to determine the root cause of observed instances.
+
+The order of troubleshooting steps is the following: categorize the problem, collect diagnostic data, analyze the data, and review the documentation. Seeking online or third-party assistance is also an option after all attempts to resolve the issue haven't worked.
+
+##### What purpose do security certificate serve for HTTPS?
+* They provide a way to confirm an identity of a server and establish a way to encrypt web data.
+
+In a typical HTTPS session, a web server presents a security certificate to a requesting client. The client validates the certificate with a Certificate Authority. After validating the web server's identity, the client uses the web server's public key to initiate an encrypted session with the web server.
+
+##### What is required to implement **traffic dials** for AWS Global Accelerator endpoints?
+* **Endpoint groups**.
+
+An endpoint group, and all the endpoints in it, must be in one AWS Region. However, endpoint groups could be in multiple Regions. A traffic dial sends a specified percentage of traffic to an endpoint group. Additional **weights** could be assigned to each endpoint in an endpoint group for additional custom traffic routing.
+
+##### What is a benefit of using response caching in Amazon API Gateway?
+* It can reduce the number of calls made to backend services.
+
+Response caching improves the latency of requests to an API endpoint. Response caching doesn't throttle API requests to an endpoint, but but redirects them to the cache. Response caching is specific to the Amazon API Gateway service. Additional configuration is required to use it with Amazon CloudFront.
+
+##### How does AWS Global Accelerator improve an application's performance.
+* It directs traffic to the optimal AWS endpoint of the application.
+
+The optimal AWS endpoint is based on several factors, including the client's location, the health of the endpoint, and the configured endpoint **weights**. AWS Global Accelerator only prioritizes an application's incoming traffic over the AWS network.
+
 ### Week 5: Storage 2 Part 1
 ### Week 6: Storage 2 Part 2
 ### Week 7: Storage 2 Part 3
