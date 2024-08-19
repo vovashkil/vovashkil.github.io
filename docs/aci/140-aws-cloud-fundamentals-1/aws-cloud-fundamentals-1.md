@@ -1010,7 +1010,1361 @@ Response caching improves the latency of requests to an API endpoint. Response c
 The optimal AWS endpoint is based on several factors, including the client's location, the health of the endpoint, and the configured endpoint **weights**. AWS Global Accelerator only prioritizes an application's incoming traffic over the AWS network.
 
 ### Week 5: Storage 2 Part 1
+#### Uploading with the Amazon S3 console
+**The maximum size of a file that you can upload by using the Amazon S3 console is 160 GB. To upload a file larger than 160 GB, you can perform a multipart upload using AWS Command Line Interface (AWS CLI), AWS SDKs, or Amazon S3 REST API. The maximum size of a single object in Amazon S3 is 5 TB.**
+
+#### Uploading to S3 with the REST API
+You can send a PUT request to upload an object of up to 5 GB in a single operation. When you use PutObject to add an object to a bucket, you must have WRITE permissions on the bucket that you are uploading the object to.
+
+**You must have the s3: PutObject in your AWS Identity and Access Management (IAM) permissions.**
+
+##### The authentication header: calculating signature
+Python script calculates the preceding signature, using the provided parameters:
+
+```
+import base64
+import hmac
+from hashlib import sha1
+
+access_key = 'AKIAIOSFODNN7EXAMPLE'.encode("UTF-8")
+secret_key = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'.encode("UTF-8")
+
+string_to_sign = 'PUT\n\nimage/jpeg\nTue, 12 Aug 2024 21:15:45 +0000\n/DOC-EXAMPLE-BUCKET/photos/puppy.jpg'.encode("UTF-8")
+signature = base64.encodestring(hmac.new(secret_key, string_to_sign, sha1).digest()).strip()
+
+print(f"AWS {access_key.decode()}:{signature.decode()}")
+```
+#### Multipart uploads
+
+#### Using AWS SDKs
+* **High-level APIs.** The AWS SDK high-level API provides a high level of abstraction that minimizes the complexity of file transfers. When possible, this API uses multiple connection threads to upload multiple parts of a single upload at once.
+* **Low-level APIs.** The low-level APIs correspond to Amazon S3 REST operations. Low-level APIs provide better control and granularity. If you need to pause and resume multipart uploads, vary part sizes during the upload, or do not know the data size in advance, we recommend using low-level APIs. Otherwise, use the high-level API.
+
+##### SDK for Python to upload a file in multiple parts to an S3 bucket
+
+```
+import boto3
+from boto3.s3.transfer import TransferConfig
+
+# Set the multipart threshold value (5 GB)
+GB = 1024 ** 3
+config = TransferConfig(multipart_threshold=5*GB)
+
+# Perform the transfer
+s3 = boto3.client('s3')
+s3.upload_file('FILE_NAME', 'BUCKET_NAME', 'OBJECT_NAME', Config=config)
+```
+
+#### Using the REST API 
+1. Initiate a multipart upload with the **CreateMultipartUpload** action.
+2. Upload a part in a multipart upload with the **UploadPart** action.
+3. Complete a multipart upload by assembling previously uploaded parts with the **CompleteMultipartUpload** action.
+4. Cancel multipart uploads with the **AbortMultipartUpload** action if needed. This action ends a multipart upload. After a multipart upload is ended, no additional parts can be uploaded using that upload ID. The storage consumed by any previously uploaded parts will be freed.
+
+**If any part uploads are currently in progress when you stop multipart uploads with the AbortMultipartUpload action, those part uploads might or might not succeed. It might be necessary to end a given multipart upload multiple times to completely free all storage consumed by all parts.**
+
+**You can use ListMultipartUploads action to list in-progress multipart uploads. An in-progress multipart upload is a multipart upload initiated using the Initiate Multipart Upload request that has not yet completed or ended.**
+
+**To verify that all parts have been removed so you don't get charged for the part storage, you should call the ListParts action and ensure that the parts list is empty.**
+
+#### Using the AWS CLI
+```
+$ aws s3 cp large_test_file s3://DOC-EXAMPLE-BUCKET/
+```
+
+It's a best practice to use aws s3 commands, such as the **aws s3 cp** command, for multipart uploads and downloads. This is because aws s3 commands automatically perform multipart uploading and downloading based on the file size. Use aws s3api commands, such as **aws s3api create-multipart-upload** command, only when aws s3 commands don't support a specific upload. For example, your multipart upload involves multiple servers, or you manually stop a multipart upload and resume it later. Or, the aws s3 command doesn't support a required request parameter.
+
+#### Amazon S3 Transfer Acceleration
+Transfer Acceleration uses the globally distributed edge locations in Amazon CloudFront.
+
+Transfer Acceleration uses standard TCP and HTTP and HTTPS.
+
+##### Transfer Acceleration use cases
+Transfer Acceleration is ideal for transferring gigabytes to terabytes of data across continents. It's also useful for clients that upload to a centralized bucket from all over the world. If your objects are smaller than 1 GB or the dataset is less than 1 GB, consider using the CloudFront PUT and POST commands for optimal performance.
+
+#### Transfer Acceleration and regular Amazon S3 transfer
+Each time you use Transfer Acceleration to upload an object, AWS checks whether Transfer Acceleration is probably faster than a regular Amazon S3 transfer. **If AWS determines that Transfer Acceleration might not be faster than a regular Amazon S3 transfer, AWS does not charge for that use of Transfer Acceleration.** AWS might bypass Transfer Acceleration for that upload. It’s either faster or no charge is incurred.
+
+#### Transfer Acceleration Speed Comparison tool
+This tool allows you to compare accelerated and non-accelerated upload speeds across AWS Regions. The Speed Comparison tool uses multipart uploads to transfer a file from your browser to various Amazon S3 Regions with and without using Transfer Acceleration.
+
+To use the Speed Comparison tool, copy the following URL into your browser window. In the URL, replace **Region** with the Region you are using (for example, **us-west-2**). Replace **DOC-EXAMPLE-BUCKET** with the name of the bucket that you want to evaluate.
+
+(opens in a new tab)https://s3-accelerate-speedtest.s3-accelerate.amazonaws.com/en/accelerate-speed-comparsion.html?region=Region&origBucketName=DOC-EXAMPLE-BUCKET 
+
+#### Transfer Acceleration requirements and considerations
+* **Bucket ownership**. – You must be the bucket owner to set the Transfer Acceleration state. The bucket owner is the AWS account that creates the resource. The bucket owner can assign permissions to other users to allow them to set the acceleration state on a bucket.
+* **Permissions**. – To enable or disable Transfer Acceleration on a bucket, you must have **s3:PutBucketAccelerateConfiguration permissions**. To return the Transfer Acceleration state of a bucket, you must have **s3:GetBucketAccelerateConfiguration** permissions.
+* **Supported URI styles**. – Transfer Acceleration is supported on only **virtual-hosted style** requests. For more information about virtual-hosted and path-style URIs for Amazon S3 endpoints, see the Getting Started with Amazon S3 course.
+* **Bucket name**. – The name of the bucket using Transfer Acceleration must be DNS-compliant and must not contain periods (".").
+* **Connection endpoints**. – To access a bucket that is enabled for Transfer Acceleration, you must use the endpoint **.s3-accelerate.amazonaws.com**. Or you can use the dual-stack endpoint .**s3-accelerate.dualstack.amazonaws.com** to connect to the enabled bucket over IPv6. You can continue to use the regular endpoint in addition to the accelerate endpoints. For example, suppose your application issues requests to your bucket using the hostname **DOC-EXAMPLE-BUCKET.s3.us-east-1.amazonaws.com**. To accelerate that request, change the hostname in your request to **DOC-EXAMPLE-BUCKET.s3-accelerate.amazonaws.com**.
+
+#### Using Transfer Acceleration
+You can enable Transfer Acceleration on a bucket using the console, the REST API, AWS CLI, or AWS SDKs. After Transfer Acceleration is enabled, you can point your Amazon S3 PUT and GET requests to the s3-accelerate endpoint domain name.
+
+#### Use AWS CLI to enable and use Transfer Acceleration
+##### Enabling acceleration
+```
+$ aws s3api put-bucket-accelerate-configuration --bucket my-bucket --accelerate-configuration Status=Enabled
+```
+
+**Note**: You use **Status=Enabled** to enable Transfer Acceleration and **Status=Suspended** to suspend Transfer Acceleration.
+
+###### Uploading an object to a bucket with Transfer Acceleration
+The following example uploads a file to a bucket with Transfer Acceleration by using the --endpoint-url parameter to specify the accelerate endpoint. 
+
+```
+$ aws s3 cp file.txt  s3://DOC-EXAMPLE-BUCKET --region us-east-2 --endpoint-url http://s3-accelerate.amazonaws.com
+```
+
+#### Amazon S3 Storage Classes and Use Cases
+1. Amazon S3 Standard (S3 Standard)
+2. Amazon S3 Intelligent-Tiering (S3 Intelligent-Tiering)
+3. Amazon S3 Standard-Infrequent Access (S3 Standard-IA)
+4. Amazon S3 One Zone-Infrequent Access (S3 One Zone-IA)
+5. Amazon S3 Glacier Instant Retrieval
+6. Amazon S3 Glacier Flexible Retrieval
+7. Amazon S3 Glacier Deep Archive
+8. Amazon S3 on Outposts
+
+#### Amazon S3 Cost Optimization Tools
+For predictable workloads, you can use Amazon S3 storage class analysis. For unpredictable workloads, you can use Amazon S3 Intelligent-Tiering.
+
+#### Amazon S3 storage class analysis
+Amazon S3 storage class analysis monitors access patterns across objects to help determine when to transition data to the right storage class to optimize costs.
+
+##### Cobfiguration
+* **Entire bucket**. With this option, you can receive an analysis for every object in the bucket. When you use the Amazon S3 console to configure storage class analysis, leave the **Prefix** field empty if you want to analyze the whole bucket.
+* **Prefix and tags**. You can configure filters that group objects together by prefix, object tags, or by a combination of both. You receive a separate analysis for each filter you configure, and can have up to 1,000 filter configurations per bucket.
+* **Exports**. Storage class analysis for a bucket or filter can provide daily exports of analysis data. The analysis for the day is added to the file to form a historic analysis log for the configured filter. The file is updated daily in the destination of your choice. For more information about granting permissions for Amazon S3 storage class analysis, see [Grant Permissions for S3 Inventory and S3 Analytics](https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html#example-bucket-policies-s3-inventory-1) in the Amazon Simple Storage Service User Guide.
+
+**Amazon S3 storage class analysis only provides recommendations for S3 Standard to S3 Standard-IA classes.**
+
+After you configure storage class analysis reports, it takes 24 hours to generate the first report. After that, Amazon S3 continues to monitor and provide exports on a daily basis. Data in the exported file is sorted by date within the object age group.
+
+You can then use Amazon Quicksight, or another business intelligence tool, to run analytics and produce reports on the data gathered by storage class analysis. 
+
+#### Storage class analysis FAQs
+##### How do you use storage class analysis?
+You can gather information to help you improve the lifecycle management of your S3 Standard-IA storage. After you configure a filter, you will start seeing data analysis in 24–48 hours, based on the filter in the Amazon S3 console. However, storage class analysis observes the access patterns of a filtered dataset for 30 days or longer to gather information for analysis before giving a result. The analysis continues running after the initial result, and updates the result as the access patterns change.
+
+When performing analysis for infrequently accessed objects, storage class analysis reviews the filtered objects grouped together by age, starting when they were uploaded to Amazon S3. Storage class analysis determines if the age group is infrequently accessed by looking at the following factors for the filtered dataset:
+* It reviews objects in the S3 Standard storage class that are larger than 128 KB.
+* It calculates how much average total storage you have per age group.
+* It determines the average number of bytes transferred out (not frequency) per age group.
+
+Analytics export data only includes requests with data relevant to storage class analysis. This might cause differences in the number of requests and total upload and request bytes compared to those in storage metrics or your own internal systems.
+
+Failed **GET** and **PUT** requests are not counted for the analysis. However, you will see failed requests in storage metrics.
+
+##### How much of your storage did you retrieve?
+The Amazon S3 console graphs how much of the storage in the filtered dataset has been retrieved for the observation period.
+
+##### What percentage of your storage did you retrieve?
+The Amazon S3 console graphs what percentage of the storage in the filtered dataset has been retrieved for the observation period. 
+
+The storage class analysis uses the following predefined object age groups:
+* Amazon S3 objects less than 15 days old
+* Amazon S3 objects 15–29 days old
+* Amazon S3 objects 30–44 days old
+* Amazon S3 objects 45–59 days old
+* Amazon S3 objects 60–74 days old
+* Amazon S3 objects 75–89 days old
+* Amazon S3 objects 90–119 days old
+* Amazon S3 objects 120–149 days old
+* Amazon S3 objects 150–179 days old
+* Amazon S3 objects 180–364 days old
+* Amazon S3 objects 365–729 days old
+* Amazon S3 objects 730 days or more older
+
+It usually takes about 30 days of observing access patterns to gather enough information for an analysis result. It might take longer than 30 days, depending on the unique access pattern of your data. However, after you configure a filter, you will start seeing data analysis based on the filter in the Amazon S3 console in 24–48 hours. You can see analysis on a daily basis of object access, divided by object age group in the Amazon S3 console.
+
+##### How much of your storage is infrequently accessed?
+The Amazon S3 console shows the access patterns grouped by the predefined object age groups. The Frequently accessed or Infrequently accessed indicators are meant to help you in the lifecycle creation process.
+
+#### S3 Intelligent-Tiering
+S3 Intelligent-Tiering optimizes costs by automatically moving data between three access tiers with the option to activate a fourth and fifth archive and deep archival tiers. The first tier is optimized for frequent access, and the next lower-cost tier is optimized for infrequent access. The Archive Instant Access tier is a low-cost tier optimized for rarely accessed data.
+
+Additionally, there is an Archive Access tier that must be activated before you can use it. After activation, S3 Intelligent-Tiering moves data you have not accessed for more than 90 consecutive days to the this archival tier. It has the same performance as the S3 Glacier Flexible Retrieval storage class. The last, optional tier, is the Deep Archive Access tier. After activation, objects you have not accessed for 180 days automatically move to this lowest-cost tier. This tier has the same performance as the S3 Glacier Deep Archive storage class.
+
+##### Highlights
+S3 Intelligent-Tiering delivers automated cost savings and performance. The following are some highlights:
+* Up to 40 percent cost savings using the Frequent Access and Infrequent Access tiers
+* Up to 68 percent cost savings using the Archive Instant Access tier
+* Up to 95 percent cost savings using the optional Archive Access and Deep Archive Access tiers
+* No operational overhead, lifecycle changes, retrieval charges, or minimum storage duration
+* The same low-latency and high-throughput performance of S3 Standard with the Frequent, Infrequent, and Archive Instant Access tiers
+* Opt-in asynchronous archive capabilities for objects that become rarely accessed
+* Durability of 99.999999999 percent of objects across multiple Availability Zones and for 99.9 percent availability over a given year
+
+#### S3 Lifecycle policies
+With lifecycle management, objects automatically move to more economical storage classes as the content ages. Lifecycle management also helps you create rules to delete objects based on the object’s age.
+
+An S3 Lifecycle policy transitions objects between storage classes only downward and not upward. Storage classes start with S3 Standard, then S3 Standard-IA, then S3 Intelligent-Tiering, then S3 One Zone-IA, then S3 Glacier, and end with S3 Glacier Deep Archive.
+
+#### S3 Lifecycle configuration rule use cases
+* **Application logs**: If you upload periodic logs to a bucket, your application might need them for a week or a month. After that, you might want to delete them.
+* **Limited-time access**: You might frequently access documents for a short period of time for specific projects or business needs and then infrequently access them later. You can archive these files and then permanently delete them after their retention periods expire.
+* **Archival**: Some companies import data to Amazon S3 primarily for archival purposes. For example, they might archive digital media, financial and healthcare records, raw genomics sequence data, long-term database backups, and data that must be retained for regulatory compliance.
+
+##### Considerations
+* **Lifecycle configuration and versioning**. You can add S3 Lifecycle configurations to both un-versioned buckets and versioning-enabled buckets. You can define separate lifecycle rules for current and non-current object versions.
+* **Object expiration**. When an object reaches the end of its lifetime, Amazon S3 queues it for removal and removes it asynchronously. There might be a delay between the expiration date and the date Amazon S3 removes an object. You are not charged for storage time associated with an object that has expired. The following are some expiration option types:
+ * **Versioning-enabled bucket**: If the current object version is not a delete marker, the lifecycle expiration action causes Amazon S3 to add a delete marker with a unique version ID.
+ * **Versioning-suspended bucket**: In a versioning-suspended bucket, the expiration action causes Amazon S3 to create a delete marker with null as the version ID. This delete marker replaces any object version with a null version ID in the version hierarchy, which effectively deletes the object.
+ * **Non-version-enabled buckets**: When an object expires, the object is permanently deleted.
+* **Minimums**. Amazon S3 doesn't transition objects smaller than 128 KB because it's not cost effective. This applies to the following transitions:
+ * From the S3 Standard or S3 Standard-IA storage classes to S3 Intelligent-Tiering or S3 Glacier Instant Retrieval
+ * From the S3 Standard storage class to S3 Standard-IA or S3 One Zone-IA
+
+Objects must remain for a minimum of 30 days in S3 Standard before they can transition to S3 Standard-IA and S3 One Zone-IA.
+
+Objects in S3 Intelligent-Tiering, S3 Standard-IA, and S3 One Zone-IA storage are charged for a minimum storage duration of 30 days. Objects deleted before 30 days incur a pro-rated charge equal to the storage charge for the remaining days.
+
+* **Configurations not supported**. Lifecycle configuration on buckets with multi-factor authentication is not supported. **AWS CloudTrail object-level logging does not capture lifecycle actions. If you require logging, you can use Amazon S3 server access logs to capture S3 Lifecycle actions.**
+
+#### AWS Storage Blog: Canva
+Review [AWS BLOG](https://aws.amazon.com/blogs/storage/how-canva-saves-over-3-million-annually-in-amazon-s3-costs/) to learn how Canva saves over $3 million annually in Amazon S3 costs by using storage class analysis and S3 Lifecycle policies.
+
+#### Additional Resources
+##### Uploading an object using multipart upload
+How to use AWS SDKs, REST API, and AWS CLI for multipart uploads - [MULTIPART UPLOAD](https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpu-upload-object.html).
+
+##### Enable or disable Transfer Acceleration
+Setting up the permission to enable or disable Transfer Acceleration on a bucket - [PUT BUCKET](https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketAccelerateConfiguration.html).
+
+##### Return the Transfer Acceleration state
+Setting up the permission to return the Transfer Acceleration state of a bucket - [GET BUCKET](https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketAccelerateConfiguration.html).
+
+##### [PutObject](https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObject.html)
+
+##### [AWS Signature Version 4](https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html)
+
+##### [Signing and authenticating REST requests](https://docs.aws.amazon.com/AmazonS3/latest/userguide/RESTAuthentication.html)
+
+#### Advanced Features of Amazon S3
+#### Pre-assessment
+##### What special step do users need to follow when accessing a presigned URL for an encrypted object?
+* Use the URL in the same way as for unencrypted objects.
+
+##### What is the maximum length of a SQL expression when using Amazon S3 Select?
+* 256 KB
+
+#### Accessing Your Amazon S3 Resources
+
+#### Object URLs
+The Object URL you can find in the console is called **virtual-hosted-style access**. This means that **the bucket name is part of the domain name** in the URL.
+
+```
+https://DOC-EXAMPLE-BUCKET-1111111.s3.us-west-2.amazonaws.com/kitty.jpg
+```
+
+Whether the object or file is publicly accessible directly through the link is governed by the following: 
+* **For buckets with access control list (ACL) disabled**: Accessing the object or file through the link is determined by the bucket policies and the Block Public Access settings related to bucket policies. 
+* **For buckets with ACL enabled**: ACL permissions are active on the file. Accessing the object or file through the link depends on both of ACL permissions assigned to the file and the Block Public Access settings related to ACL permissions. 
+
+#### Presigned URLs
+The main purpose of a presigned URL is to grant temporary access to the required object. When you create a presigned URL, you must provide your security credentials and specify the following:
+* Bucket name
+* Object key
+* HTTP method (PUT for uploading objects)
+* Expiration date and time
+
+A presigned URL remains valid for a limited period of time, which is specified when the URL is generated. You can use presigned URLs to embed live links in web pages, which can be valid for up to seven days.
+
+##### Permissions to the object
+Anyone with valid security credentials can create a presigned URL. However, to access an object successfully, the user creating the presigned URL must have permissions to perform the operation on the object.
+
+##### Credentials
+The credentials that you can use to create a presigned URL include the following:
+* AWS Identity and Access Management (IAM) instance profile – Valid up to 6 hours.
+* AWS Security Token Service (AWS STS) – Valid up to 36 hours when signed with permanent credentials, such as the credentials of the AWS account root user or an IAM user.
+* IAM user – Valid up to 7 days when using AWS Signature Version 4.
+
+To create a presigned URL that's valid for up to 7 days, first designate IAM user credentials (the access key and secret access key) to the SDK that you're using. Then, generate a presigned URL using AWS Signature Version 4.
+
+##### Token expiration
+If you created a presigned URL using a temporary token, the URL expires when the token expires, even if you created the URL with a later expiration time.
+
+##### Tools required
+You can generate a presigned URL programmatically using REST API, AWS Command Line Interface (AWS CLI), an AWS SDK, or the AWS toolkit in AWS Cloud9.
+
+#### [How to generate presigned URLs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ShareObjectPreSignedURL.html)
+
+#### Amazon S3 resource ARNs
+```
+arn:partition:service:region:namespace:relative-id
+```
+
+#### Amazon S3 ARN examples
+##### The following ARN identifies the /developers/design_info.doc object in the DOC-EXAMPLE-BUCKET bucket.
+```
+arn:aws:s3:::DOC-EXAMPLE-BUCKET/developers/design_info.doc
+```
+
+##### The following ARN uses the wildcard * in the relative-ID part of the ARN to identify all objects in the DOC-EXAMPLE-BUCKET bucket.
+```
+arn:aws:s3:::DOC-EXAMPLE-BUCKET/*
+```
+
+##### The following ARN uses * to indicate all Amazon S3 resources (all S3 buckets and objects). 
+```
+arn:aws:s3:::*
+```
+
+##### The following ARN uses both wildcards, * and ?, in the relative-ID part. It identifies all objects in buckets, such as DOC-EXAMPLE-BUCKET1, DOC-EXAMPLE-BUCKET2, DOC-EXAMPLE-BUCKET3, and so on. 
+```
+arn:aws:s3:::DOC-EXAMPLE-BUCKET?/*
+```
+
+##### Policy variables in Amazon S3 ARNs
+Suppose that you organize your bucket as a collection of folders, one folder for each of your users. The folder name is the same as the username. To grant users permission to their folders, you can specify a policy variable in the resource ARN: 
+```
+arn:aws:s3:::DOC-EXAMPLE-BUCKET/developers/${aws:username}/
+```
+
+#### Static website hosting
+1. **Create an S3 bucket**: You start by creating an S3 bucket and giving it a unique name. This bucket will act as the container for your website files. 
+2. **Configure the bucket for website hosting**: After the bucket is created, you configure it to activate website hosting. This involves specifying the index document (for example, index.html) and optionally an error document. 
+3. **Upload your website files**: Upload your static website files (HTML, CSS, JavaScript, images, and so on) to the S3 bucket. You can do this through the console, AWS CLI, or AWS SDKs.
+4. **Set permissions and make files public**: You need to ensure that your website files are publicly accessible. By default, Amazon S3 blocks public access to the bucket and objects for security reasons.
+5. **Obtain the website endpoint**: After the files are uploaded and the permissions are set, Amazon S3 provides you with a website endpoint URL. This URL serves as the address for your static website.
+6. **Configure DNS and domain**: If you have a custom domain for your website, you can configure DNS settings to point it to the Amazon S3 website endpoint. Users can then access your website through your custom domain name.
+
+#### [Configuring a static website on Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html)
+
+#### Managing object tagging
+A tag is a basic label consisting of a customer-defined key and an optional value that can be applied to a whole bucket or to individual objects in a bucket. For example, you can use a tag of **phototype:raw** to identify raw photographs and **phototype:finished** to identify processed photos.
+
+**Tags are not additive. If you put new tags on an object that already has tags, the new tags will replace the current tags.**
+
+When you assign tags, use the following guidelines:
+* You can create tags from the console, AWS CLI, or APIs.
+* Tag keys and values are case sensitive. 
+* You can associate **up to 10 tags** with an object. Tags associated with an object must have unique tag keys. 
+* A **tag key** can be up to **128 Unicode characters** in length, and **tag values** can be **up to 256 Unicode characters** in length. 
+
+#### Use cases
+##### Access control
+You can use tagging with IAM policies for fine-grained permission control. The tag and its value create a condition in the policy to allow or deny a specified action.
+
+Use the Amazon S3 condition key **"s3:ExistingObjectTag/<key>": "<value>"** to specify the tag's key and value. 
+
+In the following example, this policy grants a user read-only privileges to files with a tag of **phototype: finished**. 
+
+##### Lifecycle management
+In a bucket's lifecycle rule configuration, you can specify a filter to select a subset of objects to which the rule applies. You can specify a filter based on the key name prefixes, object tags, or both.
+
+For example, you plan to archive raw photos to Amazon S3 Glacier after orders are finalized. You configure a lifecycle rule with a filter for objects with the prefix **photos/** and with the **phototype:raw** tag.
+
+##### Amazon CloudWatch metrics and AWS CloudTrail logs
+When working with CloudWatch metric configurations, you can filter the configuration into groups of related objects within a single bucket based on tags. If you specify a filter, only requests that operate on single objects can match the filter and be included in the reported metrics. Requests like **Delete Multiple Objects** and **List** don't return any metrics for configurations with filters.
+
+For example, you want to view metrics only on finished photos, so you filter on the **phototype:finished** tag.
+
+##### Replication
+You can use tags to determine which objects are replicated. Tags offer fine-grained control to selectively replicate your storage to back up critical data for compliance and disaster recovery.
+
+For example, you might choose to replicate only files with a tag of **phototype:finished** to back up your customer work.
+
+#### Adding a tag
+Tags can be managed from the console or programmatically using the AWS SDKs. The following example shows a tag, **phototype:raw**, applying to objects in the bucket that match the **Specified objects** search criteria.
+
+#### Using automation to tag objects
+Automation ensures that tags are consistently applied when resources are created. The following example shows how to use the AWS SDK for Python (Boto3) to set tags for a new object. 
+
+```
+import logging
+import boto3
+from botocore.exceptions import ClientError
+client = boto3.client('s3')
+
+
+def upload_file(file_name, bucket, object_name=None):
+    """Upload a file to an S3 bucket
+
+    :param file_name: File to upload
+    :param bucket: Bucket to upload to
+    :param object_name: S3 object name. If not specified then file_name is used
+    :return: True if file was uploaded, else False
+    """
+    # If S3 object_name was not specified, use file_name
+    if object_name is None:
+        object_name = file_name
+
+    # Upload the file
+    s3_client = boto3.client('s3')
+    try:
+        response = s3_client.upload_file(file_name, bucket, object_name)
+    except ClientError as e:
+        logging.error(e)
+        return False
+    return True
+s3 = boto3.client('s3')
+with open("./test.txt", "rb") as f:
+
+    s3.upload_fileobj(f, "DOC-EXAMPLE-BUCKET", "test.txt",
+      ExtraArgs={
+        'Metadata': {'mykey': 'myvalue'}
+        })
+
+
+# set tag after object uploads to Amazon S3
+response = client.put_object_tagging(
+    Bucket='DOC-EXAMPLE-BUCKET',
+    Key='test.txt',
+    Tagging={
+        'TagSet': [
+            {
+                'Key': 'ENV',
+                'Value': 'Prod'
+            },
+             {
+                'Key': 'type',
+                'Value': 'txt'
+            }
+        ]
+    }
+)
+```
+
+**Tags are not additive. If you put new tags on an object that already has tags, the new tags will replace the current tags.**
+
+#### [Using object tags](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-tagging.html)
+
+#### Amazon S3 Object Lambda
+
+##### Using S3 Object Lambda
+The following examples are potential use cases that can be streamlined with S3 Object Lambda:
+* Redact personally identifiable information for analytics or non-production environments. 
+* Convert across data formats, such as converting XML to JSON. 
+* Augment data with information from other services or databases. 
+* Compress or decompress files as they are being downloaded. 
+* Resize and watermark images using caller-specific details, such as the user who requested the object.
+* Implement custom authorization rules to access data.
+
+##### Getting started
+You can start using S3 Object Lambda with the following steps: 
+1. Create a Lambda function to transform data for your use case. 
+2. Create an S3 Object Lambda Access Point from the Amazon S3 console.
+3. Select the Lambda function that you created in step 1.
+4. Provide a supporting S3 Access Point to give S3 Object Lambda access to the original object.
+5. Update your application configuration to use the new S3 Object Lambda Access Point to retrieve data from Amazon S3.
+
+##### [Transforming objects with S3 Object Lambda ](https://docs.aws.amazon.com/AmazonS3/latest/userguide/transforming-objects.html)
+
+#### Amazon S3 Batch Operations
+* **Put object tagging.** Replace the Amazon S3 object tags of each object that is listed in the manifest.
+* **Put object ACL.** Replace the Amazon S3 ACLs for each object that is listed in the manifest.
+* **Initiate restore object.** Send a restore request to Amazon S3 Glacier for each object that is specified in the manifest.
+* **Put object copy.** Copy each object specified in the manifest. You can copy objects to a different bucket in the same Region or to a bucket in a different Region.
+* **Invoke Lambda function.** Invoke a Lambda function to perform custom actions on objects that are listed in a manifest.
+* **Manage S3 Object Lock.** Manage the retention dates of many Amazon S3 objects. You can add legal holds to many Amazon S3 objects at once.
+
+##### [Additional information](https://docs.aws.amazon.com/AmazonS3/latest/userguide/batch-ops-operations.html)
+
+##### Terminology 
+###### Manifest
+The manifest is a list of all of the objects that you want S3 Batch Operations to run the specified action on. You can use a CSV-formatted Amazon S3 inventory report as a manifest or use your own customized CSV list of objects. 
+
+###### Job
+A job is the basic unit of work for S3 Batch Operations. A job contains all of the information necessary to run the specified operation on the objects listed in the manifest. After you provide this information and request that the job begin, the job runs the operation for each object in the manifest.
+
+###### Operation
+The operation is the type of API action, such as copying objects, that you want the S3 Batch Operations job to run. Each job performs a single type of operation across all objects that are specified in the manifest. 
+
+###### Task
+A task is the unit of execution for a job. A task represents a single call to an Amazon S3 or Lambda API to perform the job's operation on a single object. S3 Batch Operations creates one task for each object specified in the manifest.
+
+##### Workflow
+1. **Choose objects**. Specify the manifest for your job. The manifest is an Amazon S3 object that lists object keys that you want Amazon S3 to act on.
+2. **Select an operation**. Specify the operation that you want S3 Batch Operations to run against the object in the manifest. Each operation type accepts parameters that are specific to that operation. You can then perform the same tasks as if you performed the operation one by one on each object.
+3. **View process**. S3 Batch Operations does your requested actions across your target S3 objects. It automatically retries and displays object-level progress. It also sends notifications and delivers completion reports when requested changes are made to your target Amazon S3 objects. 
+
+##### Assigning permissions
+There are two considerations for granting permissions to create an S3 Batch Operations job: the identity who will create the job requires the appropriate permissions, and Amazon S3 must have permission to perform S3 Batch Operations on your behalf.
+
+###### Creating a job
+The identity creating the Amazon S3 Batch Operations job must have the **s3:CreateJob** permission. This identity must also have the **iam:PassRole** permission to pass the IAM role specified for the job to Amazon S3 Batch Operations.
+
+###### Creating a role for Amazon S3
+The role that S3 Batch Operations uses to perform the job requires the following two policies:
+* It requires a trust policy that permits the S3 Batch Operations service principal to assume the IAM role.
+* It requires a permissions policy that grants S3 Batch Operations permission to work with your S3 objects. The exact permissions required will depend on the operation. Keep the following guidelines in mind:
+ * Regardless of the operation, Amazon S3 needs permission to read your manifest object from your S3 bucket. For Amazon S3 inventory report manifests, grant permission to read the **manifest.json** object and all associated CSV data files.
+ * Grant permission to write a report to your bucket if your job includes a completion report.
+ * Version-specific permissions such as **s3:GetObjectVersion** are required only if you are specifying the version ID of the objects.
+ * If you are running S3 Batch Operations on encrypted objects, the IAM role must also have access to the AWS Key Management Service (AWS KMS) keys used to encrypt them.
+
+##### IAM policy examples
+The following examples of the policies must be attached to the IAM role that S3 Batch Operations uses to perform the job. If you create the job using the Amazon S3 console, the console will generate policies specific to your job. You can copy and paste these into the IAM editor during the job configuration. If you use AWS CLI or an SDK, you must complete all IAM tasks before creating the job.
+
+The following is an example of the trust policy that you must attach to the role to permit the S3 Batch Operations service principal to assume the role: 
+
+```
+{
+   "Version":"2012-10-17",
+   "Statement":[
+      {
+         "Effect":"Allow",
+         "Principal":{
+            "Service":"batchoperations.s3.amazonaws.com"
+         },
+         "Action":"sts:AssumeRole"
+      }
+   ]
+}
+```
+
+The following is an example of a permissions policy that permits S3 Batch Operations to perform a Put object tagging operation. You need to personalize the following three parameters for your environment: **DOC-EXAMPLE-SOURCE-BUCKET**, **DOC-EXAMPLE-MANIFEST-BUCKET**, and **DOC-EXAMPLE-REPORT-BUCKET**.
+
+```
+{
+  "Version":"2012-10-17",
+  "Statement":[
+    {
+      "Effect":"Allow",
+      "Action":[
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging"
+      ],
+      "Resource": "arn:aws:s3:::{{<DOC-EXAMPLE-SOURCE-BUCKET>}}/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::{{<DOC-EXAMPLE-MANIFEST-BUCKET>}}/*"
+      ]
+    },
+    {
+      "Effect":"Allow",
+      "Action":[
+        "s3:PutObject",
+        "s3:GetBucketLocation"
+      ],
+      "Resource":[
+        "arn:aws:s3:::{{<DOC-EXAMPLE-REPORT-BUCKET>}}/*"
+      ]
+    }
+  ]
+}
+```
+
+##### [Additional information about BATCH OPS POLICIES](https://docs.aws.amazon.com/AmazonS3/latest/userguide/batch-ops-iam-role-policies.html)
+
+##### Amazon S3 Inventory
+Amazon S3 Inventory helps you manage your storage by creating lists of the objects in an S3 bucket on a defined schedule. You can configure multiple inventory lists for a bucket. The inventory lists are published to comma-separated values (CSV), Apache Optimized Row Columnar (ORC), or Apache Parquet (Parquet) files in a destination bucket.
+
+You can configure what object metadata to include in the inventory and whether to list all object versions or only current versions. You can also configure where to store the inventory list flat-file output and whether to generate the inventory daily or weekly. It might take up to 48 hours for Amazon S3 Inventory to deliver the first report.
+
+The most convenient way to set up an inventory is by using the console. You can also use the REST API, AWS CLI, or AWS SDKs. The console will automatically attach an appropriate policy to the destination bucket for you.
+
+##### Configuring Amazon S3 Inventory
+1. Create a destination bucket
+2. Configure an Amazon S3 inventory
+
+##### Creating an S3 Batch Operations job
+1. Create a manifest
+2. Create an IAM role
+3. Create the job
+4. Choose a manifest file
+5. Select the manifest file
+6. Choose the operation
+7. Configure additional options
+8. Configure additional options
+9. Review and create your job
+10. Wait for the job to be ready
+11. Prepare to run the job
+12. Run the job
+
+#### Amazon S3 Select
+#### Using SQL with Amazon S3 Select 
+With Amazon S3 Select, you can use basic SQL queries to filter the contents of Amazon S3 objects. You can retrieve just the subset of data that you need instead of downloading the entire object. This reduces the amount of data that Amazon S3 transfers, which can greatly reduce transfer costs and increase performance. Amazon S3 Select can query compressed CSV-formatted reports directly, saving you the time of downloading and decompressing them.
+
+Amazon S3 Select works on objects stored in CSV, JSON, or Apache Parquet format. It also works with objects that are compressed with GZIP or BZIP2 (for CSV and JSON objects only), and server-side encrypted objects. You can specify the format of the results as either CSV or JSON, and you can determine how the records in the result are delimited.
+
+#### Requirements and constraints
+##### Requirements
+* You must have **s3:GetObject** permission for the object you are querying. 
+* If the object you are querying is encrypted with server-side encryption with customer-provided keys (SSE-C), you must use HTTPS. You must provide the encryption key in the request.
+
+##### Constraints
+* The maximum length of a SQL expression is 256 KB. 
+* The maximum length of a record in the input or result is 1 MB. 
+* Amazon S3 Select can only emit nested data by using the JSON output format. 
+* You cannot query objects in the S3 Glacier Flexible Retrieval, S3 Glacier Deep Archive, or Reduced Redundancy Storage (RRS) storage classes. You also cannot query the objects in the S3 Intelligent-Tiering Archive Access tier or the S3 Intelligent-Tiering Deep Archive Access tier. 
+
+##### Parquet object constraints
+* Amazon S3 Select supports only columnar compression using GZIP or Snappy. Amazon S3 Select doesn't support whole-object compression for Parquet objects. 
+* Amazon S3 Select doesn't support Parquet output. You must specify the output format as CSV or JSON. 
+* The maximum uncompressed row group size is 512 MB. 
+* You must use the data types that are specified in the object's schema.
+* Selecting a repeated field returns only the last value.
+
+#### Knowledge Check
+##### What formats should developers store objects in if they want to use Amazon S3 Select? (Select TWO.)
+* Comma-separated values (CSV)
+* JSON
+
+Wrong answers:
+* Microsoft Excel (XLSX)
+* Open Document Format (ODF)
+* Apache Optimized Row Columnar (ORC)
+
+Amazon S3 Select works on objects stored in **CSV, JSON**, or Apache Parquet format. It also works with objects compressed with GZIP or BZIP2 (for CSV and JSON objects only) and server-side encrypted objects.
+
+##### A developer is configuring a job to copy the contents of a source bucket to a destination bucket (Put object copy). They want a completion report to be written to a reports bucket. They must configure a permissions policy for Amazon S3 Batch Operations that permits certain actions on certain resources. Which actions must they permit for the bucket containing the manifest? (Select TWO.)
+* GetObject
+* GetBucketLocation
+
+Wrong answers:
+* PutObject
+* GetObjectTagging
+* PutObjectTagging
+
+The correct options are **GetObject** and **GetBucketLocation**.
+
+When using permissions policies for S3 Batch Operations to perform a PUT object tagging operation, there are three actions permitted in the bucket containing the manifest. They are **GetObject**, **GetObjectVersion**, and **GetBucketLocation**.
+
+##### What are appropriate use cases for presigned URLs? (Select TWO.)
+* Embed it on a website to download objects.
+* Use it in a command line client (such as curl) to download objects.
+
+Wrong answers:
+* Use it as a permanent link on a static website. 
+* Send it in an email containing personally identifiable information. 
+* Use it with permanent user credentials.
+
+A use-case scenario for presigned URLs is granting temporary access to Amazon S3 resources. For example, users can embed a presigned URL on a website or use it in a command line client (such as curl) to download objects. A user can also programmatically generate a presigned URL for another user to upload an object to a bucket.
+
+#### Security in Amazon S3
+
+#### Amazon S3 Block Public Access
+**Block all public access** setting activated by default.
+
+##### What does private access mean?
+Unless you share a bucket and objects with someone outside of your account, only the principals in your AWS account can access the objects in your S3 buckets. S3 Block Public Access provides controls across an entire AWS account or at the individual S3 bucket level. Implementing S3 Block Public Access ensures that objects are not publicly accessible.
+
+##### What does public access mean?
+Amazon S3 considers a bucket or object public if it grants any permissions to members of the following groups:
+* **AuthenticatedUsers** – This group allows all AWS accounts to access the resource. Any authenticated AWS user, from any AWS account in the world, can access your resource if the request is signed (authenticated). 
+* **AllUsers** – This group allows anyone in the world access to the resource. The requests can be signed (authenticated) or unsigned (anonymous).
+
+##### Is S3 Block Public Access on by default?
+For new buckets, access points, and objects, S3 Block Public Access is on by default. It stays active even if a user modifies an object's permissions to allow public access. The
+
+S3 Block Public Access setting overrides the modified permissions and continues to restrict public access to the object.
+
+##### Why don't I want my objects made public?
+Few use cases would require a bucket to be made public. Buckets and objects that are public can be accessed by anyone on the internet. Most businesses do not want their intellectual property, business documentation, or customer data made available to the public. Therefore, S3 Block Public Access is built into Amazon S3 security by default.
+
+##### Can I activate public access on only some objects or buckets?
+Yes. You can grant public access to buckets and objects through access control lists (ACLs), access point policies, and bucket policies. By doing this, you can have some buckets or objects available for public consumption. Others can be secured for private access or locked down for access only to a particular service or set of users.
+
+##### Can I activate S3 Block Public Access on a single object?
+Amazon S3 doesn't support S3 Block Public Access settings for a single object. You can activate S3 Block Public Access settings only for access points, buckets, and AWS accounts.
+
+#### Overview
+1. **S3 Block Public Access**. You can block all public access to your Amazon S3 objects at the bucket or account level. S3 Block Public Access overrides other Amazon S3 access permissions to enforce a no public access policy.
+2. **Set block public access permissions**. With a few selections in the Amazon S3 console, you can turn on S3 Block Public Access. Activate all four settings, unless you know you need public access.
+3. **Block all public access**. When you activate the primary option, you activate all four of the following options: 
+ * Block public access granted by new ACLs.
+ * Block public access granted by any ACLs.
+ * Block public access granted by new public bucket policies.
+ * Block public and cross-account access by any public bucket policies.4. Audit your Amazon S3 ACLs and policies
+4. **Audit your Amazon S3 ACLs and policies**. Use AWS Trusted Advisor and the Amazon S3 console to ensure that your buckets are private by using bucket permission checks.
+
+#### S3 Block Public Access settings
+##### Block all public access
+Sometimes, you want to make sure that a bucket will never allow public access. With this one-click option, you can prevent public access to your bucket. This overrides any configured ACLs and bucket polices that would normally grant public access. Choosing this option equates to choosing all the other options listed here.
+
+Any new bucket you create will have this option on by default. You need to deactivate this option if you want to allow public access to your buckets or objects.
+
+##### Block public access granted through new ACLs
+This option only affects how you evaluate ACL public permissions, and it ignores any existing ACLs that grant public permission on buckets and objects. This does not alter the existing ACLs themselves, but any resources configured with existing public ACLs will no longer be publicly accessible.
+
+It can be confusing because it does not prevent you from creating new ACLs that would normally grant public access. You can still create them, but those ACLs will not become effective, resulting in the bucket or object not being publicly accessible. 
+
+You should review your ACLs, once activated, and remove any public ACLs to prevent any possible future mistakes. Any existing public ACLs will no longer be ignored if the Block public access granted through any ACLs option is later deactivated.
+
+With this option, if you have any bucket policies granting public access to buckets and objects, those buckets or objects will remain publicly accessible. If you want to block all public access to buckets and objects, choose the Block all public access option.
+
+##### Block public access granted through new public bucket policies
+This option only prevents the creation of new bucket policies that grant public access. Any existing bucket policies are not affected. If you currently have any bucket policies configured that grant public access, those buckets or objects will remain publicly accessible. 
+
+To use this setting effectively, you should apply it at the AWS account level. A bucket policy can permit users to alter a bucket's S3 Block Public Access settings. Therefore, users who have permission to change a bucket policy can insert a policy to disable the S3 Block Public Access settings for the bucket. If you activate this setting for the entire account instead of a specific bucket, Amazon S3 blocks public policies. It does this even if a user alters the bucket policy to deactivate this setting.
+
+With this option, if you have any existing bucket policies or ACLs granting public access to buckets and objects, they will remain publicly accessible. If you want to block all public access to buckets and objects, choose the Block all public access option.
+
+##### Block access granted through any public bucket policies
+This option only affects how you evaluate bucket policy permissions. This option ignores any buckets or objects that have public permissions granted through bucket policies. It restricts access to a bucket with a public policy to only AWS services and authorized users within the bucket owner's account. It blocks all cross-account access to the bucket with a public policy except by AWS services. It still permits users within the account to manage the bucket. 
+
+This does not alter existing bucket policies, but it ignores any existing bucket policies that grant public access. It blocks public access and any cross-account access configurations. 
+
+With this option, if you have any ACLs granting public access to buckets and objects, they will remain publicly accessible. If you want to block all public access to buckets and objects, choose the Block all public access option.
+
+#### Preventing accidental public access
+##### DO
+* Use S3 Block Public Access at the account level to prevent public access to your buckets.
+* Audit your existing bucket ACLs and bucket policies.
+* Configure the appropriate roles and permissions to limit who can change S3 Block Public Access settings.
+
+##### DON'T
+* Don't allow public access unless you have an explicit reason that something must be public, such as static website hosting in Amazon S3.
+* Don't allow public access to troubleshoot. Start with the most restrictive permissions and open them only as needed.
+
+#### Amazon S3 Object Ownership
+Object Ownership is an Amazon S3 bucket-level setting you can use to control ownership of objects uploaded to a bucket, and to activate or deactivate ACLs.
+
+##### The following option works with ACLs deactivated:
+* **Bucket owner enforced (default)**: ACLs are deactivated, and the bucket owner automatically owns and has full control over every object in the bucket. ACLs no longer affect permissions to data in the S3 bucket. The bucket uses policies to define access control.
+
+##### The following options work with ACLs activated:
+* **Bucket owner preferred**: The bucket owner will own the object if uploaded with the bucket-owner-full-control canned ACL. Without this setting and canned ACL, the object is uploaded to the bucket, but the uploading account still owns the bucket. 
+* **Object writer**: The AWS account that uploads an object owns the object, has full control over it, and can grant other users access to it through ACLs.
+
+When the ACLs enabled option is selected, you can edit Object Ownership options, which are Bucket owner preferred and Object writer.
+
+For most modern use cases in Amazon S3, AWS recommends that you keep ACLs deactivated. You can use your bucket policy to share data with users outside of your account as needed. This approach simplifies permissions management. You can deactivate ACLs on both newly created and already existing buckets. For newly created buckets, ACLs are off by default. For an existing bucket with objects, after you deactivate ACLs, the object and bucket ACLs are no longer part of an access evaluation. Access is granted or denied based on policies. For existing buckets, you can activate ACLs at any time after you deactivate them. Your pre-existing bucket and object ACLs will be restored.
+
+##### Enforcing S3 Object Ownership
+If you activate ACLs and set the Object Ownership to Bucket owner preferred, you can add a bucket policy to require all Amazon S3 PUT operations to include the bucket-owner-full-control canned ACL. If the uploader fails to meet the ACL requirement in their upload, the request fails. This setting helps bucket owners enforce uniform object ownership across all newly uploaded objects in their buckets.
+
+##### [Controlling ownership of objects and disabling ACLs for your bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/about-object-ownership.html)
+
+#### Controlling Access with Access Policies
+Access policies dictate who has access to which resources. There are two types of access policies: resource based and identity based. Resource-based policies attach to resources, such as buckets and objects. For example, bucket policies and ACLs are resource-based policies because you attach them directly to resources, such as buckets and objects.
+
+##### Bucket policies
+To grant other AWS accounts or IAM users access to a bucket and the objects in it, attach a bucket policy. Because you are granting access to a user or account, a bucket policy must define a principal entity within the policy. A principal is an account, user, role, or service. Bucket policies supplement and sometimes replace legacy ACL-based access policies.
+
+**Bucket policies are limited to 20 KB in size.**
+
+Bucket policies grant access to another AWS account or IAM user. Therefore, you must specify the principal you are granting access to as a **Principal** in the bucket policy.
+
+```
+{
+   "Version":"2012-10-17",
+   "Statement":[
+      {
+         "Principal":{
+            "AWS":"arn:aws:iam::111122223333:user/JohnDoe"
+         },
+         "Effect":"Allow",
+         "Action":[
+            "s3:GetObject",
+            "s3:GetObjectVersion"
+         ],
+         "Resource":"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*"
+      }
+   ]
+}
+```
+
+##### Bucket policy use cases
+* You need to grant cross-account permissions to other AWS accounts or users in another account, without using IAM roles.
+* Your IAM policies reach the size limits for users, groups, or roles.
+* You prefer to keep access control policies in the Amazon S3 environment.
+* You need to ensure strict access control for sensitive data stored in a specific bucket. You also do not want access granted inadvertently to unauthorized users through IAM policies.
+
+#### Access policy elements
+##### Effect
+The Effect element specifies whether the statement actions are allowed or denied. Valid values for Effect are Allow and Deny. This is a required element.
+
+##### Action
+The Action element defines the actions that the policy allows or denies. This is a required element.
+
+##### NotAction
+NotAction is an advanced policy element that explicitly matches everything except the specified list of actions. Either Action or NonAction is required in a policy.
+
+##### Principal
+The Principal element defines which principal is allowed or denied access to a resource. You cannot use the Principal element in an IAM identity-based policy because you are already attaching the policy directly to a principal.
+
+For resource-based policies, such a bucket policy, a principal entity must be defined within the policy.
+
+##### NotPrincipal
+Use the NotPrincipal element to deny access to all principals except specific users. These include IAM users, federated users, IAM roles, AWS accounts, AWS services, or other principals specified in the NotPrincipal element.
+
+##### Resource or NotResource
+The Resource and NotResource elements specify the objects (or resources) that the statement applies to. Statements must include either a Resource or a NotResource element and must be specified as an Amazon Resource Name (ARN). Resource is a required element in the policy.
+
+##### Condition (Optional)
+Use the Condition element (or Condition block) to specify conditions for when a policy is in effect. This is an optional element.
+
+#### Bucket policy examples
+##### Allowing a user to read only objects that have a specific tag key and value ^^environment: production**
+
+```
+{
+   "Version":"2012-10-17",
+   "Statement":[
+      {
+         "Principal":{
+            "AWS":"arn:aws:iam::111122223333:user/JohnDoe"
+         },
+         "Effect":"Allow",
+         "Action":[
+            "s3:GetObject",
+            "s3:GetObjectVersion"
+         ],
+         "Resource":"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*",
+         "Condition":{
+            "StringEquals":{
+               "s3:ExistingObjectTag/environment":"production"
+            }
+         }
+      }
+   ]
+}
+```
+
+##### Requiring SSE-KMS for all objects written to a bucket
+The following example policy requires every object that is written to the bucket to be encrypted with server-side encryption using AWS Key Management Service (AWS KMS) keys (SSE-KMS). If the object isn't encrypted with SSE-KMS, the request will be denied.
+
+```
+{
+"Version": "2012-10-17",
+"Id": "PutObjPolicy",
+"Statement": [{
+  "Sid": "DenyObjectsThatAreNotSSEKMS",
+  "Principal": "*",
+  "Effect": "Deny",
+  "Action": "s3:PutObject",
+  "Resource": "arn:aws:s3:::DOC-EXAMPLE-BUCKET/*",
+  "Condition": {
+    "Null": {
+      "s3:x-amz-server-side-encryption-aws-kms-key-id": "true"
+    }
+  }
+}]
+}
+```
+
+##### Restricting access to only HTTPS requests
+Suppose you want to prevent potential attackers from manipulating network traffic. You can use HTTPS (TLS) to only allow encrypted connections while restricting HTTP requests from accessing your bucket. To determine whether the request is HTTP or HTTPS, use the **aws:SecureTransport** global condition key in your S3 bucket policy. The **aws:SecureTransport** condition key checks whether a request was sent by using HTTP.
+
+If a request returns true, then the request was sent through HTTPS. If the request returns false, then the request was sent through HTTP. You can then allow or deny access to your bucket based on the necessary request scheme.
+
+In the following example, the bucket policy explicitly denies HTTP requests.
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [{
+        "Sid": "RestrictToTLSRequestsOnly",
+        "Action": "s3:*",
+        "Effect": "Deny",
+        "Resource": [
+            "arn:aws:s3:::DOC-EXAMPLE-BUCKET",
+            "arn:aws:s3:::DOC-EXAMPLE-BUCKET/*"
+        ],
+        "Condition": {
+            "Bool": {
+                "aws:SecureTransport": "false"
+            }
+        },
+        "Principal": "*"
+    }]
+}
+```
+
+#### Amazon S3 Object Lock
+ With S3 Object Lock, you can store objects using a write once, read many (WORM) model. Use S3 Object Lock to prevent objects from being deleted or overwritten for a fixed amount of time or indefinitely. You can use S3 Object Lock if you have regulatory requirements that specify that data must be WORM protected. You can also use S3 Object Lock to add an additional layer of protection against data changes and deletion.
+
+S3 Object lock provides the following two primary ways to manage object retention:
+* **Retention periods** specify a fixed period of time during which an object can’t be overwritten or deleted.
+* **Legal holds** provide the same protection as a retention period but have no expiration date. Instead, legal holds remain in place until you explicitly remove them.
+
+#### S3 Object Lock considerations
+The following are the four S3 Object Lock considerations:
+* Before you can lock any objects, you must configure a bucket to use S3 Object Lock. To do this, you specify when you create the bucket that you want to activate S3 Object Lock. After you configure a bucket for S3 Object Lock, you can lock objects in that bucket using retention periods, legal holds, or both.
+* S3 Object Lock works only in versioned buckets, and retention periods and legal holds apply to individual object versions. When you create a bucket with S3 Object Lock turned on, Amazon S3 automatically activates versioning for the bucket.
+* S3 Object lock doesn't prevent you from creating new versions of an object. If you create an object with same name as an existing protected object, Amazon S3 creates a new object version. The existing protected version of the object remains locked according to its retention configuration.
+* S3 Object Lock protection is maintained regardless of which storage class your objects reside in and throughout S3 Lifecycle transitions between storage classes.
+
+#### Retention modes
+When setting a retention period for your objects, you can choose between two retention modes to manage object retention. These retention modes apply different levels of protection to your objects. S3 Object Lock provides two retention modes: governance mode and compliance mode.
+
+##### Governance mode
+In governance mode, you can grant specific users permission to alter the retention settings or delete the object, if necessary.
+
+You can also use governance mode to test retention-period settings before creating a compliance-mode retention period.
+
+##### Compliance mode
+In compliance mode, an object is immutable until the retention period you defined passes. In compliance mode, no users can overwrite or delete protected objects, including the root user in your AWS account.
+
+When an object uses compliance mode, you cannot change its retention mode or shorten its retention period. The only way to delete an object under compliance mode before its retention date expires is to delete the associated AWS account. We recommend using compliance mode if you have a legal requirement to store compliant data.
+
+#### Bypassing governance mode
+To bypass **governance-mode** retention settings, you must meet the following requirements:
+* Your user account must have the **s3:BypassGovernanceRetention** permission.
+* You must explicitly include the **x-amz-bypass-governance-retention:true** header as a request header with any request that requires overriding governance mode. The console automatically applies this header for requests made through the console if you have the permission required to bypass governance mode.
+
+The following example shows you how to bypass governance-mode retention settings to delete an object using AWS Command Line Interface (AWS CLI). This command contains the following attributes: 
+* **bucket**: The name of the bucket where the object resides
+* **key**: The name of the object you want to delete
+* **version-id**: The version ID of the object you want to remove
+* **bypass-governance-retention**: Indicates that S3 Object Lock should bypass governance mode restrictions to process this operation
+
+```
+aws s3api delete-object --bucket DOC-EXAMPLE-BUCKET --key filename.csv --version-id iOrnGkO8C8ISXSwF.iFrtNjOkek11GbG --bypass-governance-retention
+```
+
+#### Specifying object retention periods
+You can configure a retention period on an object version either for the entire bucket or at the object-version level.
+
+##### Configuring a retention period for all objects in a bucket
+If you want to automatically protect all object versions in a bucket, you can configure a default retention period. During the retention period you define, Amazon S3 stores a timestamp in your object version's metadata to indicate when the retention period expires.
+
+You apply a retention period, either in number of days or number of years. The minimum is 1 day, and there is no maximum limit.
+
+##### Configuring a retention period for a specific object version
+You can apply retention settings on individual objects in addition to default retention settings for all objects within an S3 bucket. For example, suppose that for compliance reasons, you need to store a set of objects for 7 years and another set of objects for 5 years. Using S3 Object Lock, you can put 7-year and 5-year retention dates on the two sets of objects.
+
+When you assign a retention period for a particular object version, you specify a **Retain until date** for it. Amazon S3 protects that object version until the retention period expires.
+
+#### Legal holds
+Like a retention period, a legal hold prevents an object version from being overwritten or deleted. However, a legal hold doesn't have an associated retention period and remains in effect until removed. Any user who has the **s3:PutObjectLegalHold** permission can freely place a legal hold.
+
+Legal holds are appropriate for any situation where you are not sure how long you want your objects to stay immutable. For example, you might have an active litigation or an upcoming external audit of your data and you want to keep objects in a WORM state until the audit is complete.
+
+Placing a legal hold on an object version doesn't affect the retention mode or retention period for that object version. If the retention period expires, the object doesn't lose its WORM protection. Rather, the legal hold continues to protect the object until an authorized user explicitly removes it. Similarly, if you remove a legal hold while an object version has a retention period in effect, the object version remains protected until the retention period expires.
+
+#### Configuring Amazon S3 Object Lock
+1. Start "Create bucket".
+2. Choose Advanced Settings.
+3. Object Lock settings.
+4. Enable.
+5. When you create a bucket with Object Lock enabled, Amazon S3 automatically enables versioning for the bucket.
+6. Note that the Bucket Versioning setting has automatically been set to Enabled
+7. Choose "Create bucket".
+8. Bucket -> Properties tab.
+9. Edit Object Lock retention.
+10. Choose Enable.
+11. Choose Governance mode. With this option set, users with specific IAM permissions - **s3:BypassGovernanceRetention** - can overwrite or delete protected object versions during the retention period.
+12. Enter a retention period.
+13. Save changes.
+
+#### Managing S3 Object Lock at scale with Amazon S3 Batch Operations 
+You can perform S3 Object Lock operations at scale using S3 Batch Operations to apply or change legal holds or retention periods. A single S3 Batch Operations job can perform a specified operation on billions of objects containing exabytes of data. With S3 Batch Operations, you can track progress, send notifications, and store a detailed completion report of all actions.
+
+You can perform S3 Batch Operations on a custom list of objects, or you can use an Amazon S3 inventory report to generate lists of objects. After providing a list of objects, select a retention period or legal hold status. S3 Batch Operations will apply the policy to those objects. For instance, you can extend the retention period by 1 year for millions of objects for which a hold is about to expire. You can use S3 Batch Operations through the console, AWS CLI, AWS SDKs, or REST API.
+
+#### Amazon Macie with Amazon S3
+#### Macie
+Macie is a fully managed data security and data privacy service. It uses machine learning and pattern matching to help you discover, monitor, and protect your sensitive data in AWS. In this section, you will learn the benefits of deploying Macie to help protect your data.
+
+#### Use cases
+Macie automates the discovery of sensitive data, such as personally identifiable information and financial data. It provides you with an inventory of S3 buckets and their access control and encryption settings. Macie gives you detailed dashboards with aggregated information so you can control and monitor Amazon S3 in a single view.
+
+##### Discover sensitive data
+You can automate discovery and reporting of sensitive data by creating and running sensitive-data discovery jobs. A sensitive-data discovery job analyzes objects in S3 buckets to determine if they contain sensitive data. If Macie detects sensitive data in an object, it creates a sensitive-data finding for you. The finding provides a detailed report of the sensitive data that Macie found.
+
+You can configure a job to run only once for on-demand analysis and assessment or on a recurring basis for periodic analysis, assessment, and monitoring. You can also choose various options to control the breadth and depth of a job's analysis. Options include the S3 buckets you want to analyze, the sampling depth, and the custom include and exclude criteria derived from properties of S3 objects. With these scheduling and scope options, you can build and maintain a comprehensive view of the data that your organization stores in Amazon S3. You can discover any security or compliance risks for that data.
+
+##### Machine learning
+Macie automatically uses machine learning and pattern matching to analyze objects in S3 buckets. These techniques and criteria can detect a large and growing list of sensitive data types for many countries and regions, including the following:
+* Multiple types of personally identifiable information
+* Personal health information
+* Financial data
+
+You can also customize what Macie looks for to reflect your unique scenarios, intellectual property, or proprietary data. Examples include customer account numbers and internal data classifications.
+
+##### Inventory and access control
+If you require an inventory of your S3 buckets, Macie automatically evaluates and monitors those buckets for security and access control. Within minutes, Macie can identify and report overly permissive or unencrypted buckets within your organization.
+
+If Macie detects sensitive data or potential issues with the security or privacy of your data, it creates detailed findings for you to review in a dashboard.
+
+The dashboards give you a snapshot of aggregated statistics for your buckets. These include how many of your buckets are publicly accessible or shared with other AWS accounts. You can drill down on each statistic to view the supporting data.
+
+##### AWS CloudTrail integration
+Macie integrates with CloudTrail and provides a record of actions taken by a user, a role, or another AWS service. This includes actions from the Macie console and programmatic calls to Macie API operations.
+
+By using the information collected in CloudTrail, you can determine which requests were made to Macie. For each request, you can identify when it was made, the IP address it was made from, who made it, and additional details.
+
+#### Macie integration
+Macie can integrate with both **CloudTrail** and **Amazon GuardDuty** to help monitor the permission and security of buckets. **CloudTrail** data about access and permissions is limited to **account-level** and **bucket-level** settings and doesn’t reflect object-level settings. To monitor **object-level events**, AWS recommends that you use the **Amazon S3 protection feature of GuardDuty**. This feature monitors object-level Amazon S3 data events and analyzes them for malicious and suspicious activity.
+
+##### GuardDuty
+GuardDuty is a security monitoring service that analyzes and processes certain types of AWS logs. These include CloudTrail data event logs for Amazon S3 and CloudTrail management event logs. It uses threat intelligence feeds, such as lists of malicious IP addresses and domains, and machine learning. It can identify unexpected and potentially unauthorized and malicious activity within your AWS environment.
+
+##### [GuardDuty](https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html)
+
+#### Streamlining Access to Amazon S3 with VPC Endpoints
+##### VPC endpoints overview
+A VPC endpoint is a logical entity within a VPC that permits connectivity to AWS services, such as Amazon S3. The VPC endpoint routes requests across the AWS network to Amazon S3, and then routes responses back to the VPC. Because the traffic stays on the AWS network, you can connect to supported AWS services. You don't need an internet gateway, NAT device, virtual private network (VPN) connection, or AWS Direct Connect connection. Traffic between your VPC and the AWS service does not leave the AWS network.
+
+Endpoints are virtual devices that scale horizontally, and are highly available and redundant. They permit communication between your VPC and AWS services without creating availability risks or bandwidth constraints on your network traffic. VPC endpoints use AWS PrivateLink, a technology that you can implement to privately access services by using private IP addresses.
+
+##### VPC endpoint types
+There are two types of VPC endpoints: **Gateway endpoints** and **interface endpoints**.
+
+#####  Gateway endpoints
+Gateway endpoints support both Amazon S3 and Amazon DynamoDB. Gateway endpoints are specified in your route table. They use the route prefix to direct traffic for Amazon S3 or DynamoDB to a gateway endpoint.
+
+Using a gateway endpoint provides a way to access S3 buckets without your data traversing the internet. Requests stay within the AWS network. This improves security because you do not need to add an internet gateway or NAT instance to access Amazon S3 data. A private subnet does not have a route to the internet.
+
+##### Gateway endpoint benefits
+The following are gateway endpoint benefits:
+* Reduced data transfer charges from outbound network communication between VPC and services that require public AWS services, such as Amazon S3
+* Security in depth using IAM, gateway endpoint policies, and S3 bucket policies 
+* Compliance and regulatory adherence because data does not leave the AWS network
+
+##### Interface endpoints
+An interface endpoint is an elastic network interface with a private IP address from the IP address range of your subnet. It is an entry point for traffic going to supported AWS services or to a VPC endpoint service.
+
+Interface endpoints permit on-premises networks connected to a VPC to privately access supported AWS services, such as Amazon S3. This reduces the need to operate fleets of proxy servers in your VPC for on-premises applications. With interface endpoints, those on-premises applications can communicate with Amazon S3 using the private IP of an interface endpoint. Doing this reduces the complexity and potential failure points of the proxy server fleets.
+
+##### Interface endpoint benefits
+The following are interface endpoint benefits:
+* You can reduce data transfer charges from outbound network communication between VPCs and services that require public AWS services.
+* Interface endpoints provide security and convenient access control using VPC endpoint policies and VPC security groups.
+* Applications in Amazon VPC can securely access PrivateLink endpoints across AWS Regions using inter-Region VPC peering. 
+* Interface endpoints streamline on-premises network and firewall configuration for Amazon S3 access. Public IPs or an internet gateway are no longer required.
+* Interface endpoints reduce the need to build self-managed proxy servers with private IPs for Amazon S3 access from on-premises applications.
+
+##### Feature comparison: a gateway endpoint and an interface endpoint
+* **Security**:
+ * **Gateway endpoints**: Uses endpoint policies for security.
+ * **Interface endpoint**: Uses endpoint policies and security groups.
+* **Amazon network connectivity**:
+ * **Gateway endpoints**: Uses Amazon network to connect to Amazon S3.
+ * **Interface endpoint**: Uses Amazon network through AWS PrivateLink to connect to AWS services.
+* **Access outside of the VPC**:
+ * **Gateway endpoints**: Not accessible from outside the VPC.
+ * **Interface endpoint**: Can be accessed from on premises and across Regions.
+* **IP connectivity**:
+ * **Gateway endpoints**: Uses the public IPs of Amazon S3 and modifies the route table.
+ * **Interface endpoint**: Uses private IPs and can use public or endpoint-specific DNS names.
+* **Cost**:
+ * **Gateway endpoints**: No additional charge for using gateway endpoints.
+ * **Interface endpoint**: Charges a fee.
+
+#### Gateway endpoints overview
+Gateway endpoints work by connecting the specific VPC with the resource (for example, Amazon S3) to which it connects. You then add a route in the route table to include the Destination as the service prefix id, and the Target as the endpoint ID.
+
+After the route is added, any request for Amazon S3 is routed to the endpoint that connects to Amazon S3. If the subnet is associated with the modified route table, the subnet is automatically granted access to the endpoint. The default policy automatically grants access to authenticated principals. Any security group in use must add a specific rule that permits outbound traffic to the endpoint.
+
+##### Default route table
+This route table doesn't contain route information for the gateway endpoint. Therefore, no users, applications, or services can route to the VPC endpoint. Requests to Amazon S3 will route over the public internet.
+
+| Destination | Target |
+| ----------- | ------ |
+| 10.0.0.0/16 | local |
+| 0.0.0.0/0 | igw-id |
+
+##### Modified route table
+This route table is modified to add the destination as the process-id for Amazon S3 and the target as the VPC-id. It permits principals in the subnet to route directly to Amazon S3. 
+
+| Destination | Target |
+| ----------- | ------ |
+| 10.0.0.0/16 | local |
+| pl-id for Amazon S3 | vpce-id | 
+
+##### [Gateway endpoints for Amazon S3](https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html#create-gateway-endpoint-s3)
+
+#### Interface endpoints
+An interface endpoint is an elastic network interface with a private IP address from the IP address range of your subnet. You can configure any API and HTTPS requests to Amazon S3 from your VPC and on-premises applications to connect to Amazon S3 securely and privately through PrivateLink.
+
+##### Routing requests from an on-premises application to Amazon S3
+###### On-premises applications
+The on-premises data center has applications that need access to Amazon S3. The on-premises applications send their requests through Direct Connect to the interface endpoint.
+
+Direct Connect gives your on-premises resources access to services on AWS through your VPC.
+
+###### PrivateLink
+PrivateLink connects to services through a private IP address assigned from within the VPC. PrivateLink uses a distributed system of virtual hyperplane nodes at the network level to decide on routing and connection distribution.
+
+###### Interface endpoints for Amazon S3
+The interface endpoints forward requests to the S3 bucket using PrivateLink.
+
+Security groups are associated with the endpoint network interface. You can configure the security group rules to restrict access to the endpoint.
+
+When using private DNS and endpoint-specific hostnames, all traffic to the service is directed to the interface endpoint. The traffic doesn't use a default route, such as a NAT gateway or public IP address. Using private DNS keeps the traffic for the service contained securely within the Amazon network.
+
+When you create an interface endpoint, Amazon S3 generates the following two types of endpoint-specific Amazon S3 DNS names:
+* A **Regional DNS name** includes a unique VPC endpoint ID, a service identifier, the Region, and **vpce.amazonaws.com** in its name. For example, for VPC endpoint ID **vpce-1a2b3c4d**, the DNS name generated might be similar to **vpce-1a2b3c4d-5e6f.s3.us-east-1.vpce.amazonaws.com**.
+* A **Zonal DNS name** includes the Availability Zone—for example, **vpce-1a2b3c4d-5e6f-us-east-1a.s3.us-east-1.vpce.amazonaws.com**. You might use this option if your architecture isolates Availability Zones. For example, you can use it for fault containment or to reduce Regional data transfer costs.
+
+##### Example
+The following diagram illustrates routing requests to Amazon S3 using a private DNS endpoint hostname. There are two subnets (subnet 1 and subnet 2) within the VPC. Subnet 1 contains an EC2 instance and subnet 2 contains an EC2 instance and an endpoint network interface. Outside of the VPC, there is an S3 bucket within a Region. In this example, the default DNS name is **DOC-EXAMPLE-BUCKET.us-east-1.amazonaws.com**; the endpoint-specific DNS hostname is **vpce-123.DOC-EXAMPLE-BUCKET.us-east-1.vpce.amazonaws.com**.
+
+1. **Default DNS name**. The default DNS name is a public DNS name. It permits traffic to route out of the AWS network through the internet gateway and into the public internet.
+2. **Endpoint hostname**. The private DNS hostname ensures that the traffic stays on the AWS network and is routed to the interface endpoint in subnet 2.
+3. **Endpoint network interface**. The endpoint network interface contains security group rules to control traffic flow. All traffic in the VPC for Amazon S3 is routed through the network interfaces and then to Amazon S3.
+4. **S3 bucket**. The S3 bucket can be reached through the network interface from internal VPC traffic. Or, it can be reached from the internet using the default DNS name.
+
+#### Securing endpoints
+You can secure gateway endpoints in three locations: **on the service (such as an EC2 instance)**, **on the endpoint**, and **on the S3 bucket**. When using endpoint policies, AWS evaluates all the policies and applies the most restrictive set. It is a best practice to manage permissions using the endpoint policy, and then set the S3 bucket to only accept connections from the appropriate access point. Here, AWS applies the more restrictive endpoint policy. You must manage and maintain only the policies for the endpoint.
+
+#### Access control and endpoint policies
+An endpoint policy is an IAM resource policy attached to an endpoint. The endpoint policy controls the requests, users, or groups that are allowed access through the endpoint. The following are important details about the endpoint policy:
+* The endpoint policy explicitly denies access to any actions not listed in the policy. 
+* If you do not attach a policy at endpoint creation, the default policy is attached and allows full access to the AWS service.
+* If a service does not support endpoint policies, the endpoint allows full access to the service.
+* An endpoint policy does not override or replace IAM user policies or service-specific policies (such as S3 bucket policies). It is a separate policy for controlling access from the endpoint to the specified service.
+* You cannot attach more than one policy to an endpoint. However, you can modify the policy at any time. If you do modify a policy, it can take a few minutes for the changes to apply.
+
+Secure access to Amazon S3 through a gateway VPC endpoint. We use a modified route table so the EC2 instance request for Amazon S3 is routed to the endpoint that connects to Amazon S3.
+* EC2 Instance - IAM policy
+* Gateway endpoint - Resource policy: Gateway endpoint policy
+* Amazon S3 - Resource policy: S3 bucket policy.
+
+Like gateway endpoints, you can secure interface endpoints using resource policies on the endpoint itself and the resource the endpoint provides access to. With interface endpoints, you can use security groups to restrict access to the endpoint.
+
+Secure access to Amazon S3 through an interface VPC endpoint. A security group permits the resources, such as EC2 instances, to communicate with the endpoint network interfaces for the VPC endpoint.
+* EC2 Instance - IAM policy
+* Interface endpoint:
+ * Security group configuration
+ *  Resource policy: Endpoint policy
+* Amazon S3 - Resource policy: S3 bucket policy.
+
+#### Example: Controlling access to buckets from specified VPC endpoints
+You can also control access to S3 buckets using S3 bucket policies. You can use a bucket policy to control access to the bucket from only specified VPC endpoints or specific VPCs. It is a best practice to restrict access to only those VPCs or endpoints that require access.
+
+The following is an example of an Amazon S3 bucket policy. It restricts access to a **DOC-EXAMPLE-BUCKET** to only the VPC endpoint with the **vpce-1a2b3c4d** ID. The policy denies all access to the bucket if the specified endpoint is not being used.
+
+```
+{
+"Version": "2012-10-17",
+"Id": "Policy147258369",
+"Statement": [{
+  "Sid": "Access-to-specific-VPCE-only",
+  "Principal": "*",
+  "Effect": "Deny",
+  "Action": "s3:*",
+  "Resource": ["arn:aws:s3:::DOC-EXAMPLE-BUCKET",
+               "arn:aws:s3:::DOC-EXAMPLE-BUCKET/*"],
+  "Condition": {
+    "StringNotEquals": {
+      "aws:SourceVpce": "vpce-1a2b3c4d"
+    }
+  }
+}]
+}
+```
+
+##### Policy element reminder
+* **Principal** element indicates which principals are restricted in the policy. Using an asterisk (*) indicates that this policy applies to all principals.
+* **Effect** element allows or denies the actions in the policy. This policy denies all actions specified by the Action element.
+* **Action** element determines which actions are denied to a bucket. This policy states that all Amazon S3 actions will be denied if the Condition element is not met.
+* **Resource** element specifies the resource that you want to allow actions on. Here, the specific resource is the **finance-bucket** and objects and folders within the **finance-bucket**.
+* **Condition** element specifics the condition necessary to access the resource. Here, if the request doesn't come specifically from the **SourceVpce** called **vpce-1a2b3c4d**, requests to the **DOC-EXAMPLE-BUCKET** will be denied.
+
+#### Using Encryption to Protect Sensitive Data
+Amazon S3 employs server-side encryption to protect data at rest. When you upload an object, it automatically encrypts the object using a unique data-encryption key. You can choose to have Amazon S3 manage the data key on your behalf, or use your own key. 
+
+There are three options for server-side encryption:
+* Amazon S3 managed keys
+* AWS Key Management Service keys
+* customer-provided keys
+
+##### Data keys
+Data keys are symmetric keys that you can use to encrypt and decrypt data. This might include large amounts of data or other data encryption keys. 
+
+AWS KMS generates, encrypts, and decrypts data keys. However, AWS KMS does not store, manage, or track your data keys or perform cryptographic operations with data keys. 
+
+When using Amazon S3 with AWS KMS keys, the Amazon S3 service performs the encryption and decryption, and securely manages the data keys on your behalf.
+
+1. When you upload an object to a bucket, Amazon S3 requests a data key from AWS KMS. AWS KMS returns a unique data key in plain text, and a version that is encrypted with a customer managed key.
+2. Amazon S3 then uses the data key to encrypt the uploaded object, and removes the key from memory. The encrypted version of the data key is stored in Amazon S3 with the object.
+3. When Amazon S3 receives a GET request for the object, it sends the encrypted data key to AWS KMS to decrypt. Then, Amazon S3 uses the plain text data key to decrypt the object before returning it to the requester. The data key is again removed from memory.
+
+AWS KMS APIs can also be used directly by applications to obtain data keys for client-side cryptographic operations.
+
+#### Data in transit
+You can protect data in transit by using either HTTPS or client-side encryption. By providing the appropriate level of protection, you protect the confidentiality and integrity of your workload’s data from any third party who might intercept the data while in transit.
+
+##### Ensuring encrypted connections
+HTTPS requests use TLS to encrypt data over the connection. To protect data in transit, use an S3 bucket policy to enforce the use of HTTPS requests. Doing this ensures the integrity of the data and denies any request that comes in over standard HTTP. To enforce the use of HTTPS on buckets, use the **aws:SecureTransport** condition in your S3 bucket policies.
+
+#### Server-side encryption 
+Amazon S3 encrypts an object before saving it to disk and decrypts it when you download it. If you authenticate and have access permissions, there is no difference in how you access encrypted or unencrypted objects.
+
+For example, when you share an object using a presigned URL, that presigned URL works the same for both encrypted and unencrypted objects. Additionally, when you list objects in your bucket, the list API returns a list of all objects, regardless of their encryption.
+
+#### Server-side encryption options
+##### Server-side encryption with Amazon S3 managed keys (SSE-S3)
+Amazon S3 applies SSE-S3 as the base level of encryption for every bucket in Amazon S3. It encrypts each object with a unique key, which it then encrypts with a root key that it regularly rotates. SSE-S3 uses one of the strongest block ciphers available, 256-bit Advanced Encryption Standard (AES-256), to encrypt your data.
+
+You do not incur charges when using SSE-S3.
+
+##### Server-side encryption with AWS KMS keys (SSE-KMS)
+A KMS key includes metadata, such as the key ID, creation date, description, and key state. The KMS key also contains the key material used to encrypt and decrypt data. You can choose a customer managed key that you create and manage. Or, you can choose an AWS managed key that Amazon S3 creates in your AWS account and manages for you. Like a customer managed key, your AWS managed key is unique to your AWS account and Region. Only Amazon S3 has permission to use this key on your behalf.  
+
+The following are benefits of using SSE-KMS:
+* You manage the rotation of customer managed keys.
+* It is more convenient to manage a few primary keys instead of billions of data keys.
+* You gain centralized access and auditing.
+* SSE-KMS performs better for large datasets.
+
+You incur a charge when you use SSE-KMS, and you are subject to request limits. To reduce the cost of SSE-KMS, use Amazon S3 Bucket Keys. This bucket-level key for SSE can reduce AWS KMS request costs by up to 99 percent. It does this by decreasing the request traffic from Amazon S3 to AWS KMS.
+
+##### Dual-layer server-side encryption with KMS keys (DSSE-KMS)
+DSSE-KMS is similar to SSE-KMS, but DSSE-KMS applies two individual layers of object-level encryption instead of one layer. Both layers of encryption are applied to an object on the server side. So you can use many AWS services and tools to analyze data in Amazon S3 along with an encryption method that can satisfy compliance requirements.
+
+When you use DSSE-KMS with an S3 bucket, the KMS keys must be in the same Region as the bucket. Also, when DSSE-KMS is requested for the object, the Amazon S3 checksum that's part of the object's metadata is stored in encrypted form. There are additional charges for using DSSE-KMS and AWS KMS keys.
+
+S3 Bucket Keys aren't supported for DSSE-KMS.
+
+##### Server-side encryption with customer-provided keys (SSE-C)
+With SSE-C, you manage the encryption keys. Amazon S3 manages the encryption, as it writes to disks, and decryption, when you access your objects. With this option, you are responsible for managing and rotating the keys. Amazon S3 data can be decrypted only with these keys. This means that if you lose your keys, even AWS Support cannot help you gain access to your data.
+
+**You can apply only one type of server-side encryption to the same object simultaneously.**
+
+##### [SSE-S3 additional information](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingServerSideEncryption.html)
+
+##### [Customer managed keys](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk)
+
+##### [S3 Bucket Keys](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-key.html)
+
+##### [DSSE-KMS additional information](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingDSSEncryption.html)
+
+##### [SSE-C additional information](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ServerSideEncryptionCustomerKeys.html)
+
+#### S3 Bucket Keys for SSE-KMS
+Workloads that access millions or billions of objects encrypted with SSE-KMS can generate large volumes of requests to AWS KMS. When you configure your bucket to use an S3 Bucket Key for SSE-KMS, AWS KMS generates a bucket-level key. This is used to create unique data keys for new objects that you add to the bucket. The S3 Bucket Key is used for a time-limited period within Amazon S3. This reduces the need for Amazon S3 to make requests to AWS KMS for encryption operations and reduces traffic from Amazon S3 to AWS KMS. You can access AWS KMS encrypted objects in Amazon S3 at a fraction of the previous cost.
+
+When you configure an S3 Bucket Key, objects that are already in the bucket do not use the S3 Bucket Key. To configure an S3 Bucket Key for existing objects, use a **COPY** operation. Amazon S3 shares an S3 Bucket Key only for objects encrypted by the same KMS key.
+
+##### [Configuring an S3 Bucket Key](https://docs.aws.amazon.com/AmazonS3/latest/userguide/configuring-bucket-key-object.html)
+
+#### Using Amazon S3 default encryption
+Amazon S3 applies SSE-S3 as the base level of encryption for every bucket in Amazon S3. However, you can change this by configuring default encryption for a bucket. Implementing default encryption on your buckets is a streamlined process. After setup, no maintenance time is required. Your chosen method encrypts new objects added to your buckets automatically, helping you meet compliance requirements. You can choose SSE-S3 or SSE-KMS. If you have existing objects in your bucket and you set the default encryption, the setting does not retroactively encrypt existing objects.
+
+If you are using a custom KMS key, you must grant users access to use the key. Otherwise, they will not be able to decrypt the objects. In addition, the default encryption on the bucket applies to all objects unless the object PUT request header contains a different encryption method. The header can specify an encryption method other than the default encryption. It then uses the encryption method specified in the header when the object is written to the bucket. 
+
+You can track default encryption configuration requests for Amazon S3 buckets by doing one of the following:
+* Using AWS CloudTrail events
+* Creating Amazon CloudWatch Events with S3 bucket-level operations as the event type
+
+#### Knowledge Check
+##### Which groups does Amazon S3 grant permissions to its members to consider a bucket or an object public? (Select TWO.)
+* AuthenticatedUsers 
+* AllUsers
+
+Wrong answers:
+* All-Identity 
+* AllPrincipals
+* Everyone
+
+Amazon S3 considers a bucket or object public if it grants any permissions to the members of the following groups: 
+* **AuthenticatedUsers**: This group allows all AWS accounts to access the resource. This means that any authenticated AWS user, from any AWS account in the world, can access a resource if the request is signed (authenticated).
+* **AllUsers**: This group allows anyone in the world access to the resource. The requests can be signed (authenticated) or unsigned (anonymous).
+
+##### Which endpoint service uses only endpoint policies to secure the endpoint? 
+* Gateway endpoints
+
+Wrong answers:
+* Interface endpoints
+* Access endpoints
+* Security group endpoints
+
+Gateway endpoints use only endpoint policies for security. Interface endpoints use both endpoint policies and security groups for security.
+
+##### An endpoint policy can provide access to an Amazon S3 bucket. What should the S3 bucket policy specify to enforce that requests only originate from the virtual private cloud (VPC) endpoint?
+* The bucket policy should include a condition to only accept connections from the appropriate endpoint.
+
+Wrong answers:
+* The bucket policy should be identical to the endpoint policy.
+* The bucket policy should specify only the administrator who manages the bucket permissions as the principal.
+* No bucket policy should be on the bucket.
+
+A best practice is to manage permissions using the endpoint policy and then set the S3 bucket to only accept connections from the appropriate access point. Here, AWS applies the more restrictive endpoint policy. Users must manage and maintain only the policies for the endpoint.
+
+An endpoint policy does not override or replace AWS Identity and Access Management (IAM) user policies or service-specific policies, such as S3 bucket policies. It is a separate policy for controlling access from the endpoint to the specified service.
+
+#### Assessment
+##### A developer is configuring a database server on Amazon EC2 that requires a storage solution capable of providing low-latency and high-IOPS performance. Durability and data consistency are also important factors. Which AWS Cloud storage service would be most suitable for this scenario?
+* **Amazon EBS** provides block-level storage volumes that can be directly attached to Amazon EC2 instances. EBS volumes offer low-latency access, high-IOPS performance, durability, and data consistency. This makes it an optimal choice for hosting a database server.
+
+The other options are incorrect because of the following:
+* Amazon S3 is an object storage service designed for storing and retrieving a large amount of unstructured data. Although it offers high durability and scalability, it does not provide the low-latency access and high-IOPS performance required for a database server.
+* Amazon EFS is a fully manage file storage service that provides scalable and highly available file storage. However, it might not offer the desired low-latency access and high-IOPS performance required for a database server.
+* Amazon S3 Glacier Deep Archive is designed for data archiving and backup purposes. It does not provide the low latency and high IOPS performance required.
+
+##### A developer wants a long-term storage solution to support data backup operations. The backups contain historical data that cannot be re-created and must be retained for compliance purposes. They are infrequently accessed, but when needed they must be retrieved within 48 hours. Which Amazon $3 storage class is the most cost-effective option that meets the requirements?
+* S3 Glacier Deep Archive delivers low-cost storage for archive data that is accessed less than one
+time per year and is retrieved asynchronously. Its default retrieval time is 12 hours. 
+
+The other options are incorrect because of the following:
+* The S3 Glacier Flexible Retrieval storage class is ideal for workloads that require the flexibility to retrieve the data in minutes or up to 5-12 hours.
+* The S3 One Zone-IA is a good choice for storing secondary backup copies of on-premises data or easily re-creatable data, and it is not suitable for the scenario. 
+* S3 Standard-IA is for data that is accessed less frequently but requires rapid access when needed. Although it can be used for backups, it is not the most cost-effective solution.
+
+##### A user is trying to upload an object that is 1 TB in size to an Amazon S3 bucket. What method could they use?
+* For an object that is 1 TB in size, users can use AWS CLI, AWS SDKS, or REST API with multipart upload APl operation to upload a single large object, up to 5 TB in size.
+
+##### What can Amazon S3 storage class analysis help a developer determine about their data?
+* Amazon S3 analytics storage class analysis observes data access patterns over a period of time. After storage class analysis observes the infrequent access patterns of a filtered set of data, users can use the analysis results to help them improve their lifecycle configurations.
+
+##### An application frequently uploads large objects to Amazon S3 using multipart upload. Which action will minimize storage costs for incomplete multipart uploads?
+* Using lifecycle policies, the **AbortIncompleteMultipartUpload** element can set a maximum number of days for a multipart upload to remain in progress. If the upload does not complete within that specified number of days, it becomes eligible for a cancel operation. Amazon S3 stops the multipart upload and deletes the parts associated with the multipart upload.
+
+##### A developer is working on a serverless application that requires dynamically transforming data stored in Amazon S3 before it is returned to the user. Which AWS offering can they use to achieve this functionality?
+* S3 Object Lambda is a resource that allows adding custom code functions to Amazon S3 GET requests. Developers can use it to dynamically modify or transform data retrieved from Amazon S3 before the data is returned to the user. 
+
+The other options are incorrect because of the following:
+* DynamoDB is a fully managed NoSQL database service, and it does not provide the functionality to dynamically transform data stored in Amazon S3.
+* EventBridge is an asynchronous solution for responding to events. It cannot transform and return the data to the user.
+* CloudWatch is a monitoring solution.
+
+##### A company offers a website that allows users to securely store and download private files. The web server is running very slow because of an overwhelming number of download requests. A developer must find a most effective solution to reduce the web server load and cost, and it must allow users to download only their own files. Which solution meets all these requirements?
+* Presigned URLs can be used to share access to S3 buckets. When a developer creates a presigned URL, they associate it with a specific action and an expiration date. Anyone who has access to the URL can perform the action embedded in the URL, as if they were the original signing user.
+
+The other responses are incorrect because of the following:
+* Storing files on an Amazon EBS volume and using other instances to serve the content is possible. But it is a much higher-cost solution, and the company cannot limit users to only accessing their content.
+* An instance store is temporary storage and it does not address any of the concerns mentioned in this question.
+* The use of a CloudFront cache alone would not allow users to download only their own files.
+
+##### A developer wants to apply tags to their Amazon S3 resources. Which Amazon S3 resources can tags be applied to?
+* Tags can be applied to S3 buckets and objects.
+
+##### A data analyst is working with a large dataset stored in Amazon S3. They need to retrieve specific data from the dataset without downloading the entire file. Which AWS offering can they use to efficiently query and retrieve only the required data?
+* S3 Select makes it possible to run SQL-like queries on data stored in Amazon S3 and retrieve only the specific data, without the need to download the entire file. It improves query performance and reduces data transfer costs by filtering and retrieving only relevant portions of the data. 
+
+The other options are incorrect because of the following:
+* Athena is an interactive query service that can be used to analyze data directly in Amazon S3 with standard SQL queries. However, S3 Select is a more specific and efficient service for retrieving only the required data.
+* Amazon Redshift is a fully managed data warehousing service that is optimized for online analytic process workloads. Although Amazon Redshift can efficiently handle large-scale data analytics, it is not service specifically designed for querying and retrieving specific data from objects stored in
+Amazon S3.
+* Amazon EMR is a managed big data processing service. Although Amazon EMR can process large datasets and perform complex data transformations, it is not the most efficient choice for retrieving specific data from objects stored in Amazon S3.
+
+##### A digital media company uses Amazon S3 to manage a collection of images, videos, and audio files. They have content from various clients and need to keep track of usage rights, copyright information, and the content's expiration dates to ensure compliance with licensing agreements. What is the best way for them to organize and manage the content?
+* Object tagging to assign custom metadata is the most effective way to organize the Content for the media company.
+
+##### A user wants to bypass governance mode retention settings to delete an object in an Amazon S3 bucket using the AWS CLI. What are the requirements for deleting the object? (Select TWO.)
+* To bypass governance mode retention settings to delete an object using the AWS CLI, a user must meet the following requirements:
+ * The user account must have the **s3:BypassGovernanceRetention** lAM permission.
+ * The user must explicitly include **x-amz-bypass-governance-retention:true** as a request header.
+
+##### Which levels can an Amazon S3 Object Lock be applied at?
+* S3 Object Lock must be enabled for a bucket. But the lock operation happens at the object and object version level.
+
+##### How does the Amazon S3 Object Ownership feature control ownership of objects?
+* Using Amazon S3 Object Ownership, the bucket owner has full control of the objects and can automatically own any new objects written by other accounts.
+
+##### A developer works for a financial company that stores sensitive customer data in Amazon S3. Which AWS service will discover and classify the data to help with compliance and data protection requirements?
+* Macie uses machine learning to automatically discover, classify, and protect sensitive data stored in Amazon S3. Macie can identify personally identifiable information (Pll), financial data, intellectual property, and other sensitive content.
+
+The other options are incorrect because of the following:
+* GuardDuty is a threat detection service that helps identify malicious activity and unauthorized access in AWS accounts and workloads.
+* Amazon Rekognition is an artificial intelligence (Al) service that provides images and video analysis capabilities.
+* Athena is an interactive query service that analyzes data directly in Amazon S3 with standard SQL queries.
+
+##### A developer has been tasked with making sure that all new objects in an Amazon S3 bucket are encrypted at rest, regardless of the options specified when the object is uploaded. How can they achieve this?
+* The correct option is to use default encryption for the bucket with at least the SSE-S3 option. Amazon S3 now applies server-side encryption with Amazon S3 managed keys (SSE-S3) as the base level of encryption for every bucket in Amazon S3. All new object uploads to Amazon S3 are automatically encrypted at no additional cost and with no impact on performance. The other options are incorrect because server-side encryption is already performed by default.
+
 ### Week 6: Storage 2 Part 2
+
+
+
+
+
 ### Week 7: Storage 2 Part 3
 ### Week 8: Databases 2 Part 1
 ### Week 9: Databases 2 Part 2

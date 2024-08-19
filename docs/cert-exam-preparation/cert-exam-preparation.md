@@ -324,6 +324,39 @@ Wrong answers:
 
 ### Design solutions for organizational complexity
 ### Design for new solutions
-### Continuous improvement for existing solutions
+### Domain 3/ Continuous improvement for existing solutions
+* Task statement 1 - Determine a strategy to improve overall operational excellence.
+* Task statement 2 - Determine a strategy to improve security.
+* Task statement 3 - Determine a strategy to improve performance.
+* Task statement 4 - Determine a strategy to improve reliability.
+* Task statement 5 - Identify opportunities for cost optimization.
+
+#### Task statement 1 - Determine a strategy to improve overall operational excellence.
+Well-Architected Framework: Operational Excellence pillar.
+Monitor workload to offer improvements.
+Automate configuration management.
+
+##### Focus area:
+* Evolve
+
+* AWS System Manager
+* AWS Configuration
+* AWS OpsWorks
+
+* Amazon CloudWatch
+
+#### Five deployment strategies:
+* In-place deployment
+* Linear deployment
+* Blue-Green deployment
+* Canary deployment
+* All-at-once deployment
+
+* AWS CodePipeline
+* AWS CodeCommit
+* AWS CodeBuild
+* AWS CodeDeploy
+* AWS CloudFormation
+  
 ### Accelerate workload migration and modernization
 
