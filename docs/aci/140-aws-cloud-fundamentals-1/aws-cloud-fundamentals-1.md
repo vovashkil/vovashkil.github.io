@@ -2360,12 +2360,886 @@ The other options are incorrect because of the following:
 * The correct option is to use default encryption for the bucket with at least the SSE-S3 option. Amazon S3 now applies server-side encryption with Amazon S3 managed keys (SSE-S3) as the base level of encryption for every bucket in Amazon S3. All new object uploads to Amazon S3 are automatically encrypted at no additional cost and with no impact on performance. The other options are incorrect because server-side encryption is already performed by default.
 
 ### Week 6: Storage 2 Part 2
+#### Amazon S3 Storage Lens
+S3 Storage Lens provides metrics pre-aggregated by up to six levels: 
+* AWS Organization - optional, the highest level
+* account
+* Region
+* storage class
+* bucket
+* prefix - the most granular level
+
+#### S3 Storage Lens benefits
+* It provides a single view of object storage usage and activity across hundreds of accounts in your organization. This includes drill-downs to the account, bucket, or prefix level.
+* It produces actionable recommendations to help improve cost efficiency and apply data protection best practices.
+* There is no performance impact from using S3 Storage Lens.
+
+#### S3 Storage Lens overview
+##### S3 Storage Lens
+S3 Storage Lens provides organization-wide visibility into Amazon S3 usage, activity trends, and recommendations.
+
+##### Configure
+You can configure the scope of the dashboard and select metrics tiers. S3 Storage Lens provides metrics pre-aggregated by up to six levels, such as AWS Organization, accounts, Regions, and buckets.
+
+##### Aggregate
+S3 Storage Lens aggregates metrics daily by scanning internal Amazon S3 data.
+
+##### Analyze
+Analyze your metrics in the interactive dashboard with filters, drill-downs, trends, and contextual recommendations.
+
+##### Optimize
+Optimize your storage using insights and flagging outliers. Implement recommendations such as data protection and cost efficiency discovered in S3 Storage Lens.
+
+#### Permissions
+S3 Storage Lens requires specific permissions in AWS Identity and Access Management (IAM) to authorize access to S3 Storage Lens actions. You must attach the IAM policy to IAM users, groups, or roles. You can grant them permissions to activate or deactivate S3 Storage Lens or access a dashboard or configuration. You cannot use your account's root user credentials to view S3 Storage Lens dashboards. To access those, you must grant the requisite IAM permissions to a new or existing IAM user and then log in with those user credentials.
+
+##### [S3 Storage Lens and AWS Organizations](https://docs.aws.amazon.com/organizations/latest/userguide/services-that-can-integrate-s3lens.html)
+
+##### [S3 Storage Lens IAM permissions](https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_iam_permissions.html#storage_lens_iam_permissions_account)
+
+#### S3 Storage Lens terms
+##### Default dashboard
+The S3 Storage Lens default dashboard on the console is named **default-account-dashboard**. Amazon S3 pre-configures the default account dashboard to visualize the summarized insights and trends of your entire account’s aggregated storage usage and activity metrics. It updates these metrics daily in the Amazon S3 console.
+
+The following are some important notes:
+* You can create up to 50 dashboards per Region.
+* Deactivated dashboards do not update.
+* If you delete a dashboard, all configurations and historical data for that one dashboard are removed.
+* Organization-level dashboards are limited to a Regional scope.
+
+##### Custom dashboards
+You create and modify S3 Storage Lens dashboards to show all, or a portion of, your account’s storage.
+
+You filter by Region, bucket, and prefix (available only with advanced metrics and recommendations). When you no longer need the dashboard, deactivate or delete it.
+
+##### Metrics
+S3 Storage Lens offers the following two types of storage metrics:
+* **Usage metrics** are free and provide information about the size, quantity, and characteristics of your storage. Free metrics are retained for a **14-day** period.
+* **Activity metrics** are available for a fee, and require that you activate advanced metrics and recommendations metrics. Activity metrics detail how often your storage is requested. This includes the number of requests by type, upload and download bytes, and errors. Activity metrics have a **15-month** data retention policy.
+
+##### Recommendations
+Recommendations provide automated suggestions to help optimize your storage. They are placed contextually alongside relevant metrics in the dashboard. Recommendations only appear when they are relevant. Historical data is not eligible for recommendations because recommendations are relevant to only what is happening in the most recent period.
+
+##### Call-outs
+Call-outs are recommendations that alert you to interesting anomalies within your storage usage and activity over a period that might need further attention or monitoring. Call-outs do not necessarily indicate an issue. They might represent planned or anticipated activity in your storage.
+
+Call-outs are available when **advanced metrics** are activated (there is a fee for advanced metrics).
+
+For example, you might see an outlier in your dashboard for upload bytes on a certain day. You can compare this to your historical trends to determine if this is a one-off occurrence. For example, if a group had to upload a significant amount of data as a planned task. It could also be a reoccurring event, such as end-of-month reporting or inventory.
+
+##### Reminders
+Reminders provide insight into how Amazon S3 works and can help you learn more ways to use Amazon S3 features to reduce storage costs.
+
+Reminders are available when advanced metrics are activated (there is a fee for advanced metrics).
+
+#### Metrics cost tiers
+##### Free metrics
+Free metrics contain metrics that are relevant to your storage usage, such as the number of buckets and the objects in your account. There are also use-case based metrics, such as cost-optimization and data-protection metrics. All free metrics are collected daily, and data is available for queries for 14 days.
+
+##### Advanced metrics
+Advanced metrics include all the metrics in free metrics, along with additional metrics. These include advanced data-protection and cost-optimization metrics. There are also additional metric categories, such as activity metrics and detailed status-code metrics. Advanced metrics data is available for queries for 15 months.
+
+**There are additional charges when you use S3 Storage Lens with advanced metrics and recommendations.**
+
+##### [Amazon S3 pricing](https://aws.amazon.com/s3/pricing/)
+
+##### [Metric selection](https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_basics_metrics_recommendations.html#storage_lens_basics_metrics_selection)
+
+#### Amazon S3 Storage Lens metrics use cases
+You can use your S3 Storage Lens dashboard to visualize insights and trends, flag outliers, and receive recommendations. S3 Storage Lens metrics are organized into categories that align with key use cases. 
+
+##### Identify cost-optimization opportunities
+With cost-optimization metrics, you can identify opportunities to reduce your Amazon S3 storage costs. You can identify buckets with incomplete multipart uploads that are more than 7-days old or buckets that are accumulating non-current versions.
+
+##### Apply data-protection best practices
+You can use data-protection metrics to identify buckets that aren't following data-protection best practices within your organization. For example, you can identify buckets that don’t use AWS KMS keys for default encryption or don't have S3 Versioning enabled.
+
+##### Apply access-management best practices 
+With S3 Storage Lens access-management metrics, you can identify bucket settings for S3 Object Ownership. You can then migrate access control list (ACL) permissions to bucket policies and deactivate ACLs.
+
+##### Improve the performance of application workloads
+If you have S3 Storage Lens advanced metrics activated, you can use detailed status-code metrics to get counts for successful or failed requests. You can then use this to troubleshoot access or performance issues.
+
+#### Metrics categories
+Free metrics include summary, cost-optimization, data-protection, access-management, performance, and event metrics. When you upgrade to advanced metrics and recommendations, you can activate additional cost-optimization and data-protection metrics. You can use these to further reduce your Amazon S3 storage costs and improve your data-protection stance. You can also activate activity metrics and detailed status-code metrics to improve the performance of application workflows.
+
+##### Summary metrics
+Summary metrics provide general insights about your Amazon S3 storage, including your total storage bytes and object count.
+
+##### Cost-optimization metrics
+Cost-optimization metrics provide insights that you can use to manage and optimize your storage costs. For example, you can identify buckets that have incomplete multipart uploads that are more than 7 days old.
+
+With advanced metrics and recommendations, you can activate advanced cost-optimization metrics. These metrics include S3 Lifecycle rule count metrics that you can use to get per-bucket expiration and transition S3 Lifecycle rule counts.
+
+##### Data-protection metrics
+Data-protection metrics provide insights for data-protection features, such as encryption and S3 Versioning. You can use these metrics to identify buckets that are not following data-protection best practices. For example, you can identify buckets that are not using default encryption with KMS keys or S3 Versioning.
+
+With advanced metrics and recommendations, you can activate advanced data-protection metrics. These metrics include per-bucket replication rule count metrics.
+
+##### Access-management metrics
+Access-management metrics provide insights for S3 Object Ownership. You can use these metrics to see which S3 Object Ownership settings your buckets use.
+
+##### Event metrics
+Event metrics provide insights for Amazon S3 event notifications. With event metrics, you can see which buckets have event notifications configured.
+
+##### Performance metrics
+Performance metrics provide insights for S3 Transfer Acceleration. With performance metrics, you can see which buckets have Transfer Acceleration activated.
+
+##### Activity metrics (advanced)
+If you upgrade your dashboard to advanced metrics and recommendations, you can activate activity metrics. Activity metrics provide details about how your storage is requested (for example, All requests, Get requests, Put requests), bytes uploaded or downloaded, and errors.
+
+##### Detailed status-code metrics (advanced)
+If you upgrade your dashboard to advanced metrics and recommendations, you can activate detailed status-code metrics. These provide insights for HTTP status codes, such as 403 Forbidden and 503 Service Unavailable. You can use these to troubleshoot access or performance issues. For example, you can review the 403 Forbidden error count metric to identify workloads that are accessing buckets without the correct permissions applied.
+
+#### Recommendations
+S3 Storage Lens provides automated recommendations to help you optimize your storage. Recommendations are placed contextually alongside relevant metrics in the S3 Storage Lens dashboard. Historical data is not eligible for recommendations because recommendations are relevant to what is happening in the most recent period. Recommendations appear only when they are relevant.
+
+##### Suggestions
+Suggestions alert you to trends within your storage usage and activity that might indicate a storage-cost optimization opportunity or a data-protection best practice. You can use the suggested topics in the Amazon S3 User Guide and the S3 Storage Lens dashboard. Review these for more details about specific Regions, buckets, or prefixes to further assist you.
+
+##### Call-outs
+Call-outs are recommendations that alert you to interesting anomalies within your storage usage and activity over a period that might need further attention or monitoring. The following are call-out types:
+* **Outlier call-outs** – S3 Storage Lens provides call-outs for metrics that are outliers, based on your recent 30-day trend. The outlier is calculated by using a standard score, called a z-score. In this score, the current day's metric is subtracted from the average of the last 30 days for that metric. It is then divided by the standard deviation for that metric over the last 30 days. The resulting score is usually between -3 and +3. This number represents the number of standard deviations that the current day's metric is from the mean. S3 Storage Lens considers metrics with a score more than 2 or less than -2 to be outliers. This is because they are higher or lower than 95 percent of normally distributed data.
+* **Significant change call-outs** – The significant change call-out applies to metrics that are expected to change less frequently. Therefore, it is set to a higher sensitivity than the outlier calculation. It is typically plus or minus 20 percent compared to the prior day, week, or month.
+ * **Addressing call-outs in your storage usage and activity** – If you receive a significant change call-out, it’s not necessarily a problem. It might be the result of an anticipated change in your storage. For example, you might have recently added a large number of new objects, deleted a large number of objects, or made similar planned changes. If you see a significant change call-out on your dashboard, review it and determine whether it can be explained by recent circumstances. If not, use the S3 Storage Lens dashboard to drill down for more details. This can help you understand the specific Regions, buckets, or prefixes that are driving the fluctuation.
+
+##### Reminders
+Reminders provide insights into how Amazon S3 works. They can help you learn more about ways to use Amazon S3 features to reduce storage costs or apply data-protection best practices.
+
+#### Using Amazon S3 Storage Lens with AWS Organizations
+S3 Storage Lens collects metrics and usage data for all AWS accounts that are part of your AWS Organizations hierarchy. You must activate S3 Storage Lens trusted access using your AWS Organizations management. By activating trusted access, you permit S3 Storage Lens to access your Organizations hierarchy, membership, and structure through the Organizations APIs. S3 Storage Lens will be a trusted service for your entire organization’s structure. You can then add delegated administrator access to accounts in your organization. These accounts can then create organization-wide dashboards and configurations for S3 Storage Lens.
+
+##### Granularity of view
+Data is pre-aggregated at the account, Region, storage class, and bucket levels. You can easily drill down from top-level insights to more granular details.
+
+##### Percent change comparison
+You can compare the changes by day, week, or month to help determine trends.
+
+##### Trends and distributions
+You can use S3 Storage Lens to gather quick summary insights that give you holistic visibility into your storage at an organization-wide view.
+
+##### Top N overview
+In the bottom section of the dashboard, you can perform a top N analysis of a metric over a date range, where N is 1–25.
+
+#### Knowledge Check
+##### Amazon S3 Storage Lens provides organization-wide visibility into object storage usage and activity trends. S3 Storage Lens provides metrics pre-aggregated by up to six levels. What is the highest level of these metrics? 
+* AWS Organization
+
+##### How many dashboards can a developer create in each home AWS Region by using Amazon S3 Storage Lens?
+* 50
+
+##### Amazon S3 Storage Lens metrics are organized into categories that align with key use cases. Which metrics can only be activated in the advanced metrics? (Select TWO.)
+* Activity metrics
+* Detailed status-code metrics 
+
+#### Summary
+##### S3 Storage Lens
+S3 Storage Lens aggregates your usage and activity metrics and displays the information in an interactive dashboard on the Amazon S3 console. You can also view this information through a metrics data export in CSV or Parquet format. You use the dashboard to visualize insights and trends and flag outliers. The dashboard provides recommendations for optimizing storage costs and applying data protection best practices.
+
+##### Metrics cost tiers
+The S3 Storage Lens metrics glossary provides a complete list of free and advanced metrics for S3 Storage Lens. The following are the two tiers of metrics:
+* **Free metrics** contain metrics that are relevant to your storage usage. These include the number of buckets and the objects in your account and use-case based metrics, such as cost-optimization and data-protection metrics.
+* **Advanced metrics** include all the metrics in free metrics along with additional metrics, such as advanced data-protection and cost-optimization metrics. There are also additional metric categories, such as activity metrics and detailed status-code metrics. 
+
+##### S3 Storage Lens metrics use cases 
+S3 Storage Lens metrics are organized into the following categories that align with key use cases:
+* **Identify cost-optimization opportunities**: With cost-optimization metrics, you can identify opportunities to reduce your Amazon S3 storage costs.
+* **Apply data-protection best practices**: You can use data-protection metrics to identify buckets that aren't following data-protection best practices within your organization.
+* **Apply access-management best practices**: With S3 Storage Lens access-management metrics, you can identify bucket settings for Object Ownership. You can then migrate ACL permissions to bucket policies and deactivate ACLs.
+* **Improve the performance of application workloads**: If you have S3 Storage Lens advanced metrics activated, you can use detailed status-code metrics to get counts for successful or failed requests. You can then use these to troubleshoot access or performance issues.
+
+##### Metrics categories
+Free metrics include summary, cost-optimization, data-protection, access-management, performance, and event metrics. When you upgrade to advanced metrics and recommendations, you can activate additional cost-optimization and data-protection metrics. You can use these to further reduce your Amazon S3 storage costs and improve your data-protection stance. You can also activate activity metrics and detailed status-code metrics that you can use to improve the performance of application workflows. Both activity metrics and detailed status-code metrics are only available in the advanced metrics and recommendations.
+
+##### Recommendations
+Recommendations are grouped into the following three categories:
+* Suggestions
+* Call-outs
+* Reminders
+
+##### S3 Storage Lens and Organizations
+
+S3 Storage Lens works with Organizations to provide a single view of object storage usage and activity across your Amazon S3 storage. This offers the following benefits:
+* **Trusted access**: To use your organization's management account, you must activate trusted access for S3 Storage Lens. You can then aggregate storage metrics and usage data for all member accounts in your organization.
+* **Delegated administrator**: You can create dashboards and metrics for S3 Storage Lens for your organization by using your Organizations management account. You can also give delegated administrator access to other accounts in your organization.
+
+#### Amazon S3 Reliability, Availability, and Performance
+
+#### Pre-assessment
+##### What is the result of trying to retrieve an object whose current version is a delete marker? 
+* Amazon S3 will return a 404 Not Found error.
+
+##### For disaster recovery architecture, a company wants to use the Amazon S3 Standard storage class for their frequently accessed objects. They want to use S3 Glacier Flexible Retrieval for their replicas. What is the most efficient way to achieve this?
+* Select S3 Glacier Flexible Retrieval as the destination storage class on the replication rule.
+
+##### Which destination can Amazon S3 send event notification message to?
+* Amazon Simple Notification Service (Amazon SNS) topics
+
+#### Amazon S3 Event Notifications
+You can configure event notifications to send messages in response to certain events that happen in your bucket. You can also use event notifications to invoke custom code in Lambda functions. Event-based notification offers several advantages.
+
+##### New functionality
+Notifications help you focus on applications by attaching new functionality driven by events. There is no need to manage fleets of Amazon Elastic Compute Cloud (Amazon EC2) instances to poll for changes.
+
+##### Speed
+You need to speed up the processing of new objects when they arrive in your bucket. On average, Amazon S3 sends notifications in less than 1 second.
+
+##### Integration
+Event notifications can connect storage in Amazon S3 with workflows. You can architect an application where changes in your data invoke blocks of code or workflows. 
+
+#### Supported event types
+Currently, Amazon S3 can publish notifications for the following events. 
+
+##### New object created events
+Amazon S3 API actions, such as PUT, POST, and COPY, can create an object. Using these event types, you can get notifications when an object is created using a specific action (for example, **s3:ObjectCreated:Put** action event type). Or, you can use the **s3:ObjectCreated:*-** event type to request notification regardless of the action that created an object. You do not receive event notifications from failed operations.
+
+The following are supported event types:
+* s3:ObjectCreated:*
+* s3:ObjectCreated:Put
+* s3:ObjectCreated:Post
+* s3:ObjectCreated:Copy
+* s3:ObjectCreated:CompleteMultipartUpload
+
+##### Object removal events
+Amazon S3 supports deleting versioned and unversioned objects.
+
+By using the **ObjectRemoved** event types, you can get a notification when an object or a batch of objects is removed from a bucket.
+
+You can request a notification when an object is deleted or a versioned object is permanently deleted by using the **s3:ObjectRemoved:Delete** event type. By using the **s3:ObjectRemoved:DeleteMarkerCreated** event type, you can also request notification when a delete marker is created for a versioned object. You can also use the wildcard **s3:ObjectRemoved:*-** event type to request notification whenever an object is deleted. You do not receive event notifications from automatic deletes from lifecycle policies or from failed operations.
+
+The following are supported event types:
+* s3:ObjectRemoved:*
+* s3:ObjectRemoved:Delete
+* s3:ObjectRemoved:DeleteMarkerCreated
+
+##### Restore object events
+Amazon S3 supports restoring objects archived to the S3 Glacier storage classes. Use the **s3:ObjectRestore:Post** event type to request notification of object restoration initiation. Use the **s3:ObjectRestore:Completed** event type to request notification of restoration completion.
+
+The following are supported event types:
+* s3:ObjectRestore:Post
+* s3:ObjectRestore:Completed
+
+##### Replication events
+Amazon S3 sends replication event notifications in the following situation:
+* When an object fails replication
+* When an object exceeds the 15-minute threshold
+* When an object is replicated after the 15-minute threshold
+* When an object is no longer tracked by replication metrics 
+
+It also publishes a second event when that object replicates to the destination AWS Region.
+
+The following are supported event types:
+* s3:Replication:OperationFailedReplication
+* s3:Replication:OperationMissedThreshold
+* s3:Replication:OperationReplicatedAfterThreshold
+* s3:Replication:OperationNotTracked
+
+#### Supported destinations
+##### Events
+To receive only the event notifications you want and not for the whole bucket, filter the event notification on prefixes or suffixes of your objects.
+
+For example, you can choose to receive notifications on object names that start with **images/**.
+
+##### Amazon Simple Notification Service (Amazon SNS)
+Using Amazon SNS, you can push messages to mobile devices or distributed services. You can publish a message once and deliver it one or more times. Currently, only Standard SNS is supported as a destination; First-In-First-Out is not supported. 
+
+##### Amazon Simple Queue Service (Amazon SQS)
+In your notification configuration, you can request that Amazon S3 publish events to an SQS queue. Currently, only Standard SQS queues are supported as a destination; First-In-First-Out SQS queues are not supported, but can be configured as an Amazon EventBridge target.
+
+##### Lambda
+Lambda can run custom code in response to S3 bucket events. You upload your custom code to Lambda and create a Lambda function. When Amazon S3 detects an event of the specified type, it publishes the event to Lambda, which runs your function.
+
+For example, you can automate the processing of raw images uploaded to your bucket by invoking a Lambda function each time a new image is uploaded.
+
+##### EventBridge
+EventBridge is a serverless event bus that receives events from AWS services. You can set up rules to match events and deliver them to targets, such as an AWS service or an HTTP endpoint.
+
+Unlike other destinations, you can either activate or deactivate events to be delivered to EventBridge for a bucket. If you activate delivery, all events are sent to EventBridge. Additionally, you can use EventBridge rules to route events to additional targets.
+
+#### Granting permissions
+Before Amazon S3 can publish messages to a destination, you must grant the Amazon S3 principal the necessary permissions. It needs these permissions to call the relevant API to publish messages to an SNS topic, an SQS queue, or a Lambda function.
+
+You can use the Amazon S3 console to configure event notifications on an S3 bucket for a Lambda function. The console automatically sets up the necessary permissions to invoke the function from the bucket. For permissions to publish messages to an SNS topic or SQS queue, you must attach an AWS Identity and Access Management (IAM) policy to the destination topic or queue.
+
+The following is an example of an IAM policy that you attach to the destination SNS topic:
+
+```
+{
+ "Version": "2012-10-17",
+ "Id": "example-ID",
+ "Statement": [
+  {
+   "Sid": "example-statement-ID",
+   "Effect": "Allow",
+   "Principal": {
+     "Service": "s3.amazonaws.com"  
+   },
+   "Action": [
+    "SNS:Publish"
+   ],
+   "Resource": "arn:aws:sns:us-east-2:123456789012:MyTopic",
+   "Condition": {
+      "ArnLike": { "aws:SourceArn": "arn:aws:s3:::DOC-EXAMPLE-BUCKET" },
+      "StringEquals": { "aws:SourceAccount": "111122223333" }
+   }
+  }
+ ]
+}
+```
+
+##### [Amazon S3 event notifications](https://docs.aws.amazon.com/AmazonS3/latest/userguide/EventNotifications.html#grant-destinations-permissions-to-s3)
+
+#### Demo: Enabling and configuring S3 event notifications
+In this demonstration, you learn how to configure Amazon S3 event notifications on an inventory report in your S3 bucket. This demo includes instructions for configuring an Amazon SNS topic and an Amazon SNS subscription, configuring Amazon S3 inventory reports, and enabling event notifications for your S3 bucket.
+
+To begin, sign in to the AWS Management Console using credentials with administrator rights. Navigate to the Services menu, and choose S3 to open the S3 console.
+
+Locate the bucket called customer-photos-123. This pre-created bucket holds a variety of sample images, and you can use it to run the inventory report. Next, you configure an SNS event topic. In the AWS Management console, navigate to the Services menu, and choose Simple Notification Service to sign in to the Amazon SNS console.
+
+In the left navigation pane, select the icon with three horizontal lines, and choose Topics. On the Topics page, choose Create topic. The topic defaults to First-in, First-out. But for this demo, choose Standard. In the Name field, enter the name Inventory-report-available. Copy the name, and paste it into the Display name-optional field. Scroll down, and expand the access policy section.
+
+Under Choose method, choose Advanced. In the JSON editor, a default access policy is displayed. An access policy indicates who and what has permissions to publish to a topic. For this demonstration, you use a unique policy as shown on the screen. The policy effect is either allow or deny.
+
+Here it is set to Allow, all AWS principals to complete the action called SNS:Publish on the specific Inventory-report resource. The Condition element is optional and specifies conditions for when a policy is in effect. In this case, the condition is that this policy runs only if the SourceAccount matches the one listed. Copy this policy, and paste it into the JSON editor. Scroll down, and choose Create topic.
+
+The console returns you to the new topic's Details page. Scroll down, and choose Subscriptions. On the Subscriptions page, choose Create subscription. On the Create subscription page, choose the Topic ARN field.
+
+Open your access policy and copy the Resource ARN. Paste it into the Topic ARN field. For Protocol, choose Email. For Endpoint, enter an email address that can receive notifications. Choose Create subscription.
+
+The console opens the new subscription's Details page. Locate Status and notice that it now says Pending confirmation. Check your email inbox. It takes a few minutes for the confirmation email to appear. The sender ID is no-reply@sns.amazonaws.com. Choose Confirm subscription in the email from AWS Notifications.
+
+Amazon SNS opens your web browser and displays a subscription confirmation with your subscription ID. Go back and refresh the SNS Subscriptions tab. Under Status notice that the Pending confirmation now says Confirmed.
+
+Next, navigate to the Services menu and choose S3. When the S3 console opens, choose Create bucket to create a bucket that will hold the inventory reports. For name, enter s3-demo-mgmt-inventory-123. Scroll down, and choose Create Bucket. Next, configure the inventory configuration. On the customer-photos-123 bucket, choose Management and scroll down to the Inventory configurations. Choose Create inventory configuration.
+
+In Inventory configuration name, enter the name as daily-inventory. Under Destination, choose the destination bucket where you want reports to be saved. Choose Browse S3, select the s3-demo-mgmt-inventory-123 bucket, and then select Choose path.
+
+The destination bucket must be in the same AWS Region as the bucket for which you are setting up the inventory. Under the Destination bucket field, you see the permission that is added to the destination bucket policy to allow Amazon S3 to place data in that bucket. Leave Frequency as Daily. Leave the Output format for the report as CSV. And under Status, choose Enable.
+
+In the Additional fields section, select Size and Last modified date. Choose Create.
+
+Now you need to enable and configure event notifications for the s3-demo-mgmt-inventory-123 bucket. Return to the Amazon S3 bucket overview. In the S3 Buckets list, choose s3-demo-mgmt-inventory-123, and choose Properties. Scroll down to the Event Notifications section, and choose Create event notification.
+
+Under Event name, enter new-inventory-report-added. In the Event types section, choose All object create events. In the Destination section under Destination, choose SNS topic. And under Specify SNS topic, select Choose from your SNS Topics. In the SNS topic dropdown, select the Inventory report available. Choose Save changes.
+
+The inventory report can take up  to 48 hours to populate. This is an example of the Inventory-report notification. Finally, to view the inventory report and ensure that the notifications were successful, open the AWS Management Console and navigate to the S3 console. Select the s3-demo-mgmt-inventory-123 bucket.
+
+Under the Name column, notice that you now have a customer-photos-123 object. This is the bucket on which you configured the inventory reports. Chose the customer-photos-123, choose daily-inventory, choose data, and select the inventory report.
+
+When the report opens, select Object Actions, Query with S3 Select. Notice the configurations that you chose earlier in the demo, such as Format CSV and Comma delimited output. Scroll to the SQL query section. This SQL query will return the first five objects in the report.
+
+To list more items in the report, change the size from five to 20 and choose Run SQL query. The results appear at the bottom. Under Raw, you see the output values in a CSV format. Choose Formatted to view the results in columns.
+
+Here the columns indicate the bucket name, the object key name, IsLatest version is true, the Deletemarker is false, and the size of the file and the date. If you need a copy of the CSV file, choose Download results and save the file to your computer.
+
+If you return to the daily-inventory prefix, two new prefixes appear.
+
+The 2020-12-18T00 contains the manifest.json, which is the actual manifest file, and the manifest.checksum, which is the MD5 checksum of the manifest.json file. The hive folder is the sysmlink.txt file, which is the Apache Hive-compatible manifest file.
+
+#### Amazon S3 Replication
+S3 Replication provides automatic, asynchronous copying of objects across S3 buckets. S3 Replication is an elastic, fully managed, low-cost feature that automatically replicates objects between S3 buckets. S3 Replication gives you the most flexibility and functionality in cloud storage to help you meet your compliance, business continuity, and data sovereignty requirements.
+
+##### Replicate objects while retaining metadata
+You can use replication to make copies of your objects that retain all metadata, such as the original object creation times and version IDs. This capability is important if you must ensure that your replica is identical to the source object.
+
+##### Replicate objects into different storage classes
+You can use replication to directly put objects into S3 Glacier Flexible Retrieval, S3 Glacier Deep Archive, or another storage class in the destination buckets. You can also replicate your data to the same storage class and use lifecycle configurations on the destination buckets. You can then move your objects to a colder storage class as they age.
+
+##### Maintain object copies under different ownership
+Regardless of who owns the source object, you can tell Amazon S3 to change replica ownership to the AWS account that owns the destination bucket. This is called the owner override option. You can use this option to restrict access to object replicas.
+
+##### Keep objects stored over multiple AWS Regions
+To ensure geographic differences in where your data is kept, you can set multiple destination buckets across different Regions. This feature might help you meet certain compliance requirements.
+
+##### Replicate objects within 15 minutes
+To replicate your data in the same Region or across different Regions within a predictable time frame, you can use S3 Replication Time Control (S3 RTC). S3 RTC replicates 99.99 percent of new objects stored in Amazon S3 within 15 minutes. This is backed by a service-level agreement (SLA).
+
+##### Sync buckets and replicate existing objects
+To sync buckets and replicate existing objects, use Batch Replication as an on-demand replication action.
+
+##### Replicate objects and fail over to a bucket in another Region
+You can keep all metadata and objects in sync across buckets during data replication. Use two-way replication rules (also known as bi-directional replication) before configuring Amazon S3 Multi-Region Access Point failover controls. Two-way replication rules help ensure that when data is written to the S3 bucket that traffic fails over to, that data is then replicated back to the source bucket.
+
+#### Same-Region Replication (SRR)
+Customers can use it to consolidate application logs from multiple buckets or multiple accounts into one central archival bucket. They also use it to keep development, testing, and production buckets in sync for their users.
+
+Amazon S3 supports automatic and asynchronous replication of newly uploaded S3 objects to a destination bucket in the same Region. SRR makes another copy of S3 objects within the same Region, with the same redundancy as the destination storage class. This helps you automatically aggregate logs from different S3 buckets for in-Region processing. You can also configure live replication between test and development environments. SRR helps you address data sovereignty and compliance requirements by keeping a copy of your objects in the same Region as the original.
+
+##### Cross-Region Replication (CRR)
+If you need data stored in multiple Regions, you can replicate your bucket to other Regions using CRR. You can automatically copy objects from a bucket in one Region to a different bucket in a another, separate Region. You can replicate the entire bucket or you can use tags to replicate only the objects with the tags you choose.
+
+Customers use CRR for multiple reasons. They use it to meet compliance requirements that dictate maintaining data in different physical locations a minimum number of miles apart. They also use it to minimize latencies for geographically distributed users and centralize a global data lake in the same Region as their compute clusters.
+
+Now, if you are looking for a predictable SLA-backed guarantee on your data replication, consider using S3 RTC. It is designed to replicate 99.99 percent of your objects within 15 minutes of upload, with replication typically completing in seconds. You get an SLA commitment that 99.9 percent of your objects will get replicated to your destination bucket in that 15-minute time interval.
+
+#### Replication requirements
+##### Regional requirements
+The source bucket owner must have the source and destination Regions activated for their account. The destination bucket owner must have the destination Region activated for their account.
+
+##### Versioning
+Both source and destination buckets must have versioning activated.
+
+##### Permissions
+To use replication, Amazon S3 must have permissions to replicate objects from the source bucket to the destination bucket, or buckets, on your behalf. 
+
+The owner of the source bucket might not own the object in the bucket. The object owner must then grant the bucket owner READ and READ_ACP permissions with the object access control list (ACL).
+
+##### S3 Object Lock
+If the source bucket has S3 Object Lock activated, the destination buckets must also have S3 Object Lock activated.
+
+#### Configuring replication rules
+To set up replication, you need to define a replication configuration on your bucket. A replication configuration is a set of rules that dictate which options Amazon S3 applies to your objects during replication. You can use the AWS Management Console, REST API, AWS CLI, or AWS SDKs to configure replication rules.
+
+##### Select source bucket and objects
+Specify whether you want to replicate all of the objects in the source bucket or a subset. You identify a subset by providing a prefix, object tag, or both.
+
+##### Select IAM role
+Specify an IAM role that Amazon S3 can assume to replicate objects on your behalf.
+
+##### Select destination buckets
+Choose the destination bucket, or buckets, where you want Amazon S3 to replicate objects in the same or a different Region.
+
+#### Optional configurations
+##### Select storage class
+By default, Amazon S3 stores replica objects in the same storage class as the source object. You can specify a different storage class for the replicas. For example, you can choose to store your replicas in a lower-cost storage class than your source bucket to save costs.
+
+##### Configure replica modification sync
+By default, Amazon S3 replicates metadata, such as tags and S3 Object Lock settings, from the source objects to the replicas only.
+
+You can choose to replicate object metadata bidirectionally between buckets by turning on the replica modification sync feature. Replica modification sync is useful for keeping all object and object metadata changes in sync when building shared datasets across Regions.
+
+##### Activate S3 RTC
+If you need a predictable replication time backed by an SLA, you can activate S3 RTC. It replicates 99.99 percent of objects within 15 minutes after upload, with the majority of those new objects replicated in seconds.
+
+##### Use encryption
+You can use replication for objects encrypted at rest using server-side encryption with customer provided keys (SSE-C). Client-side encryption (encrypting the data before uploading to Amazon S3) will not have any effect on replication.
+
+##### Configure multiple ownership
+When Amazon S3 replicates an object, it also replicates the corresponding object ACL for that object.
+
+Your source and destination objects might be owned by different accounts. You can configure replication to change replica ownership to the AWS account that owns the destination buckets. 
+
+##### Activate replication metrics
+You can turn on replication metrics in your replication configuration to monitor the progress of your replication through Amazon CloudWatch metrics.
+
+#### Replicable items
+Amazon S3 replicates only specific items in buckets that are configured for replication. By default, Amazon S3 replicates the following:
+* Objects created after you add a replication configuration
+* Unencrypted objects
+* Objects encrypted with SSE-C, objects encrypted at rest under an Amazon S3 managed key (SSE-S3), or a KMS key stored in AWS Key Management Service (SSE-KMS)
+* Object metadata from the source objects to the replicas
+* Only objects in the source bucket for which the bucket owner has permissions to read objects and ACLs
+* Object ACL updates, unless you direct Amazon S3 to change the replica ownership when source and destination buckets aren't owned by the same accounts
+* Object tags (if there are any)
+* S3 Object Lock retention information (if there is any)
+
+#### Non-replicable items
+By default, Amazon S3 doesn't replicate the following: 
+* Objects that existed before you added the replication configuration to the bucket
+* Objects in the source bucket that are replicas created by another replication rule
+* Objects in the source bucket that have already been replicated to a different destination
+* Objects that are stored in S3 Glacier Flexible Retrieval or S3 Glacier Deep Archive
+* Objects in the source bucket that the bucket owner doesn't have permission to replicate (when the bucket owner is not the owner of the object)
+* Updates to bucket-level sub-resources
+* Actions performed by lifecycle configuration
+
+**If you want to activate existing object replication for your account, you can use S3 Batch Replication. This provides you a way to replicate objects that existed before a replication configuration was in place. You can also replicate objects that have previously been replicated, and objects that have failed replication. You do this with a Batch Operations job. This differs from live replication, which continuously and automatically replicates new objects across S3 buckets.**
+
+#### Amazon S3 Versioning
+With versioning, you can keep multiple variants of an object in an S3 bucket. You can preserve, retrieve, and restore previous versions of objects in a bucket.
+
+Use versioning to recover from both unintended user actions and application failures. For example, if you overwrite an object, Amazon S3 creates a new object version in the bucket. You can always restore the previous version. If you delete an object, instead of removing it permanently, Amazon S3 inserts a delete marker, which becomes the current object version. You can then restore the previous version.
+
+##### Versioning bucket states
+Buckets can be in one of the following three versioning states:
+* Unversioned (default setting)
+* Versioning-enabled
+* Versioning-suspended
+
+**To use versioning, you must activate it on your bucket. After you activate versioning on a bucket, it can never return to an unversioned state. You can suspend versioning to stop accruing new versions of the same object in a bucket. The versioning state you define applies to all of the objects in a bucket.**
+
+##### [Additional information VERSIONING](https://docs.aws.amazon.com/AmazonS3/latest/userguide/manage-versioning-examples.html)
+
+#### Working with version IDs
+Regardless of whether you activate versioning, all objects in Amazon S3 have a version ID. Version IDs are Unicode strings associated with your objects. Only Amazon S3 generates version IDs, and you cannot edit them. If you don't activate versioning for a bucket, Amazon S3 sets the value of the version ID for its objects to null.
+
+When you activate versioning for a bucket, Amazon S3 automatically generates a unique version ID for each new object you add to that bucket. This value distinguishes it from other versions of the same object.
+
+When you activate versioning on a bucket, objects that are already stored in the bucket are unchanged. The version ID's value (null) remains the same.
+
+#### Viewing and managing multiple object versions
+Sign in to the console and navigate to the bucket that contains the object. To see a list of the versions in the bucket, select **Show versions**.
+
+To download the noncurrent object version, select the check box next to the version that you want to retrieve. Next, to download the object, choose **Download**.
+
+To delete the current version, select the check box next to it. Next, choose **Delete**.
+
+#### Working with delete markers
+When you delete an object in a bucket with versioning without specifying a version ID, Amazon S3 creates a delete marker for the object. A delete marker is a placeholder (or marker) for a versioned object that was named in a DELETE request. A delete marker has a key name and a version ID like any object in an S3 bucket.
+
+When Amazon S3 creates a delete marker, the delete marker becomes the current version of the object.
+
+When you try to retrieve an object whose current version is a delete marker, Amazon S3 returns a 404 Not Found error.
+
+#### Removing delete markers
+To restore a deleted object in a bucket with versioning, you must delete the delete marker associated with it. For example, if you want to delete a delete marker using the REST API, you must specify its version ID in a delete request.
+
+The following example removes the delete marker for photo.gif version 1234567.
+
+```
+DELETE /photo.gif?versionId=1234567 HTTP/1.1
+Host: DOC-EXAMPLE-BUCKET.s3.amazonaws.com
+Date: Wed, 28 Oct 2009 22:32:00 GMT
+Authorization: AWS AKIAIOSFODNN7EXAMPLE:0RQf4/cRonhpaBX5sCYVf1bNRuU=
+```
+
+If you don't specify a version ID in your delete request, Amazon S3 adds another delete marker instead of deleting the object. The new delete marker then becomes the current version of the object. It is possible to have multiple delete markers of the same object in one bucket. 
+
+To undelete an object, you must delete the delete marker. Select the check box next to the delete marker of the object to recover, and then choose **Delete**.
+
+#### Working with versioning-suspended buckets
+In Amazon S3, you can suspend versioning to stop accruing new versions of the same object in a bucket. You might do this because you only want a single version of your objects in a bucket. Or, you might not want to accrue charges for multiple versions. When you suspend versioning, existing objects in your bucket do not change. What changes is how Amazon S3 handles objects in future requests. Amazon S3 will do the following:
+* If a null object version exists and you add another object with the same key, the added object overwrites the original null version.
+* If there are versioned objects in the bucket, the version you add becomes the current version of the object. Adding an object to a bucket that contains versioned objects does not overwrite the object already in the bucket. Here, Amazon S3 attaches a version ID of null to the new object. The noncurrent version of the object retains its original version ID and is not overwritten.
+
+#### Multi-factor authentication (MFA) delete
+You can use MFA delete to add an additional layer of security to your buckets with versioning. MFA delete can help prevent accidental bucket deletions. The user who initiates the delete action must prove physical possession of an MFA device with an MFA code. This adds an extra layer of friction and security to the delete action.
+
+With MFA delete, the following two forms of authentication are required to change the versioning state of a bucket or delete an object version:
+* Your AWS account credentials
+* A  valid six-digit code and serial number from an MFA authentication device in your physical possession
+
+An MFA authentication device can be one of the following: 
+* A virtual MFA device, which is an application that is compliant with RFC 6238, a standards-based, time-based, one-time password algorithm. You can install the application on a phone or other device.
+* A Universal 2nd Factor security key with an AWS supported configuration.
+* A hardware-based MFA device. This device is a tamper-evident hardware key fob or display card device provided by Gemalto, a third-party provider.
+
+##### [MFA for IAM](https://aws.amazon.com/iam/features/mfa/?audit=2019q1)
+
+##### Activating MFA delete
+You can activate MFA delete using AWS CLI or REST API. The following example activates versioning and MFA delete on a bucket using AWS CLI.
+
+```
+aws s3api put-bucket-versioning --bucket DOC-EXAMPLE-BUCKET --versioning-configuration Status=Enabled,MFADelete=Enabled --mfa "SERIAL 123456"
+```
+
+##### Deleting with MFA delete 
+To permanently delete objects from a bucket using MFA delete, you must include the **x-amz-mfa** request header in your DELETE request. The MFA header consists of the concatenation of your MFA device’s serial number, a space, and the MFA code displayed on your authentication device. Requests that include **x-amz-mfa** must use HTTPS. 
+
+The following example request shows how to delete a specific version of report.csv in a bucket called **DOC-EXAMPLE-BUCKET**, which has MFA delete.
+
+```
+DELETE /report.csv?versionId=3HL4kqCxf3vjVBH40Nrjfkd HTTPS/1.1
+Host: DOC-EXAMPLE-BUCKET.s3.amazonaws.com
+x-amz-mfa: serial_number 123456
+Date: Fri, 28 May 2021 21:01:00 GMT
+Authorization: AWS AKIAIOSFODNN7EXAMPLE:0RQf4/cRonhpaBX5sCYVf1bNRuU=
+```
+
+#### Knowledge Check
+##### What happens to the version IDs of objects that were already stored in a bucket when versioning is activated?
+* The version ID values of the objects (null) remain the same.
+
+When a user activates versioning on a bucket, the version IDs of objects that were already in the bucket (null) do not change.
+Wrong answers:
+* Amazon S3 generates new version IDs for the objects. 
+* Objects already stored in the bucket do not have any version ID associated with them.
+* It is not possible to activate versioning on a bucket that contains objects. A user needs to empty the bucket before activating versioning.
+
+##### What information does a delete request for an object in a bucket with multi-factor authentication (MFA) delete activated need to include?
+* It must include the x-amz-mfa request header in the DELETE request. The MFA header consists of the concatenation of the MFA device’s serial number, a space, and the MFA code displayed on the authentication device.
+
+To permanently delete objects from a bucket with MFA delete activated, the DELETE request must include the x-amz-mfa request header. The MFA header consists of the concatenation of the MFA device’s serial number, a space, and the MFA code displayed on the authentication device. Requests that include x-amz-mfa must use HTTPS.
+Wrong answers:
+* It must include the x-amz-mfa request header in the DELETE request. The MFA header consists of the AWS account number and the MFA code displayed on the authentication device.
+* It must include the x-amz-content-sha256 header with a hash of the request payload.
+* There is no need to include any information with the delete request for objects in a bucket with MFA delete activated.
+
+##### For security reasons, a company's source and destination buckets are owned by different AWS accounts. How do they ensure that the AWS account that owns the destination bucket owns the replicated objects?
+* They must select the Replica Ownership option when configuring the replication rule.
+
+They can use the Replica Ownership setting to ensure that the AWS account that owns the destination bucket also owns the replicated objects.
+Wrong answers:
+* They must select an AWS Identity and Access Management (IAM) role that grants access to the AWS account that owns the replicated objects.
+* They must contact AWS Support and create a technical support case.
+* They don’t need to do anything. Amazon S3 automatically changes object ownership for them.
+
+#### Hybrid Cloud and Edge Storage
+
+#### AWS Snow Family
+#### Snowcone
+Snowcone provides storage and compute resources in a portable, ruggedized, self-contained solution. Customer use cases for Snowcone can be grouped into three general workflows. 
+
+##### Data transfer to and from AWS
+* **Usage scenario**: Bulk data transfer into or out of AWS, either offline by shipping physical devices, or online using Snowcone with AWS DataSync.
+* **Customer examples**: Public sector, defense, intelligence, and law enforcement customers use Snowcone for tactical edge scenarios at land, air, and sea to migrate data to AWS. Snowcone devices are deployed and used to collect data as an Network File System (NFS)v4 mount point and transfer that data back to AWS.
+
+##### Edge computing for data collection, processing, and transfer
+* **Usage scenario**: Aggregating and processing data in edge locations and then transferring it to AWS.
+* **Customer examples**: Media and entertainment, professional sports teams, and other content creators use Snowcone to do the following with content from cameras on movie sets, photo shoots, and at sporting events:
+ * Aggregating and encoding the content
+ * Migrating the data to Amazon Simple Storage Service (Amazon S3) 
+
+##### Edge computing with local processing and storage
+**Usage scenarios**: 
+* Edge computing applications to collect data, process the data to gain immediate insight, and then transfer the data to AWS.
+* Transfer data that is continuously generated by sensors or machines online to AWS from hospitals, factory floors, or other edge locations.
+
+* **Customer examples**: Customers in healthcare use Snowcone as an Internet of Things (IoT) hub to process data, and transfer it to the AWS Cloud. Snowcone provides a secure path for customers to centrally manage the configuration and operation of Snowcone devices deployed across worldwide customers and organizations.
+
+Customers focused on getting packages from delivery stations to a customer's doorstep are deploying Snowcone devices in trucks for data collection. Snowcone is used to process data locally for immediate insights and to transfer the data to AWS for broader, long-term analysis.
+
+#### Snowball Edge
+Snowball Edge is a data migration and edge computing device that comes in two device options: Compute Optimized and Storage Optimized. There are two main use cases: data transfer and compute and storage. 
+
+##### Data transfer
+Use Snowball Edge to transfer offline data, or data that is not actively being changed, updated, or manipulated. The data transfer process occurs over a small period of time—from a couple of days to a couple of weeks. If you use Snowball Edge to transfer any active data that might change or is incomplete, you can experience versioning issues and data transfer errors because of incomplete objects. 
+
+##### Data center migration
+Customers might find it challenging to move existing data to the cloud, whether they want to move all their data or only specific datasets. Their situation might require that they frequently develop and test their applications in the cloud with sample datasets. After customers test the applications and verify that they are ready, they need to migrate the full datasets to the cloud. This migration process must occur in a relatively short period of time.
+
+To move large volumes of data, they can create multiple Snowball Edge jobs to increase the number of Snowball Edge devices to meet their needs. Using the storage-optimized model, customers can transfer up to 80 TB of data on the single device. 
+
+Copying data from on-premises storage to the Snowball Edge devices takes time, which varies based on the number of files and the file sizes. Snowball Edge simplifies the process of planning for migration, secures and protects the data, and facilitates a predictable and timely migration. 
+
+AWS encourages customers to work with their account team to plan their migration projects.
 
 
+##### Backup seeding
+Backup seeding provides a staged approach to transferring backups to the cloud. You can perform a seed backup to a temporary storage medium and then transfer it to the cloud. For larger backups, the size of your data might limit your use of a high-speed internet connection for the task. Transfers can take long periods of time to complete, and often cannot complete before the next backup cycle begins. 
+
+If you need to retrieve a backup, you can use Snowball Edge as an export device, so you can restore your data from nearly any size backup in a timely manner. 
+
+You can also use Snowball Edge as the temporary storage medium or populate it from other temporary backup storage options. The transfer to the cloud is accomplished by physically shipping the Snowball Edge instead of attempting to use a high-speed internet connection. 
+
+Use Amazon S3 storage for all new backup operations. Backups can be retrieved from Amazon S3 storage over an internet connection for restoration or by using Snowball Edge to export the backup.
+
+##### Assisted database migration
+Larger data migrations can include many terabytes of information. This process can be challenging due to network bandwidth limits or the amount of data. 
+
+AWS offers AWS Database Migration Service (AWS DMS), which uses Snowball Edge as a key component to copy point-in-time database components to the cloud. All relevant data is maintained, uploaded to the cloud, and then transferred to the appropriate location. Snowball Edge provides quick transfers, maintains data integrity and security, and simplifies the database migration process.
+
+##### NAS appliance archival
+On-premises network-attached storage (NAS) devices continue to grow in capacity. The volume and rate of data growth is driving a need to offload data to the cloud. It's nearly impossible for customers to back up NAS appliance data because of the large volume of data. Restoration from backup to a new NAS device cannot happen within a reasonable time period. 
+
+You can use Snowball Edge to transfer the initial copies of the files stored in the on-premises NAS appliances. Use the Snowball Edge devices to store cold or archival copies of the file data before securely transferring the data to the AWS Cloud. The data remains accessible in the cloud when you need it. You can then perform updates to the data on the files stored as objects in the cloud. 
+
+To transition cold data, copy the data to the Snowball Edge device, upload to the AWS Cloud, and then delete it from the on-premises NAS appliance. After the archival, NAS data is in the AWS Cloud. You can transition it through its lifecycle to Amazon S3 Glacier Instant Retrieval, Amazon S3 Glacier Flexible Retrieval, or Amazon S3 Glacier Deep Archive storage classes to optimize archival storage costs. 
+
+##### Data lake creation or migration
+To create a new data lake or migrate an existing data lake to the cloud, you must transfer large volumes of data. 
+
+Use Snowball Edge as a standalone device or multiple devices to accomplish the task. Upload speeds for data transfer commonly range from 200–450 MBps using the Snowball Edge adapter. After importing your data into your S3 bucket, you can perform the following operations: 
+* Use the data.
+* Migrate the data to be stored as file or block storage within Amazon S3.
+* Integrate with other AWS services, such as Amazon Athena for analysis, AWS Glue for data transformation, and Amazon OpenSearch Service for search capabilities. 
+
+##### Archive data
+Archive data presents several challenges. It typically consumes large amounts of local storage space, which is expensive to expand and maintain. The archive data might be located in offline storage, such as tape or external hard drives. Often only a single copy of the archive data is maintained, which is at risk for data loss. 
+
+Using Snowball Edge, you can import your data into your S3 bucket and transition it through the data management lifecycle using S3 Glacier Instant Retrieval, S3 Glacier Flexible Retrieval, or S3 Glacier Deep Archive storage classes for long-term, money-saving storage. The archive data no longer takes up local storage space and uses storage designed for durability and high availability that mitigates the risk of potential data loss.
+
+#### Compute and storage
+You can use the Snowball Edge compute functions to collect information from your data center for processing before you import the data to the AWS Cloud. You can also use Snowball Edge for edge computing. Edge computing brings data storage and compute resources closer to where you need them.
+
+Snowball Edge provides storage and compute resources in a portable, ruggedized self-contained solution. Local compute can meet usage needs with the Amazon Elastic Compute Cloud (Amazon EC2) Amazon Machine Images (AMIs) and AWS Lambda functions that are powered by AWS IoT Greengrass.
+
+##### Imagery processing and analysis
+Because many remote locations have imagery data associated with video sensors, you might need to assess the imagery and provide real-time actionable intelligence. One customer, GE Oil & Gas, assesses pipeline inspection gauges with imagery and ultrasonic sensor data to address pipeline health, such as bad welds and fissures.
+
+Customers use Snowball Edge to capture sensor inputs from drones, submersibles, custom devices, and even healthcare equipment, such as CAT scans and MRI devices where internet links are inaccessible or intermittent.
+
+##### Backup software to offline migration
+Snowball Edge helps you create offline backup migrations, and is designed to work with software from many vendors. The Snowball Edge compute capabilities work well in scenarios where you don't have on-premises devices to handle the software agents. 
+
+##### Import data obfuscation
+In any dataset with personally identifiable information (PII), such as scenarios with financial services companies, you want to obfuscate, or conceal, your data. The PII is identified on ingest and Lambda begins pseudonymizing, or disguising, the data to avoid exposing unprotected PII information. The confidentially protected data is stored for upload in the AWS Cloud or for temporary local use from the Snowball Edge. 
+
+##### Overflow compute on the edge
+Customers that need additional temporary compute power use Snowball Edge to provide the additional resources. Providing additional resources when needed is similar to the tenets for utility computing in the cloud. Here, the tenets are applied to on-premises computing using a Snowball Edge device.
+
+#### Ordering an AWS Snow Family device
+Ordering an AWS Snow Family device to migrate your workload is a straightforward process. For Snowcone and Snowball Edge, you can create a new job in the Snow Family console. In the following example, you will learn about the Snowball Edge configuration and ordering process. 
+
+The Snowball Edge process always begins with configuring resources, creating a job, and placing an order. You should plan every Snowball Edge job before you begin the ordering process. After you order the Snowball Edge device, you cannot change the configuration. If you need to change a setting, you must cancel the Snowball Edge order and place a new order. To avoid incurring charges, you must cancel a Snowball Edge order before it ships.
+
+If you plan to use Amazon EC2 as part of your Snowball Edge job, you must identify and create each of the Amazon EC2 AMIs. You must do this before you create the Snowball Edge order and then add them to your job during the job creation process.
+
+1. **Create a Snowball Edge order**. AWS management console with AWS Snow Family page displayed.
+To configure and order your Snowball Edge device, use the AWS Management Console. Create a Snowball Edge job under the AWS Snow Family service. The console walks you through the job creation process, step by step. Choose Order an AWS Snow Family device to continue. 
+2. **Select the job type**. To create the Snow Family job, you add a unique job name for the Snowball Edge job. Each job is identified and tracked separately. You select the job type: **Import into Amazon S3, Export from Amazon S3, Local compute and storage only**, or **Import virtual tapes into AWS Storage Gateway**. In this example, select **Import into Amazon S3** and choose Next to continue.
+3. **Select the Snowball Edge device type**. Select the Snow Family model for the job. You can choose from Snowcone, Snowcone SSD, Snowball Edge Storage Optimized, Snowball Edge Compute Optimized, or Snowball Edge Compute Optimized with GPU devices for your job. If you select a device that is backlogged or constrained, a notification message appears at the top of the page. AWS recommends working with your account team to plan your Snow Family device. You add the additional information for the job as you continue this configuration page. In this example, you select the Snowball Edge Storage Optimized with 80TB option. With this option, you have three pricing options to choose from: on-demand pricing, a 1-year term pricing commitment, and a 3-year term pricing commitment. Term pricing is for long-running Snow Family jobs. On-demand is for short-term jobs like migration projects.
+4. **Add compute services**. Add any compute services by selecting your preconfigured EC2 AMIs for your Snowball Edge order. Your selection of compute services is optional and based on how you intend to use the Snowball Edge device. 
+5. **Select your Amazon S3 bucket and data**. Every Snowball Edge job is associated with one or more S3 buckets, even local compute and storage jobs that are not uploaded to Amazon S3 when the job is completed. Select the S3 bucket or buckets to associate with the job. You can also create a new bucket if necessary. For an export job type, you select the S3 bucket data that you want to export. You can also explicitly select a range of objects by using object key ranges for the export job.
+6. **Configure features and options**. If you want to manage the device remotely with OpsHub or Snowball Client, you can configure it in this step.  For more information, see [Using AWS Snow Device Management to Manage Devices](https://docs.aws.amazon.com/snowball/latest/snowcone-guide/aws-sdm.html) in AWS Snowcone User Guide.
+7. **Create role permissions and set the encryption key**. You first choose the AWS Key Management Service (AWS KMS) encryption key, which is used to secure data access on the Snowball Edge device. The job details that you enter create a specific AWS Identity and Access Management (IAM) service role for the Snowball Edge device. The role is used to grant access to the appropriate secure user and to configured resources on the device. These permissions are required to allow the services to interact with the Snowball Edge device. For more information, refer to [Step 4: Choose Your Security Preferences](https://docs.aws.amazon.com/snowball/latest/developer-guide/set-security.html) in the AWS Snowball Edge Developer Guide.
+8. **Add shipping details**. Add your shipping details, including shipping location, and select the default **One-Day Shipping** or **Two-Day Shipping**. The Snowball Edge device will be shipped after the device has been prepared for your job. The shipping rate applies only to the transportation time to and from your location. The requested shipping information varies based on the AWS Region.
+9. **Set notifications**. To complete the configuration details, add an Amazon Simple Notification Service (Amazon SNS) topic. You can track the job status using the Amazon SNS notifications. Notifications are sent through SMS or text messages. You can check the job status at any time using the console.
+10. **Review and submit the order**. The final step in the process is to review your Snow Family order. You can edit any area that is incorrect before submitting your order. After you submit your order, you cannot change it. You must cancel the order and create a new order.
+11. **Summary**. The configuration and ordering process is quick and simple to complete when you have prepared. If you need to make changes, you can cancel your order before it ships and create a new one. If the order ships, you must return the Snowball Edge device before the order can be terminated. You are charged for any unit that ships.
+
+#### Snowmobile
+Snowmobile moves extremely large amounts of data to AWS. Transfer up to 100 PB per Snowmobile, a 45-foot-long ruggedized shipping container pulled by a semi-trailer truck. It provides the following use cases: 
+* Migrate massive amounts of data.
+* Customize data transfer operations to your location.
+* Meet security requirements for data migration.
+
+#### Configuring a Snowmobile job
+A Snowmobile job includes the data migration process using a Snowmobile. There are five main steps:
+
+##### Site survey
+AWS personnel will work with the customer to understand their migration objectives, data center environment, and network configurations to help them determine a migration plan.
+
+##### Site preparation
+The customer will identify and make available local resources such as parking space and power source for the Snowmobile. The customer also identifies resources such as local security, network address, ports, and available rack positions to connect the Snowmobile with the local network backbone. 
+
+##### Dispatch and setup
+AWS personnel will dispatch a Snowmobile to the customer site and configure it for them so that it can be accessed securely as a network storage target.
+
+##### Data migration
+The customer will then copy data from any number of sources within their data center to the Snowmobile.
+
+##### Return and upload
+The Snowmobile is returned to an AWS Region that the customer has designated, where their data will be uploaded into the AWS storage services that they have selected.
+
+#### Data migration process works using Snowmobile
+##### How does a customer get started with a Snowmobile?
+They would need to contact their sales team(opens in a new tab) to request a Snowmobile.
+
+##### How does a customer connect their data center to a Snowmobile?
+Each Snowmobile comes with a removable high-speed connector rack on wheels with two kilometers of ruggedized networking cable. The connector rack can be rolled to a location inside a customer's data center and connected directly to their network backbone. This way, the Snowmobile will operate as a network storage target inside their network for them to perform a high-speed data transfer. 
+
+##### How does a customer copy their data to a Snowmobile?
+When the Snowmobile is connected to their data center, it will appear as a network storage target. They can copy data from local storage devices to the Snowmobile using the same tools and in the same manner as data copied to any network attached storage device with an NFS interface. 
+
+##### How does a customer verify that their data has been successfully copied to Snowmobile?
+At the time that their data is copied into the Snowmobile, a set of logs will be generated with checksums for each file transferred. These logs are available to them for verification. The logs are also used when data is imported from the Snowmobile to AWS to verify that all data has been transferred successfully.
+
+##### Does a customer need to keep a local copy of their data while a copy is shipped back to AWS on a Snowmobile?
+Yes. They should always keep their source copy until AWS has worked with them to verify that the Snowmobile copy has been successfully uploaded to AWS.
+
+##### Can a customer export data from AWS with Snowmobile?
+Snowmobile does not support data export. It helps customers quickly, easily, and more securely migrate exabytes of data to AWS. When a customer needs to export data from AWS, they can use AWS Snowball Edge to export up to 100 TB per appliance and run multiple export jobs in parallel as necessary.
+
+#### AWS at the Edge with Amazon CloudFront
+
+#### CloudFront use cases
+##### Accelerate static website content delivery
+CloudFront can speed up the delivery of your static content (for example, images, style sheets, JavaScript, and so on) to viewers across the globe. By using CloudFront, you can take advantage of the AWS backbone network and CloudFront edge servers to give your viewers a fast, safe, and reliable experience when they visit your website. 
+
+##### Serve video-on-demand or live streaming video
+CloudFront offers several options for streaming your media to global viewers—both prerecorded files and live events.
+
+For video-on-demand (VOD) streaming, you can use CloudFront to stream in common formats, such as MPEG DASH, Apple HLS, Microsoft Smooth Streaming, and CMAF, to any device.
+
+For broadcasting a live stream, you can cache media fragments at the edge, so that multiple requests for the manifest file that delivers the fragments in the right order can be combined, to reduce the load on your origin server.
+
+##### Encrypt specific fields throughout system processing
+When you configure HTTPS with CloudFront, you already have secure connections to origin servers. When you add field-level encryption, you can protect specific data throughout system processing in addition to HTTPS security, so that only certain applications at your origin can see the data. 
+
+##### Customize at the edge
+Running serverless code at the edge opens up many possibilities for customizing the content and experience for viewers, at reduced latency. For example, you can return a custom error message when your origin server is down for maintenance, so viewers don't get a generic HTTP error message. Or you can use a function to help authorize users and control access to your content, before CloudFront forwards a request to your origin.
+
+##### Serve private content by using Lambda@Edge customizations
+Using Lambda@Edge can help you configure your CloudFront distribution to serve private content from your own custom origin, in addition to using signed URLs or signed cookies.
+
+#### Using CloudFront with Amazon S3 for static web site
+1. Create a bucket.
+ * During the process of creating a bucket, select **ACL enabled**, and then **Bucket owner preferred**.
+ * During the process of creating a bucket for this example, make sure to clear the check box for **Block all public access**. You must allow public read access to the bucket and files so that CloudFront URLs can serve content from the bucket. However, you can restrict access to specific content by using the CloudFront private content feature. For more information, see [Serving Private Content with Signed URLs and Signed Cookies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html). 
+2. Upload content: index.html file and the css folder (with the style.css file inside it), for example.
+ * During the uploading process, expand the **Permissions** section, keep settings at their defaults, and for **Predefined ACLs**, select **Grant public-read access**.
+ * You can use the Amazon S3 URL **https://<DOC-EXAMPLE-BUCKET> .s3.<AWS Region>.amazonaws.com/<object name>** to verify that your content is publicly accessible, but remember that this is not the URL you will use to access your content with CloudFront.
+ * **Note that if you created the bucket in the US East (N. Virginia) Region (us-east-1), omit the <AWS Region> portion of the URL. For example: https://DOC-EXAMPLE-BUCKET.s3.amazonaws.com/index.html**
+3. Create a CloudFront distribution.
+ * Open the CloudFront console at [https://console.aws.amazon.com/cloudfront/v3/home](https://console.aws.amazon.com/cloudfront/v3/home). Choose **Create a CloudFront distribution**.
+ * In the **Origin** section, for **Origin domain**, choose the Amazon S3 bucket that must be accessed with CloudFront. For the other settings in the **Origin** section, accept the default values.
+ * For the **Default cache behavior** settings, accept the default values. For more information about cache behavior options, see [Cache Behavior Settings](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValuesCacheBehavior).
+ * For this example, in the **Web Application Firewall (WAF)** section, select **Do not enable security protections** so that no charge will be incurred.
+ * For the remainder of the settings, accept the default values. For more information about these options, see [Distribution Settings](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValuesGeneral).
+ * At the bottom of the page, choose **Create distribution**.
+ * On the **General** tab for your CloudFront distribution, under **Details**, the value of the **Last modified** column for your distribution changes from **Deploying** to the timestamp when the distribution was last modified. This process typically takes a few minutes. Record the domain name that CloudFront assigns to your distribution, which appears in the list of distributions. (It also appears on the **General** tab for a selected distribution.) It looks similar to the following: **d111111abcdef8.cloudfront.net**.
+4. To access the content through CloudFront, combine the CloudFront distribution domain name with the path to access the content. For example, the distribution domain name looks similar to the following: **d111111abcdef8.cloudfront.net**. Traditionally, the path to access the main page of a website is **/index.html**. Here, you could access the content through CloudFront at a URL that looks similar to the following: **https://d111111abcdef8.cloudfront.net/index.html**.
+
+#### AWS for Media Storage
+
+####  Four fundamental stages common to most video workflows whether on premises or cloud-based, live, or VOD:
+* Ingest stage
+* Process stage
+* Store stage
+* Deliver stage
+
+##### AWS Elemental MediaPackage
+AWS Elemental MediaPackage can cache segments of live streams for start-over or catch-up TV, in addition to its packaging functions. 
+
+##### AWS Elemental MediaStore
+AWS Elemental MediaStore is a storage service that is specially tuned for workflows that require extremely low latency.
+
+#### Example of hosting on-demand streaming video with Amazon S3
+You can use Amazon S3 with Amazon CloudFront to host videos for on-demand viewing in a secure and scalable way. Video on demand (VOD) streaming means that your video content is stored on a server and viewers can watch it at any time. 
+
+In the following example, you will get some ideas about how you can use CloudFront with Amazon S3 to host VOD. 
+
+1. **Create an S3 bucket and upload a video**. Create a bucket to store the original video that you plan to stream. Make sure that **Object Ownership** is kept at the default, which is **ACLs disabled (recommended)**. **Block Public Access** settings for this bucket is kept at defaults. Do not clear the check box for **Block all public access**. All settings are kept at the defaults because a CloudFront origin access identity (OAI) will be used later. Then, upload a video. 
+2. **Create a CloudFront OAI**. To restrict direct access to the video from your S3 bucket, create a special CloudFront user called an origin access identity (OAI). By using an OAI, you make sure that viewers can't bypass CloudFront and get the video directly from the S3 bucket (such as using the object URL). Only the CloudFront OAI can access the file in the S3 bucket. 
+ * **Access Amazon CloudFront**. Sign in to the AWS Management Console and open the CloudFront console at [https://console.aws.amazon.com/cloudfront/v3/home](https://console.aws.amazon.com/cloudfront/v3/home). In the left navigation pane, under the **Security** section, choose **Origin access**.
+ * **Create origin access identity**. On the **Origin access** page, choose the **Identities (legacy)** tab, and then choose **Create origin access identity**. 
+ * **Enter name**. Enter a name (for example, **S3-OAI**) for the new origin access identity, and then choose **Create**.
+ * **Make a note of the Origin access identities ID**. It should look similar to this: **E1FWPUN776XWQ2**. Use this ID to verify an S3 bucket policy in the upcoming steps.
+3. **Create a CloudFront distribution**. To use CloudFront to serve and distribute the video in the S3 bucket, you must create a CloudFront distribution. In this example, you will use the OAI that was created earlier.
+ * **CloudFront**. Return to the main CloudFront console. Choose **Create a CloudFront distribution**.
+ * **Origin domain**. In the **Origin section**, for **Origin domain**, choose the domain name of the S3 origin, which starts with the name of the S3 bucket that has the video file stored. 
+ * **Origin access**. For **Origin access**, select **Legacy access identities**. For **Origin access identity**, choose the origin access identity that you created in Step 3 of the previous interaction (for example, **S3-OAI**). Then select **Yes, update the bucket policy**.
+ * **Default cache behavior**. In the **Default cache behavior** section, for **Viewer protocol policy**, select Redirect **HTTP to HTTPS**. When you select this feature, HTTP requests are automatically redirected to HTTPS to secure your website and protect your viewers' data.  
+ * **Web Application Firewall (WAF)**. For this example, in the **Web Application Firewall (WAF)** section, select **Do not enable security protections** so that no charge will be incurred.
+ * **All other settings**. For the remainder of settings, accept the default values. For more information about the different settings options, see [Values That You Specify When You Create or Update a Distribution](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html) in the Amazon CloudFront Developer Guide. 
+ * **Create distribution**. At the bottom of the page, choose **Create distribution**.
+ * **CloudFront distribution status**. On the **General** tab for your CloudFront distribution, under **Details**, the value of the **Last modified** column for your distribution changes from Deploying to the timestamp when the distribution was last modified. This process typically takes a few minutes.
+4. **Review the bucket policy**. Now that the CloudFront distribution is created, you can review the changes to the S3 bucket permissions. Open the Amazon S3 console, and choose the bucket that was used as the origin of the CloudFront distribution. Then, choose the **Permissions** tab. In the **Bucket policy** section, you will see a statement in the bucket policy text. Verify that the Origin Access Identity ID that you noted earlier matches the one in the policy. You can locate it at the end of the line that begins with **“AWS”:**. Also notice that the policy grants read access, through the **s3:GetObject** action, to the entire **cloudfront-origin bucket** (for example, **DOC-EXAMPLE-BUCKET**) as shown in the **“Resource”**: parameter. If you instead configure CloudFront to be limited to objects within a folder in the bucket, that folder path would be included in the resource parameter.
+5. **Access the video through the CloudFront distribution**. Now CloudFront can serve the video stored in the S3 bucket. To access the video through CloudFront, you must combine the CloudFront distribution domain name with the path to the video in the S3 bucket. To find the CloudFront distribution domain name, open the CloudFront console. In the left-navigation pane, choose **Distributions**. On the **General** tab, you can see your distribution domain name. For example, the distribution domain name looks similar to the following: **d111111abcdef8.cloudfront.net**.
+
+You will then combine this domain name with the video name (for example, kitty.mp4) with a forward slash (/). Here, you can access your content through CloudFront at a URL that looks similar to the following: **https://d111111abcdef8.cloudfront.net/kitty.mp4**.
+
+##### [Amazon Simple Storage Service user guide > Hosting video steaming](https://docs.aws.amazon.com/AmazonS3/latest/userguide/tutorial-s3-cloudfront-route53-video-streaming.html)
+
+#### Knowledge Check
+##### What does Amazon CloudFront use to deliver content with low latency? 
+* Edge locations 
+
+##### Which step must someone complete before starting to configure their AWS Snowball Edge job? 
+* Configure any Amazon EC2 Amazon Machine Images (AMIs) and AWS Lambda functions required for the job.
+
+They must prepare and configure Amazon EC2 AMIs and Lambda functions before creating their Snowball Edge job.
+Wrong answers:
+* Determine their networking IP addresses for the Snowball Edge device.
+* Set up a shipping address in the AWS Management Console.
+* Set up permissions on the Amazon S3 bucket.
+
+##### Which AWS offering is suitable for video-on-demand (VOD) storage?
+* Amazon S3
+
+VOD usually requires longer-term storage. Amazon S3 can be used for VOD storage because of its extremely high reliability and durability.
+
+Wrong answers:
+* AWS Elemental MediaPackage
+* AWS Elemental MediaStore
+* An Amazon EC2 instance store
+
+The other options are incorrect because of the following: 
+* AWS Elemental MediaPackage and AWS Elemental MediaStore are usually used for live streams that requires high frequency of read and write requests with extremely low latency.
+* An instance store provides temporary block-level storage the EC2 instance. It is not suitable for tasks that requires longer-term storage.
+
+#### Assessment
 
 
 
 ### Week 7: Storage 2 Part 3
+
+#### Amazon EBS Features and Configurations
+
+
+
+
 ### Week 8: Databases 2 Part 1
 ### Week 9: Databases 2 Part 2
 ### Week 10: Security 2 Part 1
