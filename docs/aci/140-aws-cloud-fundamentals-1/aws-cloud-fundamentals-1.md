@@ -3237,6 +3237,1373 @@ The other options are incorrect because of the following:
 
 #### Amazon EBS Features and Configurations
 
+#### Types of EBS volumes 
+##### General Purpose SSDs
+* **General Purpose SSD (gp2) volumes** provide a balance of price and performance. They are suitable for a wide range of workloads, including boot volumes, small to medium-sized databases, and development and test environments. gp2 volumes offer baseline performance with the ability to burst performance for short periods.
+* **The next-generation General Purpose (gp3) volumes** provide better price-to-performance ratio compared to gp2. They are designed for a broad range of workloads, including system boot volumes, virtual desktops, and low-latency interactive applications. These volumes provide independent configuration of IOPS and throughput. This offers flexibility in adjusting performance based on workload requirements.
+* **All General Purpose SSD volume types** support boot volumes.
+
+##### Provisioned IOPS SSDs
+* **Provisioned IOPS SSD (io1) volumes** are suitable for I/O-intensive applications, critical databases, and large-scale workloads. They provide consistent and high I/O performance. io1 volumes deliver low-latency, predictable performance and are ideal for applications with demanding I/O requirements. 
+* **The next-generation Provisioned IOPS SSD (io2) volumes** offer improved durability and higher performance compared to io1. They are designed for critical business applications such as transactional databases and analytic workloads. io2 volumes provide higher durability and more IOPS per volume, and they deliver consistent performance for mission-critical applications.
+* **io2 Block Express volumes** provide the highest performance and lowest latency storage for I/O-intensive workloads. They are specifically optimized for the most demanding enterprise applications, large databases, and analytics workloads. With io2 Block Express, you can achieve higher throughput and IOPS performance while maintaining data durability and availability.  
+* **All Provisioned IOPS SSD volume types** support boot volumes.
+
+##### Throughput Optimized HDDs
+* **Throughput Optimized HDD (st1) volumes** are designed for large, sequential workloads such as big data processing, data warehouses, and log processing. They offer low-cost storage with high throughput, and are optimized for sustained workloads with large block sizes. st1 volumes are ideal for workloads that require high throughput and cost-effective storage.
+
+##### Cold HDDs
+* **Cold HDD (sc1) volumes** are suitable for infrequently accessed workloads, such as long-term storage, backups, and archival data. They provide the lowest cost per gigabyte and are designed for scenarios that prioritize cost optimization. sc1 volumes are a cost-effective choice for workloads with low access frequency.  
+
+#### Choosing the correct Amazon EBS volume type 
+* **Is your workload more IOPS intensive or throughput intensive?** If your workload is IOPS intensive, start with the SSD volume types and review the performance characteristics. If your workload is more throughput intensive, you can start with HDD volume types to see if their performance can meet your requirements. 
+* **Do the workload requirements exceed the maximum performance characteristics for a selected EBS volume type?** If yes, eliminate the volume type from consideration for that volume. Review characteristics for the next higher performing EBS volume type. 
+* **What is the application's latency sensitivity?** If it is very low, and sub-millisecond to single-digit millisecond latency is needed, io2 Provisioned IOPS might be required. If single-digit to low two-digit latency is tolerable, gp3 General Purpose SSD might be the correct choice. If your workload is not latency sensitive, HDD volume types can be the most cost-effective choice. 
+* **Do you prefer to optimize for price or performance?** When comparing the EBS volume types, multiple volume types can satisfy the requirements. Compare the EBS volume configurations required. Which configuration is more cost effective? Does a configuration offer additional desirable performance characteristics? Is there a trade-off and what is the value to your workload?
+
+#### Which EBS volume type would you choose? 
+##### Scenario one
+**Background:**
+
+A fast-growing technology startup company is developing a cloud-based software-as-a-service (SaaS) product. They need a storage solution that can handle their dynamic workload and provide optimal performance. 
+
+**Requirements:**
+* They need storage for boot volumes and development and test environments. 
+* They require a balance of performance and cost effectiveness.
+* Workload demands may vary, and they need the ability to burst performance when necessary.
+
+The General Purpose SSD volume type (gp2) is ideal for this scenario. It provides a balance of price and performance, so it's suitable for their diverse workload. The ability to burst performance ensures optimal performance during peak demands, such as development and testing. gp2 meets their requirements for boot volumes and development and testing environments, and offers flexibility and cost effectiveness.
+
+##### Scenario two
+**Background:**
+
+A data analytics company processes and analyzes large volumes of data for their clients. They need a storage solution that can efficiently handle their demanding workloads. 
+
+**Requirements:**
+* They require storage for data processing and analytics workloads.
+* They require high throughput for processing large datasets.
+* Cost effectiveness is a priority for their workloads.
+
+The Throughput Optimized HDD (st1) volume type is the most suitable choice for the data analytics company. They deal with big data processing and require high throughput, and st1 provides cost-effective storage optimized for sustained workloads with large block sizes. It offers the required throughput for efficiently processing large datasets while prioritizing cost optimization. 
+
+#### Attaching a volume to an instance 
+You can attach an available EBS volume to one or more of your instances that is in the same Availability Zone as the volume. 
+
+##### Console
+**To attach an EBS volume to an instance by using the console, follow these steps:**
+1. Open the Amazon EC2 console at [https://console.aws.amazon.com/ec2/](https://console.aws.amazon.com/ec2/).
+2. In the left navigation pane, choose **Volumes**.
+3. Select the volume to attach, and choose **Actions > Attach volume**.
+4. For **Instance**, enter the ID of the instance or choose the instance from the list of options.
+5. For **Device name**, enter a supported device name for the volume. This device name is used by Amazon EC2. The block device driver for the instance might assign a different device name when mounting the volume. 
+6. Choose **Attach volume**.
+7. Connect to the instance and mount the volume. 
+
+##### AWS CLI
+**To attach an EBS volume to an instance by using the command line**, you can use one of the following commands:
+* [attach-volume](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/attach-volume.html) using the AWS Command Line Interface (AWS CLI)
+* [Add-EC2Volume](https://docs.aws.amazon.com/powershell/latest/reference/items/Add-EC2Volume.html) using AWS Tools for Windows PowerShell
+
+**You can only attach volumes that are in the Available state. The volume must be attached to an instance in the same Availability Zone.**
+
+#### Amazon EC2 Instance Root Device Volume
+When you launch an instance, the root device volume contains the image used to boot the instance. Amazon Web Services (AWS) provides EC2 instances with two types of root devices: AMIs backed by Amazon EC2 instance store and AMIs backed by Amazon EBS. 
+
+**Only the following instance types support an instance store volume as the root device: C3, D2, G2, I2, M3, and R3. st1 and sc1 volumes can't be used as root volumes.**
+
+#### Root device storage concepts
+You can launch an instance from either an instance store–backed Amazon Machine Image (AMI) or an Amazon EBS–backed AMI. The description of an AMI includes which type of AMI it is. You will see the root device referred to in some places as either ebs (for Amazon EBS–backed) or instance store (for instance store–backed). This is important because there are significant differences between what you can do with each type of AMI. It is recommended that you use AMIs backed by Amazon EBS, because they launch faster and use persistent storage.
+
+##### Instance store–backed instances 
+Instance store volumes temporarily attached to the host computer that Amazon EC2 instances run on. When an EC2 instance is created, the instance store volumes are automatically attached and mapped to specific device names, such as /dev/sda1 and /dev/sdb, called block devices. 
+
+The data in an instance store persists only during the lifetime of its associated EC2 instance. If an EC2 instance reboots, whether intentionally or unintentionally, data in the instance store persists. However, data in the instance store is lost under any of the following circumstances:
+* The underlying storage drive fails.
+* The EC2 instance stops.
+* The EC2 instance hibernates.
+* The EC2 instance terminates.
+
+##### Amazon EBS–backed instances 
+EBS volumes are not the same as instance stores. Instances that use Amazon EBS for the root device automatically have an Amazon EBS volume attached. When you launch an Amazon EBS–backed instance, AWS creates an Amazon EBS volume for each Amazon EBS snapshot referenced by the AMI that you use. 
+
+When an EC2 instance is created, you have the flexibility to attach EBS volumes of various sizes and types to your instance. These EBS volumes are then assigned unique volume IDs, which are used to map them to specific device names within the instance.
+
+If an Amazon EBS–backed instance fails, you can restore your session by following one of these methods:  
+* Stop the failed instance and and then start it again (try this method first).
+* Automatically snapshot all relevant volumes and create a new AMI. For more information, see [Create an Amazon EBS–Backed Linux AMI](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-ebs.html).
+* Attach the volume to the new instance by following these steps:
+ 1. Create a snapshot of the root volume.
+ 2. Use the snapshot to register a new AMI.
+ 3. Launch a new instance from the new AMI.
+ 4. Detach the remaining EBS volumes from the old instance.
+ 5. Reattach the EBS volumes to the new instance.
+
+#### Amazon EBS–optimized instances
+An Amazon EBS–optimized instance uses an optimized configuration stack and provides additional dedicated capacity for Amazon EBS I/O. This optimization provides the best performance for your EBS volumes by minimizing contention between Amazon EBS I/O and other traffic from your instance.
+
+EBS-optimized instances deliver dedicated bandwidth to Amazon EBS. When attached to an EBS-optimized instance, General Purpose SSD (gp2 and gp3) volumes are designed to deliver at least 90 percent of their provisioned IOPS performance 99 percent of the time in a given year. Provisioned IOPS SSD (io1 and io2) volumes are designed to deliver at least 90 percent of their provisioned IOPS performance 99.9 percent of the time in a given year.
+
+Both Throughput Optimized HDD (st1) and Cold HDD (sc1) deliver at least 90 percent of their expected throughput performance 99 percent of the time in a given year. Noncompliant periods are approximately uniformly distributed, targeting 99 percent of expected total throughput each hour.
+
+#### EBS-optimized supported
+The following instance types support EBS optimization, but EBS optimization is not enabled by default.  
+* c1.xlarge 
+* c3.xlarge, c3.2xlarge, c3.4xlarge 
+* g2.2xlarge
+* i2.xlarge, i2.2xlarge, i2.4xlarge 
+* m1.large, m1.xlarge 
+* m2.2xlarge, m2.4xlarge 
+* m3.xlarge, m3.2xlarge 
+* r3.xlarge, r3.2xlarge, r3.4xlarge 
+
+You can enable EBS optimization when you launch these instances or after they are running. Instances must have EBS optimization enabled to achieve the level of performance described. When you enable EBS optimization for an instance that is not EBS optimized by default, you pay an additional low, hourly fee for the dedicated capacity. 
+
+#### EBS optimized by default
+The following instance types support EBS optimization, and EBS optimization is enabled by default. There is no need to enable EBS optimization, and there is no effect if you disable EBS optimization. These instances include dedicated bandwidth to Amazon EBS. Choose an EBS-optimized instance that provides more dedicated Amazon EBS throughput than your application needs. Otherwise, the connection between Amazon EBS and Amazon EC2 can become a performance constraint.
+
+##### General purpose
+These instances offer a balance of compute, memory, and network resources. They are suitable for a wide range of applications, including web servers, code repositories, small to medium databases, development environments, and other workloads with moderate resource requirements. 
+
+For the full list of instance types, see [General Purpose](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-optimized.html#current-general-purpose).
+
+##### Compute optimized
+Compute optimized instances are ideal for compute-bound applications that benefit from high-performance processors. Instances belonging to this family are well suited for the following:
+* Batch processing workloads
+* Media transcoding
+* High-performance web servers
+* High performance computing (HPC)
+* Scientific modeling
+* Dedicated gaming servers and ad server engines
+* Machine learning inference
+* Other compute-intensive applications
+
+For the full list of instance types, see [Compute Optimized](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-optimized.html#current-compute-optimized).
+
+##### Memory optimized
+These instances are optimized for memory-intensive workloads. Memory optimized instances are designed to deliver fast performance for workloads that process large datasets in memory. They offer a larger memory capacity relative to the CPU resources. Memory optimized instances are well suited for applications that require substantial in-memory data processing, such as real-time big data analytics, in-memory databases, caching fleets, and memory-intensive scientific simulations. 
+
+For the full list of instance types, see [Memory Optimized](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-optimized.html#current-compute-optimized).
+
+##### Storage optimized
+Storage optimized instances are designed for workloads that require high sequential read and write access to very large datasets on local storage. They are optimized to deliver tens of thousands of low-latency, random IOPS to applications. 
+
+They provide a high ratio of storage to compute resources. Storage optimized instances excel in scenarios involving large-scale data processing, distributed file systems, data warehousing, log processing, and other data-intensive applications.
+
+For the full list of instance types, see [Storage Optimized](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-optimized.html#current-storage-optimized).
+
+##### Accelerated computing
+Accelerated computing instances use hardware accelerators, or co-processors, to perform functions, such as floating-point number calculations, graphics processing, or data pattern matching, more efficiently than is possible in software running on CPUs. 
+
+For the full list of instance types, see [Accelerated Computing](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-optimized.html#current-accelerated-computing).
+
+#### Viewing instance types that support EBS optimization
+* To view the instance types that support EBS optimization, and that have it enabled by default, use the following describe-instance-types command:
+
+```
+aws ec2 describe-instance-types \
+--query 'InstanceTypes[].{InstanceType:InstanceType,"MaxBandwidth(Mb/s)":EbsInfo.EbsOptimizedInfo.MaximumBandwidthInMbps,MaxIOPS:EbsInfo.EbsOptimizedInfo.MaximumIops,"MaxThroughput(MB/s)":EbsInfo.EbsOptimizedInfo.MaximumThroughputInMBps}' \
+--filters Name=ebs-info.ebs-optimized-support,Values=default --output=table
+```
+
+* To view the instance types that support EBS optimization but do not have it enabled by default, use the following describe-instance-types command:
+
+```
+aws ec2 describe-instance-types \
+--query 'InstanceTypes[].{InstanceType:InstanceType,"MaxBandwidth(Mb/s)":EbsInfo.EbsOptimizedInfo.MaximumBandwidthInMbps,MaxIOPS:EbsInfo.EbsOptimizedInfo.MaximumIops,"MaxThroughput(MB/s)":EbsInfo.EbsOptimizedInfo.MaximumThroughputInMBps}' \
+--filters Name=ebs-info.ebs-optimized-support,Values=supported --output=table
+```
+
+#### EBS Volumes with Block Device Mapping
+
+#### Block device mapping concept
+A block device mapping defines the block devices (instance store volumes and EBS volumes) to attach to an instance. You can specify a block device mapping as part of creating an AMI, so that the mapping is used by all instances launched from the AMI. Alternatively, you can specify a block device mapping when you launch an instance, so this mapping overrides the one specified in the AMI from which you launched the instance. 
+
+#### Block device mapping entries
+When you create a block device mapping, you specify the device name used within Amazon EC2 for each block device that you need to attach to the instance. The block device driver for the instance assigns the actual volume name when mounting the volume. The name assigned can be different from the name that Amazon EC2 recommends.
+
+##### Instance store volumes
+For instance store volumes, you also specify the virtual device: ephemeral[0-23]. Note that the number and size of available instance store volumes for your instance varies by instance type.
+
+##### NVMe instance store volumes
+NVMe instance store volumes are automatically enumerated and assigned a device name on instance launch, so including them in your block device mapping has no effect.
+
+##### EBS volumes
+For EBS volumes, you also specify the following information:
+* **The ID of the snapshot to use to create the block device (snap-xxxxxxxx) –** This value is optional if you specify a volume size.
+* **The size of the volume, in gibibytes (GiB) –** The specified size must be greater than or equal to the size of the specified snapshot.
+* **Whether to delete the volume on instance termination (true or false) –** The default value is true for the root device volume and false for attached volumes. When you create an AMI, its block device mapping inherits this setting from the instance. When you launch an instance, it inherits this setting from the AMI.
+* **The volume type –** This can be gp2 and gp3 for General Purpose SSD, io1 and io2 for Provisioned IOPS SSD, st1 for Throughput Optimized HDD, sc1 for Cold HDD, or standard for Magnetic. The default value is gp2.
+* **The number of IOPS that the volume supports –** This is used only with io1 and io2 volumes.
+
+#### Amazon Data Lifecycle Manager
+
+#### Automating the snapshot lifecycle
+You can use Amazon Data Lifecycle Manager to automate the creation, retention, and deletion of EBS snapshots and EBS-backed AMIs. When you automate snapshot and AMI management, it helps you to do the following:
+* Protect valuable data by enforcing a regular backup schedule.
+* Create standardized AMIs that can be refreshed at regular intervals.
+* Retain backups as required by auditors or internal compliance.
+* Reduce storage costs by deleting outdated backups.
+* Create disaster recovery backup policies that back up data to isolated accounts.
+
+When combined with the monitoring features of **Amazon EventBridge** and **AWS CloudTrail**, **Amazon Data Lifecycle Manage**r provides a **complete backup solution** for EC2 instances and individual EBS volumes at no additional cost. 
+
+**You can't use Amazon Data Lifecycle Manager to manage snapshots or AMIs that are not created with Amazon Data Lifecycle Manager. Amazon Data Lifecycle Manager cannot be used to automate the creation, retention, and deletion of instance store–backed AMIs.**
+
+#### Amazon Data Lifecycle Manager features
+##### Lifecycle policies
+Lifecycle policy consists of these core settings:
+* **Policy type –** This defines the type of resources that the policy can manage. Amazon Data Lifecycle Manager supports three types of lifecycle policies:
+ * **Snapshot lifecycle policy** is used to automate the lifecycle of EBS snapshots. These policies can target EBS volumes and instances.
+ * **Cross-account copy event policy** is used to automate the copying of snapshots across accounts. This policy type should be used in conjunction with an EBS snapshot policy that shares snapshots across accounts.
+ * **EBS-backed AMI lifecycle policy** is used to automate the lifecycle of EBS-backed AMIs. These policies can target instances only.
+
+* **Resource type –** This defines the type of resources that are targeted by the policy. Snapshot lifecycle policies can target instances or volumes. Use volume to create snapshots of individual volumes, or use instance to create multi-volume snapshots of all of the volumes that are attached to an instance. 
+* **Target tags –** The tags that must be assigned to an EBS volume for it to be targeted by the policy.
+* **Schedules –** The start times and intervals for creating snapshots or AMIs. The first snapshot or AMI creation operation starts within one hour after the specified start time. Subsequent snapshot or AMI creation operations start within one hour of their scheduled time. 
+* **Retention –** This specifies how snapshots are retained. You can retain snapshots based on their total count (count-based) or their age (age-based). 
+ * For snapshot policies, when the retention threshold is reached, the oldest snapshot is deleted. 
+
+##### Policy schedules
+Policy schedules define when the policy creates a snapshot. 
+* Policies can have up to four schedules: one mandatory schedule and up to three optional schedules. 
+* By adding multiple schedules to a single policy, you can use the same policy to create snapshots or AMIs at different frequencies. 
+ * For example, you can create a single policy that creates daily, weekly, monthly, and yearly snapshots. This eliminates the need to manage multiple policies.
+* For each schedule, you can define the frequency, fast snapshot restore settings (snapshot lifecycle policies only), cross-Region copy rules, and tags.
+ * The tags that are assigned to a schedule are automatically assigned to the snapshots that are created when the schedule is activated. 
+ * In addition, Amazon Data Lifecycle Manager automatically assigns a system-generated tag to each snapshot based on the schedule's frequency.
+* Each schedule is activated individually based on its frequency.
+ * If multiple schedules are activated at the same time, Amazon Data Lifecycle Manager creates only one snapshot and applies the retention settings of the schedule that has the highest retention period. The tags of all the activated schedules are applied to the snapshot.
+
+##### Quotas
+Amazon Data Lifecycle Manager quotas:
+* You can create up to 100 lifecycle policies per AWS Region.
+* You can add up to 45 tags per resource.
+
+##### Snapshots
+Snapshots are the primary means to back up data from your EBS volumes. To save storage costs, successive snapshots are incremental, containing only the volume data that changed since the previous snapshot. When you delete one snapshot in a series of snapshots for a volume, only the data that's unique to that snapshot is removed. The rest of the captured history of the volume is preserved.
+
+##### EBS-backed AMIs
+An AMI provides the information that's required to launch an instance. You can launch multiple instances from a single AMI when you need multiple instances with the same configuration. Amazon Data Lifecycle Manager supports EBS-backed AMIs only. EBS-backed AMIs include a snapshot for each EBS volume that's attached to the source instance.
+
+##### Target resource tags
+Amazon Data Lifecycle Manager uses resource tags to identify the resources to back up. When you create a snapshot or EBS-backed AMI policy, you can specify multiple target resource tags. All resources of the specified type (instance or volume) that have at least one of the specified target resource tags will be targeted by the policy. For example, if you create a snapshot policy that targets volumes and you specify **purpose=prod**, **costcenter=prod**, and **environment=live** as target resource tags, the policy will target all volumes that have any of those tag-key value pairs.
+
+If you want to run multiple policies on a resource, you can assign multiple tags to the target resource, and then create separate policies that each target a specific resource tag.
+
+You can't use the \ or = characters in a tag key. Target resource tags are case sensitive. 
+
+##### Amazon Data Lifecycle Manager tags
+Amazon Data Lifecycle Manager applies the following system tags to all snapshots and AMIs created by a policy, to distinguish them from snapshots and AMIs created by any other means: 
+* **aws:dlm:lifecycle-policy-id**
+* **aws:dlm:lifecycle-schedule-name**
+* **aws:dlm:expirationTime –** For snapshots created by an age-based schedule; indicates when the snapshot is to be deleted from the standard tier
+* **aws:dlm:managed**
+* **aws:dlm:archived –** For snapshots that were archived by a schedule
+
+You can also specify custom tags to be applied to snapshots and AMIs on creation. You can't use the \ or = characters in a tag key.
+
+The target tags that Amazon Data Lifecycle Manager uses to associate volumes with a snapshot policy can optionally be applied to snapshots created by the policy. Similarly, the target tags that are used to associate instances with an AMI policy can optionally be applied to AMIs created by the policy.
+
+#### Use case: Automating Amazon EBS snapshot management 
+The organization’s IT policy might stipulate that EBS snapshots be taken on a specified schedule (hourly, daily, weekly, and so on) to meet business continuity and data protection requirements. In addition, the organization might have compliance guidelines to copy EBS snapshots across AWS Regions, apply prescribed retention policies, and perform regular recovery actions as part of disaster readiness.
+
+With Amazon Data Lifecycle Manager, the need for these complicated and custom scripts to manage EBS snapshots is eliminated. You can use Amazon Data Lifecycle Manager to create, manage, and delete EBS snapshots in a simple, automated way, based on resource tags for EBS volumes or EC2 instances. This reduces the operational complexity of managing EBS snapshots, which saves time and money. 
+
+#### Amazon EBS Fast Snapshot Restore
+When you create an EBS volume from an EBS snapshot, data from the EBS snapshot is lazy loaded into an EBS volume. If the volume is accessed where the data is not loaded, the application accessing the volume encounters a higher latency than normal while the data gets loaded. Higher latency because of lazy loading can lead to a poor user experience for latency-sensitive workloads.
+
+Amazon EBS fast snapshot restore (FSR) helps you create a volume from a snapshot that is fully initialized at creation. FSR eliminates the latency of I/O operations on a block when it is accessed for the first time. Volumes that are created using FSR instantly deliver all of their provisioned performance. FSR must be turned on for specific snapshots in specific Availability Zones, and it must be explicitly activated for each snapshot. 
+
+##### Instance launch
+When launching a new EC2 instance, you can use FSR to significantly speed up the restoration process. By enabling FSR during instance launch, you can quickly provision new EBS volumes from snapshots. This reduces the time it takes to make your instance operational.
+
+##### Scaling applications
+As your applications require additional resources, you might need to scale them by attaching more EBS volumes. With FSR, you can accelerate the restoration of EBS volumes from snapshots, making it easier and faster to scale your applications while minimizing any potential impact on their availability. 
+
+##### Disaster recovery
+In the event of a failure or data loss, FSR becomes crucial for rapid recovery. By using snapshots of your EBS volumes, you can restore the data quickly and efficiently to new volumes. This ensures a faster recovery time and minimizes the impact on your business operations. 
+
+##### Database restores
+If you are using Amazon Relational Database Service (Amazon RDS) or running a database on EC2 instances with EBS volumes, FSR can speed up the process of restoring databases from snapshots. This can be particularly useful when recovering from accidental data deletion or database corruption, or when creating database clones for testing or analysis purposes.  
+
+#### Considerations
+The following are the considerations that you should pay attention to before you use FSR: 
+* Fast snapshot restore is not supported with AWS Outposts, AWS Local Zones, or Wavelength Zones. 
+* Fast snapshot restore can be enabled on snapshots with a size of 16 tebibytes (TiB) or less. 
+* Volumes provisioned with performance up to 64,000 IOPS and 1,000 mebibytes per second (MiBps) throughput receive the full performance benefit of fast snapshot restore. For volumes provisioned with performance greater than 64,000 IOPS or 1,000 MiBps throughput, AWS recommends that you initialize the volume to receive its full performance. 
+
+#### Enabling or disabling FSR
+FSR is disabled for a snapshot by default. You can enable or disable FSR for snapshots that you own and for snapshots that are shared with you. When you enable or disable FSR for a snapshot, the changes apply to your account only. 
+
+When you delete a snapshot that you own, FSR is automatically disabled for that snapshot in your account. If you enabled FSR for a snapshot that is shared with you, and the snapshot owner deletes or unshares it, FSR is automatically disabled for the shared snapshot in your account.
+
+If you enabled FSR for a snapshot that is shared with you, and it has been encrypted using a custom AWS Key Management Service (AWS KMS) key, FSR is not automatically disabled for the snapshot when the snapshot owner revokes your access to the custom key. You must manually disable FSR for that snapshot.
+
+You can use one of the following methods to enable or disable FSR for a snapshot that you own or for a snapshot that is shared with you. 
+
+##### Console
+Follow these steps to enable or disable fast snapshot restore from the console:
+1. Open the Amazon EC2 console at [https://console.aws.amazon.com/ec2/](https://console.aws.amazon.com/ec2/).
+2. In the left navigation pane, choose **Snapshots**.
+3. Select the snapshot, and choose **Actions > Manage fast snapshot restore**.
+4. The **Fast snapshot restore settings** section lists all the Availability Zones in which you can enable fast snapshot restore for the selected snapshot. The **Current status** column indicates whether fast snapshot restore is currently enabled or disabled for each zone. To enable fast snapshot restore in a zone where it is currently disabled, select the zone, choose **Enable**, and then choose **Enable** to confirm. To disable fast snapshot restore in a zone where it is currently enabled, select the zone, and then choose **Disable**.
+5. After you have made the required changes, choose **Close**.
+
+##### AWS CLI
+* [enable-fast-snapshot-restores](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/enable-fast-snapshot-restores.html)
+* [disable-fast-snapshot-restores](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/disable-fast-snapshot-restores.html)
+* [describe-fast-snapshot-restores](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-fast-snapshot-restores.html)
+
+**After you enable fast snapshot restore for a snapshot, it enters the Optimizing state. Snapshots that are in the Optimizing state provide some performance benefits when you use them to restore volumes. They start to provide the full performance benefits of fast snapshot restore only after they enter the Enabled state.**
+
+#### Viewing the FSR state for a snapshot
+* *Enabling* – A request was made to enable fast snapshot restore. 
+* *Optimizing* – Fast snapshot restore is being enabled. It takes 60 minutes per TiB to optimize a snapshot. Snapshots in this state offer some performance benefit when restoring volumes. 
+* *Enabled* – Fast snapshot restore is enabled. Snapshots in this state offer the full performance benefit when restoring volumes. 
+* *Disabling* – A request was made to disable fast snapshot restore, or a request to enable fast snapshot restore failed. 
+* *Disabled* – Fast snapshot restore is disabled. You can enable fast snapshot restore again as needed. 
+
+##### Console
+Follow these steps to view the state of fast snapshot restore from the console:
+1. Open the Amazon EC2 console at [https://console.aws.amazon.com/ec2/](https://console.aws.amazon.com/ec2/).
+2. In the left navigation pane, choose **Snapshots**.
+3. Select the snapshot.
+4. On the **Details** tab, **Fast snapshot restore** indicates the state of fast snapshot restore.
+
+##### AWS CLI
+**To view snapshots with fast snapshot restore enabled by using the AWS CLI**, use the [describe-fast-snapshot-restores](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-fast-snapshot-restores.html) command to describe the snapshots that are enabled for fast snapshot restore.
+
+#### Viewing volumes restored by using FSR
+When you create a volume from a snapshot that is enabled for fast snapshot restore in the Availability Zone for the volume, it is restored using FSR. 
+
+Use the describe-volumes command to view volumes that were created from a snapshot that is enabled for fast snapshot restore.
+
+```
+aws ec2 describe-volumes --filters Name=fast-restored,Values=true
+```
+
+The following is the example output:
+
+```
+{
+    "Volumes": [
+        {
+            "Attachments": [],
+            "AvailabilityZone": "us-east-2a",
+            "CreateTime": "2020-01-26T00:34:11.093Z",
+            "Encrypted": true,
+            "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/8c5b2c63-b9bc-45a3-a87a-5513e232e843",
+            "Size": 20,
+            "SnapshotId": "snap-0e946653493cb0447",
+            "State": "available",
+            "VolumeId": "vol-0d371921d4ca797b0",
+            "Iops": 100,
+            "VolumeType": "gp2",
+            "FastRestored": true
+        }
+    ]
+}
+```
+
+#### Fast snapshot restore quotas
+You can enable up to five snapshots per Region for fast snapshot restore. The quota applies to snapshots that you own and snapshots that are shared with you. If you enable fast snapshot restore for a snapshot that is shared with you, it counts towards your fast snapshot restore quota. It does not count toward the snapshot owner's fast snapshot restore quota. 
+
+#### Pricing and billing
+You are billed for each minute that fast snapshot restore is enabled for a snapshot in a particular Availability Zone. Charges are prorated with a minimum of one hour.
+
+For example, if you enable fast snapshot restore for one snapshot in us-east-1a for one month (30 days), you are billed $540 (1 snapshot x 1 AZ x 720 hours x $0.75 per hour). If you enable fast snapshot restore for two snapshots in us-east-1a, us-east-1b, and us-east-1c for the same period, you are billed $3240 (2 snapshots x 3 AZs x 720 hours x $0.75 per hour).
+
+If you enable fast snapshot restore for a public or private snapshot that is shared with you, your account is billed; the snapshot owner is not billed. When a snapshot that is shared with you is deleted or unshared by the snapshot owner, fast snapshot restore is disabled for the snapshot in your account and billing is stopped.
+
+##### [Amazon EBS pricing](https://aws.amazon.com/ebs/pricing/)
+
+#### Amazon EBS Direct APIs
+You can use the Amazon EBS direct APIs to create Amazon EBS snapshots, write data directly to your snapshots, read data on your snapshots, and identify the differences or changes between two snapshots. 
+
+You can create incremental snapshots directly from data on premises into volumes and the cloud to use for quick disaster recovery. With the ability to write and read snapshots, you can write your on-premises data to a snapshot during a disaster. Then, after recovery, you can restore it back to AWS or on premises from the snapshot. You no longer need to build and maintain complex mechanisms to copy data to and from Amazon EBS.
+
+#### Key elements
+##### Snapshots
+Snapshots are the primary means to back up data from your EBS volumes. With the EBS direct APIs, you can also back up data from your on-premises disks to snapshots. To save storage costs, successive snapshots are incremental, containing only the volume data that changed since the previous snapshot. 
+
+##### Blocks
+A block is a fragment of data within a snapshot. Each snapshot can contain thousands of blocks. All blocks in a snapshot are a fixed size. 
+
+##### Block indexes
+A block index is a logical index in units of 512 KiB blocks. To identify the block index, divide the logical offset of the data in the logical volume by the block size (logical offset of data / block size). 
+
+The logical offset of the data must be 512 KiB aligned. This means that the logical offset of the data starts at an address that is evenly divisible by 512KiB. 
+
+##### Block tokens
+A block token is the identifying hash of a block within a snapshot, and it is used to locate the block data. Block tokens returned by EBS direct APIs are temporary. They change on the expiry timestamp specified for them, or if you run another **ListSnapshotBlocks** or **ListChangedBlocks** request for the same snapshot.
+
+##### Checksum
+A checksum is a small-sized block of data derived from another block of data for the purpose of detecting errors that were introduced during its transmission or storage. 
+
+The EBS direct APIs use checksums to validate data integrity. When you read data from an EBS snapshot, the service provides Base64-encoded SHA256 checksums for each block of data transmitted, which you can use for validation. When you write data to an EBS snapshot, you must provide a Base64 encoded SHA256 checksum for each block of data transmitted. The service validates the data received using the checksum provided.
+
+##### Encryption
+Encryption protects your data by converting it into unreadable code that can be deciphered only by people who have access to the AWS KMS key used to encrypt it. You can use the EBS direct APIs to read and write encrypted snapshots, but there are some limitations.
+
+##### API actions
+The EBS direct APIs consist of six actions: three read actions and three write actions. The read actions are as follows:
+* **ListSnapshotBlocks**: This returns the block indexes and block tokens of blocks in the specified snapshot.
+* **ListChangedBlocks**: This returns the block indexes and block tokens of blocks that are different between two specified snapshots of the same volume and snapshot lineage.
+* **GetSnapshotBlock**: This returns the data in a block for the specified snapshot ID, block index, and block token.
+
+The write actions are as follows:
+* **StartSnapshot**: This starts a snapshot, either as an incremental snapshot of an existing one or as a new snapshot. The started snapshot remains in a pending state until it is completed using the **CompleteSnapshot** action.
+* **PutSnapshotBlock**: This adds data to a started snapshot in the form of individual blocks. You must specify a Base64-encoded SHA256 checksum for the block of data transmitted. The service validates the checksum after the transmission is completed. The request fails if the checksum computed by the service doesn’t match what you specified.
+* **CompleteSnapshot**: This completes a started snapshot that is in a pending state. The snapshot is then changed to a completed state.
+
+#### Using interface VPC endpoints with EBS direct APIs
+To reduce network data transfer costs, you can establish a private connection between your VPC and EBS direct APIs by creating an interface VPC endpoint, powered by AWS PrivateLink. You can access EBS direct APIs as if they were in your VPC, without using an internet gateway, NAT device, VPN connection, or AWS Direct Connect connection. Instances in your VPC don't need public IP addresses to communicate with EBS direct APIs.
+
+AWS creates an endpoint network interface in each subnet that you can enable for the interface endpoint.
+
+**VPC endpoint policies are not supported for EBS direct APIs. By default, full access to EBS direct APIs is permitted through the endpoint. However, you can control access to the interface endpoint by using security groups.**
+
+#### Creating an interface VPC endpoint for EBS direct APIs
+You can create a VPC endpoint for EBS direct APIs by using either the Amazon Virtual Private Cloud (Amazon VPC) console or the AWS CLI.
+1. **Open the VPC console**. You can open the Amazon VPC console at [https://console.aws.amazon.com/vpc/](https://console.aws.amazon.com/vpc/). You can also log in to the AWS Management Console, and then search for VPC in the search box.
+2. **Create the endpoint**. In the left navigation pane, choose **Endpoints**, and then choose **Create endpoint**.
+3. **Select the service category**. For **Service category**, select **AWS services**.
+4. **Select the service name and VPC**. For Service name, select **com.amazonaws.<region>.ebs**. For **VPC**, select the default vpc.
+5. **Select the security group**. For **Security groups**, select the default VPC security group, and then choose **Create endpoint**. If you enable private DNS for the endpoint, you can make API requests to EBS direct APIs by using its default DNS name for the Region (for example, ebs.us-east-1.amazonaws.com).
+
+#### Amazon EBS Service Quotas
+Your quotas can change over time. Amazon EBS constantly monitors your provisioned storage and IOPS usage within each Region, and it might automatically increase your quotas, on a per-Region basis, based on your usage.
+
+Even though Amazon EBS automatically increases your quotas based on your usage, you can request a quota increase if needed. For example, if you intend to use more gp3 storage in US East (N. Virginia) than your current quota permits, you can request a quota increase for that volume type in that Region.
+
+##### Considerations
+* The quota for **Concurrent snapshot copies per destination Region** is not adjustable by using the Service Quotas console. However, you can request an increase for this quota by contacting AWS Support. 
+* The **IOPS modifications and Storage modifications** quotas apply to the aggregated current value (for size or IOPS, depending on the quota) of volumes that can undergo modifications concurrently. You can make concurrent modification requests for volumes that have combined current value (for size or IOPS) up to the quota. For example, if your **IOPS modifications for Provisioned IOPS SSD (io1) volumes** quota is 50,000, you can make concurrent IOPS modifications requests for any number of io1 volumes if their combined current IOPS is equal to or less than 50,000. If you have three io1 volumes provisioned with 20,000 IOPS each, you can request IOPS modifications for two volumes concurrently (20,000 * 2 < 50,000). If you submit a concurrent IOPS modification request for the third volume, you exceed your quota and that request fails (20,000 * 3 > 50,000).
+
+To view the quotas for your Amazon EBS resources, open the Service Quotas console at [https://console.aws.amazon.com/servicequotas/](https://console.aws.amazon.com/servicequotas/). In the left navigation pane, choose **AWS services**, and choose **Amazon Elastic Block Store (Amazon EBS)**. 
+
+##### [Full list of Amazon EBS service quotas](https://docs.aws.amazon.com/general/latest/gr/ebs-service.html#limits_ebs)
+
+#### Cost Optimization Tips
+##### Rightsizing
+
+#### Scaling cost-effective architectures
+
+##### Tip #1: Delete unused EBS volumes.
+Unused and overlooked Amazon EBS volumes contribute to AWS costs. The lifecycle of EBS volumes can be independent of Amazon EC2 compute instances. Therefore, even if the EC2 instance associated with the EBS volumes is terminated, the EBS volumes tend to persist unless you select the **Delete on Termination** option at launch.
+
+Also, instances spun up and down as part of development and testing cycles might leave orphaned EBS volumes if there are no workflows in use to delete them automatically.
+
+These orphaned EBS volumes accrue charges while unattached.
+
+##### Tip #2: Avoid provisioning EBS volumes larger than required.
+You are billed based on the provisioned capacity for your EBS volumes per gigabyte per month (GB-month). What has been discovered from AWS customer experiences is that often in test and development environments, volumes are created that are much larger than required in the production environment. For many organizations that are new to AWS, and are accustomed to on-premises solutions, their developers will size volumes based on anticipated future requirements. You pay for this extra provisioned capacity every month. 
+* For example, say you have 100 gp3 volumes that are sized at 2,000 GB each, and each volume actually only requires 150 GB of capacity for your data. Your cost savings opportunity in the US East (Ohio) Region is approximately $14,800 just in provisioned capacity costs. 
+
+*Example pricing for gp3 in the US East (Ohio) Region is $0.08/GB-month as of August 22, 2023. Pricing for services can vary by AWS Region and is subject to change without notice.*
+
+##### Tip #3: Avoid oversizing provisioned performance options.
+Similar to provisioned capacity, you are billed for provisioned performance for some EBS volume types. Other EBS volume types scale performance by increasing the volume size. In both situations, if you provision performance above what you require, you are unnecessarily increasing your costs.
+* gp3, io1, and io2 and io2 Block Express EBS volume types include a performance option to increase the IOPS performance without increasing the provisioned volume capacity. IOPS performance provisioning is subject to minimum IOPS-to-capacity ratios per volume type.
+* The gp3 EBS volume type also includes the capability to change the throughput performance without increasing the provisioned volume capacity. Throughput performance provisioning is subject to a minimum throughput-to-IOPS performance ratio.
+* gp2, st1, and sc1 EBS volume types scale performance by increasing provisioned capacity.
+
+Scaling up provisioned performance in all cases increases the cost of your EBS volumes. You can scale up both provisioned performance and provisioned capacity dynamically with Amazon EBS Elastic Volumes. You can also scale down provisioned performance dynamically with Elastic Volumes.
+
+##### Tip #4: Use newer EBS volume types.
+One of the biggest cost savings opportunities is to move to newer volume types within the same EBS volume type category. Newer volume types either offer lower base pricing or the capability to provision less capacity and still meet your performance goals.
+
+AWS continues to innovate and release new EBS volume types. For the General Purpose volume types, gp3 volumes are newer than the gp2 volumes, which are still available. For Provisioned IOPS performance volume types, io2 and io2 Block Express are newer than the io1 volume type that you can still have provisioned. See the following examples:
+* gp3 volume pricing is approximately 20 percent less than gp2 volume pricing, per provisioned GB of capacity. Even if you do nothing else, you can save 20 percent by dynamically changing your volume type from a gp2 to a gp3 volume type.
+* gp3 volumes include a performance baseline of 3,000 IOPS and 125 megabytes per second (MBps) throughput. To achieve 3,000 baseline IOPS with gp2 volumes, you would need to provision 1,000 GB of capacity. With gp3 volumes, you can provision as little as 1 GB of capacity and reach your 3,000 IOPS performance goal.
+* For io1 and io2 volume types, the difference is in the ratio of the number of IOPS that you can provision per GB of volume capacity. io1 volumes have a ratio of 50:1, or 50 IOPS per 1 GB of provisioned capacity. io2 volumes have a 500:1 ratio. You can provision 10 times the IOPS per GB of provisioned capacity with io2 volumes. In addition, io2 volumes offer a decreasing, tiered pricing structure for higher provisioned IOPS levels. io2 Block Express volumes have a 1,000:1 ratio for applicable workloads and using supported EC2 instance types.
+
+When you dynamically migrate to a newer volume type, your previous provisioned capacity remains the same. To lower the volume size, you need to create new volumes and migrate your data to them. Lowering the provisioned capacity assumes that you can use less space for your actual data.
+
+You will benefit from lower pricing if the new provisioned volume capacity price per GB-month or cost per IOPS per month (IOPS-month) is lower. 
+
+##### Tip #5: Use lower-cost EBS volume types.
+In some cases, new volume types in a different category can provide a better cost per month, while meeting your performance requirements. Before the gp3 volume type was available, scaling gp2 volumes to meet high IOPS performance required provisioning large volumes. The same difference applies to io1 and io2 volumes. With io2 volumes, you can provision 500 IOPS per GB. With io1 volumes, you can only provision 50 IOPS per GB.
+
+In many use cases, gp3 volumes can be used in place of io1 or io2 volumes to meet your capacity and performance requirements. The pricing is lower for gp3 volumes than for io1 or io2 volumes for both capacity and provisioned IOPS.
+
+If a lower-cost EBS volume type will meet your requirements, you can dynamically change volume type by using Elastic Volumes. 
+
+##### Tip #6: Delete unused snapshots.
+You can back up your data to Amazon S3 by using snapshots. But snapshots are often forgotten, resulting in a $0.05 per GB-month unwanted additional spending. As part of your financial management, an optimization routine should review all snapshots and delete those that are no longer required.
+
+For example, a snapshot that is no longer required might be related to older-than-relevant data or unused AMIs.
+
+You can use Amazon Data Lifecycle Manager for managing the creation, retention, and deletion of EBS snapshots. In addition to reducing storage costs by deleting outdated backups, you can protect valuable data by enforcing a regular backup schedule. Read the [Automating Amazon EBS Snapshots Management Using Data Lifecycle Manager](https://aws.amazon.com/blogs/storage/automating-amazon-ebs-snapshots-management-using-data-lifecycle-manager/) blog post for a walkthrough.
+
+You can also use AWS Backup to manage backups over the whole suite of AWS storage and database services. 
+
+##### Tip #7: Consider archiving Amazon EBS snapshots.
+Use Amazon EBS Snapshots Archive to create archival snapshots. Amazon EBS Snapshots Archive offers you a lower price per GB compared to standard EBS snapshots. The storage tier is intended for long-term storage of your rarely accessed snapshots that do not need frequent or fast retrieval.
+
+The following are some typical use cases: 
+* Archiving the only snapshot of a volume, such as end-of-project snapshots 
+* Archiving full, point-in-time incremental snapshots for compliance reasons
+* Archiving monthly, quarterly, or yearly incremental snapshots
+
+##### Tip #8: Use AWS Backup to create backup copies of your data.
+Use AWS Backup to create backup copies of your data to maintain archival data copies instead of keeping additional snapshots. With AWS Backup, you can create and maintain archive policies to manage your backups that meet your archive or compliance requirements. You can tier your backups to lower-cost storage tiers to save costs.
+
+##### Tip #9: Use AWS Compute Optimizer for EBS volume recommendations.
+AWS Compute Optimizer supports IOPS and throughput recommendations for General Purpose (SSD) (gp3) volumes, and IOPS recommendations for Provisioned IOPS (io1 and io2) volumes.  
+
+AWS Compute Optimizer uses Amazon CloudWatch metrics to analyze your EBS volumes and provide recommendations to assist you in optimizing your Amazon EBS costs.
+
+#### Knowledge Check
+##### A company is working with a developer in planning to migrate their database workload to the cloud. The database being migrated is I/O intensive and sensitive to storage performance and consistency. Which Amazon Elastic Block Store (Amazon EBS) volumes would best fit their needs? 
+* Volumes backed by io2 Provisioned IOPS SSDs
+
+io2 Provisioned IOPS SSD volumes are designed to meet the needs of I/O-intensive workloads, particularly database workloads, that are sensitive to storage performance and consistency. 
+
+The other options are incorrect because of the following:
+* gp2 and gp3 General Purpose SSDs are adequate for general use, but they are not optimal for I/O-intensive databases.
+* st1 Throughput Optimized HDD-backed volumes are best suited as storage volumes for large, sequential workloads such as Amazon EMR or log processing. HDD-backed volumes are not ideal for database workloads.
+
+##### What happens to a root volume instance store when the Amazon EC2 instance is stopped? 
+* The instance store data is deleted.
+
+Stopping and terminating instances are different operations. When you stop an instance, AWS shuts it down. When you terminate an instance, AWS permanently deletes it. However, when using an instance store, when you stop the instance, the data on the root device vanishes and cannot be recovered.
+
+##### Which offering can you use to reduce the latency on volumes restored from snapshots? 
+* Amazon Elastic Block Store (Amazon EBS) fast snapshot restore (FSR)
+
+Enable FSR on a snapshot to ensure that the Amazon EBS volumes created from it are fully initialized at creation and instantly deliver all their provisioned performance.
+
+#### Amazon EFS Features and Configurations
+
+#### Pre-assessment
+##### Which throughput mode is the default for Amazon Elastic File System (Amazon EFS) and is recommended for most workloads? 
+* Elastic Throughput
+
+The other options are incorrect because of the following: 
+* General Purpose and Max I/O are performance modes, not throughput modes.
+* Provisioned Throughput is recommended for workloads requiring higher throughput-to-storage ratios.
+
+##### Amazon Elastic File System (Amazon EFS) offers two storage class types, each with its own subtypes. What are these storage class types? (Select TWO.) 
+* EFS Standard 
+* EFS One Zone 
+
+The other options are incorrect because General Purpose, Elastic Throughput, and Max I/O are performance and throughput modes.
+
+##### A consultant is working with a client that has spiky and unpredictable workloads that have been difficult to accurately forecast. Which Amazon Elastic File System (Amazon EFS) throughput mode would be most suitable for the customer’s needs? 
+* Elastic Throughput
+
+Elastic Throughput is the default throughput mode. Use this mode when there are spiky or unpredictable workloads and performance requirements that are difficult to forecast. It is also recommended for use when an application drives throughput at an average-to-peak ratio of 5 percent or less.
+
+The other options are incorrect because of the following: 
+* Bursting Throughput is recommended for workloads that require performance to scale with the amount of data stored on the file system. 
+* Provisioned Throughput is recommended for workloads requiring higher throughput-to-storage ratios.
+* Max I/O is a performance mode that is recommended for workloads that must scale to higher levels of aggregate throughput and IOPS.
+
+#### Setting Up Amazon EFS
+
+#### Creating a file system
+The quickest way to create an Amazon EFS file system is to use the quick creation option. On the **Create file system** window, choose the **Create** button to generate the file system. This option uses the most common default settings to create your file system. 
+
+After you create the file system, you can customize the file system's settings with the exception of availability and durability, encryption, and performance mode. 
+
+##### Default recommended settings
+Choose **Create** to create a file system that uses the following service recommended settings:
+* Automatic backups enabled
+* Mount targets configured with the following settings:
+ * Created in each Availability Zone in the AWS Region in which the file system is created
+ * Located in the default subnets of the VPC you selected
+ * Using the VPC's default security group – You can manage security groups after the file system is the created
+* Standard storage class 
+* General Purpose performance mode 
+* Elastic Throughput mode
+* Encryption of data at rest enabled using your default key for Amazon EFS (aws/elasticfilesystem)
+* Lifecycle Management – Amazon EFS creates the file system with the following lifecycle policies:
+ * **Transition into IA** set to **30 days since last access**
+ * **Transition out of IA** set to **None**
+
+ Use the **Customize** option when you create a file system. 
+
+#### Amazon EFS console
+
+##### Amazon EFS console landing page
+The Amazon EFS console landing page appears when you search for and choose **EFS** from the AWS Management Console. If you have created file systems previously, the File systems page appears. You can always navigate back to the landing page from other pages in the EFS console.
+
+On the EFS console, you can do the following: 
+* By opening the drop-down menu, you can choose the AWS Region to create your EFS file system in.
+* You can go to the **File systems** or **Access points** pages by using the navigation menu.
+You can launch the **Create file system** window directly from the landing page.
+You can also launch the AWS Pricing Calculator and learn more about pricing from the landing page.
+
+##### File systems page
+On the **File systems** page, you can launch the **Create file system** window, navigate to the **Access points** page, or view file systems that you have previously created. 
+* Choose **Create file system** to begin creating your EFS files system. You have two available buttons that you can choose from: **Customize** or **Create**, as shown in the first screenshot in this section.
+* Choose **Access points** to create access points to existing EFS file systems.
+
+#### Amazon EFS custom file system creation 
+With custom creation, you can select options other than defaults and configure additional settings during the configuration process. From the **Create file system** window, choose the **Customize** button, and the **File system settings** page opens. 
+
+#### Available custom configuration options
+##### Name the file system (optional)
+You can name your file system here. This is optional and can be added later if you want.
+
+##### Select storage class
+You can select **Standard** for a Standard Multi-AZ file system or **One Zone** for a Single-AZ storage class system. 
+
+**After you create your file system, this setting cannot be modified.**
+
+##### Set up automatic backups
+You can change the automatic backup setting here, or you can change it later after your file system has been created.
+
+##### Set up lifecycle management
+You can remove or modify the EFS Intelligent-Tiering lifecycle management setting. You can modify these settings later if you want. 
+
+You can choose from the **Transition into IA** and **Transition out of IA** options. 
+
+You can select **None** for both options to turn off lifecycle management.
+
+##### Customize encryption settings
+The default is to turn on encryption of data at rest. You can turn encryption off by clearing that check box. 
+
+When the encryption of data at rest is kept at the default, Amazon EFS uses the AWS Key Management Service (AWS KMS) managed key for encryption. You can change the encryption key to a customer managed key that you have already created, or you can create a new customer managed key.
+
+**Encryption settings cannot be modified after file system creation.**
+
+##### Choose throughput mode
+You can choose the throughout mode that you want for your file system: Enhanced or Bursting.
+
+If you select **Enhanced**, you will have the additional selection of **Elastic** and **Provisioned** modes to choose from. 
+
+Throughput mode and its settings can be modified after file system creation. 
+
+##### Choose performance mode
+You can use the default General Purpose performance mode or select the Max I/O performance mode. Note that the Max I/O can only be selected if you have **Bursting** mode selected in the **Throughput mode** section. 
+
+**After you create your file system, this setting cannot be modified.**
+
+##### Manage optional tags
+You can add optional tags for file system identification or file system management. You can add or remove tags later if you want.
+
+#### Network access and mount target configuration 
+You can modify or customize your network access and customize your mount target configuration before creating your file system. If you want to use settings other than the default settings, modifying the settings is recommended by AWS.
+
+#### Available configuration options
+##### Choose the VPC
+Because your file system has not yet been created, you can change the VPC that you want to use. The chosen VPC will modify the available subnets and default security groups to associate with the network configuration.
+
+##### Manage Availability Zones
+By default, Amazon EFS will attempt to create mount targets in each Availability Zone in your chosen AWS Region. For One Zone file systems, you can choose your Availability Zone. 
+
+You can remove an Availability Zone if you want. 
+
+##### Choose subnets
+The subnets in the Availability Zones are available for you to select. You can create any number of subnets in an Availability Zone. Amazon EFS defaults to the default subnet for the Availability Zone.
+
+##### Configure IP addresses
+The private IP address for your mount targets is generated automatically by default when you create your file share. 
+
+You can manually add an available IP address from the subnet range. 
+
+##### Choose security groups
+Amazon EFS uses the default security group. You can choose to use different security groups. The security group must be available for the VPC that you choose.
+
+##### Add mount target
+With the **Add mount target** option, you can add additional Availability Zones for mount targets. By default, this option is unavailable because Amazon EFS creates a mount target in each Availability Zone. However, if you have removed one of the Availability Zones, you can choose to add it back into the configuration. 
+
+Only one mount target is permitted in an Availability Zone.
+
+#### Creating a user-configured file system policy – optional 
+Amazon EFS uses the default EFS file system policy to grant full access to any client that can connect to the file system by using a file system mount target. During the custom configuration process, you are presented with a policy editor to create user-configured policies.
+
+##### Built-in policy options
+The policy editor includes some options to streamline policy creation, including some of the most common policies to restrict access to your EFS file system.
+
+##### Policy editor
+Your policy is built as you select from the available options. In addition, you can customize the policy as needed. 
+
+If you remove all the options, the policy returns to the default policy. 
+
+##### Additional permissions
+You can also grant permissions to additional AWS Identity and Access Management (IAM) principals. You can choose the level of access that you want to grant to the principal.
+
+#### Scaling Amazon EFS file systems 
+Amazon EFS file systems can automatically scale storage capacity and throughput as you add files and directories. Amazon EFS provides elastic scaling, which means that the file system can automatically grow and shrink as you add or remove data. There is no need to provision or manage storage capacity in advance.
+
+#### Scaling behavior options
+##### Performance mode
+Amazon EFS offers two performance modes: General Purpose and Max I/O. General Purpose is the default mode, and it provides a balance between price and performance. Max I/O mode is designed for applications that require higher levels of throughput. Choosing the appropriate performance mode can impact the scaling behavior because applications can scale their IOPS elastically up to the limit associated with the performance mode. 
+
+##### Throughput modes
+By default, Amazon EFS file systems are built to provide throughput that scales with the amount of storage in your file system and supports bursting to higher levels for up to 12 hours a day.
+
+Amazon EFS offers three throughput modes: Elastic, Provisioned, and Bursting. 
+
+Use Elastic Throughput if you’re unsure of your application’s peak throughput needs. With Elastic Throughput, performance automatically scales with your workload activity, and you only pay for the throughput that you use. 
+
+Use Provisioned Throughput if you know your workload’s peak throughput requirements and you expect your workload to consume a higher share of your application’s peak throughput capacity. Provisioned Throughput is designed to offer the highest levels of throughput consistency while providing a predictable billing experience.
+
+Use Bursting Throughput when you want throughput that scales with the amount of storage in your file system.
+
+##### Amazon EFS burst credits
+In the Bursting Throughput mode, your file system accumulates burst credits during periods of low activity. These credits are then used for your file system to burst to higher throughput levels during peak periods. The amount of burst credits accumulated depends on the size of your file system. Ensuring sufficient burst credits can help maintain consistent performance during peak workloads.
+
+#### Migrating On-Premises Data to Amazon EFS
+
+#### AWS DataSync
+DataSync is an online data transfer service that you can use to copy data between the following:
+* On-premises Network File System (NFS) file servers
+* Server Message Block (SMB) file servers
+* Hadoop Distributed File System (HDFS) storage
+* Self-managed object storage
+* AWS storage services in the AWS Cloud - Amazon EFS is one of the AWS services supported by DataSync
+
+##### On-premises and AWS Storage
+You can use DataSync to transfer files between your on-premises NFS servers and Amazon EFS. Your on-premises NFS servers can be used as a source location or can be a destination location to support your copy transfer workflows.
+
+##### Between AWS Storage services
+You can also use DataSync to transfer data between Amazon EFS file systems in the same AWS Region, between Regions, or even between AWS accounts. 
+
+Using DataSync to copy data between EFS file systems, you can perform one-time data migrations, periodic data ingestion for distributed workloads, and automatic replication for data protection and recovery.
+
+With DataSync, you create scheduled or one-time tasks to copy data from your source location to your destination location. Tasks are single-direction data copies of files. DataSync includes robust features to meet your data copy requirements.
+
+**When you use DataSync to copy files or objects between AWS Regions, you pay for data transfer between Regions. This is billed as data transfer out from your source Region to your destination Region.**
+
+#### DataSync configuration 
+All of the configuration to access your EFS file systems is performed within the DataSync service. You select your EFS file system as a source or destination location when you configure your DataSync tasks. To configure DataSync, you have three areas of focus: agents, locations, and tasks.
+
+##### Creating an agent
+For DataSync to access your self-managed storage, whether on premises or in the cloud, you need a DataSync agent associated with your AWS account.
+
+You have a choice of agents depending on your environment. Where you deploy your DataSync agent depends on where you're copying data to and from, and whether you're working with on-premises or in-cloud storage systems.
+
+An agent isn't required when transferring between AWS storage services in the same AWS account.
+
+##### Configuring source and destination locations
+A task consists of a pair of locations that data will be transferred between. The source location defines the storage system or service that you want to read data from. The destination location defines the storage system or service that you want to write data to.
+
+The source and destination location are based on the task. A task copies data in a single direction from source to destination. To copy data in both directions requires two tasks. Each location would be a source in one task and a destination in the other task.
+
+You configure source and destination locations in the DataSync console.
+
+##### Configuring tasks
+After you create a DataSync agent and configure the source and destination locations, you can configure the settings for a new task. A task is a set of two locations—source and destination—and a set of options that you use to control the behavior of the task.
+
+You configure task settings when creating a new task in the DataSync console.
+
+##### [Creating an agent](https://docs.aws.amazon.com/datasync/latest/userguide/configure-agent.html)
+
+##### [Working with agents](https://docs.aws.amazon.com/datasync/latest/userguide/working-with-agents.html)
+
+##### [Configuring a source location](https://docs.aws.amazon.com/datasync/latest/userguide/configure-source-location.html)
+
+##### [Configuring a destination location](https://docs.aws.amazon.com/datasync/latest/userguide/create-destination-location.html)
+
+##### [Working with locations](https://docs.aws.amazon.com/datasync/latest/userguide/working-with-locations.html)
+
+##### [Creating your DataSync task](https://docs.aws.amazon.com/datasync/latest/userguide/creating-task.html)
+
+##### [Working with AWS DataSync tasks](https://docs.aws.amazon.com/datasync/latest/userguide/working-with-tasks.html)
+
+#### AWS Transfer Family
+Transfer Family is a fully managed AWS service that you can use to transfer files into and out of Amazon EFS file systems over the Secure File Transfer Protocol (SFTP), File Transfer Protocol (FTP), and FTP over Secure Sockets Layer (FTPS) protocol. 
+
+Using Transfer Family, you can provide your users, customers, and business partners with access to files stored in your Amazon EFS file systems for use cases such as data distribution, supply chain, content management, and web serving applications.
+
+#### Transfer Family configuration overview
+* Transfer Family supports using Amazon EFS to store your data. If you want Amazon EFS to service your users' transfer requests, you must provide an Amazon EFS file system as part of setting up your file transfer protocol–enabled server. You can use an existing file system or you can create a new one. 
+* When you use a Transfer Family server and an Amazon EFS file system, the server and the file system must be in the same AWS Region. The Transfer Family server and the file system don't need to be in the same AWS account. If the server and file system are not in the same account, the file system policy must give explicit permission to the user role. 
+* When you create a user, you make several decisions about user access. These decisions include which Amazon EFS file systems the user can access, which files in the file system are accessible, and what permissions the user has.
+* To set access permissions, you create an identity-based IAM policy and role that provide that access information. As part of this process, you provide access for your user to the Amazon EFS file system that is the target or source for file operations.
+
+##### [Configuring Amazon EFS to work with AWS Transfer Family](https://docs.aws.amazon.com/efs/latest/ug/using-aws-transfer-integration.html#config-efs-aws-transfer-int)
+
+#### Securing Access to Amazon EFS
+You can control what network resources have access to your file systems by using Amazon Virtual Private Cloud (Amazon VPC) routing and security group firewall rules. You can further control user and application access to your file systems by using AWS Identity and Access Management (IAM) policies and Amazon EFS access points.
+
+#### Security groups
+Both an Amazon EC2 instance and a mount target have associated security groups. These security groups act as virtual firewalls that control the traffic between them. If you don't provide a security group when you create a mount target, Amazon EFS associates the default security group of the virtual private cloud (VPC) with it. 
+
+To enable traffic between an EC2 instance and a mount target (and thus the file system), you must configure the following rules in these security groups:
+* The security group that is associated with a mount target must allow inbound access for the TCP protocol on port 2049 for NFS. The NFS port is from all EC2 instances that users want to mount the file system on.
+* Each EC2 instance that mounts the file system must have a security group that permits outbound access to the mount target on TCP port 2049. Remember that security groups are stateful, so responses to allowed inbound traffic are allowed to flow outbound regardless of outbound rules, and the opposite is also true.
+
+#### Create a security group that is associated with a mount target
+1. **Open the EC2 console**. On the AWS Management Console, in the **Search** box, search for and choose **EC2**.
+2. **Choose the security groups**. In the left navigation pane, under **Network & Security**, choose **Security Groups**.
+3. **Create a new security group**. In the upper-right corner of the page, choose **Create security group**.
+4. **Update security group details**. On the **Create security group** page, in the **Basic details** section, update the **Security group name**, **Description**, and **VPC** fields as needed.
+5. **Add inbound rules**. In the Inbound rules section, choose **Add rule** and then adjust the following settings:
+ * For **Type**, choose **NFS**.
+  * Notice that Protocol **TCP** and Port range **2049** are entered automatically.
+ * For **Source**, choose **Custom**. The security group in the **Source** search box is the security group associated with the EC2 instance.
+ * Keep the remaining default values.
+8. **Confirm and create the security group**. At the bottom of the page, choose **Create security group**.
+9. **Summary**. The security group created in this process allows inbound NFS connections on port 2049, but only from resources in the specified security group. To view the security groups associated with your file systems mount targets in the EFS console, choose the **Network** tab on the **File system details** page. For more information, see [Creating and Managing Mount Targets and Security Groups](https://docs.aws.amazon.com/efs/latest/ug/accessing-fs.html).
+
+#### File system policies
+You can create a file system policy by using the Amazon EFS console or by using the AWS Command Line Interface (AWS CLI). You can also create a file system policy programmatically by using AWS SDKs or the Amazon EFS API directly. EFS file system policies have a 20,000-character limit.
+
+The default EFS file system policy does not use IAM to authenticate, and grants full access to any anonymous client that can use a mount target to connect to the file system. 
+
+The default policy is in effect whenever a user-configured file system policy is not in effect, including at file system creation. Whenever the default file system policy is in effect, a **DescribeFileSystemPolicy** API operation returns a **PolicyNotFound** response.
+
+#### Creating a file system policy
+1. **Open the EFS console**. On the AWS Management Console, in the **Search** box, search for and choose **EFS**.
+2. **Open the file systems page**. In the left navigation pane, choose **File systems**.
+3. **Choose the file system**. On the **File systems** page, choose the file system that you want to edit or create a file system policy for.
+4. **Edit the file system policy**. Choose the **File system policy** tab, and then choose **Edit**. The **File system policy** page appears.
+5. **Review policy options**. In **Policy options**, you can select any combination of the preconfigured file system policies:
+ * **Prevent root access by default** – This option removes *ClientRootAccess* from the set of allowed EFS actions.
+ * **Enforce read-only access by default** – This option removes *ClientWriteAccess* from the set of allowed EFS actions.
+ * **Prevent anonymous access** – This option removes *ClientMount* from the set of allowed EFS actions.
+ * **Enforce in-transit encryption for all clients** – This option denies access to unencrypted clients.
+  * When you choose a preconfigured policy, the policy JSON object is displayed in the **Policy editor** pane.
+6. **Grant additional permissions**. 
+ * Use **Grant additional permissions** to grant file system permissions to additional IAM principals, including another AWS account. 
+ * Choose **Add**, and enter the principal Amazon Resource Name (ARN) of the entity that you are granting permissions to. 
+ * Then expand the **Permissions** drop-down list to choose the permissions that you want to grant. The additional permissions are shown in the **Policy editor**.
+7. **Customize a preconfigured policy**.
+ * You can use the **Policy editor** to customize a pre-configured policy or to create your own file system policy. 
+ * When you use the editor, the pre-configured policy options become unavailable. 
+ * To clear the current file system policy and start creating a new policy, choose **Clear**.
+8. **Clear the policy editor**. When you clear the editor, the pre-configured policies become available once again. After you complete editing the policy, choose **Save**.
+
+#### Amazon EFS Lifecycle Management
+Amazon EFS lifecycle management automatically manages cost-effective file storage for your file systems. When enabled, lifecycle management migrates files that have not been accessed for a set period of time to the EFS Standard–Infrequent Access (EFS Standard-IA) or EFS One Zone–Infrequent Access (EFS One Zone-IA) storage class, depending on your file system. You define that period of time by using the Transition into IA lifecycle policy. 
+
+Whenever a file in Standard or One Zone storage is accessed, the lifecycle management timer is reset. After lifecycle management moves a file into one of the Infrequent Access (IA) storage classes, the file remains there indefinitely if Amazon EFS Intelligent-Tiering is not enabled.
+
+Lifecycle management applies to all files in the file system.
+
+#### Amazon EFS Intelligent-Tiering
+Amazon EFS Intelligent‐Tiering uses lifecycle management to monitor the access patterns of your workload. It is designed to automatically transition files to and from the file system's IA storage class. 
+
+With EFS Intelligent-Tiering, files in the EFS Standard or EFS One Zone storage classes that are not accessed for the duration of the Transition into IA lifecycle policy setting, for example 30 days, are transitioned to the corresponding IA storage classes.
+
+Additionally, if access patterns change, EFS Intelligent‐Tiering automatically moves files back to the EFS Standard or EFS One Zone storage classes when the Transition out of IA lifecycle policy is set to On first access. This helps to reduce the risk of unbounded access charges, while providing consistent low latencies.
+
+#### Using lifecycle policies
+Amazon EFS supports two lifecycle policies: **Transition into IA** and **Transition out of IA**.
+
+##### Transition into IA
+Transition into IA instructs lifecycle management when to transition files into the file system's Infrequent Access storage class. 
+
+The Transition into IA lifecycle policy has the following values:
+* None
+* 1 day since last access
+* 7 days since last access
+* 14 days since last access
+* 30 days since last access
+* 60 days since last access
+* 90 days since last access
+
+##### Transition out of IA
+Transition out of IA instructs EFS Intelligent-Tiering when to transition files out of IA storage. 
+
+The Transition out of IA lifecycle policy can have the following values:
+* None
+* On first access
+
+When you use the console to create an Amazon EFS file system that uses the service recommended settings, the file system's lifecycle policies use the following default settings: 
+* Transition into IA is set to 30 days since last access.
+* Transition out of IA is set to None. 
+
+#### Using the console to manage lifecycle policies on an existing file system
+You can use the following steps to set the lifecycle policies for an existing file system. 
+1. Sign in to the AWS Management Console and open the Amazon EFS console at [https://console.aws.amazon.com/efs/](https://console.aws.amazon.com/efs/).
+2. Choose **File systems** to display the list of file systems in your account.
+3. Choose the file system on which you want to modify lifecycle policies.
+4. On the file system details page, in the **General** section, choose **Edit**. The **Edit** page appears.
+5. In the **Lifecycle management** section, you can change the following lifecycle policies:
+ * Set **Transition into IA** to one of the available settings. To stop moving files into IA storage, choose **None**.
+ * Set **Transition out of IA** to **On first access** to move files that are in IA storage to standard storage when they're accessed for non-metadata operations. To stop moving files from IA to standard storage on first access, set this to **None**.
+6. Choose **Save changes**.
+
+#### Using the AWS CLI to manage lifecycle policies on an existing file system
+Run the put-lifecycle-configuration AWS CLI command or the PutLifecycleConfiguration API command, specifying the file system ID of the file system for which you are managing lifecycle management.
+
+```
+aws efs put-lifecycle-configuration \
+--file-system-id File-System-ID \
+--lifecycle-policies "[{\"TransitionToIA\":\"AFTER_60_DAYS\"},{\"TransitionToPrimaryStorageClass\":\"AFTER_1_ACCESS\"}]" \
+--region us-west-2 \
+--profile adminuser
+```
+
+You get the following response:
+```
+{
+    "LifecyclePolicies": [
+        {
+            "TransitionToIA": "AFTER_60_DAYS"
+        },
+        {
+            "TransitionToPrimaryStorageClass": "AFTER_1_ACCESS"
+        }
+    ]
+}
+```
+
+#### Using the AWS CLI to stop lifecycle management for an existing file system
+Run the **put-lifecycle-configuration** command, specifying the file system ID of the file system for which you are stopping lifecycle management. Keep the **--lifecycle-policies** property empty. 
+
+```
+aws efs put-lifecycle-configuration \
+--file-system-id File-System-ID \
+--lifecycle-policies \
+--region us-west-2 \
+--profile adminuser
+```
+
+You get the following response. 
+```
+{
+    "LifecyclePolicies": []
+}
+```
+
+#### Amazon EFS Performance
+
+#### Performance summary
+File system performance is typically measured by using the dimensions of latency, throughput, and input/output operations per second (IOPS). Amazon EFS performance across these dimensions depends on your file system's configuration. The following configurations impact the performance of an Amazon EFS file system: 
+* **Storage class**: EFS One Zone or EFS Standard storage class types
+* **Performance mode**: General Purpose or Max I/O 
+* **Throughput mode**: Elastic, Provisioned, or Bursting 
+
+#### Storage classes and performance
+Amazon EFS uses the following storage classes: 
+* **EFS One Zone storage classes**: EFS One Zone and EFS One Zone–Infrequent Access (EFS One Zone-IA). The EFS One Zone storage classes replicate data within a single Availability Zone (Single-AZ deployment). 
+* **EFS Standard storage classes**: EFS Standard and EFS Standard–Infrequent Access (EFS Standard-IA). The EFS Standard storage classes replicate data across multiple Availability Zones (Multi-AZ deployment). 
+
+First-byte latency when reading from or writing to either of the IA storage classes is higher than that for the EFS Standard or EFS One Zone storage classes.
+
+#### Performance modes
+Amazon EFS offers the two following performance modes:
+* **General Purpose mode (recommended)** supports up to 35,000 IOPS, has the lowest per-operation latency, and is the recommended performance mode for file systems. File systems with EFS One Zone storage classes always use General Purpose performance mode. For file systems with EFS Standard storage classes, you can use either the default General Purpose performance mode or the Max I/O performance mode.
+* **Max I/O mode** is designed for highly parallelized workloads that can tolerate higher latencies than the General Purpose mode. Max I/O mode is not supported for file systems using the EFS One Zone storage classes or those using Elastic Throughput mode.
+
+**You cannot change the performance mode for a file system after the file system is created.**
+
+AWS recommends using General Purpose performance mode for the vast majority of applications. If you are not sure which performance mode to use, choose the General Purpose performance mode. To help ensure that your workload stays within the IOPS limit available to file systems using General Purpose mode, you can monitor the *PercentIOLimit* CloudWatch metric.
+
+#### Throughput modes 
+A file system's throughput mode determines the throughput available to your file system. Amazon EFS offers three throughput modes: Elastic, Provisioned, and Bursting. The maximum throughput available with each throughput mode depends on the AWS Region. 
+
+Your file system can achieve a combined 100 percent of its read and write throughput. For example, if your file system is using 33 percent of its read throughput limit, the file system can simultaneously achieve up to 67 percent of its write throughput limit. You can monitor your file system’s throughput usage in the **Monitoring > Throughput utilization (%)** graph on the on the file system details page of the console.
+
+#### Choosing the correct throughput mode for a file system
+##### Elastic Throughput (recommended)
+Use the default Elastic Throughput when you have spiky or unpredictable workloads and performance requirements that are difficult to forecast. It is also recommended for use when an application drives throughput at an average-to-peak ratio of 5 percent or less. 
+
+For file systems that are using Elastic Throughput, Amazon EFS automatically scales throughput performance up or down to meet the needs of your workload activity. Because throughput performance for file systems with Elastic Throughput scales automatically, you don't need to specify or provision the throughput capacity to meet your application needs. You pay only for the amount of metadata and data read or written, and you don't accrue or consume burst credits while in Elastic Throughput mode. 
+
+**Note**: Elastic Throughput mode is available only for file systems that are configured with the General Purpose performance mode. 
+
+##### Provisioned Throughput
+Use Provisioned Throughput if you know your workload's performance requirements, or when your application drives throughput at an average-to-peak ratio of 5 percent or more.
+
+With Provisioned Throughput mode, you specify a level of throughput that the file system can drive independent of the file system's size or burst credit balance. 
+
+For file systems using Provisioned Throughput, you are charged for the amount of throughput activated for the file system. The throughput amount billed in a month is based on the throughput provisioned in excess of your file system’s included baseline throughput from Standard storage, up to the prevailing Bursting baseline throughput limits in the AWS Region.
+
+If the file system’s baseline throughput exceeds the Provisioned Throughput amount, it automatically uses the Bursting Throughput permitted for the file system (up to the prevailing Bursting baseline throughput limits in that AWS Region).
+
+##### Bursting Throughput
+Use Bursting Throughput when you want throughput that scales with the amount of storage in your file system. 
+
+In Bursting Throughput mode, the base throughput is proportionate to the file system's size in the EFS Standard storage class, at a rate of 50 kibibytes per second (KiBps) for each gibibyte (GiB) of storage. Burst credits accrue when the file system consumes below its base throughput rate, and are deducted when throughput exceeds the base rate.
+
+When burst credits are available, a file system can drive throughput up to 100 mebibytes per second (MiBps) per tebibyte (TiB) of storage, up to the Amazon EFS Region's limit, with a minimum of 100 MiBps. If no burst credits are available, a file system can drive up to 50 MiBps per TiB of storage, with a minimum of 1 MiBps.
+
+#### Restrictions on switching throughput modes and changing provisioned amount
+You can switch an existing file system's throughput mode and change the throughput amount. However, after switching the throughput mode to Provisioned Throughput or changing the provisioned throughput amount, the following actions are restricted for a 24-hour period: 
+* Switching from Provisioned mode to Elastic or Bursting mode
+* Decreasing the provisioned throughput amount
+
+#### Performance optimization tips
+##### Average I/O size
+The distributed nature of Amazon EFS provides high levels of availability, durability, and scalability. This distributed architecture results in a small latency overhead for each file operation. Because of this per-operation latency, overall throughput generally increases as the average I/O size increases. The increase occurs because the overhead is spread over a larger amount of data. 
+
+##### Request model
+If you activate asynchronous writes to your file system, pending write operations are buffered on the Amazon EC2 instance before they're written to Amazon EFS asynchronously. Asynchronous writes typically have lower latencies. When you use asynchronous writes, the kernel uses additional memory for caching.
+
+A file system that has active synchronous writes, or one that opens files using an option that bypasses the cache (for example, O_DIRECT), issues synchronous requests to Amazon EFS. Every operation goes through a round trip between the client and Amazon EFS.
+
+**Note**: Your chosen request model has trade-offs in consistency, if you're using multiple Amazon EC2 instances and speed. 
+
+##### NFS client mount setting
+When you mount your file systems on Amazon EC2 instances, Amazon EFS supports the Network File System (NFS) version 4.0 and 4.1 (NFSv4) protocols. NFSv4.1 provides better performance for parallel small-file read operations, greater than 10,000 files per second, compared to less than 1,000 files per second for NFSv4.0. For Amazon EC2 macOS instances running macOS Big Sur, only NFSv4.0 is supported.
+
+Don't use the following mount options:
+* *noac, actimeo=0, acregmax=0, acdirmax=0* – These options turn off the attribute cache, which has a very large performance impact.
+* *lookupcache=pos, lookupcache=none* – These options turn off the file name lookup cache, which has a very large impact on performance.
+* *fsc* – This option turns on local file caching but does not change NFS cache coherency and does not reduce latencies.
+
+Note: When you mount your file system, consider increasing the size of the read and write buffers for your NFS client to 1 MB. 
+
+##### Optimizing small-file performance
+You can improve small-file performance by minimizing file reopens, increasing parallelism, and bundling reference files where possible.
+* Minimize the number of round trips to the server.
+ * Don't unnecessarily close files if you will need them later in a workflow. Keeping file descriptors open provides direct access to the local copy in the cache. File open, close, and metadata operations generally cannot be made asynchronously or through a pipeline.
+ * When reading or writing small files, the two additional round trips are significant.
+ * Each round trip (file open, file close) can take as much time as reading or writing megabytes of bulk data. It's more efficient to open an input or output file once, at the beginning of your compute job, and hold it open for the entire length of the job.
+* Use parallelism to reduce the impact of round-trip times.
+* Bundle reference files in a .zip file. Some applications use a large set of small, mostly read-only reference files. Bundling these in a .zip file helps you to read many files with one open-close round trip.
+ * The .zip format provides for random access to individual files.
+
+##### Optimizing directory performance
+When you use a listing (ls) command on very large directories (over 100,000 files) that are being modified concurrently, Linux NFS clients can stop responding. This issue is fixed in kernel 5.11, which has been ported to Amazon Linux 2 kernels 4.14, 5.4, and 5.10.
+
+AWS recommends keeping the number of directories on your file system to less than 10,000, if possible. Use nested subdirectories as much as possible.
+
+When listing a directory, avoid getting file attributes if they are not required, because they are not stored in the directory itself.
+
+##### Optimizing the NFD read_ahead_kb size
+The NFS **read_ahead_kb** attribute defines the number of kilobytes for the Linux kernel to read ahead or prefetch during a sequential read operation.
+
+For Linux kernel versions before 5.4.x, the **read_ahead_kb** value is set by multiplying **NFS_MAX_READAHEAD** by the value for *rsize*. The *rsize* is the client configured read buffer size set in the mount options. When you use the recommended mount options, this formula sets **read_ahead_kb** to 15 MB.
+
+ * **Note**: Starting with Linux kernel versions 5.4.x, the Linux NFS client uses a default **read_ahead_kb** value of 128 KB. AWS recommends increasing this value to 15 MB.
+
+The Amazon EFS mount helper that is available in **amazon-efs-utils** version 1.30.2 and later automatically modifies the **read_ahead_kb** value to equal 15 * rsize, or 15 MB, after mounting the file system.
+
+For Linux kernels 5.4 or later, if you do not use the mount helper to mount your file systems, consider manually setting **read_ahead_kb** to 15 MB for improved performance. After mounting the file system, you can reset the **read_ahead_kb** value.
+
+#### Amazon EFS Pricing Calculation and Cost Optimization
+Amazon EFS is designed to provide serverless, fully elastic file storage that helps you share file data without provisioning or managing storage capacity and performance. There is no minimum fee or setup charge. You pay only for the storage that you use, for read and write access to data stored in Infrequent Access storage classes, for read and write access using Elastic Throughput, and for any Provisioned Throughput.
+
+Amazon EFS offers four storage classes. There are two standard storage classes, EFS Standard and EFS Standard–Infrequent Access (EFS Standard-IA). 
+
+The other two are One Zone storage classes, EFS One Zone and EFS One Zone-Infrequent Access (EFS One Zone-IA).
+
+Certain configuration considerations can help you optimize your Amazon EFS file system costs. The considerations are categorized into the following three areas:
+* Choosing your Amazon EFS storage class, including lifecycle management configuration
+* Choosing your throughput mode
+* Choosing and managing your data retention and replication methodology
+
+#### EFS pricing explanation
+##### [EFS pricing explanation](https://aws.amazon.com/efs/pricing/)
+
+##### [AWS pricing calculator](https://calculator.aws/#/createCalculator/EFS)
+
+#### Amazon EFS storage classes
+The following are Storage class service cost comparisons:
+* EFS One Zone can reduce the cost of EFS Standard pricing by approximately 47 percent. 
+* EFS Standard-IA can reduce the cost of EFS Standard pricing by approximately 92 percent. 
+* EFS One Zone-IA can reduce the cost of EFS One Zone pricing by approximately 92 percent. 
+
+#### Considerations and trade-offs
+
+#### EFS One Zone compared to EFS Standard 
+With EFS One Zone compared to EFS Standard, you can potentially save up to 46.6 percent on your storage costs. However, you have trade-offs for availability can potentially incur access costs. 
+
+##### Availability trade-offs
+* EFS One Zone has an availability service level agreement (SLA) of 99.9 percent. 99.9 percent SLA translates into approximately 8.77 hours or 526 minutes per year where your EFS One Zone file system might be unreachable. 
+* EFS Standard has an availability SLA of 99.99 percent. 99.99 percent SLA translates into approximately 52.6 minutes per year where your EFS Standard file system might be unreachable.
+
+##### Availability recommendation
+You must consider availability as part of your decision process. Only consider EFS One Zone when having potentially lower availability is acceptable for your workflow.
+
+##### Potential additional access costs
+* EFS Standard has a mount target in each Availability Zone in the AWS Region. The mount targets provide you access to your EFS Standard file system from within each Availability Zone. When accessing from within the same VPC and from within the same Availability Zone, there are no additional data transfer in and data transfer out costs.
+* With EFS One Zone, you have one mount target that is located in a single Availability Zone. To avoid additional data transfer costs, all your resources must be located in the same Availability Zone. 
+ * If your resources are located in another Availability Zone, you are charged for data transfer in and data transfer out. 
+ * Using the example pricing, you would be charged $0.01 per every gigabyte transferred between Availability Zones. These transfer changes can add up and quickly reduce any cost savings that you achieved by changing storage classes.
+
+##### Access costs recommendation
+Consider how much data will be transferred between your compute or other resources in other Availability Zones and your EFS One Zone file system. If your workflow involves more than a minimal amount, your additional access costs exceed any potential savings from using an EFS One Zone storage class. 
+
+#### Infrequent access tiers compared to standard access tiers 
+With EFS Standard-IA and EFS One Zone-IA compared to EFS Standard and EFS One Zone, you can potentially save up to 91.6 percent on your storage costs. This savings only applies to the data stored in the Infrequent Access tier. As a general industry average percentage, 80 percent of data is infrequently accessed for general purpose file systems. However, you potentially can incur charges for infrequent access requests. 
+
+##### Potential Infrequent Access tier costs
+* If you move your data from the EFS Standard to the EFS Standard-IA storage tier too soon, you are charged $0.01 per GB when a file is transferred back to the EFS Standard when your files are accessed.
+* If you move your data from the EFS One Zone to the EFS One Zone-IA storage tier too soon, you are also charged $0.01 per GB transferred back to EFS One Zone when your files are accessed.
+
+##### Recommendations
+* Using EFS Standard-IA and EFS One Zone-IA can generate a significant cost savings for most workflows. The most common cost issues are created when data is moved to the Infrequent Access tier too soon. To help avoid these costs, AWS recommends that you understand your workflow. 
+* To calculate actual saving from moving data infrequently accessed, you need to examine when your files were last accessed and when the files were initially created. You can use the data to help you determine what percentage of your files are available to be moved to the IA storage classes and after what period of time. This can help you estimate cost savings as a percentage of your total data.
+* To understand your workflow better, you can monitor your infrequent access requests. You can then change your tiering settings to closely match your actual use. Your ideal setting can be tiered after 90 days or even 120 days. For some workflows, you might even find that EFS Intelligent-Tiering does not make sense.
+
+#### Selecting throughput mode
+Amazon EFS offers Elastic Throughput mode, Bursting Throughput mode, and Provisioned Throughput mode. With EFS Provisioned Throughput, you are charged $6.00 per MiBps per month that you provisioned to exceed the base rate throughput that you would have received by using Bursting Throughput mode. 
+
+##### Example cost estimate
+* You receive 50 MiBps for each terabyte (TB) of data in your EFS file system. If you have a file system with 10 TB of data, you have a base rate of 500 MiBps throughput.
+* If you provision 1 GiBps(1,000 MiBps) throughput, your costs would be calculated as follows:
+((Provisioned throughput) minus (base rate throughput)) times (rate per MiBps)
+(1,000 MiBps - 500 MiBps) x $6.00 per MiBps = 500 x $6.00 = $3,000 per month
+
+##### Recommendations
+* Frequently monitor your EFS file system's actual throughput.
+* When creating a new file system, start with Bursting Throughput mode whenever possible and change to Provisioned Throughput mode only when required. You can change throughput modes and mode settings only once in a 24-hour period.
+* For Provisioned Throughput mode, underprovision and increase the amount incrementally as required. Make sure the increment chosen is close to the amount needed. You can change the provisioned amount only once in a 24-hour period.
+* As your file system grows, consider changing throughput mode back to Bursting Throughput when possible.
+
+#### Backup and replication costs 
+AWS Backup and Amazon EFS replication each come with a cost for the amount of AWS services that you use. As part of designing your data retention and replication methodology, you need to determine your requirements and be aware of the potential costs. 
+
+#### AWS Backup 
+AWS Backup of your EFS file system, automatic backups, is configured by default when you create your file system by using the Amazon EFS console. You can turn off automatic backups when you use the custom configuration method. You can add it during configuration by using the AWS CLI and AWS SDKs. In addition, with Amazon EFS replication, an automatic backup is created for the destination file system copy.
+
+You can also create backups for your EFS file system by using the AWS Backups console, AWS CLI, and AWS SDKs. Creating your backups with AWS Backup separately helps you to further customize your backups by using the settings that you choose.
+
+The cost for AWS Backups is $0.05 per GB per month (GB-month) for standard storage and $0.01 per GB-month for cold storage.
+
+Backing up your data is usually considered a requirement for most organizations. AWS recommends that you make this choice based on the organization's requirements and the value of your data.
+
+##### Optimization questions for backups
+* Is a backup copy needed?
+* How to manage short-term or recovery retention requirements?
+* How to manage long-term or archival retention requirements?
+
+###### Data value
+You can ask a few questions to help determine the value of your data.
+* Is your data temporary or transitory, or can it be easily re-created?
+* What is the impact of potential data loss or corruption?
+* Do you have regulatory or other compliance requirements?
+* If you were subjected to ransomware, would you need to pay to recover it or would you abandon it? 
+
+##### Recommendations
+* Determine the value of your file system's data based on the use case and the cost to re-create the data if required. In most circumstances, if you have a reason that would require your data to be created if it were lost to you, having a backup of your file system is recommended.
+* For short-term recovery backups, determine your management and deletion strategy. Remove older backups when they are no longer required. Clear older incremental backups according to your planned cadence.
+* If you have long-term retention requirements, create your archival strategy to move older backups to cold storage. Perform periodic full backups for point-in-time retention copies, such as annual, monthly, or weekly copies. Remove older archival backups when retention requirements expire.
+
+##### Amazon EFS replication 
+When you plan to use Amazon EFS replication, you will have several associated costs, including file system capacity, automatic backup capacity, and data transfer costs. You can optimize these costs by selecting the most appropriate AWS Region to replicate to, the EFS storage class and storage tiering to use, and whether to include automatic backups for your replicated file system. 
+* If you're planning to use Amazon EFS replication, do you require backups of both the source and destination file systems? If you do not require automatic backups, you can deactivate them on the destination file system. You can add them back if required at a later time. Deactivating automatic backups can save $6 per GB per month. 
+* AWS charges you for the consumed capacity of your replicated EFS file system. Pricing for data storage can vary based on the AWS Region or location chosen for that storage. For example, US West (N. California) costs $0.33 per GB and US East (Virginia) costs $0.30 per GB for EFS Standard. 
+* If you're using your replicated EFS file system for read-only access, you want to plan how to optimize your data tiering strategy. You will want to plan based on infrequent access requests just like you planned for your source file system. 
+* You can implement different storage classes and with different performance modes for your destination file system. You should plan which storage class, performance mode, and throughput mode that you require. If your replicated file system is just for disaster recovery, you can vary the storage class from your source file system. Each consideration should be weighed carefully before you implement your service.
+
+#### More examples of pricing calculation
+
+#### Attaching an Amazon EFS File System with amazon-efs-utils
+
+#### Amazon EFS client (amazon-efs-utils)
+
+The Amazon EFS client is an open-source collection of Amazon EFS tools available at no additional cost. The amazon-efs-utils package comes preinstalled on Amazon Linux and Amazon Linux 2 AMIs. You can also build and install the package on other Linux distributions. The process to install the Amazon EFS client varies based on Linux distributions. You can also use AWS Systems Manager to automatically install or update the package to simplify and standardize your AWS resources.
+
+##### [Using the amazon-efs-utils](https://docs.aws.amazon.com/efs/latest/ug/using-amazon-efs-utils.html)
+
+##### [Manually installing amazon-efs-utils ](https://docs.aws.amazon.com/efs/latest/ug/installing-amazon-efs-utils.html)
+
+##### [Automatically installing amazon-efs-utils](https://docs.aws.amazon.com/efs/latest/ug/manage-efs-utils-with-aws-sys-manager.html)
+
+##### [Downloading Amazon EFS client](https://github.com/aws/efs-utils)
+
+#### Using EFS mount helper
+The Amazon EFS client includes a mount helper and tooling that streamlines performing encryption of data in transit for Amazon EFS file systems. A mount helper is a program that you use when you mount a Linux file system.
+
+AWS recommends that you use the mount helper included with the Amazon EFS client to mount your Amazon EFS file systems. Using the Amazon EFS client streamlines mounting EFS file systems and can provide improved file system performance.
+
+##### [Using EFS mount helper](https://docs.aws.amazon.com/efs/latest/ug/efs-mount-helper.html)
+
+#### How the mount helper works
+The mount helper defines a new network file system type, called efs, which is fully compatible with the standard mount command in Linux. You can mount a file system by specifying one of the following properties: 
+* **File system DNS name**: If you use the file system DNS name and the mount helper cannot resolve the DNS name, the mount helper falls back to using the mount target IP address. 
+* **File system ID**: If you use the file system ID, the mount helper resolves it to the local IP address of the mount target elastic network interface without calling external resources. 
+* **Mount target IP address**: You can use the IP address of one of the file systems' mount targets. 
+
+Mount helper can be used with any Amazon EC2 instance running one of the following supported Linux or macOS distributions:
+* Amazon Linux 2
+* Amazon Linux 2017.09 and later
+* macOS Big Sur
+* Red Hat Enterprise Linux (and derivatives such as CentOS) version 7 and later
+* Ubuntu 16.04 LTS and later
+
+Mount helper supports mounting to Amazon EFS Standard and Amazon EFS One Zone storage classes. You can find the value for all these properties in the EFS console. 
+
+#### Encrypted data in transit
+When encryption of data in transit is declared as a mount option for your Amazon EFS file system, the mount helper initializes a client **stunnel** process and a supervisor process called **amazon-efs-mount-watchdog**. 
+
+Stunnel is an open-source multipurpose network relay. The client **stunnel** process listens on a local port for inbound traffic and the mount helper redirects NFS client traffic to this local port. 
+
+The **amazon-efs-mount-watchdog** process monitors the health of TLS mounts, and is started automatically the first time an EFS file system is mounted over TLS. This process is managed by either **upstart** or **systemd**, depending on your Linux distribution, and by **launchd** on the macOS Big Sur distribution.
+
+The mount helper uses TLS version 1.2 to communicate with your file system. Using TLS requires certificates, and these certificates are signed by a trusted Amazon Certificate Authority.
+
+#### Monitoring Amazon EFS
+AWS recommends that you monitor your AWS resources as part of the AWS Well-Architected Framework. The AWS Well-Architected Framework describes key concepts, design principles, and architectural best practices for designing and running workloads in the AWS Cloud. AWS also recommends that you collect monitoring data from all the parts of your AWS solution. By monitoring your full solution, you can debug any point of failure, if one occurs. 
+
+Monitoring your Amazon EFS resources is an important part to maintaining the reliability, availability, and performance of your EFS file systems. In this lesson, you will learn about Amazon CloudWatch and other tools to assist you in monitoring your Amazon EFS resources.
+
+#### Getting started with monitoring
+To get started with monitoring, create a monitoring plan, determine baseline performance, and determine which tools you will use to monitor your file system. 
+
+#### Creating a monitoring plan
+Start by developing a monitoring plan. The plan incorporates the following important aspects included to make your plan successful:
+* Your monitoring goals
+* What resources you monitor
+* How frequently you monitor
+* What tools you use
+* Who performs the tasks
+* Who to notify when something happens
+
+Detailed monitoring discussions and concepts are available as part of the AWS Well-Architected Framework for each of the six pillars. You can search for monitoring in the documentation for each of the pillars.
+
+##### [AWS Well-Architected Framework ](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html)
+
+#### Baselining your EFS file system
+Baselining is a method for analyzing performance. The method is marked by comparing current performance to a historical metric. The first step is to establish a baseline for your EFS file system to determine normal performance in your environment.
+
+The changes might be of little concern, or they can help you identify issues that you need to address. Your patterns can change because your workflow matures or usage increases across your organization. If you identify changes in usage patterns, you might need to establish new baselines for your comparison. You might also need to address the changes and devise methods to address any issues to meet application requirements and user demands.
+* For example, with Amazon EFS, you can monitor network throughput; I/O for read, write, and metadata operations; client connections; and burst credit balances for your file systems. 
+* If performance falls outside your established baseline, you might need to change client connection parameters, throughput, or the number of connected clients to optimize the file system for your workload. 
+
+To establish a baseline, AWS recommends that you should, at a minimum, monitor the following items: 
+* Your file system's network throughput
+* The number of client connections to a file system
+* The number of bytes for each file system operation, including data read, data write, and metadata operations
+
+#### Monitoring tools overview
+AWS provides various tools that you can use to monitor Amazon EFS. You can configure some of these tools to do the monitoring for you, but some of the tools require manual intervention. AWS recommends that you automate monitoring tasks as much as possible. 
+
+#### Automated monitoring tools
+You can use the available automated monitoring tools to watch Amazon EFS and report when something is wrong or out of the normal range. 
+
+##### Amazon CloudWatch alarms
+With CloudWatch alarms, you can watch a single metric over a time period that you specify and perform one or more actions based on the value of the metric, relative to a given threshold, over a number of time periods. The action is a notification sent to an Amazon Simple Notification Service (Amazon SNS) topic or Amazon EC2 Auto Scaling policy. 
+
+CloudWatch alarms do not invoke actions only because they are in a particular state; the state must have changed and been maintained for a specified number of periods.
+
+##### Amazon CloudWatch Logs
+With Amazon CloudWatch Logs, you can monitor, store, and access your log files from AWS CloudTrail or other sources. 
+
+##### Amazon CloudWatch Events
+Amazon CloudWatch Events helps you to match events and route them to one or more target functions or streams to make changes, capture state information, and take corrective action. 
+
+##### AWS CloudTrail log monitoring
+Amazon EFS is integrated with AWS CloudTrail, a service that provides a record of actions taken by a user, role, or an AWS service in Amazon EFS. CloudTrail captures all API calls for Amazon EFS as events, including calls from the Amazon EFS console and from code calls to Amazon EFS API operations. 
+
+If you create a CloudTrail trail, you can enable continuous delivery of CloudTrail events to an Amazon S3 bucket, including events for Amazon EFS. If you don't configure a trail, you can still view the most recent events in the CloudTrail console in Event history. You can determine the request that was made to Amazon EFS, the IP address from which the request was made, who made the request, when it was made, and additional details.
+
+With CloudTrail log monitoring, you can share log files between accounts, monitor CloudTrail log files in real time by sending them to CloudWatch Logs, write log processing applications in Java, and validate that your log files have not changed after delivery by CloudTrail.
+
+#### Monitoring with Amazon CloudWatch
+CloudWatch helps you to monitor your EFS file systems. CloudWatch collects and processes raw data from Amazon EFS into readable, near real-time metrics. These statistics are maintained for a period of 15 months, so that you can gain a better perspective on how your web application or service is performing. 
+
+By default, Amazon EFS metric data is automatically sent to CloudWatch at 1-minute periods, unless noted for some individual metrics. The Amazon EFS console displays a series of graphs based on the raw data from CloudWatch. Depending on your needs, you might prefer to get data for your file systems from CloudWatch instead of the graphs in the console.
+
+##### CloudWatch metrics for Amazon EFS 
+CloudWatch metrics for Amazon EFS use the EFS file system namespace and provide information for a single dimension. The dimension is the file system ID (**FileSystemId**). A file system's ID can be found in the Amazon EFS console, and it takes the form of **fs-abcdef0123456789a**. CloudWatch does not provide metrics across multiple file systems at a time. 
+
+CloudWatch has 11 metrics specific to Amazon EFS. The following table shows the metrics and their description.
+
+| Metric | Description |
+| --------------------- | --------------------------------------------------------------------|
+| **TimeSinceLastSync** | This shows the amount of time that has passed since the last successful sync to the destination file system in a replication configuration.
+Any changes to data on the source file system that occurred before the **TimeSinceLastSync** value have been successfully replicated.
+Any changes on the source that occurred after the **TimeSinceLastSync** value might not be fully replicated. |
+| **PercentIOLimit** | This shows how close a file system is to reaching the I/O limit of the General Purpose performance mode. If this metric is at 100 percent, consider moving your application to a file system using the Max I/O performance mode.
+**Note**: This metric is only submitted for file systems using the General Purpose performance mode. | 
+| **BurstCreditBalance** | This is the number of burst credits that a file system has. With burst credits, a file system can burst to throughput levels above a file system’s baseline level for periods of time. |
+| **PermittedThroughput** | This is the maximum amount of throughput that a file system can drive.
+For file systems in the Provisioned Throughput mode, if the amount of data stored in the EFS Standard storage class permits your file system to drive a higher throughput than you provisioned, this metric reflects the higher throughput instead of the provisioned amount.
+For file systems in Bursting Throughput mode, this value is a function of the file system size and **BurstCreditBalance**. |
+| **MeteredIOBytes** | This is the number of metered bytes for each file system operation, including data read, data write, and metadata operations, with read operations metered at one-third the rate of other operations. |
+| **TotalIOBytes** | This is the actual number of bytes for each file system operation, including data read, data write, and metadata operations.
+This is the actual amount that your application is driving, and not the throughput that the file system is being metered at. It might be higher than the numbers shown in **PermittedThroughput**. |
+| **DataReadIOBytes** | This is the number of bytes for each file system read operation. |
+| **DataWriteIOBytes** | This is the number of bytes for each file write operation. |
+| **MetadataIOBytes** | This is the number of bytes for each metadata operation. |
+| **ClientConnections** | This is the number of client connections to a file system. With a standard client, there is one connection per mounted Amazon EC2 instance. |
+| **StorageBytes** | This is the size of the file system in bytes, including the amount of data stored in the EFS Standard and EFS Standard-IA storage classes.
+This metric is submitted every 15 minutes to CloudWatch. |
+
+#### Accessing CloudWatch metrics
+* In the EFS console
+* In the CloudWatch console
+* Using the CloudWatch CLI
+* Using the CloudWatch API
+* You can also create and access derived or calculated metrics. 
+
+##### [Accessing CloudWatch metrics ](https://docs.aws.amazon.com/efs/latest/ug/accessingmetrics.html)
+
+#### CloudWatch metrics in EFS console
+The **File system metrics** page displays a default set of CloudWatch metrics for the file system. Any CloudWatch alarms that you have configured also display with these metrics. For file systems that use Max I/O performance mode, the default set of metrics includes Burst Credit balance in place of Percent IO limit. 
+
+To override the default settings, choose the settings icon and update the metrics to display in the **Metric display settings** dialog box. 
+
+You have several options to customize your dashboard. You can choose your **Display mode** between **Time series** or **Single value**, show or hide CloudWatch alarms, add metrics to your dashboard, open CloudWatch, and change the metric time window displayed.
+
+**Throughput Utilization (%)**, which is displayed by default on the **File system metrics page**, is an example of a derived metric using CloudWatch metric math.
+
+#### CloudWatch metrics to monitor throughput performance 
+The metrics reported by Amazon EFS provide information that you can analyze in different ways.
+* The CloudWatch metrics for throughput monitoring—**TotalIOBytes**, **ReadIOBytes**, **WriteIOBytes**, and **MetadataIOBytes**—represent the actual throughput that you are driving on your file system. 
+* The metric **MeteredIOBytes** represents the calculation of the overall metered throughput that you are driving. You can use the **Throughput utilization (%)** graph in the Amazon EFS console **Monitoring** section to monitor your throughput use. 
+* **PermittedThroughput** measures the amount of permitted throughput for the file system. For file systems in Provisioned Throughput mode, if the amount of data stored in the EFS Standard storage class permits your file system to drive a higher throughput than you provisioned, this metric reflects the higher throughput instead of the provisioned amount. For file systems in Bursting Throughput mode, this value is a function of the file system size and **BurstCreditBalance**. 
+* When the values for **MeteredIOBytes** and **PermittedThroughput** are equal, your file system is consuming all available throughput. For file systems using Provisioned Throughput mode, you can provision additional throughput.
+* For file systems using Bursting Throughput mode, monitor **BurstCreditBalance** to ensure that your file system is operating at its burst rate instead of its base rate. If the balance is consistently at or near zero, you must switch to Provisioned Throughput mode to get additional throughput.
+
+#### Amazon EFS replication
+With Amazon EFS replication, you can create a replica of your Amazon EFS file system in the AWS Region of your preference. When you set up replication on an EFS file system, Amazon EFS automatically and transparently replicates the data and metadata on the source file system to a new destination EFS file system. 
+
+To set up replication, you create an Amazon EFS replication configuration. This configuration is used to manage the process of creating the destination file system and keeping it in-sync with the source file system.
+
+Amazon EFS automatically keeps the source and destination file systems synchronized. Amazon EFS replication is continual and designed to provide a recovery point objective (RPO) and a recovery time objective (RTO) of minutes. These features can assist you in meeting your compliance and business continuity goals.
+
+#### Replication configuration
+##### Specified replication properties
+When you create a replication configuration, you specify the properties for the destination file system.
+* **AWS Region**: Specify the AWS Region in which to create the destination file system. Amazon EFS replication is available in all AWS Regions where EFS is supported. 
+* **Availability and durability**: Specify the storage class used by the destination file system, either Regional or One Zone. 
+* **Availability Zone**: If you choose One Zone availability and durability, you must choose the Availability Zone to create the destination file system in.
+* **Encryption**: All destination file systems are created with encryption at rest turned on. You can specify the AWS Key Management Service (AWS KMS) key that is used to encrypt the destination file system. 
+ * If you don't specify am AWS KMS key, your service-managed KMS key for Amazon EFS is used.
+ * After the destination file system is created, you cannot change the AWS KMS key.
+
+##### Default replication properties
+In addition to the properties that you specify, other EFS replication properties are set by default.
+* **Automatic backups**: Automatic daily backups are activated on the destination file system. After the file system is created, you can change the automatic backup setting. 
+* **Performance mode**: The destination file system's performance mode matches that of the source file system, unless the destination file system uses EFS One Zone storage. In that case, the General Purpose performance mode is used. The performance mode cannot be changed. 
+* **Throughput mode**: The destination file system's throughput mode matches that of the source file system. After the file system is created, you can modify the throughput mode. If the source file system's throughput mode is Provisioned, the destination file system's provisioned throughput amount matches that of the source file system, unless the source file's provisioned amount exceeds the limit for the destination file system's Region. If the source file system's provisioned amount exceeds the Region limit for the destination file system, the destination file system's provisioned throughput amount is the Region limit. 
+
+##### Disabled by default properties
+In contrast to creating your source file system, lifecycle management is not activated by default. EFS lifecycle management and EFS Intelligent-Tiering are deactivated on the destination file system. 
+
+#### How EFS replication works 
+Amazon EFS creates the destination file system with read-only permissions. After the destination file system is created, Amazon EFS performs the initial sync that copies all data and metadata on the source to the destination file system. 
+
+An EFS file system can be part of only one replication configuration. You can't replicate a source file system to multiple destination file systems. You also can't use a destination file system as the source file system in another replication configuration.
+
+The amount of time that the initial sync takes to finish depends on the size of the source file system. After the initial sync is finished, the replication process continually keeps the destination file system in sync with the source.
+
+You can monitor when the last successful sync occurred by using the console, the AWS CLI, the API, and Amazon CloudWatch.
+
+##### Replication performance
+After the initial replication is finished, the majority of source file systems have their subsequent changes replicated to their destination file systems within 15 minutes.
+
+However, if the source file system has files that change very frequently, and has either more than 100 million files or files that are larger than 100 GB, replication will take longer than 15 minutes. 
+
+##### Permissions
+Amazon EFS uses the EFS service-linked role named **AWSServiceRoleForAmazonElasticFileSystem** to synchronize the state of the replication between the source and destination file systems.
+
+To use EFS replication, you must use the following actions to configure the IAM entity to create a service-linked role, replication configuration, and file system: 
+* **elasticfilesystem:CreateReplicationConfiguration***
+* **elasticfilesystem:DeleteReplicationConfiguration***
+* **elasticfilesystem:DescribeReplicationConfigurations***
+* **elasticfilesystem:CreateFileSystem***
+* **iam:CreateServiceLinkedRole**
+* You can use the **AmazonElasticFileSystemFullAccess** managed policy instead to automatically get all EFS permissions.
+
+##### Destination mount targets
+Amazon EFS does not create any mount targets when it creates the destination file system. You can create these manually. You can add mount targets, security groups, and access points to prepare for failing over as needed.
+
+Because a destination file system is read-only while it is a member of a replication configuration, any write operations to it will fail. However, you can use the destination file system for read-only use cases, including testing and development.
+
+#### Failing over to a destination file system 
+To fail over to the destination file system in a replication configuration, you must delete the replication configuration. After the replication configuration is deleted, the destination file system becomes writeable, and you can start using it in your application workflow. This process can take several minutes to complete. 
+
+After failing over to a destination file system, that file system can then be used as the source file system in a new replication configuration. However, it cannot be designated as a destination file system again. A replication configuration always creates a new EFS file system for the destination.
+
+#### Backing Up Amazon EFS
+
+
+
+
 
 
 
