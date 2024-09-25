@@ -4601,13 +4601,3320 @@ After failing over to a destination file system, that file system can then be us
 
 #### Backing Up Amazon EFS
 
+#### AWS Backup
+AWS Backup is a simple and cost-effective way to back up your Amazon EFS file systems that are in AWS Regions where the AWS Backup service is available. AWS Backup is a unified backup service designed to simplify the creation, migration, restoration, and deletion of backups, while providing improved reporting and auditing.
 
+AWS Backup simplifies development of a centralized backup strategy for legal, regulatory, and professional compliance. AWS Backup also makes protecting your AWS storage volumes, databases, and file systems simpler by providing a central place. AWS Backup is integrated with a growing list of AWS services.
 
+Amazon EFS is integrated with AWS Backup by default. You can use the EFS console, API, and AWS CLI to activate automatic backups for your file system. Automatic backups use a default backup plan with the AWS Backup recommended settings for automatic backups.
 
+#### Key features
+With AWS Backup, you can do the following: 
+* Configure and audit the AWS resources that you want to back up
+* Automate backup scheduling
+* Set retention policies
+* Monitor all recent backup and restore activity
 
+##### Incremental backups
+AWS Backup performs incremental backups of EFS file systems. During the initial backup, a copy of the entire file system is made. During subsequent backups of that file system, only files and directories that have been changed, added, or removed are copied. 
 
+With each incremental backup, AWS Backup retains the necessary reference data to facilitate a full restore. This approach minimizes the time required to complete the backup and saves on storage costs by not duplicating data.
+
+##### Backup consistency
+Amazon EFS is designed to be highly available. You can access and modify your Amazon EFS file systems while your backup is occurring in AWS Backup. However, inconsistencies, such as duplicated, skewed, or excluded data, can occur if you make modifications to your file system while the backup is occurring. 
+
+These modifications include write, rename, move, or delete operations. To ensure consistent backups, AWS recommends that you pause applications or processes that are modifying the file system for the duration of the backup process. Or you can schedule your backups to occur during periods when the file system is not being modified.
+
+##### Performance
+In general, you can expect the following backup rates with AWS Backup:
+* 100 megabytes per second for file systems composed of mostly large files
+* 500 files per second for file systems composed of mostly small files
+
+The maximum duration for a backup operation in AWS Backup is 7 days.
+
+**Note**: Complete restore operations generally take longer than the corresponding backup.
+
+Using AWS Backup doesn't consume accumulated burst credits, and it doesn't count against the General Purpose mode file operation limits.
+
+##### Backup completion window
+You can optionally specify a completion window for a backup. This window defines the period of time in which a backup must be completed. 
+
+If you specify a completion window, make sure that you consider the expected performance and the size and makeup of your file system. Doing this helps make sure that your backup can be completed during the window.
+
+Backups that aren't completed during the specified window are flagged with an incomplete status. During the next scheduled backup, AWS Backup resumes at the point that it left off.
+
+##### EFS storage classes
+You can use AWS Backup to back up all data in an EFS file system, whatever storage class the data is in. You don't incur data access charges when backing up an EFS file system that has lifecycle management turned on and has data in the Infrequent Access (IA) storage class.
+
+When you restore a recovery point, all files are restored to the Standard storage class. Lifecycle management policies begin over as new data. Infrequently accessed data is moved to IA storage classes when the policy rules are met.
+
+##### IAM permissions for creating and restoring backups
+You can use the **elasticfilesystem:backup** and **elasticfilesystem:restore** actions to allow or deny an IAM entity—such as a user, group, or role—the ability to create or restore backups of an EFS file system. 
+
+You can use these actions in a file system policy or in an identity-based IAM policy.
+
+##### On-demand backups
+Using either the AWS Backup console or the AWS CLI, you can save a single resource to a backup vault on demand. Unlike with scheduled backups, you don't need to create a backup plan to initiate an on-demand backup. 
+
+You can still assign a lifecycle to your backup, which automatically moves the recovery point to the cold storage tier and notes when to delete it.
+
+##### Concurrent backups
+AWS Backup limits backups to one concurrent backup per resource. Therefore, scheduled or on-demand backups might fail if a backup job is already in progress.
+
+#### Automatic backups 
+When you create a new file system by using the Amazon EFS console, automatic backups are activated by default. You can turn on automatic backups for file systems created by using the AWS CLI or API. 
+
+You can deactivate this setting during or after file system creation. You can turn off automatic backups by using the EFS console or AWS CLI.
+
+##### Default settings and behaviors 
+
+With automatic backups, the default backup plan settings and behaviors that are applied to your backups differ from manually creating a backup. 
+* Backups are created as daily backups with a 35-day retention period. 
+* Backups are stored in a default EFS backup vault, which is created by Amazon EFS on your behalf. 
+* A default backup plan and backup vault cannot be deleted. 
+* Default backup plan settings can be edited by using the AWS Backup console.
+* Automatic backups can be turned off at any time by using the Amazon EFS console or AWS CLI.
+* The **aws:elasticfilesystem:default-backup** system tag key with a value of **enabled** is applied to an EFS file system when automatic backups are created.
+
+#### Using AWS Backup to manually configure backups
+When you use AWS Backup to manually set up your file system backups, you first create a backup plan. The backup plan defines the backup schedule, backup window, retention policy, lifecycle policy, and tags. You can create a backup plan by using the AWS Backup Management Console, the AWS CLI, or the AWS Backup API. As part of a backup plan, you can define the following: 
+* **Schedule**: When the backup occurs
+* **Backup window**: The window of time during which the backup must start 
+* **Lifecycle**: When to move a recovery point to cold storage and when to delete it
+* **Backup vault**: Which vault is used to organize recovery points created by the backup rule
+
+After your backup plan is created, you assign the specific Amazon EFS file systems to the backup plan by using either tags or the Amazon EFS file system ID. After a plan is assigned, AWS Backup begins automatically backing up the Amazon EFS file system on your behalf, according to the backup plan that you defined. You can use the AWS Backup console to manage backup configurations or monitor backup activity. 
+
+#### Knowledge Check
+##### Which AWS service helps automate the tasks to install or update the amazon-efs-utils package on Amazon EC2 instances? 
+* AWS Systems Manager 
+
+The other options are incorrect because of the following: 
+* SageMaker is a machine learning suite of services.
+* AWS Backup is a unified backup service designed to simplify the creation, migration, restoration, and deletion of backups, while providing improved reporting and auditing. 
+* Launch Wizard helps you launch third-party applications on AWS.
+
+##### Which performance mode is recommended for workloads that must scale to higher levels of aggregate throughput and IOPS? 
+* Max I/O
+
+The Max I/O performance mode is recommended for workloads that must scale to higher levels of aggregate throughput and IOPS.
+
+The other options are incorrect because of the following: 
+* General Purpose performance mode is the default performance mode for Amazon Elastic File System (Amazon EFS), but Max I/O scales more efficiently.
+* Provisioned Throughput is a throughput mode that is recommended for workloads requiring higher throughput-to-storage ratios.
+* Bursting Throughput is the default throughput mode that is recommended for most workloads.
+
+##### What is the maximum frequency that you can modify your file system's throughput settings for an Amazon Elastic File System (Amazon EFS) file system? 
+* Once in a 24-hour (1-day) period
+
+You can change your file system's throughput setting once in a 24-hour period. You can change between Bursting Throughput and Provisioned Throughput modes. You can also modify your Provisioned Throughput rate. However, you can only make changes once in the 24-hour period.
 
 ### Week 8: Databases 2 Part 1
+#### Amazon RDS uses the following six database engine options. 
+* **MySQL** is an open-source database engine that is popular due to its enterprise-grade features and free or low-cost licensing. It also prioritizes simplicity and ease of use. While MySQL is currently owned and sponsored by Oracle, the founding developer forked the project to create MariaDB. 
+* **MariaDB** has remained open source and offers improved performance and some additional features not available with MySQL. For example, MariaDB includes support for a variety of optimized and purpose-built storage engines. 
+* **PostgreSQL** is another open-source database engine, but it can be more complex to use than MySQL, due to its advanced features, including support for advanced data types and indexing options. 
+* **Amazon Aurora** is a database engine built for the cloud and is compatible with MySQL and PostgreSQL. It uses storage that is replicated across three Availability Zones for increased durability, performance, and recovery. 
+* **Oracle** offers a commercially licensed database engine that is widely used by large enterprises. It supports both OLTP and OLAP workloads. 
+* **Microsoft SQL Server** is another commercially licensed database engine. In addition to supporting enterprise-level functionality, Microsoft SQL Server may be interesting to companies already using Microsoft products with their workloads, due to the seamless integration.
+
+#### Database Design Principles
+
+#### Internet-scale architectures
+Internet-scale architectures must meet a huge demand, and this starts with the data. Purpose-built databases distribute the data across multiple databases, or partitions, to meet the demand from system requests. This can also help with the localization of data and can help reduce latency for some customers. You can use multiple instances within a cluster or read replicas working together to process requests to balance connectivity and throughput within an architecture.
+
+The architecture’s ability to scale as demand increases helps to maintain availability. Many services can scale in multiple ways. This gives you the ability to choose the scaling that is best suited to the workload that you are running.
+
+#### Distributions
+To meet the demand that internet-scale applications place on their supporting databases, you can distribute data. There are many different solutions for distributing data, including the following  four methods:
+* Data distribution 
+ 1. Partitioning
+ 2. Sharding
+* Database distribution 
+ 3. Database federation
+ 4. Clustering
+
+The distribution method is not visible to anyone using the database in any of the four options.
+
+#### Data distribution
+##### Partitioning
+Partitioning is the process of splitting a large table into smaller entities. 
+
+##### Sharding
+Sharding is a horizontal partition that stores a large database across multiple machines. A single machine, or database server, can store and process only a limited amount of data. Database sharding overcomes this limitation by splitting data into smaller chunks, called shards, and storing them across several database servers. Most database servers have the same underlying technologies, and they work together to store and process large volumes of data.
+
+#### Database distribution
+##### Federation
+With a federated database distribution, several databases work together as a single unit.
+
+##### Clustering
+With a clustered database, several servers or instances are clustered and connected to a single database. All the servers are synchronized so that each node is going to have exactly the same data as all the other nodes.
+
+**Not all AWS database services support all four methods.**
+
+#### Database and application scaling
+Scaling up and out are two common approaches for this.
+
+##### Scale up
+To **scale up**, you increase the available resources on the system that is hosting the databases. With AWS, this means resizing the instance.
+
+##### Scale out
+To **scale out**, you scale horizontally and increase the capacity of a system. An example of this is adding replicas of the database to distribute the data. Each instance contains a complete copy of the data.
+
+#### Knowledge Check
+##### Which application scaling approach involves adding replicas of databases to distribute data?
+* Scaling out
+
+When scaling out, you add replicas of the database to distribute the data. By distributing the data across multiple systems, you begin to run into issues of consistency, availability, efficiency, query or pattern flexibility, and infinite scale. 
+* **Scaling up**: You increase the available resources on the system that is hosting the databases. With AWS, this means resizing the instance.
+* **Sharding**: You store a large database across multiple machines and split data into smaller chunks that are stored across several database servers. 
+* **Clustering**: With a clustered database, several servers or instances are clustered and connected to a single database.
+
+##### Column A in Table A is used to uniquely distinguish one row, or record, from another. That column is also inserted into Table B. What is the term for that column in Table A and in Table B respectively?
+* In Table A it is the primary key and in Table B it is the foreign key.
+
+* **Primary key**: Each row has an identifier column or group of columns that uniquely distinguishes the record from other records in the table. The value in the identifier column is called the primary key. 
+* **Foreign key**: A table can reference another table's primary key; in which case it is called the foreign key.
+
+##### Which distribution solution has several databases work together as a single unit?
+* Federation
+
+* **Clustering**: With a clustered database, several servers or instances are clustered and connected to a single database.
+* **Partitioning**: A partition is an allocation of storage for a table, backed by SSDs and automatically replicated across multiple Availability Zones within an AWS Region. Partition management is handled entirely by Amazon DynamoDB—you never have to manage partitions yourself.
+* **Sharding**: With sharding, a large database is stored across multiple machines. Database sharding splits data into smaller chunks, called shards, and stores them across several database servers.
+
+#### SQL
+#### Practice environment schema
+To illustrate how to use the SQL commands, you will work on a database example throughout this topic. The database contains the following tables:
+* Rating table
+* User table
+* Movie table
+
+##### Table explanations
+* The **rating** table will have four columns, or fields, with set types: id (int), rating (float), user_id (int), and movie_id (int).
+* The **user** table will have four columns, or fields, with set types: id (int), first_name (varchar), last_name (varchar), and email (varchar).
+* The **movie** table will have three columns, or fields, with set types: id (int), description (varchar), and genre (varchar).
+
+The **rating** table is linked to the **user** table by a field called **user_id** that links to the **id** field of the **user** table. The **rating** table is also linked to the **movie** table: the **movie_id** field of the **rating** table is linked to the **id** field of the **movie** table.
+
+#### Data types
+Every column in a relational database's table must have a name and singular type of data. The following are the three main categories of data types, along with examples of the types of data included in each:
+
+##### Date and time:
+**DATE** – The supported format for dates is YYYY-MM-DD.
+
+**TIMESTAMP** – Timestamp is formatted as YYYY-MM-DD hh:mm:ss. These values are stored as the number of seconds since the UNIX epoch, which was January 1, 1970.
+
+**YEAR** – Years are written in the 4-year format.
+
+##### Numeric: 
+**int** – These are whole numbers between -2,147,483,648 and 2,147,483,647.
+
+**decimal** – This is used when it is important to be precise. When declaring a decimal, the precision and scale must be provided. The precision is number of digits that are used total, and the scale is the number of digits that can follow the decimal point. 
+
+##### String:
+**text** is a string of characters.
+
+**char** is a string that has a fixed width. The width is declared with the string.
+
+**varchar** is a string with a variable width. A maximum can be set when the varchar is declared.
+
+#### Types of Data Language Used in SQL
+##### Data definition language (DDL)
+Statements included in this category are used for the creation and modification of database objects, such as the following: 
+* Tables
+* Users accessing a database
+* Database indexes
+
+Some examples of DDL statements are CREATE, ALTER, DROP, and RENAME.
+
+##### Data manipulation language (DML)
+Statements included in this category are used for changing database objects. Some examples of DML statements are SELECT, INSERT, and UPDATE.
+
+##### Data control language (DCL)
+Statements included in this category are used to manage authorization to information within databases. GRANT and REVOKE are examples of DCL statements.
+
+#### LAB
+##### Creating and using a database
+```
+CREATE DATABASE DatabaseName;
+```
+
+```
+USE DatabaseName;
+```
+
+##### Creating a table
+Next to each column name parameter is the data type parameter. If the table has a primary key, PRIMARY KEY and NOT NULL are used after the column name and data type parameters. If a foreign key is used, FOREIGN KEY is used at the start of that column definition.
+
+```
+CREATE TABLE table_name (
+    columnname 1 datatype PRIMARY KEY NOT NULL,
+    FOREIGN KEY columnname2 datatype,
+    columnname3 datatype,
+   ....
+);
+```
+
+##### SQL constraints
+PRIMARY KEY, FOREIGN KEY, and NOT NULL are examples of SQL constraints. The other three SQL constraints are the following:
+* DEFAULT is used to set a default value for a column. This value is added to each new record, unless something else is provided.
+* CHECK is used to limit a value range. When used with a column, it will allow only certain values for that column. When used with a table, it limits the values in certain columns based on values in other columns in the row. 
+* UNIQUE ensures that all values provided in a column are different from each other.
+
+```
+CREATE TABLE user
+(
+id INT PRIMARY KEY NOT NULL,
+first_name VARCHAR(100),
+last_name VARCHAR(100),
+email VARCHAR(225)
+);
+```
+
+Now, do the same with the movie and rating tables. Notice in the rating table, the id fields from both the movie and user tables are used, so they have the following characteristics:
+* FOREIGN KEY is used at the start of the column definition.
+* The columns are named user_id and movie_id by convention but they can be named whatever you like.
+* REFERENCES is used, and then table_name(id) to point to the other table.
+
+```
+CREATE TABLE movie
+(
+id INT PRIMARY KEY NOT NULL,
+name VARCHAR(100),
+description TEXT,
+genre VARCHAR(100)
+);
+```
+
+```
+CREATE TABLE rating
+(
+id INT PRIMARY KEY NOT NULL,
+rating FLOAT,
+user_id INT,
+movie_id INT,
+FOREIGN KEY (user_id) REFERENCES user(id),
+FOREIGN KEY (movie_id) REFERENCES movie(id)
+);
+```
+
+##### Inserting data into the tables
+```
+INSERT INTO user (id, first_name, last_name, email) VALUES (1, 'John', 'Doe','john.doe@example.com');
+INSERT INTO user (id, first_name, last_name, email) VALUES (2, 'Jane','Doe','jane.doe@example.com');
+INSERT INTO user  (id, first_name, last_name, email) VALUES (3,'Martha','Rivera','m.rivera@example.com');
+INSERT INTO user (id, first_name, last_name, email) VALUES (4,'Li','Juan','li.juan@example.com');
+```
+
+```
+SELECT * FROM user;
+```
+OR
+```
+SELECT first_name, last_name FROM user;
+```
+
+```
+INSERT INTO movie (id,name,genre)
+VALUES (1,'Back to the Future','SciFi');
+INSERT INTO movie (id,name,genre)
+VALUES (2,'Star Wars','SciFi');
+INSERT INTO movie (id,name,genre)
+VALUES (3,'Titanic','Drama');
+INSERT INTO movie (id,name,genre)
+VALUES (4,'The Lord of the Rings','Fantasy');
+```
+
+###### Escaping
+In this instance, the way to create an escape for the single quote is to use an additional single quote.
+```
+INSERT INTO movie VALUES (5,'The Shawshank Redemption',NULL,'Drama');
+INSERT INTO movie VALUES (6,'Harry Potter and the Philosopher''s Stone',NULL,'Fantasy');
+INSERT INTO movie VALUES (7,'The Hobbit',NULL,'Fantasy');
+INSERT INTO movie VALUES (8,'The Fifth Element',NULL,'SciFi');
+```
+
+```
+INSERT INTO rating (id, rating, user_id, movie_id) VALUES (1,4.5,1,1);
+INSERT INTO rating (id, rating, user_id, movie_id) VALUES (2,4.7,2,2);
+INSERT INTO rating (id, rating, user_id, movie_id) VALUES (3,4.6,2,3);
+INSERT INTO rating (id, rating, user_id, movie_id) VALUES (4,4.8,3,4);
+INSERT INTO rating (id, rating, user_id, movie_id) VALUES (5,4.2,4,5);
+INSERT INTO rating (id, rating, user_id, movie_id) VALUES (6,4.5,4,6);
+INSERT INTO rating (id, rating, user_id, movie_id) VALUES (7,4.4,3,7);
+INSERT INTO rating (id, rating, user_id, movie_id) VALUES (8,4.1,3,8);
+```
+
+##### 2 ways to insert
+1. With both the column names and the values.
+```
+INSERT INTO TableName (columnname1, columnname2, columnname3, ...)
+VALUES (value1, value2, value3, ...);
+```
+
+2. With values for all columns in the table.
+```
+INSERT INTO TableName
+VALUES (value1, value2, value3, ...);
+```
+
+```
+INSERT INTO movie (id,name,genre)
+VALUES (9,'The Little Rascals',NULL),
+(10,'The Smurfs',NULL);	
+```
+
+#### Selecting Data with SQL Operators
+
+#### WHERE clause
+The WHERE clause is used to filter records and extracts only records that fulfill a specified condition.
+
+```
+SELECT columnname1, columname2, ...
+FROM TableName
+WHERE condition;
+```
+
+Conditions can be things like WHERE a specific country or countries is entered. Conditions are set by using the column name and an operator. The following are examples of operators used in conditions:
+* = Equal
+* > Greater than
+* >= Greater than or equal
+* > Less than
+* >= Less than or equal
+* <> Not equal (In some versions of SQL, != is used instead.)
+* BETWEEN (between a range)
+* LIKE (search for a pattern)
+* IN (multiple possible values for a column)
+
+**Depending on the database configuration, the value of a string in a column might be case sensitive. That means that 'John' is not the same as 'john'.**
+
+```
+SELECT * FROM user WHERE first_name = 'John';
+```
+
+```
+SELECT * FROM user WHERE last_name = 'Doe';
+```
+
+The WHERE clause is not only used in SELECT statements; it is also used in statements such as UPDATE, DELETE, and more. **You might accidentally update or delete all the rows in your table** if you forget to use the WHERE clause.
+
+#### Additions to WHERE
+##### OR statements
+In an OR statement, a record is displayed if it returns TRUE for any of the conditions separated by an OR.
+```
+SELECT * FROM columnname1 WHERE condition OR condition;
+```
+
+##### AND statements
+The AND statement is used to select records that return TRUE for all the conditions separated by AND. 
+```
+SELECT * FROM columnname1 WHERE condition AND condition;
+```
+
+```
+SELECT * FROM user WHERE first_name = 'John' OR first_name = 'Jane';
+```
+
+```
+SELECT * FROM user WHERE first_name = 'John' AND last_name = 'Doe';
+```
+
+```
+SELECT * FROM user WHERE (first_name = 'John' AND last_name = 'Doe') OR last_name = 'Rivera';
+```
+
+#### Sorting Data
+
+##### ORDER BY
+The **ORDER BY** statement sorts the records based on the values of a column in ascending (ASC) or descending (DESC) order. In most engines, ORDER BY sorts records in ascending order by default. You would then use ASC to reorder it back to ascending order after you have used DESC.
+
+```
+SELECT columnname1, columnname2, ...
+FROM TableName
+ORDER BY column1, column2, ... ASC|DESC;
+```
+
+```
+SELECT name, genre
+FROM movie
+ORDER BY genre ASC;
+```
+
+**NULL values can be put either at the top or at the bottom of a table when using an ORDER BY statement, depending on the database engine type.**
+
+#### Modifying Data
+##### UPDATE the data
+The UPDATE statement lets you SET a new value for a field WHERE a condition is met.
+
+```
+UPDATE movie
+SET genre = 'Drama'
+WHERE name = 'Back to the future';
+```
+
+##### DELETE records
+DELETE operation deletes a record when a condition is met. 
+
+```
+DELETE from rating where movie_id = 1;
+DELETE FROM movie WHERE name = 'Back to the future';
+```
+
+##### DROP a table
+A table can be removed by using the DROP TABLE command
+
+It is also possible to remove your entire database by using the DROP DATABASE command. The command can be used like this:
+```
+DROP DATABASE DatabaseName;
+```
+
+#### Joining Two Tables
+##### INNER JOIN
+INNER JOIN returns only the rows with matching values between table 1 and table 2 on the join condition. 
+
+If we take our movie and rating tables for example, we can try to combine these tables to get the ratings for each movie with its name and genre.
+
+```
+SELECT columnname(s)
+FROM TableName1
+INNER JOIN TableName2
+ON TableName1.columnname = TableName2.columnname;
+```
+
+```
+SELECT m.name, m.genre, r.rating as score
+FROM movie m
+INNER JOIN rating r
+ON m.id = r.movie_id;
+```
+
+As you can see on the command, the movie and rating tables are shortened m and r respectively. This type of writing can save a lot of time when writing complex queries.
+
+Additionally, it is possible to rename the columns in the SELECT statement by using the word AS. This is the result of the query:
+
+```
++------------------------------------------+---------+-------+
+| name                                     | genre   | score |
++------------------------------------------+---------+-------+
+| Back to the Future                       | Drama   |   4.5 |
+| Star Wars                                | SciFi   |   4.7 |
+| Titanic                                  | Drama   |   4.6 |
+| The Lord of the Rings                    | Fantasy |   4.8 |
+| The Shawshank Redemption                 | Drama   |   4.2 |
+| Harry Potter and the Philosopher's Stone | Fantasy |   4.5 |
+| The Hobbit                               | Fantasy |   4.4 |
+| The Fifth Element                        | SciFi   |   4.1 |
++------------------------------------------+---------+-------+
+8 rows in set (0.00 sec)
+```
+
+In the result, only eight distinct movies are being listed. Only these movies have been rated in the rating table. 
+
+##### LEFT JOIN
+LEFT JOIN returns all rows from table 1, and values from table 2 will be included when the join conditions match. Missing values from table 2 will be set to NULL by default.
+
+```
+SELECT columnname(s)
+FROM TableName1
+LEFT JOIN TableName2
+ON TableName1.columnname = TableName2.columnname;
+```
+
+```
+SELECT m.name, m.genre, r.rating as score
+FROM movie m
+LEFT JOIN rating r
+ON m.id = r.movie_id;
+```
+
+This is the result of the query. In the result, all the movies present in the movie table are selected. However, only the movies that have been rated have a rating in the table; the others have a NULL value.
+
+```
++------------------------------------------+---------+-------+
+| name                                     | genre   | score |
++------------------------------------------+---------+-------+
+| Back to the Future                       | Drama   |   4.5 |
+| Star Wars                                | SciFi   |   4.7 |
+| Titanic                                  | Drama   |   4.6 |
+| The Lord of the Rings                    | Fantasy |   4.8 |
+| The Shawshank Redemption                 | Drama   |   4.2 |
+| Harry Potter and the Philosopher's Stone | Fantasy |   4.5 |
+| The Hobbit                               | Fantasy |   4.4 |
+| The Fifth Element                        | SciFi   |   4.1 |
+| The Little Rascals                       | NULL    |  NULL |
+| The Smurfs                               | NULL    |  NULL |
++------------------------------------------+---------+-------+
+10 rows in set (0.01 sec)
+```
+
+##### RIGHT JOIN
+RIGHT JOIN returns all rows from table 2, and values from table 1 will be included when the join conditions match. Missing values from table 1 will be set to NULL by default. 
+
+```
+SELECT columnname(s)
+FROM TableName1
+RIGHT JOIN TableName2
+ON TableName1.columnname = TableName2.columnname;
+```
+
+```
+SELECT m.name, m.genre, r.rating as score
+FROM movie m
+RIGHT JOIN rating r
+ON m.id = r.movie_id;
+```
+
+A RIGHT JOIN of these tables would return the following results. Because The Little Rascals and The Smurfs do not have ratings in the rating table, they are not a part of the results.
+
+```
++------------------------------------------+---------+-------+
+| name                                     | genre   | score |
++------------------------------------------+---------+-------+
+| Back to the Future                       | Drama   |   4.5 |
+| Star Wars                                | SciFi   |   4.7 |
+| Titanic                                  | Drama   |   4.6 |
+| The Lord of the Rings                    | Fantasy |   4.8 |
+| The Shawshank Redemption                 | Drama   |   4.2 |
+| Harry Potter and the Philosopher's Stone | Fantasy |   4.5 |
+| The Hobbit                               | Fantasy |   4.4 |
+| The Fifth Element                        | SciFi   |   4.1 |
++------------------------------------------+---------+-------+
+8 rows in set (0.00 sec)
+```
+
+##### FULL OUTER JOIN
+FULL OUTER JOIN returns all rows from both tables. Missing values on the join condition from either side will be set to NULL by default.
+
+```
+SELECT columnname(s)
+FROM TableName1
+FULL OUTER JOIN TableName2
+ON TableName1.columnname = TableName2.columnname
+WHERE condition;
+```
+
+**Not all database engines support FULL OUTER JOIN statements.**
+
+#### GROUP BY and Aggregate Functions
+Aggregate functions return a single value after performing a calculation on a set of values. Except for **COUNT(*)** , aggregate functions ignore null values.
+
+This section will explore the following aggregate functions: 
+* **COUNT**
+* **SUM**
+* **AVG**
+
+##### GROUP BY statement
+The GROUP BY statement serves the following primary purposes:
+* You can group rows that have the same values into summary rows.
+* When used with aggregate functions, like **COUNT()**, **MAX()**, **MIN()**, **SUM()**, and **AVG()**, GROUP BY can group result sets by one or more columns.
+
+The GROUP BY clause of the SELECT statement is often used with aggregate functions. When used, GROUP BY creates a summary row for rows that have the same values, such as finding the number of students from a specific state. 
+
+```
+SELECT columnname(s)
+FROM TableName
+WHERE condition
+GROUP BY columnname(s)
+ORDER BY columnname(s);
+```
+
+##### COUNT function
+The **COUNT()** function returns the number of rows that matches a specified criterion. You can add a WHERE clause to specify conditions such as returning the number of entries for a given column (for example, State) WHERE the state entered is Rhode Island (for example, WHERE State = Rhode Island).
+
+```
+SELECT COUNT(columnname)
+FROM TableName
+WHERE condition;
+```
+
+```
+SELECT COUNT(name), genre FROM movie WHERE genre = 'SciFi';
+```
+
+```
++-------------+-------+
+| COUNT(name) | genre |
++-------------+-------+
+|           2 | SciFi |
++-------------+-------+
+1 row in set (0.00 sec)
+```
+
+It is also possible to use the COUNT function on aggregated data by using the GROUP BY statement.
+
+This statement returns the following result. Here, the GROUP BY statement aggregates the data and the **COUNT** function counts the number of records in each group.
+
+```
+SELECT COUNT(name), genre
+FROM movie
+GROUP BY genre;
+```
+
+##### It is also possible to add a condition in aggregated data by using the HAVING statement
+```
+SELECT COUNT(name) AS nb_movies, genre
+FROM movie
+GROUP BY genre
+HAVING nb_movies > 2
+ORDER BY genre DESC;
+```
+
+Here the result only displays the genres that have a number of movies higher than two.
+
+```
++-----------+---------+
+| nb_movies | genre   |
++-----------+---------+
+|         3 | Fantasy |
+|         3 | Drama   |
++-----------+---------+
+2 rows in set (0.01 sec)
+```
+
+##### COUNT and DISTINCT
+Using the DISTINCT keyword with the COUNT function ignores duplicates. This will return a count of only unique values. For instance, if you want to return the number of unique states in a table called StudentInfo, you could could use DISTINCT in the following way:
+
+```
+SELECT COUNT(DISTINCT State)
+FROM StudentInfo;
+```
+
+##### SUM function
+The **SUM()** function returns the total sum of a numeric column. It can also use WHERE to set conditions.
+
+```
+SELECT SUM(columnname)
+FROM TableName
+WHERE condition;
+```
+
+```
+SELECT genre, SUM(rating) AS sum_ratings
+FROM movie
+INNER JOIN rating
+ON movie.id = rating.movie_id
+GROUP BY genre ORDER BY sum_ratings DESC;
+```
+
+The genre Fantasy has the highest number because it has the most records in the movie table.
+
+```
++---------+--------------------+
+| genre   | sum_ratings        |
++---------+--------------------+
+| Fantasy | 13.700000286102295 |
+| Drama   | 13.299999713897705 |
+| SciFi   |  8.799999713897705 |
++---------+--------------------+
+3 rows in set (0.00 sec)
+```
+
+##### AVG function
+The **AVG()** function returns the average value of a numeric column. It can also use WHERE to set conditions.
+
+```
+SELECT AVG(columnname)
+FROM TableName
+WHERE condition;
+```
+
+```
+SELECT genre, AVG(rating) AS average_ratings
+FROM movie
+INNER JOIN rating ON movie.id = rating.movie_id
+GROUP BY genre
+ORDER BY average_ratings DESC;
+```
+In the result, you can see that Fantasy has the highest average rating, but the number is 4.566666762034099 and not 13.700000286102295 because we are taking the average of all the movie records with the genre Fantasy instead of adding the averages together.
+
+```
++---------+--------------------+
+| genre   | average_ratings    |
++---------+--------------------+
+| Fantasy |  4.566666762034099 |
+| Drama   |  4.433333237965901 |
+| SciFi   | 4.3999998569488525 |
++---------+--------------------+
+3 rows in set (0.00 sec)
+```
+
+##### Using operators with AVG
+Operators can be used with the AVG function to return values that are in relation to the average. In the following example, all values greater than the AVG are returned.
+
+```
+SELECT * FROM TableName
+WHERE columnname > (SELECT AVG(columnname) FROM TableName);
+```
+
+##### MIN and MAX functions
+The **MIN()** function returns the smallest value of the selected column and **MAX()** returns the largest value of the selected column.
+
+```
+SELECT MIN(columnname)
+FROM TableName
+WHERE condition;
+```
+
+#### Common Table Expressions
+Common table expressions (CTEs) allow users to create tables that exist only during the life of the query. They are not persisted on disk. These tables can be used immediately within the query. This is useful when you want to work with a subset of a table or within a joined set of tables.
+
+Imagine that you want to create a table that selects the rating for each movie. You will then query this table to extract only the movies that have a rating higher than or equal to 4.5.
+
+When creating a transient table, WITH NewTableName is used with the AS (SELECT selectExpression) statement to create the table. Then it becomes possible to query this table by using a SELECT expression as you would normally do with a regular table. 
+
+```
+WITH bestmovie AS
+(SELECT name, genre, rating
+FROM movie
+INNER JOIN rating 
+ON movie.id = rating.movie_id
+GROUP BY name, genre
+ORDER BY rating DESC
+)
+SELECT name, rating
+FROM bestmovie
+WHERE rating >= 4.5;
+```
+
+In this code, the WITH NewTableName AS (SELECT selectExpression) statement is used to create the transient table (here: bestmovie). Then it becomes possible to query the table by using a SELECT expression as you would normally do with a regular table. 
+
+Here is the result of this query. You get the two records for which the rating is higher than or equal to 4.5.
+
+```
++------------------------------------------+--------+
+| name                                     | rating |
++------------------------------------------+--------+
+| The Lord of the Rings                    |    4.8 |
+| Star Wars                                |    4.7 |
+| Titanic                                  |    4.6 |
+| Back to the Future                       |    4.5 |
+| Harry Potter and the Philosopher's Stone |    4.5 |
++------------------------------------------+--------+
+5 rows in set (0.00 sec)
+```
+
+It is also possible to declare multiple tables that exist solely for the life of a query. Imagine that you want to have the movie names and their corresponding rating, as well as the first names and last names of people who rated the movies. You will declare two transient tables for this.
+* **The bestmovie table**: This is very similar to the one used in the previous example. It includes the movie ID, name, genre, and rating of the movies.
+* **The userandmovie table**: This includes the user IDs, the first and last names of the users, as well as the movie IDs corresponding to their rated movies.
+
+This is the current content of the bestmovie table:
+
+| movie_id | name | genre | rating |
+
+And, this is the current content of the userandmovie table:
+
+| userid1 | first_name | last_name | movie_id |
+
+```
+With bestmovie AS
+(SELECT movie.id AS movieid, name, rating
+FROM movie INNER JOIN rating
+ON movie.id = rating.movie_id
+GROUP BY movieid, name
+),
+userandmovie AS
+(SELECT user.id AS userid, first_name, last_name, movie_id
+FROM user
+INNER JOIN rating ON user.id = user_id
+)
+SELECT name, rating, first_name, last_name
+FROM bestmovie bm inner join userandmovie um on bm.movieid = um.movie_id;
+```
+
+```
++------------------------------------------+--------+------------+-----------+
+| name                                     | rating | first_name | last_name |
++------------------------------------------+--------+------------+-----------+
+| Back to the Future                       |    4.5 | John       | Doe       |
+| Star Wars                                |    4.7 | Jane       | Doe       |
+| Titanic                                  |    4.6 | Jane       | Doe       |
+| The Lord of the Rings                    |    4.8 | Martha     | Rivera    |
+| The Shawshank Redemption                 |    4.2 | Li         | Juan      |
+| Harry Potter and the Philosopher's Stone |    4.5 | Li         | Juan      |
+| The Hobbit                               |    4.4 | Martha     | Rivera    |
+| The Fifth Element                        |    4.1 | Martha     | Rivera    |
++------------------------------------------+--------+------------+-----------+
+```
+
+CTEs can be very useful when it comes to complex queries. They help you work with subsets of tables and simplify the final query.
+
+CTEs are also often used to increase the efficiency of a query. By driving efficiency in your queries, you create more **sustainable workloads**.
+
+#### Summary
+#### Types of data language used in SQL
+##### DDL
+Statements included in this category are used for the creation and modification of database objects, such as the following:
+* Tables
+* Users accessing a database
+* Database indexes 
+
+Some examples of DDL statements are CREATE, ALTER, DROP, and RENAME.
+
+##### DML
+Statements included in this category are used for changing database objects. Some examples of DML statements are SELECT, INSERT, and UPDATE.
+
+##### DCL
+Statements that fall under this category are used to manage authorization to information within databases. GRANT and REVOKE are examples of DCL statements.
+
+#### SQL constraints
+* PRIMARY KEY is the value in the identifier column of a table. 
+* FOREIGN KEY is when another table's primary key is used in a different table.
+* NOT NULL ensures that field contains data and is not left blank.
+* DEFAULT is used to set a default value for a column. This value is added to each new record, unless something else is provided. 
+* CHECK is used to limit a value range. When used with a column, it will allow only certain values for that column. When used with a table, it limits the values in certain columns based on values in other columns in the row. 
+* UNIQUE ensures that all values provided in a column are different from each other. 
+
+#### SQL statements
+##### Creating and using a database
+The following statement is used to create a database.
+```
+CREATE DATABASE DatabaseName;
+```
+
+The following statement is used to access a database.
+```
+USE DatabaseName;
+```
+
+##### Creating and viewing tables
+The following statement is an example of how to create a table in a database.
+```
+CREATE TABLE table_name (
+    columnname1 datatype PRIMARY KEY NOT NULL,
+    FOREIGN KEY columnname2 datatype,
+    columnname3 datatype,
+   ....
+);
+```
+
+The following statement is used to view a table.
+```
+SELECT * FROM TableName;
+```
+
+##### Inserting data into tables
+```
+INSERT INTO TableName (columnname1, columnname2,...)
+VALUES (valueA, valueB, valueC, ...);
+```
+
+Using SELECT * is not recommended for efficient SQL queries because it returns every column. It is best to use more precise SELECT queries to improve the speed of the query. Therefore, you should specify only the columns that you need to retrieve in the SELECT statement.  
+
+Additionally, you want to filter the rows to retrieve only those that you will need. Aiming for the most efficient query possible can help increase the sustainability of your workloads. 
+
+#### WHERE clause
+The WHERE clause is used to filter records, and it extracts only records that fulfill a specified condition.
+```
+SELECT columnname1, columname2, ...
+FROM TableName
+WHERE condition;
+```
+
+Conditions can be things like WHERE a specific country or countries is entered. Conditions are set by using the column name and an operator. The following are examples of operators used in conditions:
+* Equal =
+* Greater than >
+* Less than <
+
+The WHERE clause is not only used in SELECT statements. It is also used in statements such as UPDATE, DELETE, and more. This is important because you might accidentally update or delete all the rows in your table if you forget to use the WHERE clause. You can also use OR and AND statements with WHERE.
+
+##### ORDER BY
+The ORDER BY statement sorts the records based on the values of a column in ascending (ASC) or descending (DESC) order. In most engines, ORDER BY sorts records in ascending order by default. You would then use ASC to reorder it back to ascending order after you have used DESC.
+```
+SELECT columnname1, columnname2, ...
+FROM TableName
+ORDER BY column1, column2, ... ASC|DESC;
+```
+
+##### Modifying data
+The UPDATE statement lets you SET a new value for a field WHERE a condition is met. 
+```
+UPDATE TableName
+SET columname1 = valueA, columname2 = valueB, ...
+WHERE condition;
+```
+
+##### The DELETE statement is used to delete existing records in a table.
+```
+DELETE FROM TableName WHERE condition;
+```
+
+If you do not need a table anymore, you can remove it by using the DROP TABLE command.
+```
+DROP TABL TableName
+```
+
+##### Joins
+When tables are linked to each other, it becomes possible to make queries that combine rows from several tables by using the JOIN statement.
+
+There are several ways to join tables:
+* INNER JOIN
+* LEFT JOIN
+* RIGHT JOIN
+* FULL OUTER JOIN
+
+##### GROUP BY and aggregate functions
+Aggregate functions return a single value after performing a calculation on a set of values. Except for COUNT(*) , aggregate functions ignore null values. 
+
+The GROUP BY clause of the SELECT statement is often used with aggregate functions. When used, GROUP BY creates a summary row for rows that have the same values, such as finding the number of students from a specific state. 
+
+```
+SELECT columnname(s)
+FROM TableName
+WHERE condition
+GROUP BY columnname(s)
+ORDER BY columnname(s);
+```
+
+The following are the aggregate functions:
+* COUNT (can be used with DISTINCT)
+* SUM
+* AVG (can be used with operators)
+* MIN
+
+##### CTEs
+Common table expressions (CTEs) allow users to create tables that exist only during the life of the query. They are not persisted on disk. These tables can be used immediately within the query. This is useful when you want to work with a subset of a table or within a joined set of tables.
+
+When creating a temporary table, WITH TemporaryTableName is used with the AS (SELECT selectExpression) statement to create the temporary table. Then it becomes possible to query the temporary table by using a SELECT expression as you would normally do with a regular table. 
+
+#### Working with Amazon RDS
+#### Pre-assessment
+##### A company needs to perform complex data analysis and reporting on a set of data gathered from real-time transactions. Which kind of data processing is used for complex the data analysis and reporting, and which type is for managing real-time transactions?
+* Online analytic processing (OLAP) is for complex data analysis and reporting, and online transaction processing (OLTP) is for managing real-time transactions.
+
+##### Which statement describes how Amazon RDS provides high availability?
+* Amazon RDS automatically provisions and maintains a synchronous standby replica in a different Availability Zone
+
+##### Which Amazon RDS database engine is cloud native?
+* Amazon Aurora MySQL-Compatible Edition
+
+#### Amazon RDS Deep Dive
+
+#### Amazon Relational Database Service (Amazon RDS)
+With Amazon RDS, you can achieve the following:
+* Remove inefficient and time-consuming database administrative tasks without needing to provision infrastructure or maintain software.
+* Deploy and scale the relational database engines of your choice in the cloud or on premises.
+* Achieve high availability with Amazon RDS Multi-AZ deployments.
+* Benefit from over a decade of proven operational expertise, security best practices, and innovation in databases.
+
+By moving to a fully managed service, you can pass on the burden of repetitive tasks, such as the following, to AWS:
+* Backup and restore operations
+* Software installations and patching
+* Managing hardware that supports the server
+
+#### Use cases for Amazon RDS
+##### Build web and mobile applications
+You can use Amazon RDS to support applications that are increasing in size or traffic with high availability, throughput, and storage scalability. 
+
+Amazon RDS makes it so you can take advantage of flexible pay-per-use pricing to suit various application usage patterns.
+
+##### Move to managed databases
+You can innovate and build new applications with Amazon RDS instead of worrying about self-managing your databases, which can be time consuming, complex, and expensive.
+
+##### Break free from legacy databases
+Amazon RDS helps you move away from expensive commercial databases by migrating to Amazon Aurora.
+
+When you migrate to Aurora, you get the scalability, performance, and availability of commercial databases at 1/10th the cost.
+
+#### Available engines
+Amazon RDS is available on several database instance types—optimized for memory, performance, or I/O—and provides you with seven familiar database engines to choose from. You can use **AWS Database Migration Service (AWS DMS)** to migrate or replicate your existing databases to Amazon RDS.
+
+| Commercial | Open Source | Cloud Native |
+| ---------- | ----------- | ------------ |
+| Microsoft SQL Server | PostgreSQL | Amazon Aurora PostgreSQL-Compatible Edition |
+| Oracle | MySQL | Amazon Aurora MySQL-Compatible Edition |
+| | MariaDB | |
+
+#### Amazon RDS Specific Design Considerations
+
+#### DB instances
+* Database environment with specific compute and storage
+* Can contain multiple user-created databases
+* AWS Management Console, AWS comand line tools, Amazon RDS API operations
+
+#### DB instance classes
+* **Burstable instances**. An amount of CPU is flexible. It can expand or contract based on actual usage. The amount of power that you have is chosen by the instances size and the instances type can choose the balance of that power.
+* **General-purpose instances** have a balance of CPU and memory.
+* **Memory-optimized instances** have more memory generally.
+
+#### DB instance storage classes
+* **General purpose block storage** has again a balance of speed and price.
+* **Provisioned IOPS** - for I/O intensive workloads.
+* **Magnetic** are available for backwards compatinility.
+
+#### Modifying a DB instance class
+1. Preset stirage scaling configurations.
+2. If needed, change the DB instance class to change preset configurations.
+3. Always test any changes on a test instance first.
+4. Decide if modifications apply immediately or during scheduled maintenance window.
+
+#### DB instance configuration examples.
+##### Workload 1
+Requirements:
+* Balance of compute, memory, and networking for a broad rabge of general workloads.
+* Single digit millisecond latencies and ability to burst to 3,000 IOPS.
+
+DB configuration:
+* Instance class: Standard.
+* Storage types: General Purpose.
+
+##### Workload 2
+Requirements:
+* BMemory-intensive application with high compute capacity and high memeory footprint.
+* Fast and consistent I/O performance.
+
+DB configuration:
+* Instance class: Memory Optimized.
+* Storage types: Provisioned IOPS.
+
+#### Amazon RDS monitoring considerations
+* **Amazon CloudWatch**. Amazon RDS service allows us to roll up database specific metrics and allow us to make decisions based on those metrics.
+* **Amazon RDS Performance Insights**. The Amazon RDS Performance Insights dashboard gives us performance insights around the database usage, query usage, optimization and helps us make that database run better.
+* **Enhanced Monitoring**. It can be turned on to get more detailed results all the way down to second variability or granularity with respect to those metrics and allows us to get a much clearer picture of what we need.
+
+#### DB instance control access
+* **Password authentication**. It's a default option. A database admin user and a database admin password can be set at database creation time. Now, when you have created a database, especially relational databases, the authentication and authorization is done inside that database, often as just one of the tables that's stored in that database.
+* **AWS Identity and access management (IAM)** - linking IAM users and roles into a database for authentication purpose.
+* **Kerberos authentication** is often used with services like Microsoft Active Directory, which uses that Kerberos model which allows you to map users inside of a Kerberos controlled identity source and your database. 
+
+**These [above] are all authentication models. The authorization is still done in that database engine.**
+
+#### DB Instance networking
+* It exists in a VPC.
+ * Allows using routing to isolate a database into a specific subnet.
+ * Allows you to leverage security groups and network ACLs to control traffic to come in and out of that subnet or into that database instance itself.
+ * Allows you to leverage the connections that that VPC has.
+
+#### Amazon RDS design considerations
+##### Database engines
+Amazon RDS is continually working to support new versions of each database engine. You can have up to 40 Amazon RDS DB instances. Of these 40, up to 10 can be Oracle or SQL Server DB instances under the License Included model. All 40 DB instances can be used for MySQL, MariaDB, or PostgreSQL. You can also have 40 DB instances for SQL Server or Oracle under the Bring Your Own License (BYOL) licensing model. If your application requires more DB instances, you can request additional DB instances.
+
+##### Instance type and sizing
+Some database engines support additional database instance classes.
+
+| Type | Burstable instances | General-purpose instances | Memory-optimized instances |
+| ---- | ------------------- | ------------------------- | -------------------------- |
+| Size | Between 1 vCPU for every 1 gibibyte (GiB) RAM and 8 vCPU for every 32 GiB RAM | Between 2 vCPU for every 8 GiB RAM and 128 vCPU for every 512 GiB RAM | Between 2 vCPU for every 16 GiB RAM and 128 vCPU for every 4096 GiB RAM |
+| Networking | Moderate performance | High performance | High performance |
+| Workload | Good for smaller or variable workloads | Good for running general-purpose workloads | Good for query-intensive workloads or high connection counts |
+| Highlights | T3, T4 configured for unlimited mode, can burst above baseline for extra charge | Balanced compute, memory, and networking | Lower cost per GiB of memory |
+
+##### Backup and recovery
+* **Automated backups**: Amazon RDS creates and saves automated backups (system snapshots and transaction logs) of your DB instance. Amazon RDS creates a storage volume snapshot of your DB instance, backing up the entire DB instance and not just individual databases.
+* **Database snapshots**: You can also back up your DB instance manually, by manually creating a DB snapshot. The first snapshot of a DB instance contains the data for the full DB instance. Subsequent snapshots of the same DB instance are incremental, which means that only the data that has changed after your most recent snapshot is saved.
+* **Backup retention period**: You can set the backup retention period when you create a DB instance. If you don't set the backup retention period, the default backup retention period is 1 day, if you create the DB instance using the Amazon RDS API or the AWS Command Line Interface (AWS CLI). The default backup retention period is 7 days if you create the DB instance by using the console. After you create a DB instance, you can modify the backup retention period. You can set the backup retention period to between 0 and 35 days.
+* **Backup storage**: Your Amazon RDS backup storage for each Region is composed of the automated backups and manual DB snapshots for that Region. Your backup storage is equivalent to the sum of the database storage for all instances in that Region. Moving a DB snapshot to another Region increases the backup storage in the destination Region.
+* **Database native backup options**: The database engine that you have chosen contains its own native solution for backups and snapshot. Amazon RDS does not interfere with these operations should you choose to implement them.
+* **AWS Backup**: You can also use AWS Backup to manage backups of Amazon RDS DB instances. The AWS Backup service provides a centralized backup console that offers backup scheduling, retention management, and backup monitoring.
+
+#### Case study: Intuit Mint
+Intuit Mint (Mint.com) is a free personal financial management service used by more than six million consumers in the United States and Canada. The service connects a customer’s financial information—such as bank accounts, credit cards, and bills—and presents the information in a single place. 
+
+Mint.com automatically updates and categorizes information in real time, so customers can perform the following actions:
+* View the status of their finances
+* Track their spending
+* Monitor their investments
+
+Mint.com also provides bill reminders and payment services, so that people can not only see their finances, but also take action on them.
+
+##### The challenge
+Mint.com was originally hosted in an internal data center, but wanted to make these changes:
+* Improve its ability to scale up or down to meet peak traffic demands:
+* Put more of its resources into new software development:
+
+##### AWS services used
+###### Amazon EC2
+Mint initially migrated more than 100 MySQL instances to Amazon Elastic Compute Cloud (Amazon EC2). Approximately 1 year later, the company shut down the data center that it had previously used to host Mint.com and shifted its focus to optimizing its applications on AWS.
+
+###### Amazon CloudFront
+Amazon CloudFront is a global content-delivery network (CDN) service designed to speed the delivery of websites and other web assets.
+
+###### Amazon RDS
+As part of this optimization effort, the company migrated its MySQL instances from Amazon EC2 to Amazon Relational Database Service (Amazon RDS) for MySQL. 
+
+###### AWS CloudFormation
+Mint also uses AWS CloudFormation templates to give the company’s administrators a way to easily provision and manage its AWS resources.
+
+##### Benefits of the migration
+###### Cost reduction
+Mint.com was able to reduce operational costs by 25 percent. They no longer need to tune the server and IOPS to improve database performance or worry about hardware-acquisition costs.
+
+###### Faster failover intervention
+The change to Amazon RDS for SQL also means that the team no longer has to perform manual interventions for failover scenarios. These often took up to 30 minutes but now only takes 1 minute.
+
+###### Ease of development
+Database administrators have reduced time spent on database-support activities by about 15 percent because they no longer have to perform basic administrative tasks. This means that they can focus on building better products.
+
+The Mint.com migration into the cloud also provided some additional benefits due to their use of Amazon EC2, CloudFront, and CloudFormation.
+* The Mint.com team gained greater elasticity and flexibility than their previous internal data center gave them.
+* Mint.com can now scale on demand to support website traffic increases up to 200 percent.
+* Mint.com can now provide security for 50 TB of financial data that it stores.
+
+#### Amazon RDS and High Availability
+Amazon RDS provides high availability by implementing a multiple-Availability Zone (Multi-AZ) approach. Amazon RDS automatically provisions and maintains a synchronous standby replica in a different Availability Zone. 
+
+The primary DB instance is synchronously replicated across Availability Zones to a standby replica to provide data redundancy, eliminate I/O freezes, and minimize latency spikes during system backups. Running a DB instance with high availability can enhance availability during planned system maintenance and help protect your databases against DB instance failure and Availability Zone disruption.
+
+#### Multi-AZ deployments and read replicas
+
+| | Multi-AZ Deployments | Read Replicas |
+| ----------------------- | ----------------------- | ---------------------- |
+| Replication | Synchronous block-level replication is highly durable. | Asynchronous replication is highly scalable. |
+| Instance availability | Only the database engine on the primary instance is active. | All read replicas are accessible and can be used for read scaling. |
+| Backups | Automated backups are taken from standby. | No backups are configured by default for replicas. |
+| Regions and Availability Zones | They can always span two Availability Zones within a single Region. | They can be within an Availability Zone, across Availability Zones, or across Regions. |
+| Upgrades | Database engine version upgrades happen on the secondary, which is then promoted to primary. | Database engine version upgrade is independent from the source instance. |
+| Failover and promotion | They automatically fail over to standby when a problem is detected. | They can be manually promoted to a standalone database instance. |
+
+#### High availability example
+A highly available architecture using a Multi-AZ deployment and two Amazon RDS read replicas.
+
+The primary DB instance is used for writes, but can also be used for some reads. To optimize read performance, the application instances connect to the read replicas for reads (SELECT) and the primary instance for write operations (INSERT, UPDATE, DELETE). If more read capacity is required, additional read replicas can be added. 
+
+The secondary DB instance is automatically launched by Amazon RDS in a different Availability Zone. It is always in synch with the primary. If there is an issue with the primary instance, Amazon RDS will promote the secondary instance to the primary, replace the old primary instance, and make it the new secondary. The cutover is performed by making a change to the DNS record for the database. 
+
+#### Monitoring Amazon RDS
+Amazon RDS provides metrics in real time for the operating system that your DB instance runs on. You can view the metrics for your DB instance by using the console, or consume the Enhanced Monitoring JSON output from Amazon CloudWatch Logs in a monitoring system of your choice. By default, Enhanced Monitoring metrics are stored in CloudWatch Logs for 30 days.
+
+#### Amazon RDS Performance Insights
+Amazon RDS Performance Insights is a database performance tuning and monitoring feature that helps you quickly assess the load on your database and determine when and where to take action. With Performance Insights, non-experts can detect performance problems with a user-friendly dashboard that visualizes database load.
+
+Performance Insights uses lightweight data collection methods that don’t impact the performance of your applications. Reports make it simple to see which SQL statements are causing load and why.
+
+##### Engine support
+Amazon RD Performance Insights is available for all engines.
+
+##### Extended data retention
+Customers can retain up to 2 years of performance data. They can also view the following analysis:
+* Trend performance over time
+* Month-over-month activity
+* Comparison of end-of-quarter or end-of-year performance with earlier performance
+
+##### Load metrics in Amazon CloudWatch
+Amazon CloudWatch can receive the following metrics:
+* DBLoad
+* DBLoadCPU
+* DBLoadNonCPU
+
+##### Instance support
+Support is not available for burstable (t) instance types.
+
+##### [Multi-AZ DB cluster deployments](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html)
+
+#### OLAP and OLTP
+Online analytic processing (OLAP) and online transaction processing (OLTP) are data processing systems that help you store and analyze large volumes of business data. You can collect and store data from multiple sources—such as websites, applications, smart meters, and internal systems. Both systems require efficient and reliable IT infrastructure to run smoothly. You can use them both to query existing data or store new data. Both support data-driven decision-making in an organization.
+
+##### OLAP
+The primary purpose of OLAP is to analyze aggregated data. OLAP combines and groups the data so that you can analyze it from different points of view. You use OLAP systems for actions such as generating reports, performing complex data analysis, and identifying trends. 
+
+##### OLTP
+OLTP stores and updates transactional data reliably and efficiently in high volumes. OLTP databases can be one among several data sources for an OLAP system. You use OLTP systems for actions such as processing orders, updating inventory, and managing customer accounts.
+
+#### Example of OLAP and OLTP
+A company uses an OLTP database to process transactions in real time, update inventory levels, and manage customer accounts. 
+
+The company uses an OLAP database to analyze the data collected by the OLTP database. The company’s business analysts can use it to generate reports on sales trends, inventory levels, customer demographics, and other key metrics. 
+
+#### When to use OLAP or OLTP
+OLAP and OLTP are different methods of using a database for relevant use cases. OLAP is optimized for complex data analysis and reporting, and OLTP is optimized for transactional processing and real-time updates.
+
+| Criteria | OLAP | OLTP |
+| -------- | ---- | ---- |
+| Purpose | OLAP helps you analyze large volumes of data to support decision-making. | OLTP helps you manage and process real-time transactions. |
+| Data source | OLAP uses historical and aggregated data typically from multiple sources. | OLTP uses real-time and transactional data. |
+| Data structure | OLAP uses multidimensional (cubes) or relational databases. | OLTP uses relational databases. |
+| Data model | OLAP uses star schema, snowflake schema, or other analytical models. | OLTP uses normalized or denormalized models. |
+| Volume of data | OLAP has large storage requirements, typically in terabytes (TB) and petabytes (PB). | OLTP has comparatively smaller storage requirements, typically in gigabytes (GB). |
+| Response time | OLAP has longer response times, typically in seconds or minutes. | OLTP has shorter response times, typically in milliseconds. |
+| Example applications | OLAP is good for analyzing trends, predicting customer behavior, and identifying profitability. | OLTP is good for processing payments and orders, and managing customer data. |
+
+#### Transactional Compliance
+##### Relational databases
+A database transaction is a sequence of multiple operations performed on a database as part of a single logical unit of work. Either all operations within the transaction succeed, or they are all rolled back and the database remains in the state before the transaction was issued. A transaction is ended when a control command such as a commit or rollback is issued. Transactions include data manipulation language (DML) statements:
+* **Insert**: Add a new record or table.
+* **Update**: Change the values within one record in a table.
+* **Delete**: Remove a record from a table.
+
+##### Nonrelational databases
+Nonrelational databases typically trade off consistency for availability. This means that different users can retrieve different results while an operation is occurring and the change is still propagating. Nonrelational operations are invoked with APIs. The following are some API operations in Amazon DynamoDB:
+* **PutItem**: Add a new item to the table.
+* **UpdateItem**: Update existing values or add new attributes to an item in the table.
+* **DeleteItem**: Remove an item from the table.
+
+#### ACID compliance
+Atomicity, consistency, isolation, durability (ACID) is a method for maintaining consistency and integrity in a structured relational database.
+
+##### Atomicity
+When implementing a transaction, atomicity ensures that your transactions either completely succeed or completely fail. No one statement can succeed without the others. Because many requests to a database are multifaceted, this interaction is important for avoiding faults in your dataset.
+
+##### Consistency
+Consistency ensures that all transactions provide valid data to the database. This data must adhere to all defined rules and constraints. For a transaction to be completed successfully, all the statements within it must be valid against all relevant constraints. If any single statement violates these checks, the whole transaction is rolled back, and the database is returned to its previous state. Consistency also ensures that data updates are not made available until all replicas have been updated as well.
+
+##### Isolation
+Isolation ensures that one transaction cannot interfere with another concurrent transaction. Databases are busy places. Isolation ensures that when multiple transactions request the same data, there are rules in place ensuring that the operations do not cause data corruption and that all data is made available in an orderly fashion.
+
+##### Durability
+Data durability is all about making sure your changes actually persist. When a transaction has successfully completed, durability ensures that the result of the transaction is permanent even in the event of a system failure. This means that all completed transactions that result in a new record or update to an existing record are written to disk and not left in memory.
+
+#### BASE compliance
+Basically available, soft state, eventually consistent (BASE) is a method for maintaining eventual consistency and integrity in a semistructured database such as a nonrelational database.
+
+##### Basically available
+Basically available allows for one instance to receive a change request and make that change available immediately. The system always guarantees a response for every request. However, it is possible that the response can be a failure or stale data, if the change has not been replicated to all nodes. In an ACID system, the change does not become available until all instances are consistent. Consistency in a BASE model is traded for availability.
+
+##### Soft state
+In a BASE system, there are allowances for partial consistency across distributed instances. For this reason, BASE systems are considered to be in a soft state, also known as a changeable state. In an ACID system, the database is considered to be in a hard state because users cannot access data that is not fully consistent.
+
+##### Eventually consistent
+This reinforces the other letters in the acronym. The data will be eventually consistent, which means a change will eventually be made to every copy. However, the data will be available in whatever state it is during propagation of the change.
+
+#### Database Storage
+Amazon RDS storage auto scaling automatically scales storage capacity in response to growing database workloads, with no downtime. You can enable storage auto scaling from the Amazon RDS console.
+
+With Amazon RDS storage auto scaling, you simply set your desired maximum storage limit, and storage auto scaling takes care of the rest.
+
+Monitor the storage metrics for your database servers, IOPS, and throughput before planning a migration.
+
+#### Amazon Elastic Block Store (Amazon EBS)
+The following services use Amazon Elastic Block Store (Amazon EBS) volumes for database and log storage:
+* Amazon RDS for MySQL
+* MariaDB
+* PostgreSQL
+* Oracle
+* Microsoft SQL Server
+
+#### Amazon RDS storage types
+Amazon RDS provides the following three storage types, which differ in performance characteristics and price. This means that you can tailor your storage performance and cost to the needs of your database workload.
+* **General Purpose SSD**: General Purpose SSD volumes offer cost-effective storage that is ideal for a broad range of workloads running on medium-sized DB instances. General Purpose storage is best suited for development and testing environments. 
+* **Provisioned IOPS SSD**: Provisioned IOPS storage is designed to meet the needs of I/O-intensive workloads, particularly database workloads that require low I/O latency and consistent I/O throughput. Provisioned IOPS storage is best suited for production environments. 
+* **Magnetic**: Amazon RDS also supports magnetic storage for backward compatibility. We recommend that you use General Purpose SSD or Provisioned IOPS SSD for any new storage needs. The maximum amount of storage allowed for DB instances on magnetic storage is less than that of the other storage types.
+
+You can create MySQL, MariaDB, Oracle, and PostgreSQL RDS DB instances with up to 64 tebibytes (TiB) of storage. 
+
+You can create SQL Server RDS DB instances with up to 16 TiB of storage. For this amount of storage, use the Provisioned IOPS SSD and General Purpose SSD storage types.
+
+When you select General Purpose SSD or Provisioned IOPS SSD, depending on the engine selected and the amount of storage requested, Amazon RDS automatically stripes (configures multiple volumes in a RAID array) across multiple volumes to enhance performance, as shown in the following table.
+
+| Database | Amazon RDS Storage Size | Amounts of Volumes Provisioned |
+| -------- | ----------------------- | ------------------------------ |
+| MariaDB, MySQL, and PostgreSQL| Less than 400 GiB | 1 |
+| MariaDB, MySQL, and PostgreSQL | Between 400 and 64,000 GiB | 4 |
+| Oracle | Less than 200 GiB | 1 |
+| Oracle | Between 200 and 64,000 GiB | 4 |
+| SQL Server | Any | 1 |
+
+You can view the storage performance metrics for an Amazon RDS database in the RDS console. If the metrics show that your database performance is constrained by IOPS or throughput, you can change storage types or provision higher performance. When you modify a General Purpose SSD or Provisioned IOPS SSD volume, it goes through a sequence of states. While the volume is in the *optimizing* state, your volume performance is in between the source and target configuration specifications. Transitional volume performance will be no less than the lowest of the two specifications. 
+
+When you modify an instance’s storage so that it goes from one volume to four volumes, Amazon RDS does not use the Elastic Volumes feature. Instead, Amazon RDS provisions new volumes and transparently moves the data from the old volume to the new volumes. 
+
+This operation consumes a significant amount of IOPS and throughput of both the old and new volumes. Depending on the size of the volume and the amount of database workload present during the modification, this operation can consume a high amount of IOPS, significantly increase IO latency, and take several hours to complete, while the RDS instance remains in the *modifying* state.
+
+#### Lab: Working with Amazon RDS Databases
+Amazon EC2 is a compute service that provides secure, resizable compute capacity for databases in the cloud. Hosting a database on Amazon EC2 allows for a high degree of customization and control over the database and its environment. It maintains the long-standing tradition of manual database management, including managing replication, failover, monitoring, notifications, and backups. AWS managed database solutions, such as Amazon RDS, provide fully automated solutions for all of these tasks.
+
+In this lab, you perform the following tasks:
+* Set up and configure an Amazon RDS instance with Multi-AZ failover and encryption.
+* Create and store secrets through AWS Secrets Manager.
+* Activate automatic rotation of secrets through Secrets Manager.
+* Set up encryption in transit with SSL.
+* Test Multi-AZ failover and data synchronization.
+
+An Amazon EC2 instance has been provisioned for use in this lab. This instance is named as CommandHost and is within a public subnet. The EC2 instance is configured to communicate with the database instance located in a private subnet via port 3306. The instance has been added to a Secrets Manager role, which is configured for automatic secret rotation. 
+
+##### Task 1: Configure and deploy an Amazon RDS database
+1.1 At the top of the AWS Management Console, in the search bar, search for and choose RDS.
+1.2. Choose **Create database**.
+1.3. Configure the new database using the following settings:
+ * **Choose a database creation method:** Select **Standard Create**.
+ * **Engine options**
+  * **Engine type:** Select **MySQL**.
+Templates: Select Production
+
+Availability & durability
+
+Select Multi-AZ DB instance
+ Note: Choosing this option ensures that Amazon RDS maintains a synchronous standby replica in a different Availability Zone than the database instance. Amazon RDS automatically fails over to the standby in the case of a planned or unplanned outage of the primary. By choosing a Multi-AZ deployment, the maintenance downtime is reduced. Amazon RDS updates the secondary instance first, fails over to it, and then updates the former primary.
+Settings
+
+DB instance identifier: Enter RDSLabDB
+Credentials management: Choose Self managed option
+Master username: Copy mydbAdminUser from the left
+Master password: Copy mydbAdminPassword from the left
+Confirm password: Copy mydbAdminPassword from the left
+ Note: The master user is the Amazon RDS equivalent to a root user. You should only use it for specific tasks such as creating and managing databases or adding users.
+ Additional information: You can find out more about specific privileges in the Amazon RDS Master User Account Privileges documentation.
+DB instance size
+
+DB instance class: Select Burstable classes
+Dropdown: Select db.t3.micro
+Storage
+
+Storage type: Select General Purpose SSD(gp3)
+ Note: For more intensive workloads, Provisioned IOPS could be used here to reduce latency with a higher cost.
+Connectivity
+
+Virtual private cloud (VPC): Select RDSVPC
+DB Subnet group: Select the group name that contains mydbsubnetgroup
+Public access: Select No
+ Note: This ensures that your Amazon RDS instance is not assigned a public IP address, which could allow direct access to the database.
+Existing VPC security groups: Select the group name that contains DBSecurityGroup
+ WARNING: The list may not disappear when you select the VPC security group. Choose out of the drop-down menu to close it.
+Choose the X to remove any security groups listed except the one that containsDBSecurityGroup.
+Monitoring - Uncheck Enable Enhanced monitoring
+
+Scroll down, Choose  Additional configuration, and configure:
+
+Database options
+
+Initial database name: Enter MyRDSLab
+Backup:
+
+Ensure that Enable automatic backups is checked.
+Backup retention period: Select 10 days
+ Note: With Amazon RDS, you can set the time window when backups will be created as well as the number of days to store backups before they are deleted. RDS backup snapshots are created from the standby instance (when available) to minimize load on the primary instance.
+ Additional information: Visit the Working With Backups documentation for more information about this feature.
+Log exports
+
+Check all the boxes available. This ensures these logs are published to Amazon CloudWatch Logs.
+Maintenance
+
+Maintenance window: Select Choose a window
+Start day: Select Sunday
+Start time: Select 23:00 UTC
+Duration: Select 1 hours
+ Note: Once you have created your database instance, modifications to its configuration could result in service interruption because the instances need to reboot.
+
+Choose Create database
+
+A pop-up window appears, Choose Close
+
+You are taken to the Amazon RDS console. Here you can monitor the progress of your database instances. The new Amazon RDS instance takes about 20 minutes to create. However, to allow you to continue with the lab activities, an identical RDS instance called mydb- has already been provisioned for you as part of the lab setup. You will use that instance for the remainder of this lab.
+
+ Congratulations! You have successfully configured and deployed an RDS instance.
+
+Task 2: Create and verify a secret using Secrets Manager
+In this task, you will add a secret to Secrets Manager and rotate the credentials to your Amazon RDS database. Secrets Manager offers built-in integrations with Amazon RDS to automatically rotate database credentials on your behalf. Further customization using Lambda functions can enable management of API keys and AUTH tokens.
+
+Creating a secret
+At the top of the AWS Management Console, in the search bar, search for and choose Secrets Manager.
+
+Select Secrets Manager from the drop down menu
+
+Choose Store a new secret
+
+Create a new secret using the following configuration:
+
+Secret type: Select Credentials for Amazon RDS database
+User name: Copy mydbAdminUser from the left
+Password: Copy mydbAdminPassword from the left
+Encryption key: Select aws/secretsmanager
+Database: Select mydb
+Choose Next
+
+For Secret name, enter mydbsecret-xxxx (replace x with random numbers)
+
+Choose Next
+
+Leave Automatic rotation disabled for now. You will enable automatic rotation later in the lab.
+
+Choose Next
+
+Observe the sample code, then Choose Store
+
+Choose refresh  button to view the created secret.
+
+Retrieving a secret using the Secrets Manager Console
+You can retrieve your secret from the Secrets Manager console or from your EC2 CommandHost through the AWS Command Line Interface (AWS CLI). Depending on the method you choose, different details are provided about the secret.
+
+On the secrets page, Choose the name of mydbsecret-xxxx.
+ Note: This is the secret you just created.
+
+In the Secret value section, Choose Retrieve secret value.
+Here, you can view your secret details key-value pairs. To view the details in JSON format, Choose Plaintext.
+
+You have just created a secret that allows you to programmatically connect to your database without using a stored password. An API call to Secrets Manager is made to retrieve the current version of the secret rather than loading credentials from a local config file. To simulate this, in the next part of the task, you are going to connect to an Amazon EC2 instance and use the AWS CLI. The Amazon EC2 instance, CommandHost, has an AWS Identity and Access Management (IAM) role with SecretsManager:DescribeSecret, SecretsManager:ListSecret, SecretsManager:GetSecretValue, SecretsManager:ListSecrets attached to it that grants this access.
+
+ Additional information: about using Secrets Manager Actions, Resources, and Condition Keys for AWS Secrets Manager.
+
+Retrieving a secret using the Amazon EC2 CommandHost through the AWS CLI
+In this part of the task, you will connect to the CommandHost through the AWS CLI.
+
+Copy the CommandHostSessionUrl value from the left side of the lab page, and paste it in a new browser tab. The terminal for the CommandHost instance opens.
+ If you encounter a problem connecting to Session Manager, select for help connecting to the EC2 instance using an SSH client.
+
+Now that you’ve successfully connected to the CommandHost, you can retrieve your secret.
+
+ Command: To obtain the ARN for the secret, run the following commands:
+ Copy edit: Replace mydbsecret-xxxx with the value of your secret name created in the earlier task.
+
+
+cd ~
+aws secretsmanager list-secret-version-ids --secret-id mydbsecret-xxxx
+Review the details of the output.
+
+ Expected output:
+
+
+******************************
+**** This is OUTPUT ONLY. ****
+******************************
+
+{
+    "Name": "mydbsecret",
+    "ARN": "arn:aws:secretsmanager:us-west-2:123456789123:
+            secret:mydbsecret-BkoayN",
+    "Versions": [
+        {
+            "VersionId": "05181b74-9678-4da3-8ad9-123456789123",
+            "VersionStages": [
+                "AWSCURRENT"
+            ],
+            "LastAccessedDate": 1571788800.0,
+            "CreatedDate": 1571857563.07
+        }
+    ]
+}
+ Note: Pay attention to VersionStages in the output. This contains a list of all active versions of the secret and the staging labels that are attached to each version. You should see one version ID (a UUID type value) that maps to a single staging label, AWSCURRENT.
+
+ Command: SecretARN can simply be retrieved entering the below command:
+
+aws secretsmanager list-secret-version-ids --secret-id mydbsecret-xxxx --output text --query ARN
+ Expected output:
+
+
+arn:aws:secretsmanager:us-west-2:123456789123:secret:mydbsecret-f7cv9J
+ Copy: the above ARN value into a local text editor to save the information for later.
+
+ Copy edit: the following command to a local text editor:
+
+
+aws secretsmanager get-secret-value --secret-id (SecretARN) --version-stage AWSCURRENT
+In the text editor, replace (SecretARN) with the ARN you copied earlier in the step 24.
+RDS code replace 1
+
+ Copy edit: the updated command from the text editor into the terminal window. Press ENTER to run the code.
+ Expected output:
+
+
+******************************
+**** This is OUTPUT ONLY. ****
+******************************
+{
+    "Name": "mydbsecret",
+    "VersionId": "a6d64c04-f23a-400c-a787-a203c434cfa7",
+    "SecretString": "{\"username\":\"student\",
+    \"password\":\"Pa33w0rd!\",\"engine\":\"mysql\",
+    \"host\":\"nrk0zffgjbmiru.cj3z9tovul5b.us-east-1.rds.amazonaws.com\",
+    \"port\":3306,\"dbname\":\"mydb\",\"dbInstanceIdentifier\":\"nrk0zffgjbmiru\"}",
+    "VersionStages": [
+        "AWSCURRENT"
+    ],
+    "CreatedDate": 1569879693.613,
+    "ARN": "arn:aws:secretsmanager:us-east-1:123456789123:
+    secret:mydbsecret-IS8vhu"
+}
+Review the details provided about the secret.
+
+Enable automatic rotation through Secrets Manager
+In this section, you will configure automatic rotation for the secret created in the previous task. Remember that the secret is attached to the Amazon RDS database. You will use a MySQL client tool that has been preconfigured on your CommandHost, along with a Linux JSON parsing tool called jq.
+
+ Note: For simplicity, this lab uses jq to parse the secret value into environment variables to allow for easy CLI manipulation. This is NOT a security best practice for a production environment. In a production environment, AWS recommends not storing passwords in environment variables.
+
+Start by validating your initial secret and use it to connect to the database. You will do this through your Amazon EC2 CommandHost.
+
+ Copy edit: the following code block to a text editor:
+
+secret=$(aws secretsmanager get-secret-value --secret-id (SecretARN) | jq .SecretString | jq fromjson)
+user=$(echo $secret | jq -r .username)
+password=$(echo $secret | jq -r .password)
+endpoint=$(echo $secret | jq -r .host)
+port=$(echo $secret | jq -r .port)
+Replace (SecretARN) with the secret ARN you copied earlier in the step 24.
+RDS code replace 2
+
+ WARNING: Keep a copy of this updated code block in the text editor. You will use this updated code block later in the lab.
+
+ Copy edit: the updated code block from the text editor into the terminal window. Press ENTER to run the code.
+ WARNING: If you closed the terminal window tab or lost the connection, select here for instructions on how to reconnect.
+
+The command retrieves the secret and stores it temporarily within an environment variable. Next, you will run a command the uses the parsed details of your secret to access your database.
+
+ Command: Run the following command in the terminal window:
+
+mysql -h $endpoint -u $user -P $port -p$password mydb
+The terminal prompt should now be MySQL [mydb]>.
+
+ Command: To view the details of your current connection, run the following command:
+
+STATUS;
+ Similar Expected output:
+
+'STATUS command output sample'
+
+Notice where the output shows SSL: Not in use. This is not preferred from a security standpoint. This is explained later in the lab, and you will change the setting.
+
+ Command: To close the current MySQL session, run the following command:
+
+exit
+Return to the tab with the Secrets Manager page within the AWS Management Console.
+
+In the Rotation configuration section, Choose Edit rotation , and configure:
+
+Enable Automatic rotation
+Rotation schedule:
+Time unit, enter 30 days
+Rotation function:
+Select Use a rotation function from your account
+Lambda rotation function: Select rotation-lambda
+ Note: The rotation-lambda function has been provided for you so that you can see how rotation works and understand the full benefit of using Secrets Manager. To view the sample code provided, select here.
+
+Choose Save
+A green success banner showing Rotating your secret mydbsecret-XXXX displays at the top of the screen.
+
+Secrets Manager begins to configure rotation for your secret, including attaching the rotation-lambda function and attaching a role that enables Secrets Manager to invoke the function. Your secret will now be automatically rotated for you every 30 days.
+
+ Congratulations! You have successfully created a simple secret and then viewed and retrieved the secret via the console and AWS CLI. Then, you successfully accessed the MySQL database, verified the connection to the database, and enabled automatic rotation for the secret.
+
+Task 3: Secure the client to database connection in-transit
+Connections to a DB instance can be encrypted using Secure Socket Layer (SSL) or Transport Layer Security (TLS) from your application. SSL/TLS connections provide one layer of security by encrypting data that moves between your client and a DB instance. Using a server certificate provides an extra layer of security by validating that the connection is being made to an Amazon RDS DB instance. It does so by checking the server certificate that is automatically installed on all DB instances that you provision.
+
+To complete the following steps, the permissions on the CommandHost must be stored. A certificate bundle rds-combined-ca-bundle.pem file has already been downloaded to your CommandHost. For more information on how to Encrypt a connection to a DB instance.
+
+In this task, you will access your database using a SSL certificate to encrypt the data in transit. You will then verify the SSL configuration.
+
+Connect to the database using SSL encryption
+Return to the tab with the CommandHost terminal window.
+ WARNING: If you closed the terminal window tab or lost the connection, select here for instructions on how to reconnect.
+
+ Command: To update the permissions for the certificate, run the following commands:
+
+cd ~
+chmod 600 rds-combined-ca-bundle.pem
+ Copy edit: The updated version of the following code block from your text editor into the terminal window. Press ENTER to run the code. Remember that this code stores your secret into session variables.
+
+secret=$(aws secretsmanager get-secret-value --secret-id (SecretARN) | jq .SecretString | jq fromjson)
+user=$(echo $secret | jq -r .username)
+password=$(echo $secret | jq -r .password)
+endpoint=$(echo $secret | jq -r .host)
+port=$(echo $secret | jq -r .port)
+ Command: To connect to the Amazon RDS database using the verified SSL cert, run the following command:
+ Note: If you are connected with an SSH Client and not using Session Manager, change the –ssl-ca path to --ssl-ca=/home/ec2-user/rds-combined-ca-bundle.pem
+
+
+mysql -h $endpoint --ssl-ca=/home/ssm-user/rds-combined-ca-bundle.pem --ssl-verify-server-cert -u $user -P $port -p$password mydb
+The terminal prompt should now be MySQL [mydb]>.
+
+ Note: The previous command associates the path to the SSL cert to the rds-combined-ca-bundle.pem file, which is preloaded on the CommandHost instance. The certificate bundles are avaiable for download here.
+
+Verify database connection is using SSL encryption
+ Command: To view the details of your current connection, run the following command:
+
+STATUS;
+ Expected Similar output:
+
+'STATUS command output sample'
+
+Look for the SSL: line in the output. It should now say Cipher in use is xxxxxxx. This confirms that the SSL connection has been properly configured.
+
+ Command: To close the current MySQL session, run the following command:
+
+
+exit
+ Congratulations! You have successfully learned how to use an encrypted connection using SSL. This was accomplished by referencing the rds-combined-ca-bundle.pem file, which had been downloaded on your CommandHost. You then logged into the database and verified that SSL was in use.
+
+Task 4: Test Multi-AZ failover
+Multi-AZ failover mode works in a synchronous primary/secondary relationship. There are two servers running simultaneously. The primary is accessible by users, and the data is replicated in real time to a secondary instance (residing in a different Availability Zone), which is not accessible to users.
+
+In this task, you will run a preinstalled Python script (failover_test.py) from your CommandHost that inserts heartbeat records into a database until the connection fails. The script then continues to check the connection until it comes back (when the database failover finishes). The script then outputs a summary of the event, detailing the failover.
+
+Return to the tab with the CommandHost terminal window.
+
+ Command: To change your working directory to the home directory, run the following command:
+
+
+cd ~
+This is the directory from which you will run the failover_test.py script.
+
+ Command: To install PyMySQL and download the SSL certificate to the test directory, run the following command:
+
+pip3 install --user -r requirements.txt
+Now that the testing environment is set up, you can start running the Python script to test the failover and data synchronization.
+
+ Command: To run the Python script, run the following command:
+
+python3 create_failover_sync_db.py
+This script is run to create a temporary database and table to support failover_test.py. Each time this script is run, it creates the temporary database and then drops it when completed.
+
+After running the script, you will be prompted to provide your mydb instance data and prompted whether to connect over SSL.
+
+Enter the following commands in response to the prompts:
+This will destroy and recreate sync database and tracking table enter y to continue, n to exit [n]: Enter y and press ENTER
+Connecting over SSL (y/n) [y]: Enter y and press ENTER
+path to ssl cert [./rds-combined-ca-bundle.pem]: Enter ./rds-combined-ca-bundle.pem
+ Expected output: The output should contain the following messages:
+
+'STATUS command output sample'
+
+This has created the new database and table for the failover_test.py script you will run to send the data and test the failover.
+
+Before initiating the failover test, you will open your database instance in the console.
+
+Return to the tab with the AWS Management Console, type RDS in the search field and Select RDS from the drop down menu.
+
+In the left navigation pane, Choose Databases.
+
+Select the mydb database.
+
+Now that everything is prepared, you will start the test and initiate the failover.
+
+Once you finish entering the metadata, the test begins running and performs a heartbeat query to the MySQL database. When there is a connection disruption, the test continues to try connections every second. When connectivity returns, the test stops and reports the total time the database was not accessible. This can be used to measure the amount of time required for failover in database clusters with such capability.
+
+Return to the tab with the CommandHost terminal window.
+
+ Command: To initiate the test, run the following command:
+
+
+python3 failover_test.py --test_run_id test_run_0
+Enter the following commands in response to the prompts:
+Connecting over SSL (y/n) [y]: Enter y and press ENTER
+path to ssl cert [./rds-combined-ca-bundle.pem]: Enter ./rds-combined-ca-bundle.pem
+After running the previous command, the test begins running and performing a heartbeat query to the MySQL database.
+
+Now that the script is running queries into the database, it’s time to initiate failover.
+
+Return to the tab with the AWS Management Console, which should be open to the RDS console with the mydb database selected.
+
+Choose Actions and select Reboot.
+
+Check Reboot With Failover?
+
+Choose Confirm
+
+Return to the tab with the CommandHost terminal window.
+
+ Expected output:
+
+'STATUS command output sample'
+
+ Note: If you receive an output that looks different from the one above or gives a “traceback error”. Go back to beginning of task 4 and follow steps again once your DB instance is back online.
+
+Observe the following metrics in the output:
+
+failure_start_time
+failure_end_time
+Last inserted sync record id on initial primary db node
+Pre-failure Db node hostname
+Post-failure Db node hostname
+This verifies the data was replicated to the secondary failover instance during the reboot.
+
+Next, you will log back into your MySQL database to review the db_sync table and see that the data replicated over.
+
+ Copy/Paste: The updated version of the following code block from your text editor into the terminal window. Press ENTER to run the code. Remember that this code stores your secret into session variables.
+
+secret=$(aws secretsmanager get-secret-value --secret-id (SecretARN) | jq .SecretString | jq fromjson)
+user=$(echo $secret | jq -r .username)
+password=$(echo $secret | jq -r .password)
+endpoint=$(echo $secret | jq -r .host)
+port=$(echo $secret | jq -r .port)
+ Command: Run the following command:
+
+mysql -h $endpoint --ssl-ca=/home/ssm-user/rds-combined-ca-bundle.pem --ssl-verify-server-cert -u $user -P $port -p$password mydb
+ Note: If you are connected with an SSH Client and not using Session Manager, change the –ssl-ca path to --ssl-ca=/home/ec2-user/rds-combined-ca-bundle.pem
+
+The terminal prompt should now be MySQL [mydb]>.
+
+ Command: Run the following command:
+
+SHOW DATABASES;
+ Command: To switch into your failover test database, run the following command:
+
+USE db_test_meter;
+ Command: To query the table, run the following command:
+
+SELECT * FROM db_sync;
+Observe the db_test_meter table and data synchronization information. This is the record of each heartbeat that was gathered during the test.
+
+#### Knowledge Check
+##### Which of the following are characteristics of an online analytic processing (OLAP) system? (Select TWO.)
+* OLAP uses historical and aggregated data, typically from multiple sources.
+* OLAP systems are optimized for complex data analysis and reporting.
+
+##### What is required to complete a transaction in a relational database?
+* A commit command to write the changes to storage.
+
+##### Which database storage type is designed to meet the needs of I/O-intensive workloads?
+* Provisioned IOPS SSD
+
+#### Additional Resources
+##### [Amazon RDS Multi-AZ](https://aws.amazon.com/rds/features/multi-az/)
+
+##### [Configuring and Managing a Multi-AZ Deployment ](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html)
+
+##### [Amazon RDS Read Replicas](https://aws.amazon.com/rds/features/read-replicas/)
+
+##### [Working with DB Instance Read Replicas](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html)
+
+##### [Quotas and Constraints for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Limits.html)
+
+##### [Scaling Your Amazon RDS Instance Vertically and Horizontally](https://aws.amazon.com/blogs/database/scaling-your-amazon-rds-instance-vertically-and-horizontally/)
+
+##### [Monitoring OS Metrics with Enhanced Monitoring ](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Monitoring.OS.html)
+
+##### [Overview of Monitoring Metrics in Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/MonitoringOverview.html)
+
+##### [Working with Parameter Groups](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithParamGroups.html)
+
+##### [What Is Amazon CloudWatch Logs?](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html)
+
+##### [Performance Insights](https://aws.amazon.com/rds/performance-insights/?nc=sn&amp;loc=2&amp;dn=3)
+
+##### [Monitoring DB Load with Performance Insights on Amazon RDS ](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html)
+
 ### Week 9: Databases 2 Part 2
+
+#### Usage of read replicas for high availability
+With Amazon RDS, you can create a read replica in a different AWS Region from the source DB instance. Cross-Region read replicas can be used to do the following:
+* Improve your disaster recovery capabilities.
+* Scale read operations into a Region closer to users located near that Region.
+* Migrate from a data center in one Region to a data center in another Region.
+
+##### [Working with Multi-AZ DB Cluster Read Replicas](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_MultiAZDBCluster_ReadRepl.html)
+
+#### Availability and durability
+
+#### Backups
+##### Automated backups
+The automated backup feature of Amazon RDS facilitates point-in-time recovery of your DB instance. Amazon RDS provides backup storage of up to 100 percent of your provisioned database storage at no extra charge. 
+
+When automated backups are turned on for your DB instance, Amazon RDS automatically performs a full daily snapshot of your data during your preferred backup window. It also captures transaction logs when your data is updated. When you initiate a point-in-time recovery, the daily backup is restored for your DB instance and the transaction logs are replayed to the specific time that you requested. Amazon RDS retains backups of a DB instance for a limited, user-specified period of time, which is called the retention period. By default, the retention period is set to 1 day, but it can be set for up to 35 days.
+
+##### Manual Database snapshots
+Manual database snapshots are user initiated. You can back up your DB instance as often as you want. You can also restore the instance to a specific point in time. Manual database snapshots can be exported to Amazon Simple Storage Service (Amazon S3) buckets. Database snapshots are not deleted unless you explicitly delete them. Although database snapshots serve operationally as full backups, you are billed for only the storage of incremental changes from the previous snapshot.
+
+##### Multi-AZ Deployment
+Amazon RDS provides high availability and failover support for DB instances by using Multi-AZ deployments. Amazon RDS uses the following different technologies to provide failover support: 
+* Multi-AZ deployments for MariaDB, MySQL, Oracle, and PostgreSQL DB instances use AWS failover technology. 
+* SQL Server DB instances use SQL Server Database Mirroring (DBM) or Always On Availability Groups (AGs).
+
+In a Multi-AZ deployment, Amazon RDS automatically provisions and maintains a synchronous standby replica in a different Availability Zone. The primary DB instance is synchronously replicated across Availability Zones to a standby replica. Automated snapshots are taken from the standby. In this way, a Muilti-AZ deployment provides data redundancy, eliminates I/O freezes, and minimizes latency spikes during system backups. Running a DB instance with high availability can enhance availability during planned system maintenance. It helps to protect your databases against DB instance failure and Availability Zone disruption.
+
+However, DB instances that use Multi-AZ deployments can have increased write and commit latency compared to a Single-AZ deployment. This increase is due to the synchronous data replication that occurs. For production workloads, it is best to use Provisioned IOPS and DB instance classes that are EBS optimized for fast, consistent performance.
+
+A Multi-AZ deployment can be configured when you create your Amazon RDS instance. However, you might already have an Amazon RDS instance that is running and configured in a Single-AZ deployment mode. Then it is possible to modify it to a Multi-AZ deployment mode. First, Amazon RDS takes a snapshot of the primary DB instance from your deployment and then restores the snapshot into another Availability Zone. Amazon RDS then sets up synchronous replication between your primary DB instance and the new instance.
+
+#### Standby replicas and read replicas
+In contrast to read replicas, standby replicas are synchronous copies of a database instance and cannot handle read accesses. Standby replicas are used for increased availability, and read replicas are used for scalability. Read replicas have a separate URL that clients can use to query read-only information. In a Multi-AZ deployment, the standby instance cannot be directly accessed. If the primary DB fails, the same endpoint that is used to connect to the primary will be used to connect to the standby. This new connection occurs after the standby is promoted as the new primary.
+
+#### Failover: Promoting read replicas
+Read replicas can also be useful for disaster recovery. You can promote a read replica to a standalone instance as a disaster recovery solution if the primary DB instance fails.
+
+#### Multi-AZ deployment
+Suppose that a planned or unplanned outage of your DB instance occurs, and you have enabled Multi-AZ deployment. Then Amazon RDS automatically switches to a standby replica in another Availability Zone. It is also possible to force a failover when you reboot an instance.
+
+#### Read replicas
+Amazon RDS will automatically replace the compute instance that powers a deployment if a hardware failure occurs.
+
+#### Lab: Restoring an Amazon RDS DB Instance
+
+#### Knowledge Check
+##### Which of the following are characteristics of Amazon RDS read replicas? (Select THREE.)
+* All instances are accessible and can be used for read scalability.
+* They can be within an Availability Zone, across Availability Zones, or across Regions.
+* They can be manually promoted to a standalone database instance.
+
+Amazon RDS read replicas use asynchronous replication. All read replicas are accessible and can be used for read scaling. Read replicas can be within an Availability Zone, across Availability Zones, or across Regions. The database engine version upgrade is independent from the source instance. Read replicas can be manually promoted to a standalone database instance.
+
+Wrong answers:
+* Synchronous block-level replication
+* Database engine version upgrades happen when primary is upgraded.
+* Replicas cannot be directly accessed.
+
+##### In a Multi-AZ database deployment, how do replicas receive their data updates?
+* Synchronously in another Availability Zone
+
+Wrong answers:
+* Asynchronously in another Availability Zone
+* Asynchronously in the same Availability Zone as the primary database instance and then asynchronously pushed to other Availability Zones
+* Synchronously in the same primary Availability Zone as the primary database instance and then asynchronously pushed to other Availability Zones
+
+The correct answer is **Synchronously in another Availability Zone**. In a Multi-AZ deployment, Amazon RDS automatically provisions and maintains a synchronous standby replica in a different Availability Zone. The primary DB instance is synchronously replicated across Availability Zones to a standby replica.
+
+#### Additional Resources
+##### [Working with DB Instance Read Replicas](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html)
+
+##### [Multi-AZ Deployments for Amazon RDS for Microsoft SQL Server](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_SQLServerMultiAZ.html)
+
+##### [Creating a Read Replica](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html#USER_ReadRepl.XRgn)
+
+##### [Configuring and Managing a Multi-AZ Deployment](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html)
+
+#### Securing Amazon RDS
+#### Pre-assessment
+##### When moving a hardcoded database credential to AWS Secrets Manager, what AWS Identity and Access Management (IAM) identity must the code be given?
+* IAM role
+
+Wrong answers:
+* IAM group
+* IAM Roles Anywhere 
+* IAM user
+
+When you create rotating credentials in AWS Secrets Manager, the code must assume the IAM role RoleToRetrieveSecretAtRuntime to be able to retrieve the secret. An IAM role is an identity within your AWS account that has specific permissions. It is similar to an IAM user, but it is not associated with a specific person. 
+
+* **IAM group**: An IAM group is an identity that specifies a collection of IAM users. 
+* **IAM Roles Anywhere**: IAM Roles Anywhere can obtain temporary security credentials in IAM for workloads such as servers, containers, and applications that run outside of AWS. The workloads can use the same IAM policies and IAM roles that you use with AWS applications to access AWS resources. 
+* **IAM user**: An IAM user is an identity within your AWS account that has specific permissions for a single person or application.
+
+##### In the shared responsibility model, what is an AWS customer responsible for when it comes to securing their managed database? (Select TWO.)
+* Using the concept of least privilege to determine who has authorization to log in to the database
+* Ensuring that the database engine is updated with all the required security patches and updates
+
+Wrong answers:
+* Using the concept of least privilege to determine who has access to data centers and physical servers
+* Ensuring that the host servers have all the required security patches and updates
+* Using third-party auditors to validate the security posture and compliance of the AWS infrastructure
+
+AWS customers are responsible for the following:
+* Using the concept of least privilege to determine who has authorization to log in to the database
+* Ensuring that the database engine is updated with all the required security patches and updates
+
+And AWS is responsible for the following:
+* Using the concept of least privilege to determine who has access to data centers and physical servers
+* Ensuring that the host servers have all the required security patches and updates
+* Using third-party auditors to validate the security posture and compliance of the AWS infrastructure
+
+##### If a snapshot is created of an encrypted database in another Region, what is the relationship between the snapshot and its AWS Key Management Service (AWS KMS) key?
+* It must have a KMS key from its destination Region assigned to it.
+
+Wrong answers:
+* It brings the KMS key from the primary instance's Region.
+* It must have a net new KMS key generated for it when the snapshot is created.
+* The destination Region determines if it needs a new key or can use its key.
+
+To copy an encrypted snapshot from one AWS Region to another, you must specify the KMS key in the destination AWS Region. This is because KMS keys are specific to the AWS Region that they are created in. The source snapshot remains encrypted throughout the copy process. Amazon RDS uses envelope encryption to protect data during the copy process.
+
+Encrypted read replicas must be encrypted with the same KMS key as the source DB instance when both are in the same AWS Region.
+
+#### Securing Amazon RDS
+
+#### AWS Secrets Manager
+With AWS Secrets Manager, you can configure your applications to fetch secrets, such as DB passwords, at runtime. This ensures that the correct and latest secret is provided, so you can remove hardcoded DB passwords from your applications.
+
+* For master user credentials, you configure Amazon RDS to manage the master user password in Secrets Manager when creating or modifying your instance. Amazon RDS will automatically rotate the password every 7 days by default. For more information, see [Password Management With Amazon RDS and AWS Secrets Manager](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html).
+
+* For all other Amazon RDS credentials, see [Create an AWS Secrets Manager Secret](https://docs.aws.amazon.com/secretsmanager/latest/userguide/create_secret.html).
+
+##### [Moving Hardcoded Database Credentials to AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/hardcoded-db-creds.html)
+
+#### Encrypting AWS databases
+##### Encryption at rest
+You can encrypt your Amazon RDS database instances and snapshots at rest by enabling the encryption option for your Amazon RDS database instances. Data that is encrypted at rest includes the underlying storage for DB instances, its automated backups, read replicas, and snapshots.
+
+Amazon RDS encrypted database instances use the industry standard AES-256 encryption algorithm to encrypt your data on the server that hosts your Amazon RDS database instances. After your data is encrypted, Amazon RDS handles authentication of access and decryption of your data transparently with minimal impact on performance. You don't need to modify your database client applications to use encryption.
+
+##### Encryption in transit
+Encrypt communications between your application and your DB instance using SSL/TLS. You can use SSL from your application to encrypt a connection to a DB instance running MySQL, MariaDB, SQL Server, Oracle, or PostgreSQL. Each DB engine has its own process for implementing SSL. 
+
+When an encrypted connection is established, data transferred between the DB instance and your application is encrypted during transfer. You can also require your DB instance to only accept encrypted connections.
+
+#### Encryption constraints
+* You can only encrypt an Amazon RDS DB instance when you create it, not after the DB instance is created. However, because you can encrypt a copy of an unencrypted snapshot, you can effectively add encryption to an unencrypted DB instance. That is, you can create a snapshot of your DB instance, and then create an encrypted copy of that snapshot. You can then restore a DB instance from the encrypted snapshot, and thus you have an encrypted copy of your original DB instance.
+* You cannot turn off encryption on an encrypted DB instance. 
+* You cannot create an encrypted snapshot of an unencrypted DB instance.
+* A snapshot of an encrypted DB instance must be encrypted using the same KMS key as the DB instance.
+* You cannot have an encrypted read replica of an unencrypted DB instance or an unencrypted read replica of an encrypted DB instance. 
+* Encrypted read replicas must be encrypted with the same KMS key as the source DB instance when both are in the same AWS Region.
+* To copy an encrypted snapshot from one AWS Region to another, you must specify the KMS key in the destination AWS Region. This is because KMS keys are specific to the AWS Region that they are created in. The source snapshot remains encrypted throughout the copy process. Amazon RDS uses envelope encryption to protect data during the copy process.
+* You cannot unencrypt an encrypted DB instance. However, you can export data from an encrypted DB instance and import the data into an unencrypted DB instance.
+
+##### [Encrypting Amazon RDS Resources](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.Encryption.html)
+
+#### Knowledge Check
+##### When moving hardcoded credentials into AWS Secrets Manager, when should the original credentials be revoked?
+* After the new secret is created and the code is updated
+
+Wrong answers:
+* Before the new secret is created and the code is updated
+* Before the new secret is created and after the code is updated
+* After the new secret is created and before the code is updated
+
+The following are the steps to move a hardcoded database credential to AWS Secrets Manager:
+1. Create the secret.
+2. Update your code.
+3. Rotate the secret.
+
+##### If a read replica is created based on an encrypted Amazon RDS database in the same Region, what is the relationship between the read replica and its AWS Key Management Service (AWS KMS) key?
+* It must be encrypted with the same AWS KMS key as the source instance (when both are in the same AWS Region).
+
+Wrong answers:
+* It must be encrypted with a net new AWS KMS key.
+* It has the original AWS KMS key automatically assigned.
+* It cannot have an AWS KMS key because the original database cannot be encrypted.
+
+##### In the shared responsibility model, what is AWS responsible for when it comes to securing databases? (Select TWO.)
+* Ensuring that the host servers have all the required security patches and updates
+* Using the concept of least privilege to determine who has access to data centers and physical servers
+
+Wrong answers:
+* Ensuring that the database instance has all the required security patches and updates
+* Using the concept of least privilege to determine who has access to a database
+* Ensuring that databases are run in private subnets to protect them from unintended network access
+
+#### Migrating to an AWS Database
+
+#### Pre-assessment
+##### Which AWS migration solution uses native database tools to provide simple and high-performing homogeneous database migrations?
+* AWS Database Migration Service (AWS DMS)
+
+Wrong answers:
+* AWS DataSync
+* AWS Schema Conversion Tool (AWS SCT)
+* AWS Application Migration Service
+
+AWS DMS helps customers migrate the data inside a database and uses native tools for homogeneous migrations.
+* AWS SCT can help with identifying issues with migrating over two different types of schemas.
+* DataSync is used to migrate data from file and object storage.
+* Application Migration Service is for migrating servers.
+
+##### Which of these are characteristics of modern applications that create challenges for database migrations? (Select TWO.)
+* Large data volumes
+* Proprietary vendor features
+
+Wrong answers:
+* Simple data types
+* Simple business logic
+* Open-source vendor features
+
+##### Which of these tools simplifies heterogenous database migrations by providing a fully managed experience for automating schema analysis, recommendations, and conversion at scale? (Select TWO.)
+* AWS Schema Conversion Tool (AWS SCT)
+* DMS Schema Conversion
+
+Wrong answers:
+* AWS Application Migration Service
+* AWS DataSync
+* AWS AppSync
+
+AWS SCT and DMS Schema Conversion can convert your existing database schema to the target platform.  However, AWS DMS SC is a fully managed service.
+* AWS Application Migration Service is for migrating servers.
+* AWS DataSync is for migrating object and file data.
+* AWS AppSynch helps customers develop applications faster with serverless GraphQL and Pub/Sub APIs.
+
+#### Reasons for migration
+##### Database modernization
+Moving data from legacy database engines to modern database engines, so business agility can compete in the digital age.
+
+##### Database migration
+Moving data from one platform to another, in the context of enterprise applications
+
+##### Database replication
+Frequently copying data electronically from a database in one computer or server to a database in another to share the same level of information with all users
+
+#### Benefits of AWS DMS
+AWS Database Migration Service (AWS DMS) is a managed migration and replication service that helps move your database and analytics workloads to AWS quickly, securely, and with minimal downtime and no data loss. 
+* **Simple to use**: You do not need to install drivers or applications, and it typically does not require changes to the source database.
+* **Minimal downtime**: AWS DMS helps you migrate your databases to AWS with virtually no downtime.
+* **Supports widely used database engines**: AWS DMS can migrate your data to and from most widely used commercial and open-source database engines. 
+* **Low cost**: AWS DMS is a low-cost service. You only pay for the compute resources used during the migration process, any additional log storage, and data transfer (if not in the same AWS Region).
+* **Fast and convenient setup**: You can set up a migration task within minutes in the AWS Management Console. This lets you define parameters used by AWS DMS to carry out the migration.
+* **Reliable**: AWS DMS is highly resilient and self-healing. It continually monitors source and target databases, network connectivity, and the replication instance.
+
+#### Databases migration to AWS
+AWS DMS and AWS Schema Conversion Tool (AWS SCT) can help you migrate your databases to or from AWS quickly and securely. With AWS DMS, your source database remains fully operational during migration. This minimizes downtime to applications that rely on the database.
+
+You can migrate to the same database engine, or switch database engines to modernize your database platform. You can also replicate data to sync source and target databases.
+
+##### For example:
+You can migrate from an on-premises Oracle database to an Amazon Relational Database Service (Amazon RDS) for Oracle instance.
+
+##### Or...
+You can migrate an Oracle database, either on premises or in the cloud, to a PostgreSQL database like Amazon RDS for PostgreSQL or Amazon Aurora PostgreSQL-Compatible Edition. First, you would perform schema conversion, and then you would migrate databases.
+
+#### AWS tools used for migration
+##### AWS DMS
+At its most basic level, AWS DMS is a server in the AWS cloud that runs replication software. You create a source and target connection to tell AWS DMS where to extract from and load to. Then, you schedule a task that runs on this server to move your data.
+
+Within AWS DMS is DMS Schema Conversion, which assesses the complexity of a migration for a source data provider and converts database schemas and code objects. 
+
+##### AWS SCT
+If you want to switch database engines, AWS SCT can convert your existing database schema to the target platform. This includes tables, indexes, views, and stored procedures, plus your application code. If the schema from your source database can't be converted automatically, AWS SCT provides guidance on how you can create equivalent schema in your target database engine.
+
+#### Migration process steps.
+Any step with an * is supported by AWS DMS and AWS SCT.
+* **Schema migration**
+ Step 1: Envisioning and assessment *
+ Step 2: Database schema conversion *
+ Step 3: Application conversion and remediation *
+ Step 4: Scripts conversion *
+ Step 5: Integration with third-party applications
+
+* **Database migration**
+ Step 6: Data migration *
+ Step 7: Functional testing of the entire system
+ Step 8: Performance testing
+ Step 9: Integration and deployment *
+
+* **Training and support**
+ Step 10: Training and knowledge transfer
+ Step 11: Documentation and version control
+ Step 12: Post-production support
+
+#### DMS Schema Conversion
+DMS Schema Conversion automatically converts your source database schemas and most of the database code objects to a format compatible with the target database. This conversion includes tables, views, stored procedures, functions, data types, synonyms, and more. Any objects that DMS Schema Conversion can't convert automatically are clearly marked. To complete the migration, you can convert these objects manually.
+
+At a high level, DMS Schema Conversion operates with the following three components:
+* Instance profiles, which specify network and security settings.
+* Data providers, which store database connection credentials.
+* Migration projects, which contain data providers, an instance profile, and migration rules.
+
+AWS DMS uses data providers and an instance profile to design a process that converts database schemas and code objects.
+
+##### [Sources for DMS Schema Conversion](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.Sources.html#CHAP_Introduction.Sources.SchemaConversion)
+
+##### [Targets for DMS Schema Conversion](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.Targets.html#CHAP_Introduction.Targets.SchemaConversion)
+
+#### AWS SCT
+You can use AWS SCT to convert your existing database schema from one database engine to another. You can convert relational online transaction processing (OLTP) schema or data warehouse schema. Depending on the source, schemas can be converted to target an Amazon RDS MySQL, MariaDB, Oracle database, SQL Server, PostgreSQL DB, Aurora DB cluster, or Amazon Redshift cluster. The converted schema can also be used with a database on an Amazon Elastic Compute Cloud (Amazon EC2) instance or stored as data in an Amazon Simple Storage Service (Amazon S3) bucket.
+
+**AWS SCT does not support Oracle-to-Amazon DynamoDB migrations.**
+
+#### Step 1: Envisioning and assessment
+##### What happens during this step?
+Planning is key to the success of any migration process. You need to understand the scope of work required, based on your database schema, data volumes, data types, resources, and stakeholders. And you need integrated tools that support the project plan and automate the migration as much as possible.
+
+The first step is to assess your current environment, evaluate any known risks, and create a business case for the migration. You will identify subject matter experts and responsible business stakeholders, and plan capacity for the target system—including hardware and software infrastructure.
+
+##### Migration to another database
+Different relational database engines have different features, so changing your engine can permit you to take advantage of them. Open-source databases are comparable to commercial databases, but offer lower licensing costs, which can motivate you to move.
+
+Changing database technologies (going, for example, from Oracle to Aurora PostgreSQL-Compatible) can, for some applications, optimize performance and cost. AWS SCT can assist you in the migration process by cataloging the physical and logical components of the existing system. If you are performing a heterogeneous migration, AWS SCT will evaluate how much effort is needed to migrate to one or more popular open-source engines. It will provide a detailed report on each engine, and you can choose the best target for your particular use case.
+
+##### How AWS SCT helps
+AWS SCT provides an assessment report that shows you the following: 
+* What AWS SCT can convert automatically
+* Which objects need manual remediation
+* Which objects require significant remediation 
+
+Levels of effort are color coded as green, gray, orange, and red in the summary report. Simple actions usually require less than an hour, medium actions can be completed in 1–4 hours, and complex actions would typically take over 4 hours. You can use this information to develop level-of-effort estimates across different lines of responsibility like database administrators (DBAs), application developers, test engineers, and business stakeholders.
+
+* **Green objects** automatically converted.
+* **Gray objects** with simple acctions.
+* **Orange objects** with medium-complexity actions.
+* **Red objects** with complex actions.
+
+##### Database storage objects with conversion actions
+In the following example assessment report, the task involves converting an Oracle database to an Aurora PostgreSQL-Compatible database. The assessment report gives you a quick overview of how many of your database objects have been converted automatically, and how many require manual intervention. It also includes an assessment of the difficulty of each manual intervention.
+
+##### Database code objects with conversion actions
+AWS SCT not only helps you convert tables and indexes, but it can also assist you in converting code objects such as stored procedures and functions, database packages, and views and triggers. AWS SCT will translate code written in the native language of the source database into equivalent code in the target database language.
+
+For example, AWS SCT will convert an Oracle stored procedure written in Procedural Language for SQL (PL/SQL) into an equivalent Procedural Language/PostgreSQL (PL/pgSQL) procedure for a PostgreSQL target. As before, if AWS SCT detects any issues that require manual intervention, it will highlight the offending code that needs attention. 
+
+##### Detailed recommendations
+AWS SCT will also provide you with a detailed list of migration objects that require manual intervention. The details will include which features are not supported by your target database, and recommendations on how to translate. You can also export a version of this report as a spreadsheet, so you can track which tasks are complete.
+
+##### AWS SCT report
+AWS SCT also provides a granular view of the report to use as a remediation checklist. Responsible developers, DBAs, and others can use this view to validate that corrective action has been taken on cited objects and that remediation is complete.
+
+#### Step 2: Database schema conversion
+##### What happens during this step?
+The second step is to convert your database objects from the source engine to the target engine. This includes converting your tables, indexes, constraints, foreign keys, triggers, and stored procedures. It doesn’t include migrating the actual data records in your database.
+
+##### How AWS SCT helps
+AWS SCT will convert your source-object definitions to the target engine’s formats. Then, when you’re ready to build the database schema, it will apply the definitions to the target engine.
+
+When you’re performing a heterogeneous migration, your target database might be missing features that are available in your source database. If AWS SCT can’t convert an object, it flags it for manual intervention, along with a color-coded level of effort needed to resolve.
+
+##### AWS SCT alerts
+AWS SCT will mark any items that it cannot convert with different colors for simple (gray), medium (yellow), and complex (red) actions. It will also mark the levels above in the hierarchy, if they have any items with issues.
+
+For example, the IDX_BM_SPORTING_EVENT index is marked with a red exclamation point. You can then open the assessment report view to see the specific issues. AWS SCT flagged this index because PostgreSQL does not support bitmapped indexes.
+
+AWS SCT will highlight any items with issues in the hierarchy menu on the left. Notice how all the levels are highlighted if there is at least one issue.
+
+Choosing an item will reveal detailed information about the issue, plus suggestions about how to correct it and additional references.
+
+##### Other alerts
+AWS SCT generated a warning about this procedure because an INSERT statement is using a hint that is not supported by PostgreSQL. AWS SCT shows the offending code in yellow.
+
+Notice that this is only a warning message, and that AWS SCT ignores the hint in the converted code. However, you can remove the error by simply editing the source code directly in AWS SCT and reconverting. This edit affects only the local copy of the code that AWS SCT has extracted from the source database—the actual source database is unaffected.
+
+Any items for stored procedures and functions will also appear highlighted on the menu. Again, notice that all levels of the hierarchy get highlighted so you can see at a glance whether you have any issues.
+
+Navigating into the menu will provide you with detailed information about the issues. This includes original code, migrated code (if any), issue description, and available hints about how to fix it.
+
+##### If an AWS SCT conversion does not work for a migration
+Sometimes you will find that a feature in your source database does not have an exact analog in the target database that AWS SCT can translate to. In these cases, you will need to recode the objects by using design patterns based on the target engine’s capabilities.
+
+To help with this process, AWS provides migration playbooks that contain design patterns for the most popular source and target combinations. For example, the Oracle to Aurora PostgreSQL playbook contains information on design patterns that are fully, partially, or not supported by the target.
+
+##### Data migration playbooks
+The Database Migration Playbooks are a series of guides focused on best practices for creating successful blueprints for heterogeneous database migration. The playbooks complement existing automated and semiautomated database migration solutions and tools from Amazon, including AWS SCT and AWS DMS. AWS currently offers the following four migration playbooks: 
+* Oracle to Aurora PostgreSQL
+* SQL Server to Aurora MySQL
+* SQL Server to Aurora PostgreSQL
+* Oracle to Aurora MySQL
+
+AWS will release more over time. These and future releases can all be found on the [AWS Database Migration Service](https://docs.aws.amazon.com/dms/index.html) page.
+
+##### When a source functions and procedures are unavailable in the target engine
+An [AWS SCT Extension Pack](https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_ExtensionPack.html) is an add-on module that emulates functions present in the source database that are required when converting objects to the target database. Before you can install an AWS SCT Extension Pack, you need to convert your database schema.
+
+#### Step 3: Application conversion and remediation
+##### What happens during this step?
+Application conversion is the process of porting application code, written in languages such as Java or C, to your new target database.
+
+For example, your database might support an order entry application that uses web forms. The application would use embedded SQL to query and update order information. If you switch database engines, these SQL statements must be ported to the target format.
+
+##### Impact on migration
+Application conversion is arguably the most complex aspect of a migration process. You might have applications running against your database that were written long ago by resources who are no longer available. These applications are often mission critical and might be difficult to rewrite without extensive research and testing.
+
+Converting your applications is likely the most challenging step in the conversion process. Your applications might use nonstandard features that are not supported by your target database. You might also lack in-house expertise for legacy applications that are still in use.
+
+##### How AWS SCT helps
+AWS SCT helps you modernize your SQL code to work with your new database. You can use AWS SCT to extract SQL statements that are embedded in your application code. AWS SCT will track all the places where SQL is present, convert the SQL to work with the target database, and rebuild your application program with the converted code.
+
+During this process, you add your application's files and folders. When that is complete, AWS SCT will help you keep track of your files. AWS SCT can detect SQL within your application code, even if it's present as strings. It will extract the code for easier reading and modification and track old and converted versions of code. In most cases, AWS SCT will automaticlaly convert your SQL code to your target database. From there, you can edit the converted code. When the SQL code has been converted, AWS SCT will put it back into the application code.
+
+#### Step 4: Scripts conversion
+##### What happens during this step?
+The script conversion step looks at batch scripts used for extract, transform, and load (ETL) processes; database maintenance, disaster recovery, and other processes. These scripts might not directly relate to the applications using the database, but they require analysis to ensure that they work on the new database engine.
+
+##### How AWS SCT helps
+AWS SCT can help you convert your database scripts. Use AWS SCT to convert Oracle, Microsoft, and Teradata scripts to run on PostgreSQL-derived databases, including Aurora PostgreSQL-Compatible and Amazon Redshift. As with other conversion features in AWS SCT, if the code cannot be converted for any reason, the tool will highlight the problem for manual intervention.
+
+AWS SCT will try to automatically convert the scripts. If it cannot convert all the statements, it will highlight it on the menu. AWS SCT will add comments to the converted code that identify what the issues are. Then you can review and edit your original script in AWS SCT. When conversion is complete, you can save your scripts.
+
+#### Step 5: Integration with third-party applications
+You identify third-party applications, and validate that they continue to work after migration. This process could involve upgrading the third-party tools or changing adapters or APIs to connect to your new databases.
+
+Other third-party applications might be tightly coupled to a third-party database. In that case, consider whether you will maintain a legacy database for these applications, or whether you want to migrate from them.
+
+#### Data Migration
+
+#### AWS Database Migration Service (AWS DMS)
+AWS DMS is a cloud service for migrating relational databases, data warehouses, NoSQL databases, and other types of data stores. You can use AWS DMS to migrate your data into the AWS Cloud or between combinations of cloud and on-premises setups. 
+
+During migration, the source database remains fully operational during the migration, minimizing application downtime. AWS DMS can migrate your data to and from most widely used commercial and open-source databases.
+
+By supporting both homogenous and heterogeneous migrations, AWS DMS can continuously replicate your data with high availability between your data stores. Tasks defined in AWS DMS can perform a full load migration, migrate cached changes, or perform ongoing replication between the data stores.
+
+#### Step 6: Data migration
+##### What happens during this step?
+Data migration is the process of moving data records from the source to the target. It is the activity that most people think of when they hear the term database migration.
+
+Data migration can be challenging if you are dealing with large data volumes, and have to keep the source and target systems in sync until you can cut over your applications to the target system.
+
+If your database also contains complex data types like large objects (LOBs) or spatial data, you will need to consider how best to migrate those data values to the target. Lastly, if you’re changing the type of your target database, you will have to translate most (if not all) data values to conform to the target system requirements.
+
+##### How AWS DMS helps
+You can use AWS DMS to migrate all your data as a full load and to replicate ongoing changes, known as **change data capture (CDC)**.
+
+#### How AWS DMS works
+AWS DMS will migrate your data records to the same database engine, or you can modernize your database to use a cloud-native or open-source engine. You can use AWS DMS to perform a one-time copy of the source data to the target. You can also use AWS DMS to keep your source and target synced by migrating ongoing transactions as they occur on the source.
+
+If you are migrating to a new target database, you can continue replicating until you are ready to switch over your applications. If your use case requires ongoing data replication, you can use AWS DMS to keep a source and target in sync indefinitely.
+
+#### How AWS DMS moves data
+AWS DMS moves your data in one of three ways: full-load migration, ongoing replication, or a combination of both. During a full-load migration, where existing data from the source is moved to the target, AWS DMS loads data from tables on the source data store to tables on the target data store.
+
+AWS DMS also supports ongoing replication (known as change data capture, or CDC), which keeps your target in sync with a transactionally active source. AWS DMS can combine these two types of data transfer by using an initial full load, followed by ongoing replication.
+
+##### Filtering and transforming data
+You can select which schemas or tables to include in the migration, filter out unwanted data records, and transform names to conform to your particular naming conventions. As your migration progresses, you can monitor the migration process and check the health of your migration resources through the AWS DMS console.
+
+##### Monitoring progress
+A migration task runs on a replication instance, which is an Amazon EC2 instance that has been configured with the AWS DMS software. Or, you can choose a serverless option, AWS DMS Serverless. The task migrates the data between your source and target endpoints. You can see the progress of the task in the console, and review detailed task logs, if necessary. 
+
+#### Migration validation
+AWS DMS can validate the migrated data, so you can be confident that the source and target databases match. Data validation is an option that you can choose to add to your replication task. Data validation tracks the progress of the migration, and incrementally validates new data as it is written to the target. 
+
+#### Step 7: Functional testing of the entire system
+This phase typically involves business stakeholders and analysts who understand user-facing applications and can drive test cases that exercise system boundaries.
+
+#### Step 8: Performance testing
+Performance testing sometimes occurs in parallel with functional testing. This activity involves both business stakeholders and technical personnel. When a performance issue is discovered, each system level is checked for bottlenecks. This includes the user-facing application, the SQL statements prepared by the application, the database engine, and associated storage layers. Business and technical teams work in tandem to verify that the issue is resolved, or to identify appropriate remediation to satisfy business needs.
+
+#### Step 9: Integration and deployment
+##### WHAT HAPPENS DURING THIS STEP?
+Integration and deployment is the process of cutting over to your new database system. This typically involves a series of steps detailing how applications will be cut over to the new database system. Depending on business needs, the deployment might require minimized downtime. It might also have to fit into a specified time window or be performed in phases, where individual applications are cut over, one by one.
+
+**Integration**: Initially, your system will talk to your original database. Use AWS DMS to perform a full-load migration, and then set up ongoing replication.
+
+**Deployment**: After you verify that data is flowing correctly, and assuming that you have tested your application with the new database, you will change the application to read and write to the new database. This will stop the need for ongoing replication.
+
+##### Rolling back data
+When you are ready to switch over to production, it is important to plan for what to do in case you need to roll back changes. You may have to do this to meet business continuity requirements. You will want to test this plan in your preproduction environment as well, so the team is ready for any issues that occur during the rollout.
+
+#### Training and Support
+#### Step 10: Training and knowledge transfer
+Until all of the team understands the new technologies that you are moving to, consider adding training time on the database engine, AWS, and Amazon RDS.
+
+Even when everyone is familiar with the technologies, chances are that, while migrating, you discovered useful information about your application and how it will behave from now on. You might have slightly changed tables, stored procedures, and application code while migrating. You now want to ensure that those changes are documented, and share that knowledge with team members who support and maintain the application.
+
+It is also important to be aware of cultural aspects with migration, because migrating to the cloud involves learning new technologies and changing some ways of thinking and acting. Some people love learning new technologies and consider this a perk of their job. Others prefer to stick with the familiar and resist any changes. You need to be prepared to manage this resistance to change, should it arise.
+
+You also need to develop features to manage the new environment, such as monitoring and paging. Many of the features that you used previously might be implemented differently for your new database. Be prepared for technical hurdles and any required training for the new tools.
+
+#### Step 11: Documentation and version control 
+Although often overlooked, documentation is one of the most important tasks before putting a system into production. You need to document all changes that have been made to the system, and how the new system operates.
+
+AWS supports infrastructure as code and provides services and tools to manage all your cloud infrastructure with code. Because you are creating a whole new installation, this is a good opportunity to script all steps. You might also consider treating all of these artifacts as code. This means using a version-control system and requiring code reviews for any changes to database or server infrastructure.
+
+AWS provides tools like [AWS CloudFormation](https://aws.amazon.com/cloudformation/) and the [AWS Cloud Development Kit](https://aws.amazon.com/cdk/), which help you to manage all your AWS resources programmatically. You can script and manage the creation of Amazon RDS database instances and clusters and their backups. If you prefer to manage your database servers yourself, you can, in addition, use other services. 
+
+#### Step 12: Post-production support
+When the migrated application is running, you will need at least some support. AWS allows you to automate backups and other support tasks, but it is a good idea to plan for the support that your application might need. Ensure that automated tasks are occasionally checked, and that you have personnel for tasks that are not automated.
+
+#### Lab: AWS Database Migration Service
+
+#### Common Migration Processes
+
+#### Migration playbooks
+##### [Oracle Database 19c to Amazon Aurora PostgreSQL](https://docs.aws.amazon.com/dms/latest/oracle-to-aurora-postgresql-migration-playbook/chap-oracle-aurora-pg.html)
+
+##### [Microsoft SQL Server 2019 to Amazon Aurora PostgreSQL](https://docs.aws.amazon.com/dms/latest/sql-server-to-aurora-postgresql-migration-playbook/chap-sql-server-aurora-pg.html)
+
+##### [SQL Server to Aurora MySQL ](https://docs.aws.amazon.com/dms/latest/sql-server-to-aurora-mysql-migration-playbook/chap-sql-server-aurora-mysql.html)
+
+##### [Oracle to Aurora MySQL](https://docs.aws.amazon.com/dms/latest/oracle-to-aurora-mysql-migration-playbook/chap-oracle-aurora-mysql.html)
+
+#### Knowledge Check
+##### Which step can happen in parallel with performance testing?
+* Step 7: Functional testing of the entire system
+
+Performance testing sometimes occurs in parallel with functional testing. 
+
+Wrong answers:
+* Step 4: Scripts conversion
+* Step 5: Integration with third-party applications
+* Step 6: Data migration
+
+##### Which step in a database migration process involves cutting over to the new database?
+* Step 9: Integration and deployment
+
+Wrong answers:
+* Step 6: Data migration
+* Step 7: Functional testing of the entire system
+* Step 8: Performance testing
+
+Integration and deployment is the process of cutting over to your new database system. This typically involves a series of steps detailing how applications will be cut over to the new database system. Depending on business needs, the deployment might require minimized downtime. 
+* **Step 6**: Data migration – Data migration is the process of moving data records from the source to the target. It is the activity that most people think of when they hear the term database migration.
+* **Step 7**: Functional testing of the entire system – During this step, you ensure that all applications interacting with the database perform as before, from a functional perspective. 
+* **Step 8**: Performance testing – This activity involves both business stakeholders and technical personnel. When a performance issue is discovered, each system level is checked for bottlenecks. This includes the user-facing application, the SQL statements prepared by the application, the database engine, and associated storage layers.
+
+##### Which step during the migration process highlights areas where application code might need to be altered?
+* Step 3: Application conversion and remediation
+
+Wrong answers:
+* Step 2: Database schema conversion
+* Step 4: Scripts conversion
+* Step 5: Integration with third-party applications
+
+The application conversion step is the process of porting application code, written in languages such as Java or C, to your new target database.
+* **Step 2**: Database schema conversion – During this step, database objects are converted from the source engine to the target engine. This includes converting your tables, indexes, constraints, foreign keys, triggers, and stored procedures. But it doesn’t include migrating the actual data records in your database. 
+* **Step 4**: Scripts conversion – The script conversion step looks at batch scripts used for extract, transform, and load (ETL) processes; database maintenance; disaster recovery; and other processes.
+* **Step 5**: Integration with third-party applications – During this step, all third-party integrations are vetted, including connections to other databases. Where there are incompatibilities, this process could involve upgrading the third-party tools or moving to another system.
+
 ### Week 10: Security 2 Part 1
+#### Application Access Controls
+
+#### Pre-assessment
+##### Which is an example of single sign-on?
+* Accessing AWS resources after authenticating with an identity provider
+
+Wrong answers:
+* Setting a password that never expires
+* Registering the same username and password for every website you access
+* Using an account that only requires you to authenticate once a day
+
+Single sign-on helps users log in to different applications and websites using one account.
+
+##### Which are components of Amazon Cognito? (Select TWO.)
+* User pools
+* Identity pools
+
+Wrong answers:
+* Data pools
+* Account pools
+* API pools
+
+**User pools** and **identity pools** are the two core components of Amazon Cognito.
+
+##### Which security element encompasses determining which resources a user can use after they have gained access to a system?
+* Authorization
+
+Wrong answers:
+* Authentication
+* Admission
+* Federation
+
+**Authorization** is the process of determining which resources a user has access to after they have been authenticated.
+
+#### Securing Access
+
+##### Authentication
+* You want to know who is requesting access to the Amazon Web Services (AWS) account and the resources in it.
+* It's important to establish the identity of the requester through credentials.
+* The requester can be a person or an application; AWS Identity and Access Management (IAM) calls them principals.
+
+##### Authorization
+* After the requester has been authenticated, it's important to determine what they should be permitted to do.
+* IAM checks for policies that are relevant to the request to determine whether to allow or deny the request.
+
+#### Identity providers
+In AWS, identity and access management are not always handled internally. Third-party IdPs can also be used to authenticate the identities of principals for account access purposes. 
+
+With an identity provider, commonly known as an IdP, you can manage your user identities outside of AWS, and give these external user identities permissions to use AWS resources in your account. 
+
+When you use an IAM identity provider, you don't have to create a custom sign-in code, or manage your own user identities. The IdP provides that for you. Your external users sign in through a well-known IdP, such as logging in with an Amazon, Facebook, or Google account. 
+
+#### Federation
+AWS supports identity federation with SAML 2.0, an open standard that many IdPs use. This feature provides federated single sign-on (SSO). Users can then log into the AWS Management Console or call the AWS API operations without you having to create an IAM user for everyone in your organization. With SAML, you can streamline the process of configuring federation with AWS because you can use the IdP's service instead of writing custom identity proxy code.
+
+##### Federation for API access to AWS
+Use a SAML assertion (as part of the authentication response) that is generated in your organization to get temporary security credentials. This scenario is similar to other federation scenarios that IAM supports; however, SAML 2.0–based IdPs in your organization handle many of the details at runtime for performing authentication and authorization checking. 
+
+##### Web-based SSO to the AWS Management Console
+Users can sign in to a portal in your organization hosted by a SAML 2.0–compatible IdP. They then select an option to go to AWS, and they can use the console without having to provide additional sign-in information. You can use a third-party SAML IdP to establish SSO access to the console. Or you can create a custom IdP to provide console access for your external users.
+
+#### Using SAML-based federation for API access to AWS
+Assume that you want to provide a way for employees to copy data from their computers to a backup folder. You build an application that users can run on their computers. On the back end, the application reads and writes objects in an Amazon Simple Storage Service (Amazon S3) bucket. Users don't have direct access to AWS.
+
+In this scenario, the Client App allows users to access the Amazon S3 bucket resource withous giving them direct access to your AWS resources.
+
+1. **Client app makes request to IdP**. A user in your organization uses a client app to request authentication from your organization's IdP.
+2. **IdP authenticates user**. The IdP authenticates the user against your organization's Lightweight Directory Access Protocol (LDAP) identity store.
+3. **IdP sends client SAML assertion**. The IdP constructs a SAML assertion with information about the user and sends the assertion to the client app.
+4. **App calls AssumeRoleWithSAML**. The client app calls the **AWS Security Token Service (AWS STS) AssumeRoleWithSAML API**. It passes the Amazon Resource Name (ARN) of the SAML provider, the ARN of the role to assume, and the SAML assertion from IdP.
+5. **AWS returns temporary security credentials**. The API response to the client app includes temporary security credentials.
+6. **App uses credentials to access AWS resources**. The client app uses the temporary security credentials to call Amazon S3 API operations.
+
+#### Amazon Cognito
+Amazon Cognito provides a user directory and authentication service. It also acts as an authorization service for OAuth 2.0 access tokens and AWS credentials. Using Amazon Cognito, you can provide authentication and authorization for users from the built-in user directory, from your enterprise directory, or from consumer identity providers. Examples include Google and Facebook.
+
+#### Amazon Cognito features
+##### Identity management
+###### Self-registration
+Amazon Cognito provides you with features for user self-registration. Because this is often a customer's first experience with your site, you will want to ensure that the process is both user friendly and intuitive. 
+
+###### Identity store
+Amazon Cognito can provide user pools, which are highly scalable and secure identity stores. User pools securely store user profile data for users who sign up directly and for federated users who sign in with external identity providers.
+
+###### Migration options
+Users can migrate into Amazon Cognito using either a batch import or just-in-time (JIT) migration. The batch user migration uses a comma-separated values (CSV) file import process. Using the JIT migration process, AWS Lambda integrates the migration process into the sign-in workflow and can retain users' passwords.
+
+##### User authentication
+###### Customizable UI
+Amazon Cognito provides a built-in and customizable UI for user sign-up and sign-in. You can use Android, iOS, and JavaScript SDKs for Amazon Cognito to add user sign-up and sign-in pages to your apps.
+
+###### Multi-factor authentication (MFA)
+You can add an additional layer of security for your customers by enabling MFA in an Amazon Cognito user pool. Users can verify their identities using text messages or a time-based one-time password generator, such as Google Authenticator. Amazon Cognito also supports the configuration of different password rules on different pools of users. 
+
+###### Federation
+As a federation hub, Amazon Cognito helps users log in through social identity providers, such as Apple, Facebook, Google, and Amazon. They can also use enterprise identity providers through SAML and OpenID Connect (OIDC). Amazon Cognito is a standards-based identity provider. After your users are logged in to Amazon Cognito (through local authentication or external federation), they can use OAuth or OIDC to access federated resources.
+
+###### Custom authentication
+Amazon Cognito user pools help you build a custom authentication flow that uses Lambda functions to authenticate users based on one or more challenge-response cycles. You can use this flow to implement passwordless authentication based on custom challenges, or use custom challenges as additional factors.
+
+##### Access control
+###### Last mile integration with applications
+Amazon Cognito secures the last mile of integration with an application. Amazon Application Load Balancers and Amazon API gateways have built-in policy enforcement points that provide access based on Amazon Cognito tokens and scopes.
+
+###### Access AWS resources
+The credential broker for Amazon Cognito, also known as Amazon Cognito identity pools, provides SSO access to AWS resources. These include Amazon DynamoDB, S3 buckets, Lambda serverless components, and other Amazon services. Users can be dynamically mapped to different roles to support least privilege access to a service.
+
+###### Machine-to-machine authentication
+Using the OAuth Client Credential Flow, Amazon Cognito provides machine-to-machine authentication, ensuring a secure experience between application components.
+
+##### Customer experience
+###### Customer outreach
+Amazon Cognito helps you use a data-driven approach to drive customer acquisition and retention. You can launch customer outreach campaigns and track the engagement with Amazon Pinpoint. Amazon Pinpoint provides analytics for Amazon Cognito user activities, and Amazon Cognito enriches user data for Pinpoint campaigns.
+
+###### Extensibility
+Customer identity and access management solutions are custom solutions. Amazon Cognito provides a robust set of hooks and extensions to fully customize the authentication, registration, and user migration flows. For example, the self-registration flow can be augmented with custom identity proofing and account verification checks. The login process can be extended to create custom authentication flows or modify a token before it is generated.
+
+You can use the Amazon Cognito SDK with Java, C++, PHP, Python, Golang, Ruby, .NET, and JavaScript.
+
+##### Security
+###### Protection from web vulnerabilities using AWS WAF
+In a collaboration with AWS WAF, Amazon Cognito offers advanced bot-detection features that can help save your organization from paying for automated accounts.
+
+###### Compromised credential protection
+Amazon Cognito can detect and prevent, in real time, the reuse of compromised credentials as users sign up, sign in, or change their password. When Amazon Cognito detects users have entered credentials that have been compromised elsewhere, it prompts them to change their password.
+
+###### Compliance
+Amazon Cognito aligns with multiple security and compliance requirements, including those for highly regulated organizations, such as healthcare companies and merchants.
+
+###### Risk-based adaptive authentication
+You can protect your users' accounts and enhance their sign-in experience with adaptive authentication. When Amazon Cognito detects unusual sign-in activity, such as attempts from new locations and devices, it assigns a risk score to the activity. You can choose to either prompt users for additional verification or block the sign-in request.
+
+Amazon Cognito consists of two core components: **user pools** and **identity pools**.
+
+#### User Pools
+Amazon Cognito provides a secure identity store (user pools) that scales to millions of users. User pools securely store user profile data for users who sign up directly and for federated users who sign in with external identity providers.
+
+Amazon Cognito user pools are an API-based user repository. The repository and APIs support storage of up to 50 custom attributes per user, provide support for different data types, and enforce length and mutability constraints. Select the required attributes that must be provided by the user before completion of the sign-up process.
+
+1. **Connect to application**. Users initiate a connection to the application.
+2. **Request sign-in**. A sign-in request is initiated.
+3. **Redirect to third-party IdP (optional)**. The sign-in request is redirected to a third-party IdP (when applicable).
+4. **Additional challenges**. Amazon Cognito issues additional challenges.
+5. **Challenge responses**. Users respond to the additional challenges.
+6. **Provide tokens and sign in**. Amazon Cognito provides the applicable tokens for app sign-in.
+7. **Provide access token and retrieve data**. The application uses the access tokens to retrieve data.
+
+#### Amazon Cognito user pools features
+With a user pool, your users can authenticate to your web or mobile app through Amazon Cognito or federate through a third-party IdP. Federated and local users have a user profile in your user pool. Local users are those who signed up or you created directly in your user pool. You can manage and customize these user profiles in the console, an AWS SDK, or AWS Command Line Interface (AWS CLI).
+
+Amazon Cognito user pools accept tokens and assertions from third-party IdPs and collect the user attributes into a JSON Web Token (JWT) that it issues to your app. You can standardize your app on one set of JWTs while Amazon Cognito handles the interactions with IdPs, mapping their claims to a central token format. An Amazon Cognito user pool can be a standalone IdP. Amazon Cognito uses the OIDC standard to generate JWTs for authentication and authorization. When you sign in local users, your user pool is authoritative for those users. You have access to the following features when you authenticate local users.
+
+##### Web frontend
+Implement your own web frontend that calls the Amazon Cognito user pools API to authenticate, authorize, and manage your users.
+
+##### MFA
+Set up MFA for your users. Amazon Cognito supports time-based one-time password and text message MFA.
+
+##### Secure access
+Secure against access from user accounts that are under malicious control.
+
+##### Multi-step authentication flows
+Create your own custom multi-step authentication flows.
+
+##### User migration
+Look up users in another directory and migrate them to Amazon Cognito.
+
+An Amazon Cognito user pool can also fulfill a dual role as a service provider to your IdPs and an IdP to your app. Amazon Cognito user pools can connect to consumer IdPs, like Facebook and Google, or workforce IdPs, like Okta and Active Directory Federation Services.
+
+#### Identity Pools
+When you want to authorize authenticated or anonymous users to access your AWS resources, you can set up an Amazon Cognito identity pool. An identity pool issues AWS credentials for your app to serve resources to users. You can authenticate users with a trusted IdP, like a user pool or a SAML 2.0 service. It can also optionally issue credentials for guest users. Identity pools use both role-based and attribute-based access control to manage your users’ authorization to access your AWS resources.
+
+Identity pools don’t require integration with a user pool. An identity pool can accept authenticated claims directly from both workforce and consumer IdPs.
+
+#### Using Amazon Cognito to authenticate a user and then grant them access to an AWS service.
+1. **Authenticate and request token or assertion (optional)**. A user initiates a connection to the application.
+2. **Developer authorization, token, or assertion**. Your app user signs in through a user pool and receives an OAuth 2.0 token.
+3. **Request role**. Your app exchanges a user pool token with an identity pool for temporary AWS credentials. You can use these with AWS APIs and AWS CLI.
+4. **Role credentials**. Your app assigns the credentials session to your user and delivers authorized access to AWS services like Amazon S3 and DynamoDB.
+
+#### Amazon Cognito identity pools features
+Amazon Cognito identity pools are a collection of unique identifiers or identities that you assign to your users or guests and authorize to receive temporary AWS credentials. You can present proof of authentication to an identity pool in the form of the trusted claims. These claims can come from a SAML 2.0, OIDC, or OAuth 2.0 social IdP. You can use this to associate your user with an identity in the identity pool. The token that your identity pool creates for the identity can retrieve temporary session credentials from AWS STS.
+
+**The AWS Security Token Service (AWS STS) is a web service that enables you to requst temprorary, limited-privilege credentials for users.**
+
+To complement authenticated identities, you can also configure an identity pool to authorize AWS access without IdP authentication. You can offer your own custom proof of authentication or no authentication. You can grant temporary AWS credentials to any app user who requests them with unauthenticated identities. Identity pools also accept claims and issue credentials based on your own custom schema with developer-authenticated identities.
+
+With Amazon Cognito identity pools, you have two ways to integrate with IAM policies in your AWS account. You can use these two features together or individually. 
+
+##### Role-based access control
+When your user passes claims to your identity pool, Amazon Cognito chooses the IAM role that it requests. To customize the role’s permissions to your needs, you apply IAM policies to each role. For example, if your user demonstrates that they are in the marketing department, they receive credentials for a role with policies tailored to marketing department access needs. Amazon Cognito can request a default role, a role based on rules that query your user’s claims, or a role based on your user’s group membership in a user pool. You can also configure the role trust policy so IAM trusts only your identity pool to generate temporary sessions.
+
+##### Attributes for access control
+Your identity pool reads attributes from your user’s claims and maps them to principal tags in your user’s temporary session. You can then configure your IAM resource-based policies to allow or deny access to resources based on IAM principals that carry the session tags from your identity pool. For example, if your user demonstrates that they are in the marketing department, AWS STS tags their session as *Department: marketing*. Your S3 bucket permits read operations based on an **aws:PrincipalTag** condition that requires a value of marketing for the Department tag.
+
+#### Activity: Securing Amazon API Gateway
+Amazon Cognito has user pools and those use pool authorizers can be used with REST APIs.
+
+We can use Amazon Cognito with a third-party IdP, and possibly deploy an identity pool if anonymous user support is required.
+
+##### After users are autheticated against the user pools, how will the user information within the application be transmitted in subsequent APUI calls?
+* By using an OpenID Connect (OIDC) token.
+
+Wrong answers:
+* By using an OAuth2 token.
+* By using a SAML 2.0 identity provider (IdP).
+
+The OpenID Connect (OIDC) token gets formatted into a JSON Web Token and issued to the users in the user pool.
+
+This token is then used by the aplication to inject information into a header for sunsequent API calls.
+
+#### Lab: Securing Amazon API Gateway Using an Amazon Cognito Authorizer
+In this lab you will set up an Amazon Cognito user pool with Hosted UI. You will then restrict API access to a pre-created mock API with an Amazon Cognito authorizer. You will have a pre-provisioned mock API provided through Amazon API Gateway. You will create an Amazon Cognito user pool and an Amazon Cognito authorizer within API gateway. These will hook together to provide authorization and authentication when attempting to log in to the mock app.
+
+In this lab, you will perform the following tasks:
+* Set up an Amazon Cognito user pool with HostedUI.
+* Parse and understand Amazon Cognito sign-in URL components.
+* Create an Amazon Cognito authorizer to restrict API access.
+* Test the Amazon Cognito authorizer.
+
+#### Knowledge Check
+##### What authentication protocol does AWS use to support web identity federation?
+* OpenID Connect
+
+Wrong answers:
+* SAML 2.0
+* OAuth 2.0
+* JSON Web Token
+
+With web identity federation, users of an app can sign in using a well-known external identity provider. These include Amazon, Facebook, and Google.
+
+##### Which component of Amazon Cognito provides temporary AWS credentials to apps to access AWS services?
+* Identity pools
+
+Wrong answers:
+* User pools
+* Data pools
+* Account pools
+
+**Identity pools**, also known as the **credential broker** for Amazon Cognito, provide single sign-on access to AWS resources.
+
+##### Which component of Amazon Cognito is used to authenticate users and return JSON Web Tokens to an app?
+* User pools
+
+Wrong answers:
+* Identity pools
+* Data pools
+* Account pools
+
+Amazon Cognito **user pools** can authenticate users directly or through a third-party identity provider. After successful authentication, Amazon Cognito returns user pool tokens to an app.
+
+#### Summary
+
+##### Identity providers
+With an IdP, you can manage your user identities outside of AWS and give these external user identities permissions to use AWS resources in your account. An IdP provides custom sign-in codes and managed identities for you. Using an IdP helps you avoid distributing or embedding long-term security credentials in your applications.
+
+##### Amazon Cognito
+Amazon Cognito is an AWS identity service that provides a user directory and authentication server. Amazon Cognito also acts as an authorization service for OAuth 2.0 access tokens and AWS credentials. Amazon Cognito consists of two core components: user pools and identity pools.
+
+##### User pools
+Amazon Cognito provides a secure identity store (user pools) that scales to millions of users. User pools securely store user profile data for users who sign up directly and for federated users who sign in with external IdPs.
+
+Amazon Cognito user pools are API-based user repositories. The repositories and APIs support the storage of up to 50 custom attributes per user, provide support for different data types, and enforce length and mutability constraints.
+
+##### Identity pools
+Amazon Cognito helps you authorize authenticated or anonymous users to access your AWS resources through the use of identity pools. An identity pool issues AWS credentials for your app to serve resources to users. Identity pools use both role-based and attribute-based access control to manage your users’ authorization to access your AWS resources.
+
+Identity pools don’t require integration with a user pool. An identity pool can accept authenticated claims directly from both workforce and consumer identity providers.
+
+#### Additional Resources
+
+##### [Amazon Cognito](https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html)
+
+##### [Amazon Cognito user pools](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html)
+
+##### [Amazon Cognito identity pools](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-identity.html)
+
+#### Authorizing Access to APIs
+
+#### Pre-assessment
+##### Which of the following are types of API? (Select TWO.)
+* REST
+* WebSocket
+
+Wrong answers:
+* TCP
+* Cross-origin resource sharing
+* Trivial FTP
+
+REST and WebSocket, along with HTTP, are the common API types used with Amazon API Gateway.
+
+##### What of the following are types of AWS Lambda authorizers? (Select TWO.)
+* Token-based
+* Request parameter-based
+
+Wrong answers:
+* User-based
+* Web-based
+* Java-based
+
+**Token-based authorizers** receive the caller’s identity as a bearer token. **Request parameter-based authorizers** receive the caller’s identity as a combination of headers, parameters, and variables.
+
+##### Which API type includes real-time dashboards in its list of targeted use cases?
+* WebSocket
+
+Wrong answers:
+* HTTP
+* REST
+* HTTPS
+
+**WebSocket** APIs are used in real-time applications like chat applications, real-time dashboards, and real-time alerts and notifications.
+
+#### Controlling and managing access to APIs in API Gateway
+The method you use to control and manage access to APIs in API Gateway will depend on the type of API you are working with.
+
+Three common API types:
+* REST, 
+* HTTP, 
+* and WebSocket.
+
+#### API Gateway
+API Gateway is an AWS service for creating, publishing, maintaining, monitoring, and securing REST, HTTP, and WebSocket APIs at any scale. API developers can create APIs that access AWS or other web services and data stored in the AWS Cloud. You can create APIs for use in your own client applications. You can also make your APIs available to third-party app developers.
+
+An API defines the rules that you must follow to communicate with other software systems. Developers expose or create APIs so other applications can communicate with their applications programmatically. For example, a timesheet application exposes an API that asks for an employee's full name and a range of dates. When it receives this information, it internally processes the employee's timesheet and returns the number of hours worked in that date range.
+
+You can think of a web API as a gateway between clients and resources on the web.
+
+##### Clients
+Clients are users who want to access information from the web. The client can be a person or a software system that uses the API. For example, developers can write programs that access weather data from a weather system. Or, you can access the same data from your browser when you visit the weather website directly.
+
+##### Resources
+Resources are the information that different applications provide to their clients. Resources can be images, videos, text, numbers, or any type of data. The machine that gives the resource to the client is also called the server. Organizations use APIs to share resources and provide web services while maintaining security, control, and authentication. In addition, APIs help them to determine which clients get access to specific internal resources.
+
+#### REST APIs
+REST is a software architecture that imposes conditions on how an API should work.
+
+You can use REST-based architecture to support high-performing and reliable communication at scale. You can conveniently implement and modify it, bringing visibility and cross-platform portability to any API system.
+
+API developers can design APIs using several different architectures. APIs that follow the REST architectural style are called REST APIs. Web services that implement REST architecture are called RESTful web services. The term RESTful API generally refers to RESTful web APIs. However, you can use the terms REST API and RESTful API interchangeably.
+
+#### The REST architectural style principles
+
+##### Uniform interface
+The uniform interface is fundamental to the design of any RESTful web service. It indicates that the server transfers information in a standard format. The formatted resource is called a representation in REST. This format can be different from the internal representation of the resource on the server application. For example, the server can store data as text, but send it in an HTML representation format.
+
+Uniform interface imposes the following four architectural constraints:
+* Requests should identify resources. They do so by using a uniform resource identifier.
+* Clients have enough information in the resource representation to modify or delete the resource if they want to. The server meets this condition by sending metadata that describes the resource further.
+* Clients receive information about how to process the representation further. The server achieves this by sending self-descriptive messages that contain metadata about how the client can best use them.
+* Clients receive information about all other related resources they need to complete a task. The server achieves this by sending hyperlinks in the representation so that clients can dynamically discover more resources.
+
+##### Statelessness
+In REST architecture, statelessness refers to a communication method in which the server completes every client request independently of all previous requests. Clients can request resources in any order, and every request is stateless or isolated from other requests. This REST API design constraint implies that the server can completely understand and fulfill the request every time.
+
+##### Layered system
+In a layered system architecture, the client can connect to other authorized intermediaries between the client and server, and it will still receive responses from the server. Servers can also pass on requests to other servers. You can design your RESTful web service to run on several servers with multiple layers, such as security, application, and business logic, working together to fulfill client requests. These layers remain invisible to the client.
+
+##### Cacheability
+RESTful web services support caching, which is the process of storing some responses on the client or on an intermediary to improve server response time. For example, suppose that you visit a website that has common header and footer images on every page. Every time you visit a new website page, the server must resend the same images. To avoid this, the client caches or stores these images after the first response, and then uses the images directly from the cache. RESTful web services control caching by using API responses that define themselves as cacheable or noncacheable.
+
+##### Code on demand
+In REST architectural style, servers can temporarily extend or customize client functionality by transferring software programming code to the client. For example, when you fill a registration form on any website, your browser immediately highlights any mistakes you make, such as incorrect phone numbers. It can do this because of the code sent by the server.
+
+#### HTTP APIs
+HTTP protocol APIs use HTTP to communicate. For HTTP requests to have access to a server, HTTP APIs will expose endpoints as API gateways.
+
+HTTP APIs are similar to REST APIs, but support fewer features. HTTP APIs are specifically designed with minimal features so they can be offered at lower prices. HTTP APIs help you create RESTful APIs with lower latency and lower cost than REST APIs. Despite having fewer features than REST APIs, both HTTP and REST APIs are RESTful API products.
+
+Within AWS, you can use HTTP APIs to send requests to Lambda functions or to any routable HTTP endpoint. For example, you can create an HTTP API that integrates with a Lambda function on the backend. When a client calls your API, API Gateway sends the request to the Lambda function and returns the function's response to the client.
+
+#### WebSocket APIs
+A WebSocket API in API Gateway is a collection of WebSocket routes that are integrated with backend HTTP endpoints, Lambda functions, or other AWS services. You can use API Gateway features to help you with all aspects of the API lifecycle, from creation through monitoring your production APIs.
+
+API Gateway WebSocket APIs are bidirectional. A client can send messages to a service, and services can independently send messages to clients. This bidirectional behavior offers richer client and service interactions because services can push data to clients without requiring clients to make an explicit request. WebSocket APIs are often used in real-time applications, such as chat applications, collaboration platforms, multiplayer games, and financial trading platforms.
+
+In API Gateway, you can create a WebSocket API as a stateful frontend for an AWS service, such as Lambda or Amazon DynamoDB, or for an HTTP endpoint. The WebSocket API invokes your backend based on the content of the messages it receives from client apps.
+
+Unlike a REST API, which receives and responds to requests, a WebSocket API supports two-way communication between client apps and your backend. The backend can send callback messages to connected clients. You can use API Gateway WebSocket APIs to build secure, real-time communication applications without having to provision or manage any servers to manage connections or large-scale data exchanges.
+
+##### Targeted use cases
+Targeted use cases include real-time applications, such as the following:
+* Chat applications
+* Real-time dashboards, such as stock tickers
+* Real-time alerts and notifications
+
+##### API Gateway and WebSocket APIs
+API Gateway provides WebSocket API management functionality, such as the following:
+* Monitoring and throttling of connections and messages
+* Using AWS X-Ray to trace messages as they travel through the APIs to backend services
+* Integrating with HTTP and HTTPS endpoints
+
+#### Authorization for API Gateway
+The following are examples of how to authorize API calls to your API Gateway endpoints, depending on the API type:
+* Use Lambda authorizers. They support bearer token authentication strategies, such as Open Authentication (OAuth) or SAML.
+* Use JWT authorizers as a part of OpenID Connect (OIDC) and OAuth frameworks.
+* Use IAM to authenticate and authorize entities to access you APIs.
+* Use Amazon Cognito with user pools.
+
+Each of the authorizing options has advantages you should match to your application needs and organizational standards. For example, you need to consider who consumes the API. If it’s external developers, you probably want to consider using Lambda authorizers or Amazon Cognito.
+
+#### Lambda authorizers
+A Lambda authorizer is an API Gateway feature that uses a Lambda function to control access to your API. A Lambda authorizer is useful if you want to implement a custom authorization scheme that uses a bearer token authentication strategy, such as OAuth or SAML. They are also useful for schemes that use request parameters to determine the caller's identity.
+
+When a client makes a request to one of your API's methods, API Gateway calls your Lambda authorizer, which takes the caller's identity as input and returns an IAM policy as output.
+
+The two types of Lambda authorizers are the following:
+* A token-based Lambda authorizer (also called a TOKEN authorizer) receives the caller's identity in a bearer token, such as a JWT or an OAuth token.
+* A request parameter-based Lambda authorizer (also called a REQUEST authorizer) receives the caller's identity in a combination of headers, query string parameters, stageVariables, and $context variables.
+
+**For WebSocket APIs, only request parameter-based authorizers are supported.**
+
+If you are using an OAuth strategy as an organization, you might want to consider Lambda authorizers.
+Mobile apps, websites, and service connect to API Gateway through the internet. When you use a Lambda function as a Lambda Authorizer, the function will communicate with an OAuth provider and determine if the caller's request is to be allowed or denied. 
+
+1. Lambda functions
+A Lambda authorizer is a Lambda function that you can write to perform any custom authorization you need.
+
+2. Calling the Lambda function
+When a client calls your API, API Gateway verifies whether a Lambda authorizer is configured for the API method.
+
+If so, API Gateway calls the Lambda function.
+
+3. Supplying authorization
+In this call, API Gateway supplies the authorization token or the parameters based on the type of authorizer. The Lambda function returns a policy that allows or denies the caller's request.
+
+4. Caching policy
+API Gateway also supports an optional policy cache that you can configure for your Lambda authorizer.
+
+This feature increases performance by reducing the number of invocations of your Lambda authorizer for previously authorized tokens. With this cache, you can configure a custom Time To Live (TTL).
+
+
+To make it convenient to get started with this method, you can choose the API Gateway Lambda authorizer blueprint when creating your authorizer function from the Lambda console.
+
+#### Lambda authorizer token types
+For token-type Lambda authorizers, API Gateway passes the source token to the Lambda function as a JSON input. Based on the value of this token, your Lambda function will determine whether to allow the request.
+
+1. Passing the source token
+API Gateway passes the source token to the Lambda function as a JSON input.
+
+Based on the value of this token, your Lambda function will determine whether to allow the request.
+
+2. Validating the request
+If the authorizer function allows the request, it will return an IAM policy that allows **execute-API:Invoke** on the particular API resources that you specified. The caller can invoke the specified methods that are defined in the API in the JSON output.
+
+If your Lambda function denies the request, you will need to return a JSON  policy document that denies access to the API methods and resources specified.
+
+#### Lambda authorizer request types
+Request-type Lambda authorizers are useful if you need more information about the request itself before authorizing it.
+
+1. When to use the REQUEST type
+With request-type authorizers, you can include additional payload in the JSON input to your Lambda function.
+
+If you want to make authorizations that are based on information found in the request header, query string parameters, or body of the request, use the REQUEST type.
+
+2. Validating the request
+The Lambda function of the REQUEST authorizer type verifies the input request parameters and returns an ALLOW IAM policy on a specified method.
+
+The ALLOW will only be returned if all of the required parameter values match the preconfigured ones. If they match, the caller can invoke the specified method.
+
+Otherwise, the authorizer function returns an UNAUTHORIZED error without generating any IAM policy.
+
+#### JWT Authorizers
+A JWT is a compact and self-contained way to securely transmit information between parties as a JSON object. JWTs can be signed using a secret or a public-private key pair. Thanks to these digital signatures, you can feel safe in knowing that the information has been verified and can be trusted.
+
+JWTs consist of a header, payload, and signature. The following is some additional information about JWT authorizers:
+* Typically, the header consists of the token type (JWT) and the signing algorithm.
+* The payload contains the claims, which are statements about the entity. Claims are either registered, public, or private.
+* The signature consists of a signed version of the encoded header, the encoded payload, a secret, and the signing algorithm specified in the header.
+
+1. Client requests authorization
+The application (or client) requests authorization to access your API.
+
+2. OAuth or OIDC Authorizer grants access
+The authorizer grants access to the API and grants an access token.
+
+3. Client accesses API
+Using the provided token, the client access the protected API.
+
+#### Controling access to HTTP APIs with JWT authorizers
+JWT authorizers are only used with HTTP APIs. For HTTP APIs, you can use JWTs as a part of OIDC and OAuth 2.0 frameworks to restrict client access to your APIs.
+
+If you configure a JWT authorizer for a route of your API, API Gateway validates the JWTs that clients submit with API requests. API Gateway allows or denies requests based on token validation, and optionally, scopes in the token. If you configure scopes for a route, the token must include at least one of the route's scopes.
+
+Distinct authorizers can be configured for each route of an API, or the same authorizer can be use for multiple routes. When determining the use of JWT tokens, it's important remember that there is no standard mechanism to differentiate JWT access tokens from other types of JWTs, such as OIDC tokens. Unless you require ID tokens for API authorization, we recommend you configure your routes to require authorization scopes. You can also configure your JWT authorizers to require issuers or audiences that your identity provider uses only when issuing JWT access tokens.
+
+#### Authorizing API requests
+API Gateway uses the following general workflow to authorize requests to routes that are configured to use a JWT authorizer.
+
+1. Check identity source for a token
+The **identitySource** can include only the token or the token prefixed with Bearer.
+
+2. Decode the token
+The token is decoded for verification.
+
+3. Check the token's algorithm and signature
+The token's algorithm and signature are checked by using the public key that is fetched from the issuer's **jwks_uri**. Currently, only Rivest–Shamir–Adleman algorithms are supported. API Gateway can cache the public key for 2 hours. 
+
+As a best practice, when you rotate keys, add a grace period during which both the old and new keys are valid.
+
+4. Validate claims
+API Gateway evaluates a number of token claims.
+
+If any of these steps fail, API Gateway denies the API request. After the JWT is validated, API Gateway passes the claims in the token to the API route's integration.
+
+#### IAM authorization
+You can control access to your Amazon API Gateway API with IAM permissions by controlling access to the following two API Gateway component processes:
+* To create, deploy, and manage an API in API Gateway, you will need to grant the API developer permissions. These are needed to perform the required actions supported by the API management component of API Gateway.
+* To call a deployed API or to refresh the API caching, you will need to grant the API caller permissions. These are needed to perform required IAM actions supported by the API launch component of API Gateway.
+
+#### API Gateway permissions model for creating and managing an API
+You can allow an API developer to create and manage an API in API Gateway. You need to create IAM permissions policies that allow a specified API developer to create, update, deploy, view, or delete required API entities. You attach the permissions policy to a user, role, or group.
+
+#### API Gateway permissions model for invoking an API
+You can allow an API caller to invoke the API or refresh its caching. You must create IAM policies that permit a specified API caller to invoke the API method for which user authentication is enabled. The API developer sets the method's **authorizationType** property to **AWS_IAM** to require that the caller submit the user's credentials to be authenticated. Then, you attach the policy to a user, role, or group.
+
+#### The IAM authorization process
+IAM is a great choice for authorization if you have an internal service or a restricted number of customers. This is particularly true if you have applications that use IAM to interact with other AWS services using IAM roles.
+
+1. Sig v4
+When you turn on IAM authorization, all requests must be signed using the AWS version 4 signing process (also known as Sig v4).
+
+2. Hash-based authentication
+The process uses your AWS access key and secret key to compute a hash-based message authentication code (HMAC) signature using SHA 256. You can obtain these keys as an IAM user or by assuming an IAM role.
+
+3. Accessing an API
+The key information is added to the authorization header. API Gateway will take that signed request, parse it, and determine whether the user who signed the request has the IAM permissions to invoke your API.
+
+If not, API Gateway will deny and reject that request. So for this type of authentication, your requestor must have AWS credentials.
+
+#### Using Amazon Cognito
+There is an alternative to using IAM roles and policies or Lambda authorizers (formerly known as custom authorizers). You can use an Amazon Cognito user pool to control who can access your API in API Gateway.
+
+1. User Pools
+Amazon Cognito user pools provide a set of APIs that you can integrate into your application to provide authentication.
+
+User pools are intended for mobile or web applications where you handle user registration and sign-in directly in the application. 
+
+In addition, with Amazon Cognito, you can create your own OAuth 2.0 resource servers and define custom scopes within them.
+
+2. Creating an authorizer
+To use an Amazon Cognito user pool with your API, you must first create an authorizer of the COGNITO_USER_POOLS authorizer type. Then, you will need to configure an API method to use that authorizer.
+
+3. OIDC tokens
+After a user is authenticated against the user pool, they obtain an OIDC token formatted in a JWT.
+
+Users who have signed in to your application will have tokens provided to them by the user pool. 
+
+Then, that token can be used by your application to inject information into a header in subsequent API calls that you must make against your API Gateway endpoint.
+
+4. Validating the token
+The API call succeeds only if the required token is supplied and the supplied token is valid.
+
+Otherwise, the client isn't authorized to make the call because the client did not have credentials that could be authorized.
+
+#### Activity: Controlling Access to your API Gateway
+The clients are having trouble delegating different levels of permissions.
+
+##### Which policies do we delegate if we want to limit access broadly?
+* Identity-based policies
+
+Wrong answers:
+* Resource-based policies
+* IAM permissions boundaries
+
+Identiry-based policies are JSON permissions policiy documents that control what actions an identity (users, groups of users, and roles) can perform, on which resources, and under what conditions.
+
+Identity-based policies grant permissions to an identity.
+
+#### Knowledge Check
+##### Which principle of the REST architectural style refers to a communication method in which the server completes every client request independently of all previous requests?
+* Statelessness
+
+Wrong answers:
+* Layered system
+* Cacheability
+* Uniform interface
+
+REST and WebSocket, along with HTTP, are the common API types used with Amazon API Gateway. Clients can request resources in any order, and every request is stateless or isolated from other requests.
+
+##### Which statement best describes the difference between HTTP APIs and REST APIs?
+* HTTP APIs are similar to REST APIs but support fewer features.
+
+Wrong answers:
+* HTTP APIs help create basic RESTful APIs, but with higher latency and cost.
+* HTTP APIs are specifically designed to maximize features at a higher price point.
+* HTTP APIs are not considered a RESTful API product.
+
+HTTP APIs are RESTful APIs designed to support fewer features and provide lower latency and cost.
+
+##### Which API type supports two-way communication between clients and servers without making an explicit request?
+* WebSocket
+
+Wromg answers:
+* HTTP
+* REST
+* HTTPS
+
+WebSocket APIs are bidirectional. A client can send messages to a service, and services can independently send messages to clients.
+
+#### Summary
+##### API Gateway
+API Gateway is an AWS service for creating, publishing, maintaining, monitoring, and securing REST, HTTP, and WebSocket APIs. API developers can create APIs that do the following:
+* Can access AWS or other web services
+* Can be used in their own client applications
+* Can be made available to third-party app developers
+
+##### API
+APIs define the rules that you must follow to communicate with other software systems. Developers expose or create APIs so other applications can communicate with their applications programmatically. A web API acts as a gateway between clients and resources on the web.
+
+##### REST APIs
+REST is a software architecture that imposes conditions on how an API should work. The REST-based architecture can be used to support high-performing and reliable communication at scale.
+
+The REST architectural style includes a number of principles, including the following:
+* Uniform interfaces
+* Statelessness
+* Layered systems
+* Cacheability
+* Code on demand
+
+##### HTTP APIs
+HTTP APIs use HTTP to communicate. HTTP APIs are similar to REST APIs but are specifically designed with minimal features so they can be offered at lower prices.
+
+##### WebSocket APIs
+A WebSocket API in API Gateway is a collection of WebSocket routes integrated with backend HTTP endpoints, Lambda functions, or other AWS services. API Gateway WebSocket APIs are bidirectional, meaning a client can send messages to a service, and services can independently send messages to clients. WebSocket APIs are often used in real-time applications, such as chat applications, collaboration platforms, multiplayer games, and financial trading platforms.
+
+##### API Gateway authorizers
+There are many ways to authorize API calls to your API Gateway endpoints, depending on the API type. The following are a few examples:
+* Lambda authorizers for REST, HTTP, and WebSocket APIs
+* JWT authorizers for HTTP APIs
+* IAM authorization for REST, HTTP, and WebSocket APIs
+* Amazon Cognito user pools for REST APIs
+
+##### Lambda authorizers
+A Lambda authorizer uses a Lambda function to control access to your API. A Lambda authorizer is useful if you want to implement a custom authorization scheme that uses a bearer token authentication strategy, such as OAuth or SAML. They are also useful for schemes that use request parameters to determine a caller's identity.
+
+The following are the two types of Lambda authorizers:
+* A token-based Lambda authorizer receives the caller's identity in a bearer token, such as a JWT or an OAuth token.
+* A request parameter-based Lambda authorizer receives the caller's identity in a combination of headers, query string parameters, stageVariables, and $context variables.
+
+##### JWT authorizers
+A JWT is a compact and self-contained way for securely transmitting information between parties as a JSON object. JWTs consist of a header, payload, and a signature. The following is information about each element:
+* The header typically consists of the token type (JWT) and the signing algorithm.
+* The payload contains the claims, which are either registered, public, or private.
+* The signature consists of a signed version of the encoded header, encoded payload, a secret, and the signing algorithm specified in the header.
+
+##### IAM authorization
+There is a requirement to create, deploy, and manage an API in API Gateway. You will need to grant the API developer permissions to perform the required actions supported by the API management component of API Gateway.
+
+There is a requirement to call a deployed API or to refresh the API caching. You will need to grant the API caller permissions to perform required IAM actions supported by the API launch component of API Gateway.
+
+##### Amazon Cognito user pool authorization
+There is an alternative to using IAM roles and policies or Lambda authorizers (formerly known as custom authorizers). You can use an Amazon Cognito user pool to control who can access your API in API Gateway.
+
+#### Additional Resources
+
+##### [Protecting REST APIs](https://docs.aws.amazon.com/apigateway/latest/developerguide/rest-api-protect.html)
+
+##### [Protecting HTTP APIs](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-protect.html)
+
+##### [Protecting WebSocket APIs](https://docs.aws.amazon.com/apigateway/latest/developerguide/websocket-api-protect.html)
+
+#### Protecting APIs
+
+#### Pre-assessment
+##### What type of endpoint is exposed when an API is created with Amazon API Gateway?
+* HTTPS
+
+Wrong answers:
+* FTP
+* HTTP
+* Trivial FTP
+
+APIs created with API Gateway only expose encrypted HTTPS endpoints.
+
+##### Which type of IAM policy specifies what actions a principal can perform on an Amazon API Gateway resource?
+* Resource-based
+
+Wrong answers:
+* User-based
+* Role-based
+* Identity-based
+
+Resource-based policies can also specify what actions a principal can perform on the API Gateway resource and under what conditions.
+
+##### Which method of API protection uses X.509 certificates to verify identities before accessing an API?
+* Mutual TLS
+
+Wrong asnwers:
+* Throttling
+* Cross-origin resource sharing
+* Mutual SSH
+
+With mutual TLS, clients must present X.509 certificates to verify their identity to access an API.
+
+#### Protecting data with Amazon API Gateway
+##### Amazon API Gateway service
+An AWS service used for API:
+* Creation
+* Publishing
+* Maintenance
+* Monitoring
+* Security
+
+Supported APU types:
+* REST
+* HTTP
+* WebSocket
+
+##### Accessing API Gateway
+Access Amazon API Gateway through:
+* AWS Management Console
+* AWS SDKs
+* API Gateway Version 1 APIs
+* API Gateway Version 2 APIs
+* AWS Command Line Interface
+* AWS Tools for Windows PowerShell
+
+##### API Gateway and AWS Lambda
+API Gateway works together with AWS Lambda to form the app-facing part of the AWS serverless infrastructure. 
+* Use AWS Lambda to interact with required services to allow an app to call publicly available services, which exposes Lambda functions through API methods in API Gateway.
+* AWS Lambda runs code, and performs the necessary provisioning and administration of computing resources. 
+
+##### Security aspects of using Amazon API Gateway
+* Data protection
+* Identity and access management
+* Logging
+* Monitoring
+
+##### Data protection
+* Data in transit
+* Data at rest
+
+##### Data protection in transit
+* Amazon API Gateway only expose HTTPS endpoints
+* API Gateway does not support unencrypted HTTP endpoints
+* Certificates for default exacute-api endpoints are managed by API Gateway
+
+Security can be increased by:
+* Choosing a minimum Transport Layer Security (TLS) protocol version for enforcement. You can choose either a TLS version 1.0, or a TLS version 1.2 security policy. It’s important to note that WebSocket APIs and HTTP APIs only support TLS 1.2.
+* Using an Amazon CloudFront distribution with a custom SSL certificate in your account, and use it with Regional APIs. You can then configure the security policy for the CloudFront distribution of TLS 1.1 or higher, based on your security and compliance requirements.
+
+##### Securing data at rest
+* Security for data at rest can be increased by enabling cache encryption for RESR APIs
+* Policy for securing data at rest is often deternibed by local, regional, and national regulation
+
+##### Identity and access management for Amazon API Gateway
+The audience for AWS IAM for API Gateway falls within one of three categories: 
+* service user - uses the API Gateway services to do his job.
+* service administrator - provides you with the credentials and permissions that the service user needs.
+* IAM administrator is responsible for granting or denying the permissions requested by the service administrator. An IAM administrator can also write policies to manage access to API Gateway.
+
+##### Service users and administrators
+
+##### Service users
+* Uses service to accomplish job tasks
+* Credentials provided by an administrator
+
+##### Service admins
+* In charge of API Gateway resources
+* Full access to API Gateway
+* Determine features and resources users should access
+* Cannot change user permissions
+
+##### IAM Administrators
+* Responsible for granting or denying the permissions
+* Responds to persmission requests received from service administrator
+* Write policies to manage access to API Gateway
+
+##### Authenticating to API Gateway
+* As AWS root user
+* As an IAM user
+* Assuming an IAM role
+* Federated account through an identity source, like AWS IAM Identity Center, Google, or Facebook
+
+##### Using IAM policies to manage access to API Gateway
+* Specify actions that are allowed or denied
+* Set conditions under which actions are allowed and denied
+
+##### IAM resource-based policies
+* Specify actions that a proncipal can perform on an API Gateway resource
+* Set conditions for acctions
+* Resource-based policies are supported for REST APIs
+
+##### Using tags to control access to a REST API
+* Tags can be used to provide attribute-based access to API Gateway resources
+* Tag information is provided in the condition element of a policy using condition keys
+
+#### Protecting REST, HTTP, and WebSocket APIs
+* Generating SSL certificates
+* Configuring web application firewalls
+* Setting throttling targets
+* Only allowing access to an API from a virtual private cloud (VPC)
+
+#### Using mutual TLS authentication for REST and HTTP APIs
+Mutual TLS authentication requires two-way authentication between the client and the server. With mutual TLS, clients must present X.509 certificates to verify their identity to access your API. Mutual TLS is a common requirement for Internet of Things (IoT) and business-to-business applications.
+
+You can use mutual TLS along with other authorization and authentication operations that API Gateway supports. API Gateway forwards the certificates that clients provide to AWS Lambda authorizers and to backend integrations.
+
+The following are prerequisites for using mutual TLS:
+* A custom domain name
+* At least one certificate configured in AWS Certificate Manager (ACM) for your custom domain name
+* A truststore configured and uploaded to Amazon Simple Storage Service (Amazon S3)
+
+#### Custom domain names
+To activate mutual TLS for a REST or HTTP API, you must configure a custom domain name for your API. You can activate mutual TLS for a custom domain name and then provide the custom domain name to clients. To access an API by using a custom domain name that has mutual TLS turned on, clients must present certificates that you trust in API requests.
+
+##### [Custom domain names](https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-custom-domains.html)
+
+#### Using ACM issued certificates
+You can request a publicly trusted certificate directly from ACM, or import public or self-signed certificates. To use a certificate imported into ACM or a certificate from AWS Private Certificate Authority with mutual TLS, API Gateway needs an **ownershipVerificationCertificate** issued by ACM. This ownership certificate is only used to verify that you have permissions to use the domain name, not for the TLS handshake.
+
+**You will need to keep your ownershipVerificationCertificate valid for the lifetime of your domain name; if it expires and auto-renew fails, all updates to the domain name will be locked!**
+
+#### Configuring a truststore
+Truststores are text files with a .pem file extension. They are a trusted list of certificates from certificate authorities (CAs). To use mutual TLS, create a truststore of X.509 certificates that you trust to access your API.
+
+You must include the complete chain of trust, starting from the issuing CA certificate up to the root CA certificate, in your truststore. API Gateway accepts client certificates issued by any CA present in the chain of trust. The certificates can be from public or private CAs. Certificates can have a maximum chain length of four. Finally, you can also provide self-signed certificates.
+
+#### Using throttling to protect REST, HTTP, and WebSocket APIs
+You can configure throttling and quotas for your APIs to help protect them from being overwhelmed by too many requests. Both throttles and quotas are applied on a best-effort basis. You should think of them as targets instead of guaranteed request ceilings.
+
+API Gateway throttles requests to your API using the token bucket algorithm, where a token counts for a request. Specifically, API Gateway examines the rate and a burst of request submissions against all APIs in your account, per AWS Region. In the token bucket algorithm, a burst can permit pre-defined overrun of those limits, but other factors can also cause limits to be overrun.
+
+When request submissions exceed the steady-state request rate and burst limits, API Gateway begins to throttle requests. Clients might receive ***429 Too Many Requests*** error responses at this point. On catching such exceptions, the client can resubmit the failed requests in a way that is rate limiting.
+
+An API developer can set the target limits for individual API stages or routes to improve overall performance across all APIs in your account.
+
+#### Applying throttling limit settings
+Amazon API Gateway provides four basic types of throttling-related settings.
+
+##### AWS throttling limits
+AWS throttling limits are applied across all accounts and clients in a Region. These limit settings exist to prevent your API—and your account—from being overwhelmed by too many requests. These limits are set by AWS, and can't be changed by a customer.
+
+##### Per-account limits
+Per-account limits are applied to all APIs in an account in a specified Region. The account-level rate limit can be increased on request. Higher limits are possible with APIs that have shorter timeouts and smaller payloads. If you need an increase in account-level throttling limits per Region, contact the AWS Support Center.
+
+##### Per-API, per-stage
+Per-API, per-stage throttling limits are applied at the API method level for a stage. You can configure the same settings for all methods, or configure different throttle settings for each method. These limits can't be higher than the AWS throttling limits.
+
+##### Per-client throttling
+Per-client throttling limits are applied to clients that use API keys associated with your usage plan as client identifier. These limits can't be higher than the per-account limits.
+
+The API Gateway throttling-related settings are applied in the following order:
+1. Per-client or per-method throttling limits that you set for an API stage in a usage plan
+2. Per-method throttling limits that you set for an API stage
+3. Account-level throttling per Region
+4. AWS Regional throttling
+
+#### Account-level throttling per Region
+API Gateway limits the steady-state requests per second across all APIs within an AWS account, per Region by default. It also limits the burst (the maximum bucket size) across all APIs within an AWS account, per Region. In API Gateway, the burst limit represents the target maximum number of concurrent request submissions that API Gateway will fulfill before returning 429 Too Many Requests error responses.
+
+Per-account limits are applied to all APIs in an account in a specified Region. You can increase the account-level rate limit on request. Higher limits are possible with APIs that have shorter timeouts and smaller payloads. To request an increase of account-level throttling limits per Region, contact the AWS Support Center.
+
+#### Route-level throttling for HTTP and WebSocket APIs
+For HTTP and WebSocket APIs, you can set route-level throttling to override the account-level request throttling limits for a specific stage, or for individual routes in your API. The default route throttling limits can't exceed account-level rate limits. You can configure route-level throttling using AWS Command Line Interface (AWS CLI).
+
+#### Using AWS WAF to protect an REST APIs
+AWS WAF is a web application firewall that helps protect web applications and APIs from attacks. It helps you configure a set of rules called a web access control list (ACL) that allow, block, or count web requests based on customizable web security rules and conditions that you define.
+
+You can use AWS WAF to protect your API Gateway REST API from common web exploits, such as SQL injection and cross-site scripting attacks. These can affect API availability and performance, compromise security, or consume excessive resources. For example, you can create rules to allow or block requests from specified IP address ranges or requests from Classless Inter-Domain Routing blocks. You can also do this for requests from a specific country or region, requests that contain malicious SQL code, or requests that contain malicious scripts.
+
+You can also create rules that match a specified string or a regular expression pattern in HTTP headers, methods, query strings, URIs, and request bodies (limited to the first 8 KB). Additionally, you can create rules to block attacks from specific user agents, bad bots, and content scrapers. For example, you can use rate-based rules to specify the number of web requests that you permit by each client IP in a trailing, continuously updated, 5-minute period.
+
+To use AWS WAF for your API, you will need to perform the following tasks:
+1. Using the AWS WAF console, AWS SDK, or AWS CLI, create a Regional web ACL that contains the necessary combination of AWS WAF managed rules and your own custom rules.
+2. Associate the AWS WAF Regional web ACL with an API stage. You can do this by using the AWS WAF console, AWS SDK, or AWS CLI or by using the API Gateway console, AWS SDK, or AWS CLI.
+
+#### Using CORS for REST and HTTP APIs
+CORS is a browser security feature that restricts HTTP requests initiated from scripts running in the browser. 
+
+CORS is typically required to build web applications that access APIs hosted on a different domain or origin. You can enable CORS to allow requests to your API from a web application hosted on a different domain. For example, if your API is hosted on **https://{api_id}.execute-api.{region}.amazonaws.com/** and you want to call your API from a web application hosted on **example.com**, your API must support CORS.
+
+A cross-origin HTTP request is one that is made to the following:
+* A different domain (for example, from **example.com** to **amazondomains.com**)
+* A different subdomain (for example, from **example.com** to **petstore.example.com**)
+* A different port (for example, from **example.com** to **example.com:10777**)
+* A different protocol (for example, from **https://example.com** to **http://example.com**)
+
+Cross-origin HTTP requests have two types: basic requests and non-basic requests. For REST APIs, CORS can be turned on using the API Gateway console or by using an OpenAPI definition file. For HTTP APIs, CORS can be turned on by the following methods:
+* Configuring CORS for an HTTP API with a ***$default*** route and JWT authorizer
+* Configuring CORS for an HTTP API by using AWS CLI
+
+#### Protecting APIs with Perimeter Protection Services
+CloudFront, AWS WAF, and AWS Shield provide a layered security perimeter that co-resides at the AWS edge. Globally distributed API clients can get accelerated API performance by using CloudFront as the entrance to APIs that are hosted on API Gateway. API Gateway endpoints that are hosted in a Region gain access to scaled distributed denial-of-service (DDoS) mitigation capacity across the AWS global edge network.
+
+#### API Gateway endpoints
+API endpoint hostname example:
+
+```
+{api-id}.execute-api.{region}.amazonaws.com
+```
+
+The API endpoint type can be **edge-optimized**, **regional**, or **private**, depending on where the majority of your API traffic originates from.
+
+An **edge-optimized API endpoint** is the default hostname of an API Gateway API. It is deployed to the specified Region, while using a CloudFront distribution to facilitate client access, typically from across AWS Regions. Edge-optimized API endpoints automatically configure the CloudFront distribution. This means that you only need to manually configure the CloudFront distribution if you need more control. 
+
+API requests are routed to the nearest CloudFront Point of Presence (POP), which typically improves connection time for geographically diverse clients. This is the default endpoint type for API Gateway REST APIs.
+
+A **regional API endpoint** is intended for clients in the same Region. When a client running on an EC2 instance calls an API in the same Region, or when an API is intended to serve a small number of clients with high demands, a regional API reduces connection overhead.
+
+For a regional API, any custom domain name that you use is specific to the Region where the API is deployed. If you deploy a regional API in multiple Regions, it can have the same custom domain name in all Regions. You can use custom domains together with Amazon Route 53 to perform tasks such as latency-based routing. 
+
+A **private API endpoint** is an API endpoint that can only be accessed from your Amazon Virtual Private Cloud (VPC) using an interface VPC endpoint, which is an endpoint network interface (ENI) that you create in your VPC.
+
+Now that you have a better understanding of the types of API Gateway endpoints, let's look at ways to secure them.
+
+#### AWS Web Access Firewall (AWS WAF)
+When you protect CloudFront distributions with AWS WAF, you can protect your API Gateway API endpoints against common web exploits and bots. These can affect availability, compromise security, or consume excessive resources. AWS Managed Rules for AWS WAF help provide protection against common application vulnerabilities or other unwanted traffic, without needing to write your own rules. AWS WAF rate-based rules automatically block traffic from source IPs when they exceed the thresholds that you define. This helps protect your application against web request floods and alerts you to sudden spikes in traffic that might indicate a potential DDoS attack.
+
+#### AWS Shield
+Shield mitigates infrastructure layer DDoS attacks against CloudFront distributions in real time, without observable latency. When you protect a CloudFront distribution with Shield Advanced, you gain additional detection and mitigation against large and sophisticated DDoS attacks. You also gain near real-time visibility into attacks and integration with AWS WAF. When you configure Shield Advanced automatic application layer DDoS mitigation, Shield Advanced responds to application layer attacks by creating, evaluating, and deploying custom AWS WAF rules.
+
+You can take advantage of the perimeter protection layer built with CloudFront, AWS WAF, and Shield and help avoid exposing API Gateway endpoints directly. Use the following approaches to restrict API access through CloudFront only:
+1. CloudFront can insert the X-API-Key header before it forwards the request to API Gateway, and API Gateway validates the API key when receiving the requests.
+2. CloudFront can insert a custom header (not X-API-Key) with a known secret that is shared with API Gateway. A Lambda custom request authorizer that is configured in API Gateway validates the secret.
+3. CloudFront can sign the request with AWS Signature Version 4 by using Lambda@Edge before it sends the request to API Gateway. Configured IAM authorization in API Gateway validates the signature and verifies the identity of the requester.
+
+Although the X-API-Key header approach is straightforward to implement at a lower cost, it’s only applicable to REST API endpoints. If the X-API-Key header already exists, CloudFront will overwrite it. The custom header approach addresses this limitation, but it has an additional cost because it uses a Lambda authorizer. With both approaches, there is an operational overhead for managing keys and rotating the keys periodically. Also, it isn’t a security best practice to use long-term secrets for authorization.
+
+By using the AWS Signature Version 4 approach, you can minimize this type of operational overhead with requests signed with Signature Version 4 in Lambda@Edge.
+
+**Lambda@Edge is a feature of Amazon CloudFront that helps you run code closer to your application. improving performance and latency.**
+
+The signing uses temporary credentials that AWS Security Token Service (AWS STS) provides, and built-in API Gateway IAM authorization performs the request signature validation. There is an additional Lambda@Edge cost in this approach. This approach supports the three API endpoint types available in API Gateway—REST, HTTP, and WebSocket. It also helps secure requests by verifying the identity of the requester, protecting data in transit, and protecting against potential replay attacks. 
+
+##### A proposed solution architecture
+1. **Client sends a request**. A client sends a request to an API endpoint that is fronted by CloudFront.
+2. **AWS WAF and AWS Shield**. AWS WAF inspects the request at the edge location according to the web ACL rules that you configured. With Shield Advanced automatic application-layer mitigation activated, it can detect a DDoS attack and identify the attack signatures. Shield Advanced then creates AWS WAF rules inside an associated web ACL to mitigate the attack.
+3. **Lambda@Edge is invoked**. CloudFront handles the request and invokes the Lambda@Edge function before sending the request to API Gateway.
+4. **Request is signed**. The Lambda@Edge function signs the request with Signature Version 4 by adding the necessary headers.
+5. **Request is verified**. API Gateway verifies the signed request and sends the request to the backend.
+6. **Unauthorized requests**. An unauthorized client sends a request to an API Gateway endpoint, and it receives the HTTP 403 Forbidden message.
+
+You can manage public-facing APIs through API Gateway and protect API Gateway endpoints by using CloudFront and AWS perimeter protection services (AWS WAF and Shield Advanced). These are best-practice approaches to building a DDoS-resilient architecture. These actions can help protect your application’s availability by preventing many common infrastructure and application layer DDoS attacks.
+
+##### [Protecting APIs with Amazon API Gateway and perimeter protection services](https://aws.amazon.com/blogs/security/protect-apis-with-amazon-api-gateway-and-perimeter-protection-services/)
+
+#### Activity: Securing REST APIs
+##### The client wants to have the capability to register and sign in directly to their web application. Which authorization method would best support this capability?
+* Amazon Cognito user pools
+
+Wromg answers:
+* JWT authorizer
+* IAM authorization
+
+Amazon Cognito user pools are intended for mobile or web applications where you handle user registration and sign-in directly in the application.
+
+##### What do we first need to implement Amazon Cognito user pools with an API?
+* A COGNITO_USER_POOLS authorizer type
+
+Wrong asnwers:
+* An HMAC signature using SHA 256 encryption
+* An OIDC token formatted in a JWT
+
+To use Amazon Cognito user pool with an API, first create a COGNITO_USER_POOLS authorizer type. Then you need to configure an API method to use that authorizer.
+
+#### [Lab: Using AWS WAF to Mitigate Malicious Traffic](./w10-lab1-securing-web-application-using-aws-waf.md)
+
+#### Knowledge Check
+##### Which of the following are requirements for activating mutual TLS for a REST or HTTP API? (Select TWO.)
+* A custom domain name
+* A truststore configured and uploaded to Amazon S3
+
+Wrong asnwers:
+* Cross-Origin Resource Sharing (CORS) activated
+* A private certificate authority
+* An AWS WAF rule to allow TLS handshakes
+
+To activate mutual TLS for a REST or HTTP API, a user must configure a custom domain name for their API. They must include the complete chain of trust, starting from the issuing certificate authority certificate, up to the root certificate authority certificate, in their truststore.
+
+##### How can a user accelerate API performance for globally distributed API clients using Amazon API Gateway?
+* Use an edge-optimized endpoint
+
+Wrong answers:
+* Use a REST API
+* Set the API throttling limit to zero
+* Activate Cross-Origin Resource Sharing (CORS)
+
+API requests are routed to the nearest Amazon CloudFront Point of Presence, which typically improves connection time for geographically diverse clients.
+
+##### What error message might a client receive when Amazon API Gateway begins to throttle requests?
+* 429 Too Many Requests
+
+Wrong answers:
+* 401 Unauthorized
+* 403 Forbidden
+* 404 Not Found
+
+Clients might receive 429 Too Many Requests error responses when API Gateway begins to throttle requests.
+
+#### Additional Resources
+
+##### [Mutual TLS](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-mutual-tls.html)
+
+##### [Throttling for REST APIs](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-request-throttling.html)
+
+##### [Throttling for HTTP APIs](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-throttling.html)
+
+##### [Throttling for WebSocket APIs](https://docs.aws.amazon.com/apigateway/latest/developerguide/websocket-api-protect.html)
+
+##### [Configuring CORS for HTTP APIs](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-cors.html)
+
 ### Week 11: Security 2 Part 2
