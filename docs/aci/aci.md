@@ -4,3 +4,5 @@
 ## [Introduction to Cloud Foundations](./120-aws-cloud-foundations/introduction-to-cloud-foundations.md)
 ## [AWS Cloud Fundamentals 1](./140-aws-cloud-fundamentals-1/aws-cloud-fundamentals-1.md)
 ## [Developer Fundamentals 1](./160-developer-fundamentals-1/developer-fundamentals-1.md)
+## [Developer Fundamentals 2](./165-developer-fundamentals-2/developer-fundamentals-2.md)
+## [AWS Cloud Operations 1](./180-aws-cloud-operations-1/aws-cloud-operations-1.md)
