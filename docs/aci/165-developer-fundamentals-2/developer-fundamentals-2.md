@@ -4,6 +4,17 @@
 ## Developer Fundamentals 2: Python 2
 ### [Developer Fundamentals 2 Syllabus.pdf](./files/DeveloperFundamentals2Syllabus.pdf)
 
+#### The coerce topics:
+* Programming paradigms
+* Classes and objects
+* Object printing
+* General concepts of object-oriented programming
+* Information (data) hiding
+* Encapsulation
+* Data abstraction
+* Types and advantages of inheritance
+* Polymorphism
+
 ### Week 1: [Object Oriented Programming](./W01ObjectOrientedProgramming.md)
 ### Week 2: [Data Structures](./W02DataStructures.md)
 ### Week 3: [Advanced Data Structures Part 1](./W03AdvancedDataStructuresPart1.md)
