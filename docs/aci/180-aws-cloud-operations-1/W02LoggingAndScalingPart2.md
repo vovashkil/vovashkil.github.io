@@ -1,7 +1,7 @@
 # Logging and Scaling Part 2
 
-**back to AWS Cloud Institute repo's root [aci.md](../aci.md)**
-**back to repo's main [README.md](../../../README.md)**
+* **back to AWS Cloud Institute repo's root [aci.md](../aci.md)**
+* **back to repo's main [README.md](../../../README.md)**
 
 ## Auto Scaling
 
@@ -225,3 +225,57 @@ An example of this approach would be if your application is hosting game server 
 You can also combine both approaches. For example, use the Amazon ECS agent endpoint to set task protection from within a container and use the Amazon ECS API to remove task protection from your external controller service.
 
 ## Auto Scaling with DynamoDB
+
+Amazon DynamoDB auto scaling uses the Application Auto Scaling service to dynamically adjust provisioned throughput capacity on your behalf, in response to actual traffic patterns. This makes it possible for a table or a global secondary index to increase its provisioned read and write capacity to handle sudden increases in traffic, without throttling. When the workload decreases, Application Auto Scaling decreases the throughput so that you don't pay for unused provisioned capacity.
+DynamoDB auto scaling can increase read capacity or write capacity as often as necessary, in accordance with your auto scaling policy.
+
+* DynamoDB auto scaling updates your table’s provisioned capacity within minutes. Factor this scaling time into your auto scaling settings to allow time for the capacity to be provisioned.
+* DynamoDB auto scaling doesn't prevent you from manually modifying provisioned throughput settings. These manual adjustments don't affect any existing CloudWatch alarms that are related to DynamoDB auto scaling.
+* If you enable DynamoDB auto scaling for a table that has one or more global secondary indexes, AWS highly recommends that you also apply auto scaling uniformly to those indexes. This will help ensure better performance for table writes and reads, and help avoid throttling. You can enable auto scaling by selecting **Apply same settings to global secondary indexes** in the AWS Management Console.
+* When you delete a table or global table replica, any associated scalable targets, scaling polices, or CloudWatch alarms are not automatically deleted with it.
+* When you create a global secondary index (GSI) for an existing table, auto scaling is not enabled for the GSI. You will have to manually manage the capacity while the GSI is being built. When the backfill on the GSI is complete and it reaches active status, auto scaling will operate as normal.
+
+## Auto Scaling with Aurora
+
+Before you can use Aurora auto scaling with an Aurora DB cluster, you must first create an Aurora DB cluster with a primary (writer) DB instance. Aurora auto scaling only scales a DB cluster if the DB cluster is in the available state.
+
+When Application Auto Scaling adds a new Aurora replica, the new Aurora replica is the same DB instance class as the one used by the primary instance. Also, the promotion tier for new Aurora replicas is set to the last priority, which is 15 by default. This means that during a failover, a replica with a better priority, such as one created manually, would be promoted first.
+
+Aurora auto scaling only removes Aurora replicas that it created.
+
+To benefit from Aurora auto scaling, your applications must support connections to new Aurora replicas. To do so, AWS recommends using the Aurora reader endpoint. For Aurora MySQL-Compatible, you can use a driver such as the AWS JDBC Driver for MySQL.
+
+Aurora global databases currently do not support Aurora auto scaling for secondary DB clusters.
+
+## Amazon EC2 Auto Scaling
+
+## Summary
+
+## Week 2 Assessment
+
+### A development team is architecting a scalable and fault-tolerant infrastructure for their e-commerce platform. The platform spans multiple Amazon Elastic Compute Cloud (Amazon EC2) instances in different AWS Regions to meet the needs of a global customer base. They want the incoming traffic to their platform to be evenly distributed across instances within each Region. Additionally, they want to implement a solution that allows for seamless failover in the event of an outage in any given Region. Which combination of AWS services would BEST meet the requirements? (Select TWO.)
+
+* **AWS Route 53**
+* **Elastic Load Balancing (ELB)**
+
+AWS Route 53, in combination with ELB, provides an optimal solution for efficiently managing global DNS. They distribute incoming traffic only to the healthy instances for increased fault tolerance in the e-commerce application.
+
+#### An environment has an Amazon Elastic Compute Cloud (Amazon EC2) Auto Scaling group across two Availability Zones. One Availability Zone has four Amazon EC2 instances, and the other has three EC2 instances. The Auto Scaling group uses a default termination policy. None of the instances are protected from a scale-in event. How will Amazon EC2 Auto Scaling first respond if there is a scale-in event?
+
+* **Amazon EC2 Auto Scaling selects the Availability Zone with four EC2 instances, and then continues to evaluate.**
+
+The default termination policy helps ensure that instances are distributed evenly across Availability Zones for high availability. This action is the starting point of the default termination policy, if the Availability Zones have an unequal number of instances and the instances are unprotected. 
+
+The other options are incorrect because those actions are not the first action of the default termination policy. According to the default termination policy, Amazon EC2 Auto Scaling 
+
+* first determines which Availability Zones have the most instances and then identifies at least one instance that is not protected from scale-in.
+* If the Availability Zones have an equal number of instances, Amazon EC2 Auto Scaling checks for the oldest launch configuration.
+* After applying all the preceding criteria, if there are multiple unprotected instances to terminate, Amazon EC2 Auto Scaling determines which instances are closest to the next billing hour.
+* If there are multiple unprotected instances closest to the next billing hour, Amazon EC2 Auto Scaling terminates one of those instances at random.
+
+#### A developer is architecting a microservices-based application on AWS, and their infrastructure includes Amazon Elastic Compute Cloud (Amazon EC2) instances managed by an Amazon EC2 Auto Scaling group. They want to implement a mechanism that invoke custom actions or workflows during specific points in the instance lifecycle, such as instance launch or termination. These actions include invoking serverless functions updating databases or notifying external systems. Which is the BEST AWS service to use as a target service?
+
+* **Amazon EventBridge**
+
+As a best practice, AWS recommends using EventBridge. The notifications sent to Amazon SNS and Amazon SQS contain the same information as the notifications that Amazon EC2 Auto Scaling sends to EventBridge.
+Before EventBridge, the standard practice was to send a notification to Amazon SNS or Amazon SQS and integrate another service to perform programmatic actions. Today, EventBridge gives users more options for services that can be targeted, and makes it more convenient to handle events using serverless architecture.
