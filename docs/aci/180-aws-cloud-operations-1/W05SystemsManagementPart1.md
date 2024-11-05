@@ -562,3 +562,314 @@ Wrong answers:
 AWS Systems Manager Explorer provides a graphical interface for viewing and managing AWS resources and applications. It allows you to visualize and control your infrastructure and applications without having to switch between different tools. Systems Manager Explorer can be used to manage EC2 instances by viewing details, connecting through Session Manager, running automation documents, updating AWS Systems Manager Agents (SSM Agents), and more.
 
 ### Operations Management on AWS
+
+Operations management is the management and oversight of operations in a cloud computing environment. It involves managing the infrastructure, applications, data, and processes delivered through the cloud.
+
+### Why does a cloud application developer need to know about operations management?
+
+Operations knowledge can help you build robust, scalable, and optimized applications suited for the cloud environment, which complements your software development skills. The goal is end-to-end visibility and management of cloud-based resources and workflows to maximize efficiency, performance, reliability, and cost-effectiveness.
+
+1. **Infrastructure**. Knowing the fundamentals of server, network, and storage infrastructure helps cloud application developers build applications that efficiently use cloud resources. They can design applications that are resilient and scalable in the cloud.
+2. **Performance monitoring**. Cloud application developers should understand how to monitor application performance metrics like latency, throughput, and errors. This helps quickly identify and troubleshoot bottlenecks.
+3. **Availability and reliability**. Knowledge of availability design patterns like redundancy, failover, and backup helps build fault-tolerant applications. Cloud application developers need to know techniques for achieving uptime and reliability goals.
+4. **Deployments and automation**. Understanding deployment processes and infrastructure-as-code helps cloud application developers implement automated and repeatable deployments of applications to the cloud. This reduces errors and speeds up delivery.
+5. **Security**. Cloud application developers should implement security best practices like encryption, access controls, and monitoring to ensure applications are secure against threats.
+6. **Cost management**. Basic knowledge of cloud pricing models, resource optimization, and cost monitoring provides the ability to design cost-efficient applications. This helps reduce waste and unnecessary expenses.
+
+### What is Operations Management in AWS?
+
+Operations Management is a suite of capabilities within AWS Systems Manager that helps you keep track of your AWS resources across AWS Regions and accounts. These capabilities can assist in effectively managing your AWS resources.
+
+1. Incident Manager
+2. OpsCenter
+3. Explorer
+4. Amazon CloudWatch hosted by Systems Manager
+
+### AWS Systems Manager Incident Manager
+
+Incident Manager is an incident management console designed to help users mitigate and recover from incidents affecting their AWS hosted applications. An *incident* is any unplanned interruption or reduction in quality of services.
+
+It is crucial for organizations to establish a response strategy and implement actions to prevent future incidents.
+
+### Features of Incident Manager
+
+Incident Manager combines user engagements, escalation, runbooks, response plans, chat channels, and post-incident analysis to help your team triage incidents faster and return your applications to normal.
+
+#### Response plans
+
+Create and automate response plans initiated by CloudWatch alarms or Amazon EventBridge events.
+
+#### Runbook automation
+
+Define runbooks through Automation to automate critical response and provide detailed steps to first responders.
+
+#### Engagement and escalation
+
+Automatically connect the right people for each unique incident. Engage through various contact methods and escalate through responders to ensure visibility and active participation.
+
+#### Incident tracking
+
+Review incident details for up-to-date information during an incident. Create and remediate follow-up items while following runbooks.
+
+#### Active collaboration
+
+Incident responders actively respond to incidents through integration with the AWS Chatbot client.
+
+### Advantages of Incident Manager
+
+Incident Manager provides cloud application developers with valuable tools for incident response, monitoring, collaboration, and testing related to their cloud-focused applications.
+
+#### Diagnose issues efficiently and immediately
+
+Incident Manager provides the ability to automatically collect and track the metrics related to an incident through the use of Amazon CloudWatch metrics. You can add other metrics manually to provide additional context for incident responders.
+
+Use the Incident Manager incident timeline to display points of interest in chronological order. Responders can also use the timeline to add custom events to describe what they did or what happened. Automated points of interest include the following:
+
+* A CloudWatch alarm or EventBridge rule creates an incident.
+* Incident metrics are reported to Incident Manager.
+* Responders are engaged.
+* Runbook steps complete successfully.
+
+#### Engage effectively
+
+Incident Manager brings incident responders together through the use of contacts, on-call schedules, escalation plans, and chat channels. You define individual contacts directly in Incident Manager and specify contact preferences (email, SMS, or voice). You add contacts to on-call schedule rotations to determine who is engaged to deal with incidents during a given period. Using your defined contacts and on-call schedules, you create escalation plans to engage the necessary responders at the right time during an incident.
+
+#### Collaborate in real time
+
+Communication during an incident is the key to faster resolution. With an AWS Chatbot client set up to use Slack, Microsoft Teams, or Amazon Chime, you can bring together responders to directly interact with the incident and with one another. Incident Manager also displays the real-time actions of incident responders in the chat channel, which provides context to others.
+
+#### Automate service restoration
+
+Using Incident Manager, your responders can focus on the key tasks required to resolve an incident through the use of Automation runbooks. In Incident Manager, runbooks are a predefined series of actions taken to resolve an incident. They combine the power of automated tasks with manual steps as needed, leaving responders more available to analyze and respond to impact.
+
+#### Prevent future incidents
+
+Using Incident Manager post-incident analysis, your team can develop more robust response plans and effect change across your applications to prevent future incidents and downtime. Post-incident analysis also provides for iterative learning and improvement of runbooks, response plans, and metrics.
+
+### The incident lifecycle
+
+Incident Manager provides a step-by-step framework based on best practices of the incident lifecycle to identify and react to incidents. The phases of the incident lifecycle include alerting and engagement, triage, investigation and mitigation, and post-incident analysis.
+
+The primary focus of Incident Manager is to help restore affected services or applications to normal as quickly as possible through a complete incident lifecycle management solution. Incident Manager provides tools and best practices for every phase of the incident lifecycle.
+
+1. **Monitoring**. You can use Amazon CloudWatch metrics to monitor data about the performance of your applications. Amazon EventBridge events or CloudWatch alarms can automatically create an incident with response plans as the template.
+2. **Response Plans**. Response plans launch related escalation plans and engagement plans to bring first responders into the incident.
+3. **Incident Manager dashboard**. Simultaneously, AWS Chatbot notifies responders using a chat channel that directs them to the incident detail page. Using the chat channel and incident details, the team can communicate and triage an incident. The incident details view provides your team with runbooks, timelines, and metrics. Runbooks commonly provide investigation steps and can automatically pull data or attempt commonly used solutions. Runbooks also provide clear, repeatable steps that your team has found to be useful in mitigating incidents.
+4. **Post-incident analysis**. Post-incident analysis provides the structure to help your team formulate ways to improve response and customer experience. Incident Manager facilitates potential improvements by using a set of post-incident analysis questions and action items alongside the incident timeline.
+
+#### Incident Manager use case
+
+Incident Manager provides a centralized console to create, monitor, and resolve incidents involving AWS resources. Key features include the following:
+
+* Ability to track issues end-to-end from detection to resolution
+* Collaboration features to engage teams and stakeholders
+* Integration with other AWS services, like CloudWatch alarms and EventBridge events
+* Metrics, reporting, and dashboards to analyze incident trends and optimize response
+
+Using Incident Manager can help an operations team manage incidents like application downtime more efficiently. They would have better visibility into issues and be able to coordinate and track progress during resolutions. This would reduce mean-time-to-resolution and overall operational overhead for the team.
+
+### AWS Systems Manager OpsCenter
+
+OpsCenter is a central location where operations engineers and system administrators can view, track, investigate, and resolve operational work items (OpsItems) related to AWS resources. It is designed to reduce mean-time-to-resolution for issues that impact AWS resources.
+
+#### What is an OpsItem?
+
+An OpsItem is an AWS resource-related operational event that needs a user’s attention and, potentially, an investigation and resolution. It could be a resource-related failure, a maintenance notification, a security alert, or a performance issue. An OpsItem includes relevant information that aids with investigation and resolution of the underlying event, such as impacted resources, similar past events, and recommended runbooks. High EC2 instance CPU utilization, AWS CodeDeploy Deployment Failed, or EC2 Automation Execution failed are some examples of common OpsItems.
+
+#### Why use OpsCenter?
+
+OpsCenter provides visibility, automation, and insights to help cloud application developers build, monitor, and improve resilient cloud-focused applications on AWS. Knowing how to use OpsCenter is important for effective management of modern cloud applications.
+
+Using OpsCenter, you can view contextual investigation data about each OpsItem, including related OpsItems and related resources. You can also run Systems Manager Automation runbooks to resolve OpsItems.
+
+Each OpsItem includes the relevant information, such as name and ID of the AWS resource that generated the OpsItem, that is required to resolve an event. When you set up OpsCenter and integrate it with other AWS services, it can create OpsItems automatically. As a result, you don't have to navigate between console pages for your investigation.
+
+#### Which services does OpsCenter integrate with?
+
+OpsCenter integrates with multiple AWS services to diagnose and remediate issues with AWS resources. You must set up the AWS service before you integrate it with OpsCenter.
+
+By default, the following AWS services are integrated with OpsCenter and can create OpsItems automatically:
+
+* Amazon CloudWatch
+* Amazon CloudWatch Application Insights
+* Amazon EventBridge
+* AWS Config
+* AWS Systems Manager Incident Manager
+
+### Examples of OpsItems
+
+OpsCenter integrates with EventBridge so you can automatically create OpsItems to address a number of issues.
+
+For examples of Systems Manager OpsItems that can be automatically created through Amazon EventBridge events.
+
+#### Security issues
+
+Security issues include alerts from AWS Security Hub.
+
+#### Failures
+
+Failures include the following an Amazon EC2 Auto Scaling group fails to launch an instance and a Systems Manager automation execution fails.
+
+#### Performance issues
+
+Performance issues include a throttling event for Amazon DynamoDB and degraded Amazon Elastic Block Store (Amazon EBS) volume performance.
+
+#### Health alerts
+
+Health alerts include an AWS Health alert for scheduled maintenance.
+
+#### State changes
+
+State changes include an EC2 instance state change from running to stopped.
+
+### Demo: Configure EventBridge rules to create OpsItems
+
+* Enable OpsCenter
+* Create a new OpsItem
+* Trigger the OpsItem by terminating an EC2 instance
+* Review the output within OpsCenter
+
+1. From the AWS Management Console, choose the search field and type Systems Manager. Under Operations Management, select OpsCenter. To access the OpsCenter console, choose the Get started button.
+2. Leave the Default rules item checked and select Enable OpsCenter.
+3. When you set up OpsCenter, you enable default rules in Amazon EventBridge that automatically create OpsItems. To give an example of EventBridge rules that automatically create OpsItems, the Rule named SSMOpsItems-Autoscaling-instance-launch-failure creates OpsItems when the launch of an EC2 Auto Scaling instance failed.
+4. Let's create an EventBridge Rule with a target to create an OpsItem, so you can see the power of OpsCenter and its ability to aggregate data across AWS services.
+5. Navigate to Amazon EventBridge. Under Get started, choose EventBridge Rule and then Create rule. In the Name, type EC2-terminate. All of the other fields will be left at the default settings. Choose Next.
+ a. For Event Source, select AWS events or EventBridge partner events. Continue to scroll down to the Event pattern section. The Event source should be filled in as AWS services.
+ b. In AWS service, you will select EC2. For Event Type, select EC2 Instance State-change Notification. This will create a notification when there is a change to the state of the EC2 instance.
+ c. For Event Type Specification 1, select Specific states. For Specific states, select Terminated. This is the specific state we are looking for notification when the EC2 instance is terminated.
+ d. For Event Type 2 Specification, choose Any instance. Now you are specifying that a notification should be triggered if any instance is terminated. Select Next.
+ e. For Target 1, select AWS service. Select a target, Systems Manager OpsItem.
+ f. For Execution role, you’re going to Create a new role for this specific resource. EventBridge will be using the permissions of this role to create the OpsItems. Choose Next.
+ g. You will not need to create a tag. Choose Next.
+ h. You can now review the rule you are creating. Scroll to the bottom, choose Create rule. 
+6. Now, let’s take a look to see the new rule.
+7. Navigate back to Systems Manager. Under Operations Management, select OpsCenter. Choose OpsItems, and then Configure sources. There, you will see the default list of OpsItem rules, and the new rule, EC2-terminate.
+8. In order to see the OpsItem triggered, we will need to terminate an EC2 instance.
+ a. Navigate to EC2. There is currently an EC2 instance running that I want to terminate. Select the instance. Go to Instance state, and select Terminate instance.
+9. Now let’s navigate back to OpsCenter to review the output. In the Summary tab, you will see the OpsItems by Source and Age, Grouped by Source, EC2.
+ a. Under Count, select the number or go to the OpsItem tab. I’m going to choose the OpsItems tab. Now, you will now see our event. Select the ID.
+ b. You will see data regarding the event. Related resources shows the ARN of the instance you terminated. Runbooks is powerful, as it allows you to take action on the event to aid in remediation. Operational Data will show you the instance ID, the state, and the CloudWatch Event that generated it.
+ c. If you scroll back to the top of the page and choose the Related resource details tab, you will see CloudWatch Metrics; resource description, which shows you an output of the metadata that is displayed in the EC2 console when the instance is running; Tags for the instance; Details from AWS Config, which might take some time to show up in OpsItems; CloudTrail logs—this is powerful because it shows you relevant events about what happened, such as who stopped the instance and when. This may take some time to populate in the console after the event occurs, as well. CloudFormation stack resources shows the relevant stack data.
+
+### OpsCenter in action
+
+A company is looking to gain more visibility into their AWS environment and improve operational efficiency. Currently, their IT team spends a lot of time manually gathering metrics and logs from different services, which is time-consuming. There is no centralized view to monitor overall health, track costs, or respond quickly to issues.
+
+**Solution**
+
+OpsCenter offers a unified view into operational health and resource utilization across multiple AWS accounts and services. Key capabilities include customizable dashboards, automated alerts, log analysis, and cost tracking. By implementing OpsCenter, the IT team would gain better visibility through centralized monitoring and save time by automating data aggregation.
+
+### AWS Systems Manager Explorer
+
+Systems Manager Explorer is a customizable operations dashboard that reports information about your AWS resources. It gives you an aggregated view of operations data (OpsData) for all your AWS accounts and across AWS Regions.
+
+OpsData is operations data displayed by the Explorer dashboard. OpsData comes from a variety of sources, including EC2, OpsCenter, and Patch Manager.
+
+### Why use Explorer?
+
+As a cloud application developer, you will need to know how to navigate Systems Manager to monitor and troubleshoot your cloud applications or connect to application servers to troubleshoot problems or make configuration changes.
+
+Explorer is a very useful tool to help cloud application developers manage, monitor, and operate their AWS resources and applications efficiently. Learning how to use it is a valuable skill for any cloud application developer.
+
+While there is some overlap in functionalities between Explorer and OpsCenter, these two features also relate to each other in the following ways:
+
+* Systems Manager OpsCenter provides a central location where operations engineers can view, investigate, and resolve OpsItems related to AWS resources.
+* Explorer is a report hub where DevOps managers can view aggregated summaries of their operations data, including OpsItems.
+
+### AWS Systems Manager Explorer in action
+
+How Explorer can be used to conveniently visualize and manage cloud resources across accounts and Regions?
+
+**Solution**
+
+AWS Systems Manager Explorer can be used to centrally view and manage AWS resources, such as EC2 instances. Explorer provides a graphical interface to see resources across multiple accounts and Regions in a single view. Developer can quickly take actions like starting and stopping EC2 instances from a single location. Using Explorer, he can also visualize how resources are connected to gain insights into his application architecture.
+
+### Amazon CloudWatch Dashboards Hosted by Systems Manager
+
+Amazon CloudWatch dashboards are customizable home pages in the CloudWatch console that you can use to monitor your resources in a single view—even those resources that are spread across different AWS Regions. You can use CloudWatch dashboards to create customized views of the metrics and alarms for your AWS resources.
+
+You can also create new CloudWatch dashboards directly from Systems Manager. Using CloudWatch dashboards, you can build your own custom operational dashboards to reflect the health of an application component, an application tier, or general areas of operational ownership.
+
+With dashboards, you can create the following:
+
+* A single view for selected metrics and alarms to help you assess the health of your resources and applications across one or more AWS Regions. You can select the color used for each metric on each graph so you can track the same metric across multiple graphs.
+* An operational playbook that provides guidance for team members during operational events about how to respond to specific incidents.
+* A common view of critical resource and application measurements that can be shared by team members for faster communication flow during operational events.
+
+### Amazon CloudWatch dashboards in action
+
+By using CloudWatch dashboards, you can create customizable dashboards to monitor resources and applications in a single view. Systems Manager can be used to publish the dashboards centrally, and securely share them across your organization.
+
+You can build dashboards that track performance and operational health. You can do this using CloudWatch metrics and alarms from Amazon EC2, Elastic Load Balancing (ELB), and Amazon Relational Database Service (Amazon RDS). You can drill down into specific issues and set alert thresholds. Publishing the dashboards with Systems Manager will make them conveniently accessible to other team members who need to monitor the application.
+
+### Knowledge Check
+
+#### What is a use case for OpsCenter?
+
+* Managing and monitoring large server environments
+
+Wrong answers:
+
+* Automating software deployments
+* Securing network infrastructure
+* Designing application architectures
+
+OpsCenter aims to provide a unified operations console for visibility, compliance tracking, automation and general management of AWS resources. It focuses specifically on operational management of AWS workloads.
+
+#### Why would a cloud application developer use AWS Systems Manager Explorer?
+
+* To manage infrastructure configurations
+
+Wrong answers:
+
+* To visualize and access AWS resources
+* To monitor application performance
+* To analyze log files
+
+AWS Systems Manager Explorer provides a graphical interface to view and manage AWS resources. These resources include Amazon Elastic Compute Cloud (Amazon EC2) instances, Amazon Elastic Container Service (Amazon ECS) clusters, AWS Lambda functions, and more. Developers can view resource configurations and relationships, and make changes to those configurations, like updating agents or setting up maintenance windows. So, a cloud developer would use Systems Manager Explorer specifically for centralized management of infrastructure configurations.
+
+#### How does Incident Manager help cloud application developers?
+
+* By automatically creating incidents based on CloudWatch alarms and EventBridge events
+
+Wrong answers:
+
+* By providing automated remediation workflows to resolve incidents quickly
+* By facilitating collaboration between developers and operations teams
+* By tracking application performance and usage statistics
+
+Incident Manager gives developers observability into their applications and proactively alerts them about potential problems, which helps improve application stability, performance and uptime. Its correlation and incident management features accelerate root cause analysis and issue resolution.
+
+### Summary
+
+#### Operations Management on AWS
+
+Operations Management is a suite of capabilities that helps you keep track of your AWS resources across AWS Regions and accounts. These capabilities can assist you in effectively managing your AWS resources.
+
+As a cloud application developer, operations knowledge can help you build robust, scalable, and optimized applications suited for the cloud environment.
+
+#### Incident Manager
+
+Incident Manager is an incident management console designed to help users mitigate and recover from incidents affecting their AWS hosted applications.
+
+#### Explorer
+
+Explorer is a customizable operations dashboard. The drag-and-drop widgets automatically display actionable information about your AWS resources and an aggregated view of OpsData.
+
+#### OpsCenter
+
+OpsCenter provides a central location where operations engineers and IT professionals can view, investigate, and resolve OpsItems related to AWS resources.
+
+#### CloudWatch dashboards
+
+CloudWatch dashboards are customizable home pages in the CloudWatch console. You can access and view data from Systems Manager to centrally monitor your resources.
+
+### Additional Resources
+
+#### [Operations Management on AWS](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-ops-center.html)
+
+#### [Aggregate and Resolve Operational Issues Using AWS Systems Manager OpsCenter](https://youtu.be/r6ilQdxLcqY)
+
+#### [Improve the Visibility and Collaboration During Incident Handling in AWS Systems Manager Incident Manager](https://aws.amazon.com/blogs/mt/improve-the-visibility-and-collaboration-during-incident-handling-in-aws-systems-manager-incident-manager/)
+
+#### [Aggregate Operational Tasks With AWS Systems Manager Explorer and OpsCenter ](https://aws.amazon.com/blogs/mt/aggregate-operational-tasks-with-aws-systems-manager-explorer-and-opscenter/)
