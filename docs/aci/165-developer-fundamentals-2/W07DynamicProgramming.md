@@ -1050,4 +1050,3 @@ It makes sense to use dynamic programming if a problem has optimal substructure 
 One of the classic examples to illustrate dynamic programming is the Fibonacci sequence. This sequence begins with two ones, and each subsequent number is the sum of the two preceding numbers. In this sequence, it is easy to see how much dynamic programming improves the efficiency of a program compared to how the algorithm runs with a naive recursive approach.
 
 ## [Lab: Writing Code to Solve Subset Sum Problems](./W07Lab1SubsetSumProblems.md)
-
