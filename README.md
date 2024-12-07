@@ -2,6 +2,8 @@
 [Linux cheatsheet](docs/linux/linux-misc-cheatsheet.md)
 ### Cloud
 [Cloud cheatsheet](docs/cloud/cloud.md)
+### AWS
+[AWS Leadership Principles](docs/aws/leadership_principles.md)
 ### AWS Certification Exam Preparation
 [AWS Certified Solutions Architect – Professional (SAP-C02)](docs/cert-exam-preparation/cert-exam-preparation.md)
 ### AWS Cloud Institute
