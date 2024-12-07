@@ -6,6 +6,19 @@
 
 Leaders start with the customer and work backwards. They work vigorously to earn and keep customer trust. Although leaders pay attention to competitors, they obsess over customers.
 
+* Cost-optimize for customers where they can save money
+* Redeploy that money in the future
+
+### All the things that make it work for customers
+
+* What problem are we trying to solve?
+* What will customers care most about?
+* What would they be most disappointed about?
+
+### Focused on what we know customers care most about
+
+### Look at what customers want and figure out how we can be netter and better for them every day
+
 ## Ownership
 
 Leaders are owners. They think long term and don’t sacrifice long-term value for short-term results. They act on behalf of the entire company, beyond just their own team. They never say “that’s not my job.”
