@@ -312,3 +312,458 @@ Wrong answers:
 CodeDeploy is a fully managed service that automates software deployments so they deploy reliably and rapidly. It automates code deployment to a variety of compute services, including Amazon Elastic Compute Cloud (Amazon EC2), AWS Fargate, AWS Lambda, or on-premises servers.
 
 ### Introduction to CI/CD
+
+CI and CD are processes that streamline your software delivery process within a development pipeline.
+
+#### Continuous Integration (CI)
+
+Continuous integration is a software development practice where developers regularly merge their code changes into a central repository. Automated builds and tests are then run. During a build, tests verify the code integrates correctly and checks for regressions, bugs, or issues. If an issue is found, the build fails and the commit that introduced the test failure is identified so developers know where to look. This way, teams can resolve merging issues and code defects early.
+
+Continuous integration most often refers to the build or integration stage of the software release process. It requires both an automation component (for example, a CI or build service) and a cultural component (for example, learning to integrate frequently). The key goals of continuous integration are to find and address bugs quicker, improve software quality, and reduce the time it takes to validate and release new software updates.
+
+#### Continuous delivery and continuous deployment (CD)
+
+Continuous delivery is a software development practice where every code change is automatically built, tested, and then deployed to a non-production testing or staging environment. Manual approval is required before pushing to production. When properly implemented, developers will always have a deployment-ready build artifact that has passed through a standardized test process.
+
+Continuous deployment is similar to continuous delivery, but with automatic deployment to production. Tested code does not need an explicit approval before being pushed to production.
+
+### CI/CD best practices
+
+1. Implement security checks at every stage of the CI/CD pipeline to find vulnerabilities early.
+2. Build artifacts once and reuse them throughout the pipeline for consistency and efficiency.
+3. Facilitate quick feedback to developers when issues occur so they can promptly roll back and fix code.
+4. Commit code daily for early identification of issues while changes are still fresh.
+5. Balance test coverage and performance. Avoid overly long testing cycles.
+6. Clean pre-production environments between deployments to avoid outdated configurations.
+7. Document release and rollback plans for transparency and identifying improvements.
+8. Encourage ongoing feedback from monitoring, testing, and deployment to empower continuous improvements in the evolving CI/CD loop.
+
+### Stages in a CI/CD pipeline
+
+#### Code
+
+Develop code in languages such as Java, C#, or Python. When ready, deliver this code to a central location. Peers review the new code.
+
+#### Build
+
+Creating builds of your software can include some of the following actions:
+
+* Compile code.
+* Check code styles and standards.
+* Analyze code complexity and maintainability.
+* Validate dependencies.
+* Create container images.
+* Run unit tests.
+
+#### Test
+
+Assess if the application meets the defined functional, performance, design, and implementation requirements.
+
+#### Release
+
+Prepare and package the tested code with a specific version number.
+
+#### Deploy
+
+Deploy the release to targeted environments, such as test, staging, alpha, beta, or production.
+
+#### Monitor
+
+Monitor the application in production to quickly detect unusual activity or errors.
+
+The goal of DevOps is to follow a continuous delivery model that is repeatable, reliable, stable, resilient, and secure, and improves operational efficiency.
+
+Teams must collaborate with each other and get involved in the development and delivery process. 
+
+Relationships across teams are vital. Without cross-team communication and collaboration, processes are likely to fail.
+
+The following are some ways a cloud developer can help improve cross-team communication and collaboration:
+
+* Participate in daily standups or scrums with other teams like operations and quality assurance (QA) to share updates and risks. This helps increase visibility across teams.
+* Work closely with operations teams during development to make sure infrastructure and operational needs are considered early. This avoids surprise changes late in the process.
+* Use collaboration tools like Slack, Jira, or Confluence to centralize conversations and documentation. This creates a single source of truth.
+* Promote a blameless culture focused on shared goals and outcomes, rather than individual roles. This reduces silos and finger pointing.
+
+### Setting Up a CI/CD Pipeline with AWS Developer Tools
+
+#### Developer tools
+
+You can use AWS Cloud9 to write, run, and debug your code. Additional developer tools include SDKs and AWS Cloud Development Kit (AWS CDK). You can also make code changes to an AWS CodeCommit repository.
+
+#### AWS CodeCommit
+
+With AWS CodeCommit, you can securely store and source-control your code.
+
+#### AWS CodeBuild
+
+With AWS CodeBuild, you can automatically compile source code, run tests, and produce software packages that are ready to deploy.
+
+#### AWS CodeDeploy
+
+AWS CodeDeploy is a fully managed deployment service that automates software deployments to a variety of compute services. These services include Amazon Elastic Compute Cloud (Amazon EC2), AWS Fargate, AWS Lambda, and your on-premises servers.
+
+#### AWS CodePipeline
+
+AWS CodePipeline is a fully managed continuous delivery service that helps you automate your release pipelines for fast and reliable application and infrastructure updates. CodePipeline automates the build, test, and deploy phases of your release process every time there is a code change, based on the release model you define.
+
+#### AWS X-Ray
+
+AWS X-Ray is a service that collects data about requests that your application serves. It provides tools that you can use to view, filter, and gain insights into that data to identify issues and opportunities for optimization. For any traced request to your application, you can see detailed information about the request and response. Additionally, you can see information about calls that your application makes to downstream AWS resources, microservices, databases, and web APIs.
+
+#### Amazon CloudWatch
+
+Amazon CloudWatch monitors your AWS resources and the applications you run on AWS in real time. You can use CloudWatch to collect and track metrics, which are variables you can measure for your resources and applications. The CloudWatch homepage automatically displays metrics about every AWS service you use. Additionally, you can create custom dashboards to display metrics about your custom applications, and display custom collections of metrics that you choose.
+
+### Source control
+
+CodeCommit is a fully managed source control service that hosts secure Git-based repositories. A repository is a fundamental version control object in CodeCommit, and it stores your project files and source code.
+
+CodeCommit can start the pipeline when a new code change is made on the configured CodeCommit repository and branch.
+
+Additional version control systems include GitHub, GitLab, and Bitbucket.
+
+#### Why use it
+
+You can use CodeCommit to do the following:
+
+* Eliminate the administrative overhead of managing your own hardware and software needed to store your code. CodeCommit is fully managed, highly available, and has no limits in the type or size of files it can store.
+* Continue using Git commands that many developers are already familiar with. CodeCommit is a secure Git-based repository that can handle large numbers of files, code branches, and lengthy revision histories.
+* Improve your existing workflow by integrating CodeCommit with other AWS services, integrated development environments (IDEs), and other software (for example, Jira).
+* Create notifications and invoke actions based on events, such as when a branch is created or a commit is made.
+
+#### How it works
+
+In CodeCommit, you create a repository. Users clone it to their environments, creating their own copy of the repository. After making changes, they push those changes back to the CodeCommit repository.
+
+The CodeCommit repository is managed with Git source control. Git commands (such as git add, git push, git branch) can be used to work and collaborate on the code.
+
+If it’s part of a pipeline, CodeCommit can start the pipeline when a new code change is made on the configured CodeCommit repository and branch.
+
+### Building and testing
+
+AWS offers AWS CodeBuild to package your code for deployment. CodeBuild is a fully managed build service that automatically compiles source code, runs tests, and produces software packages.
+
+Additional build tools include Jenkins(opens in a new tab), Gradle(opens in a new tab), Maven(opens in a new tab), and Travis CI(opens in a new tab), among others.
+
+#### Why use it
+
+You can use CodeBuild to do the following:
+
+* Eliminate the need to set up, patch, update, and manage your own build servers. CodeBuild is fully managed.
+* Automatically compile source code, run tests, and produce build artifacts.
+* Specify build commands to run at each phase of the build.
+* Process multiple builds concurrently. For example, developers can continuously build and test their code, catch errors early, and correct them early.
+* Use out-of-the-box preconfigured build environments (such as .NET Core, Java, Ruby, Python, Go, Node.js, Android, and Docker). Build environments contain the operating system, programming language runtime, and build tools (such as Apache Maven and Gradle). You can also provide custom build environments suited to your needs by means of Docker images.
+* Pull source code from CodeCommit, Amazon S3, GitHub, GitHub Enterprise, and Bitbucket.
+* Integrate CodeBuild with Jenkins to streamline the build process.
+
+#### How it works
+
+CodeBuild uses a build project to compile source code, run tests, and produce software packages that are ready to deploy. A build project contains information needed to run the build, such as source repository location, runtime environment, build command, and where to store the build output.
+
+In a CI/CD pipeline, when CodeBuild is notified that new code has been uploaded to CodeCommit, it starts a new build. It downloads the content, creates a new environment, puts everything together, and uploads the completed artifact to Amazon Simple Storage Service (Amazon S3).
+
+Build logs are stored using Amazon CloudWatch Logs. When the build is complete, this can optionally prompt a message sent using an Amazon Simple Notification Service (Amazon SNS) topic.
+
+##### An example of how CodeBuild integrates into a CI/CD pipeline
+
+CodeCommit sends code to CodeBuild, which packages the code. The output is stored in Amazon S3. The successfully completed build invokes a message posted to an Amazon SNS topic. The build events are monitored by Amazon CloudWatch.
+
+AWS CodeCommit -> AWS CodeBuild -> New container-based environment -> [Amazon S3, Amazon SNS topic, Amazon CloudWatch]
+
+AWS CodeCommit sends code to AWS CodeBuild, which packages the code and stores in S3, invoking an SNS message and CloudWatch Logs.
+
+### Deploying code
+
+When your code is ready, you can use AWS CodeDeploy to deploy it to a compute service of your choice. CodeDeploy is a fully managed service that automates your software deployments, so you can deploy reliably and rapidly. It automates code deployment to a variety of compute services, including Amazon EC2, AWS Fargate, AWS Lambda, or on-premises servers.
+
+Additional deployment tools include Jenkins, GitLab, and Octopus Deploy.
+
+#### Why use it
+
+You can use CodeDeploy to do the following:
+
+* Deploy server, serverless, or container applications.
+* Automate deployments and eliminate the need for manual, error-prone operations. With CodeDeploy you can reliably and rapidly release new features and updates.
+* Deploy on a variety of compute platforms, including the following: AWS Lambda, Amazon Elastic Container Service (Amazon ECS), Amazon EC2, or on-premises. You can even configure CodeDeploy to deploy to an Amazon EC2 Auto Scaling group, which will prepare the environment before traffic is sent to it.
+* Concurrently deploy to one or multiple instances as the service scales to fit your needs.
+* Minimize production downtime for your application by specifying if an update will be applied on an existing instance, or a newly provisioned environment that will replace the previous environment. You can also control how to handle the traffic shifts from older to new versions. For example, consider an application that needs at least 50 percent of the instances in a deployment group to be up and serving traffic. You can specify that in your deployment configuration so that a deployment does not cause downtime.
+* Automatically (or through user intervention) stop an unsuccessful deployment and roll back your deployment to a previous version.
+
+#### How it works
+
+To automate the deployment to the appropriate compute resources, CodeDeploy needs to know which files to copy, which scripts to run, and where to deploy.
+
+During deployment, CodeDeploy looks for your AppSpec file in the root directory of the application's source. The AppSpec file specifies where to copy the code and how to get it running. For example, it tells CodeDeploy how to stop the application if it is already running, and how to install the code. It also tells CodeDeploy which command to run before and after the code is installed, and how to get the application running again.
+
+
+
+A deployment group specifies the deployment targeted environment. The information it contains is specific to the target compute platform: AWS Lambda, Amazon ECS, Amazon EC2, or on-premises. For example, Amazon ECS lets you specify the Amazon ECS service, load balancer, and more. For Amazon EC2, it is a logical group of deployment target instances or physical environments.
+
+
+
+The CodeDeploy agent is needed if you are deploying to Amazon EC2 or an on-premises compute platform. It is installed and configured on the target instances. It accepts and runs requests on behalf of CodeDeploy.
+
+During deployment, a deployment configuration defines a set of deployment rules and deployment success and failure conditions. For an Amazon EC2 compute platform, it specifies the number or percentage of instances that must remain available during deployment. It also specifies if an instance in the deployment group is briefly taken offline and updated with the latest code revision, or if a new instance replaces the instances in the deployment group.
+
+
+The AppSpec file tells CodeDeploy what to deploy. The deployment configuration defines how to deploy the application. The deployment group specifies the target compute environment.
+
+### Pipeline orchestration
+
+CodePipeline can be used to add actions at specific points within the overall CI/CD process. You can view a visual representation of the pipeline in the CodePipeline console and track the progress of updates as they move through each phase.
+
+When a code change is committed to CodeCommit, this prompts CodeBuild to start the build phase. The code goes through a series of automated tests in a build environment before it is packaged for deployment and uploaded to an S3 bucket. This prompted CodeDeploy to retrieve the package and deploy it to an Amazon EC2 Auto Scaling group in a development environment. All of these stages occur automatically after the single action of committing the code is completed.
+
+Considering additional automation that could be incorporated into the CI/CD pipeline, notifications could be automatically sent after each stage is completed successfully. Alternatively, a notification can be received if a stage fails. Maybe AWS Lambda functions could be incorporated to initiate additional automation.
+
+#### CodePipeline actions
+
+AWS CodePipeline includes a number of actions that help you configure build, test, and deploy resources for your automated release process. An action is a set of operations performed on application code and configured to run in the pipeline at a specified point. This can include things like a source action from a code change, an action for deploying the application to instances, and so on. For example, a deployment stage might contain a deployment action that deploys code to a compute service like Amazon EC2 or AWS Lambda.
+
+You can use CodePipeline to add actions to stages in your CI/CD pipeline. Each action can be associated with a provider that performs the action.
+
+CodePipeline provides support for six types of actions:
+
+* Source
+* Build
+* Test
+* Deploy
+* Approval
+* Invoke
+
+#### Source
+
+Specify where source code is stored.
+
+For example: Amazon S3, CodeCommit, GitHub, or Amazon Elastic Container Registry (Amazon ECR).
+
+#### Build
+
+Specify how the application should be built.
+
+For example: CodeBuild, CloudBees, Jenkins, or TeamCity.
+
+#### Test
+
+Specify how the application should be tested.
+
+For example: CodeBuild, Jenkins, or Ghost Inspector.
+
+#### Deploy
+
+Specify how the application should be deployed.
+
+For example: AWS CloudFormation, CodeDeploy, Amazon EC2, or Stacks.
+
+#### Invoke
+
+Specify a custom function to invoke.
+
+For example: AWS Lambda.
+
+#### Approval
+
+Publish an Amazon SNS topic for manual approval.
+
+### A quick look at CodePipeline
+
+1. **Source**. When developers commit changes to a source repository, CodePipeline automatically detects the changes.
+2. **Build**. The changes to the source code are built, and if any tests are configured, those tests are run.
+3. **Staging**. After the tests are complete, the built code is deployed to staging servers for testing. From the staging server, CodePipeline runs more tests, such as integration or load tests.
+4. **Manual approval**. Upon the successful completion of the tests in staging, a manual approval action must be approved for the pipeline to continue.
+5. **Production**. CodePipeline deploys the tested and approved code to production instances.
+6. **Customer feedback**. End users request changes, updates, and fixes as they interact with the deployed code.
+7. **Developers**. The customer feedback is collected and developers implement the requested changes, updates, and fixes. This starts the pipeline over.
+
+CodePipeline can deploy applications to EC2 instances by using CodeDeploy, AWS Elastic Beanstalk, or other integrated services. CodePipeline can also deploy container-based applications to services by using Amazon ECS. Developers can also use the integration points provided with CodePipeline to plug in other tools or services, including build services, test providers, or other deployment targets or systems.
+
+## Pipeline Examples
+
+### CodePipeline concepts
+
+#### Pipeline
+
+A *pipeline* is a workflow construct that describes how software changes go through a release process. Each pipeline is made up of a series of stages.
+
+#### Stages
+
+A *stage* is a logical unit you can use to isolate an environment and to limit the number of concurrent changes in that environment. Each stage contains actions that are performed on the application *artifacts*. Your source code is an example of an artifact. A stage might be a build stage, where the source code is built and tests are run. It can also be a deployment stage, where code is deployed to runtime environments. Each stage is made up of a series of serial or parallel *actions*.
+
+#### Actions
+
+An *action* is a set of operations performed on application code and configured so that the actions run in the pipeline at a specified point. This can include things like a source action from a code change, an action for deploying the application to instances, and so on. For example, a deployment stage might contain a deployment action that deploys code to a compute service like Amazon EC2 or AWS Lambda.
+
+Valid CodePipeline action types are **source**, **build**, **test**, **deploy**, **approval**, and **invoke**.
+
+Actions can run in series or in parallel.
+
+#### Artifacts
+
+*Artifacts* refers to the collection of data, such as application source code, built applications, dependencies, definitions files, templates, and so on, that is worked on by pipeline actions. Artifacts are produced by some actions and consumed by others. In a pipeline, artifacts can be the set of files worked on by an action (*input artifacts*) or the updated output of a completed action (*output artifacts*).
+
+Actions pass output to another action for further processing using the pipeline artifact bucket. CodePipeline copies artifacts to the artifact store, where the action picks them up.
+
+#### Transitions
+
+A transition is the point where a pipeline operation moves to the next stage in the pipeline.
+
+### Three-stage pipeline example
+
+1. **Source**. Source actions are special actions. They continuously poll the source providers, such as AWS CodeCommit, GitHub, and Amazon S3 to detect changes. When a change is detected, the new pipeline is created and the new pipeline begins its run. The source actions retrieve a copy of the source information and place it in an Amazon S3 bucket.
+2. **Build**. When the source actions are completed, the source stage is marked as successful and the process transitions to the build stage. The build stage contains one action: BuildMyApp. AWS CodeBuild is integrated into AWS CodePipeline as a native function. You can create the AWS CodeBuild project before or while you create your pipeline with AWS CodePipeline.
+3. **Deploy**. When the build action is completed, the build stage is marked as successful, and the process transitions to the deploy stage. The deploy stage contains one action: AWS CodeDeploy deployment action. The AWS CodeDeploy action retrieves the build artifact from your Amazon S3 bucket and deploys it to the AWS CodeDeploy deployment group.
+
+### Some options for customizing a pipeline
+
+#### Parallel actions
+
+There are alternatives to a basic pipeline. For example, at the Build stage, a parallel action to send a notification to the development team can be added to the build phase. Because BuildMyApp and NotifyDevelopers are parallel actions, they are initiated at the same time.
+
+The following is an example of an automatic notification: “Hi, Dev team – this is a friendly note to let you know that a change was detected in the source code, and a new build has been initiated.”
+
+#### Sequential actions
+
+For example, a sequential action can be added to perform post-build tests. The TestAPI action is started only after the DeployMyApp action is completed successfully.
+
+#### Manual approvals
+
+Instead of an automated approval that occurs after all tests have been passed, you can add a manual approval. When a manual approval is added, the pipeline stops running when it has reached the point at which you set the approval action. It resumes only when someone approves or rejects the revision in progress. For example, you might want someone to perform a code review or change management review before a revision is allowed into the next stage of the pipeline.
+
+Approval action is managed with AWS Identity and Access Management (IAM) permissions. You can notify approvers in several ways, including email, AWS Server Migration Service (AWS SMS), webhooks, and more.
+
+Note that approval actions can't be added to the first stage of a pipeline. The first stage of a pipeline can contain only source actions.
+
+### Fully automated CI/CD pipeline with CodePipeline example
+
+The AWS services in this pipeline compile, build, and install an application onto a set of Amazon EC2 instances. The goal in this example is to promote a code commit or change to pass through various automated stage gates. The code commit passes all the way from development to production environments, across AWS accounts.
+
+This example uses two separate AWS accounts: a Dev account and a Prod account.
+
+The Dev account is used to deploy and set up the CI/CD pipeline, along with the source code repo. It also builds and tests the code locally and performs a test deploy.
+
+After the application is deployed successfully in the Dev account, it is then deployed in the Prod account from the pipeline in the Dev account.
+
+1. **CodeCommit initiates an EventBridge event**. A change or commit to the code in the CodeCommit application repository initiates CodePipeline with the help of an Amazon EventBridge event.
+2. **Action: Build and test**. CodePipeline downloads the code from the CodeCommit repository, initiates the build and test action using CodeBuild, and securely saves the built artifact in an S3 bucket.
+3. **Action: Deploy in Dev**. If the preceding step is successful, CodePipeline initiates the Deploy in Dev action using CodeDeploy and deploys the application in the dev account.
+4. **Action: Deploy in Prod**. If successful, CodePipeline initiates the Deploy in Prod action using CodeDeploy and deploys the application in the prod account. CodePipeline in the dev account assumes a cross-account role in the prod account to deploy the application.
+
+### Considerations when designing your CI/CD pipeline
+
+* **Stages**: Which stages do you want in your pipeline?
+* **Types of tests**: Which types of tests do you want to run at each stage?
+* **Order of tests**: Which tests must be run sequentially? Can any be run in parallel?
+* **Detect and report failures**: How will the system detect and report failures?
+* **Regions**: Which AWS Regions will your AWS services be running in?
+* **Provisioning and management**: How will you provision and manage the infrastructure for your test and production environments?
+* **Rollbacks**: If problems are detected, how will you roll back to a previous version?
+
+### [Lab: Introduction to AWS CodeDeploy](./W10Lab01-AWSCodeDeploy.md)
+
+### Knowledge Check
+
+#### What is the DevOps software development practice where developers regularly merge their code changes into a central repository, initiating automated builds and tests?
+
+* Continuous integration
+
+Wrong answers:
+
+* Continuous deployment
+* Manual approval
+* Pipeline orchestration
+
+Continuous integration is a DevOps software development practice where developers regularly merge their code changes into a central repository, after which automated builds and tests are run. This way, teams can resolve merging issues and code defects early, when they are convenient and more cost effective to resolve.
+
+#### What is AWS CodeBuild used for?
+
+* Building and testing code
+
+Wrong answers:
+
+* Automating the different stages of the software release process
+* Creating a code repository
+* Deploying server, serverless, or container applications
+
+CodeBuild is a fully managed continuous integration service that compiles source code, runs tests, and produces software packages that are ready to deploy.
+
+#### Which AWS service can add actions to the stages in a continuous integration and continuous delivery (CI/CD) pipeline?
+
+* AWS CodePipeline
+
+Wrong answers:
+
+* AWS CodeBuild
+* AWS CodeDeploy
+* AWS CodeCommit
+
+CodePipeline is a continuous delivery service that can add actions to stages in a CI/CD pipeline. Each action can be associated with a provider that performs the action.
+
+### Additional Resources
+
+#### [DevOps Tools and Resources Free on AWS](https://aws.amazon.com/free/devops/)
+
+#### [What is DevOps?](https://aws.amazon.com/devops/what-is-devops/)
+
+#### [Complete CI/CD with AWS CodeCommit, AWS CodeBuild, AWS CodeDeploy, and AWS CodePipeline](https://aws.amazon.com/blogs/devops/complete-ci-cd-with-aws-codecommit-aws-codebuild-aws-codedeploy-and-aws-codepipeline/)
+
+### Summary
+
+#### Introduction to CI/CD
+
+The goal of CI/CD is to speed up the software development lifecycle and make it more efficient. The following is a summary of the key points about CI/CD:
+
+* Continuous integration (CI) is a development practice where developers frequently merge code changes into a shared repository. Automated builds and tests then run to catch issues early.
+* Continuous delivery/deployment (CD) automatically builds, tests, and deploys code changes to staging and production environments. Manual approval might be required before production deployments.
+* CI/CD best practices include frequent commits, automated testing, rapid deployments, infrastructure automation, and monitoring.
+* A CI/CD pipeline has stages like code, build, test, release, deploy, and monitor that move code from development to production.
+* Cross-team communication and collaboration between developers, operations, QA, and other teams is vital for CI/CD success. Without it, processes will likely fail.
+
+#### Setting up a CI/CD pipeline
+
+AWS supports CI/CD with a number of services that developers use at every stage of the application lifecycle. Your DevOps solution might comprise AWS and non-AWS services.
+
+1. **AWS Cloud9**. You can use AWS Cloud9 to write, run, and debug your code. Additional developer tools include SDKs and AWS CDK. You can also make code changes to an AWS CodeCommit repository.
+2. **AWS CodeCommit**. With AWS CodeCommit, you can securely store and source-control your code.
+3. **AWS CodeBuild**. With AWS CodeBuild, you can automatically compile source code, run tests, and produce software packages that are ready to deploy.
+4. **AWS CodeDeploy**. AWS CodeDeploy is a fully managed deployment service that automates software deployments to a variety of compute services, such as Amazon EC2, AWS Fargate, AWS Lambda, and your on-premises servers.
+5. **AWS X-Ray**. AWS X-Ray is a service that collects data about requests that your application serves. It provides tools that you can use to view, filter, and gain insights into that data to identify issues and opportunities for optimization. For any traced request to your application, you can see detailed information about the request and response. Additionally, you can see calls that your application makes to downstream AWS resources, microservices, databases, and web APIs.
+6. **Amazon CloudWatch**. Amazon CloudWatch monitors your AWS resources and the applications you run on AWS in real time. You can use CloudWatch to collect and track metrics, which are variables you can measure for your resources and applications. The CloudWatch homepage automatically displays metrics about every AWS service you use. You can additionally create custom dashboards to display metrics about your custom applications, and display custom collections of metrics that you choose.
+7. **AWS CodePipeline**. AWS CodePipeline is a fully managed continuous delivery service that helps you automate your release pipelines for fast and reliable application and infrastructure updates. CodePipeline automates the build, test, and deploy phases of your release process every time there is a code change, based on the release model you define.
+
+#### Pipeline orchestration with AWS CodePipeline
+
+AWS CodePipeline is a continuous delivery service that you can use to model, visualize, and automate the different stages of your software release process. It can be integrated with the AWS developer tools you learned about in this module for building, testing, and deploying your software versions.
+
+You can use CodePipeline to add actions to stages in your CI/CD pipeline, such as the following:
+
+* Where source code is stored
+* How the application is built
+* How the application is tested
+* How the application is deployed
+* Custom functions to invoke
+* Notifications for manual approval
+
+#### Pipeline examples
+
+A pipeline must contain at least two stages. An example of a three-stage pipeline consists of the source, build, and deploy stages.
+
+##### Source
+
+The first stage of the pipeline can only contain source actions, and it must contain at least one. Only the first stage can contain source actions.
+
+Source actions continuously poll the source providers, such as AWS CodeCommit, GitHub, and Amazon S3, to detect changes. When a change is detected, the new pipeline is created, and it begins its run. The source actions retrieve a copy of the source information and place it in a customer-owned Amazon S3 bucket.
+
+##### Build
+
+When the source actions are completed, the source stage is marked as successful, and the process transitions to the build stage. The build stage contains one action: BuildMyApp. AWS CodeBuild is integrated into AWS CodePipeline as a native function. You can create the AWS CodeBuild project before or while you create your pipeline with AWS CodePipeline.
+
+##### Deploy
+
+When the build action is completed, the build stage is marked as successful, and the process transitions to the deploy stage. The deploy stage contains one action: AWS CodeDeploy deployment action. The AWS CodeDeploy action retrieves the build artifact from the customer-owned Amazon S3 bucket and deploys it to the AWS CodeDeploy deployment group.
+
+#### Customizing a pipeline with additional features
+
+* **Parallel actions**: Initiate multiple actions simultaneously, such as building the code and sending a notification.
+* **Sequential actions**: Create actions that occur automatically after a previous action is completed successfully.
+* **Manual approvals**: Stop the pipeline from running until someone approves or rejects the revision in progress.
