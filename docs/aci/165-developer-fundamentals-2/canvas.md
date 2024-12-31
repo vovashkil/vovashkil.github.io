@@ -19,29 +19,28 @@ Here are the demo files for this week. The **Jupyter Notebooks** (the ones **end
 
 ## Week 10 Resources
 
-### Demo Files:
+### Demo Files
 
-Here are the demo files for this week. The Jupyter Notebooks (the ones ending in .ipynb), as well as their plain Python versions (ending in .py). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
+Here are the demo files for this week. The **Jupyter Notebooks** (the ones **ending** in **.ipynb**), as well as their **plain Python** versions (ending in **.py**). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
 
 * Regular Expressions Concepts:
 
-Notebook: w10-regular-expressions-concepts.ipynb
-Python: w10-regular-expressions-concepts.py
+ * Notebook: [w10-regular-expressions-concepts.ipynb](./canvas_files/w10-regular-expressions-concepts.ipynb)
+ * Python: [w10-regular-expressions-concepts.py](./canvas_files/w10-regular-expressions-concepts.py)
 
 * Regular Expressions Complex Examples:
 
-Notebook: w10-regular-expressions-examples.ipynb
-Python: w10-regular-expressions-examples.py
+ * Notebook: [w10-regular-expressions-examples.ipynb](./canvas_files/w10-regular-expressions-examples.ipynb)
+ * Python: [w10-regular-expressions-examples.py](./canvas_files/w10-regular-expressions-examples.py)
 
-    * Data files for examples (place them in "data" folder under the notebook location):
+* Data files for examples (place them in "data" folder under the notebook location):
 
-Tucker Pet Adoptions Build log: TuckerPetAdoptionBuildProject.log
-API Gateway access log: api_gateway_accesss_log.log
+ * Tucker Pet Adoptions Build log: [TuckerPetAdoptionBuildProject.log](./canvas_files/w10-TuckerPetAdoptionBuildProject.log)
+ * API Gateway access log: [api_gateway_accesss_log.log](./canvas_files/w10-api_gateway_accesss_log.log)
 
+## Week 9 Resources
 
-Week 9 Resources
-
-Demo Files:
+### Demo Files:
 
 Here are the demo files for this week. The Jupyter Notebooks (the ones ending in .ipynb), as well as their plain Python versions (ending in .py). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
 
@@ -59,10 +58,9 @@ Python: w9-dataframes.py
 
 Zip file: data.zip
 
+## Week 8 Resources
 
-Week 8 Resources
-
-Demo Files:
+### Demo Files:
 
 Here are the demo files for this week. The Jupyter Notebooks (the ones ending in .ipynb), as well as their plain Python versions (ending in .py). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
 

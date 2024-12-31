@@ -17,7 +17,7 @@
 * Types and advantages of inheritance
 * Polymorphism
 
-## [Slack Canvas Resources](./canvas.nd)
+## Schedule
 
 * Week 1: [Object Oriented Programming](./W01ObjectOrientedProgramming.md)
 * Week 2: [Data Structures](./W02DataStructures.md)
@@ -30,3 +30,4 @@
 * Week 9: [Defining NumPy and Pandas](./W09DefiningNumPyAndPandas.md)
 * Week 10: [Regular Expressions](./W10RegularExpressions.md)
 * Week 11: [Web Requests and REST APIs](./W11WebRequestsAndRESTAPIs.md)
+* [Slack Canvas Resources](./canvas.md)
