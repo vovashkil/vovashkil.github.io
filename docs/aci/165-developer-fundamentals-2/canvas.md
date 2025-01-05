@@ -40,214 +40,180 @@ Here are the demo files for this week. The **Jupyter Notebooks** (the ones **end
 
 ## Week 9 Resources
 
-### Demo Files:
+### Demo Files
 
-Here are the demo files for this week. The Jupyter Notebooks (the ones ending in .ipynb), as well as their plain Python versions (ending in .py). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
+Here are the demo files for this week. The **Jupyter Notebooks** (the ones **ending** in **.ipynb**), as well as their **plain Python** versions (ending in **.py**). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
 
 * NumPy:
-
-Notebook: w9-numpy.ipynb
-Python: w9-numpy.py
+ * Notebook: [w9-numpy.ipynb](./canvas_files/w9-numpy.ipynb)
+ * Python: [w9-numpy.py](./canvas_files/w9-numpy.py)
 
 * Pandas:
-
-Notebook: w9-dataframes.ipynb
-Python: w9-dataframes.py
+ * Notebook: [w9-dataframes.ipynb](./canvas_files/w9-dataframes.ipynb)
+ * Python: [w9-dataframes.py](./canvas_files/w9-dataframes.py)
 
 * Data files (must be unzipped in "data" folder under the notebooks above):
-
-Zip file: data.zip
+ * Zip file: [data.zip](./canvas_files/w9-data.zip)
 
 ## Week 8 Resources
 
-### Demo Files:
+### Demo Files
 
-Here are the demo files for this week. The Jupyter Notebooks (the ones ending in .ipynb), as well as their plain Python versions (ending in .py). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
+Here are the demo files for this week. The **Jupyter Notebooks** (the ones **ending** in **.ipynb**), as well as their **plain Python** versions (ending in **.py**). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
 
 * All the code review questions:
+ * Notebook: [w8-elearning-code-questions.ipynb](./canvas_files/w8-elearning-code-questions.ipynb)
+ * Python: [w8-elearning-code-questions.py](./canvas_files/w8-elearning-code-questions.py)
 
-Notebook: w8-elearning-code-questions.ipynb
-Python: w8-elearning-code-questions.py
+## Week 7 Resources
 
+### Demo Files
 
-Week 7 Resources
-
-Demo Files:
-
-Here are the demo files for this week. The Jupyter Notebooks (the ones ending in .ipynb), as well as their plain Python versions (ending in .py). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
+Here are the demo files for this week. The **Jupyter Notebooks** (the ones **ending** in **.ipynb**), as well as their **plain Python** versions (ending in **.py**). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
 
 * Dynamic Programming - Tabulation:
-
-Notebook: w7-dp-tabulation.ipynb
-Python: w7-dp-tabulation.py
+ * Notebook: [w7-dp-tabulation.ipynb](./canvas_files/w7-dp-tabulation.ipynb)
+ * Python: [w7-dp-tabulation.py](./canvas_files/w7-dp-tabulation.py)
 
 * Dynamic Programming - Memoization:
+ * Notebook: [w7-dp-memoization.ipynb](./canvas_files/w7-dp-memoization.ipynb)
+ * Python: [w7-dp-memoization.py](./canvas_files/w7-dp-memoization.py)
 
-Notebook: w7-dp-memoization.ipynb
-Python: w7-dp-memoization.py
+## Week 6 Resources
 
-Week 6 Resources
+### Demo Files
 
-Demo Files:
-
-Here are the demo files for this week. The Jupyter Notebooks (the ones ending in .ipynb), as well as their plain Python versions (ending in .py). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
+Here are the demo files for this week. The **Jupyter Notebooks** (the ones **ending** in **.ipynb**), as well as their **plain Python** versions (ending in **.py**). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
 
 * Built-in sort functions:
-
-Notebook: w6-builtin-sort.ipynb
-Python: w6-builtin-sort.py
+ * Notebook: [w6-builtin-sort.ipynb](./canvas_files/w6-builtin-sort.ipynb)
+ * Python: [w6-builtin-sort.py](./canvas_files/w6-builtin-sort.py)
 
 * Sorting Algorithms:
-
-Notebook: w6-sorting-algorithms.ipynb
-Python: w6-sorting-algorithms.py
+ * Notebook: [w6-sorting-algorithms.ipynb](./canvas_files/w6-sorting-algorithms.ipynb)
+ * Python: [w6-sorting-algorithms.py](./canvas_files/w6-sorting-algorithms.py)
 
 * Insertion Sort:
-
-Notebook: w6-insertion-sort.ipynb
-Python: w6-insertion-sort.py
+ * Notebook: [w6-insertion-sort.ipynb](./canvas_files/w6-insertion-sort.ipynb)
+ * Python: [w6-insertion-sort.py](./canvas_files/w6-insertion-sort.py)
 
 * Time Complexity Examples:
+ * Notebook: [w6-time-complexity-expanded.ipynb](./canvas_files/w6-time-complexity-expanded.ipynb)
+ * Python: [w6-time-complexity-expanded.py](./canvas_files/w6-time-complexity-expanded.py)
 
-Notebook: w6-time-complexity-expanded.ipynb
-Python: w6-time-complexity-expanded.py
+## Week 5 Resources
 
+### Demo Files
 
-Week 5 Resources
-
-Demo Files:
-
-Here are the demo files for this week. The Jupyter Notebooks (the ones ending in .ipynb), as well as their plain Python versions (ending in .py). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
+Here are the demo files for this week. The **Jupyter Notebooks** (the ones **ending** in **.ipynb**), as well as their **plain Python** versions (ending in **.py**). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
 
 * Recursion:
-
-Notebook: w5-recursion.ipynb
-Python: w5-recursion.py
+ * Notebook: [w5-recursion.ipynb](./canvas_files/w5-recursion.ipynb)
+ * Python: [w5-recursion.py](./canvas_files/w5-recursion.py)
 
 * Recursion gone wrong example:
-
-Notebook: w5-recursion-gone-wrong.ipynb
-Python: w5-recursion-gone-wrong.py
+ * Notebook: [w5-recursion-gone-wrong.ipynb](./canvas_files/w5-recursion-gone-wrong.ipynb)
+ * Python: [w5-recursion-gone-wrong.py](./canvas_files/w5-recursion-gone-wrong.py)
 
 * Search Algorithms:
+ * Notebook: [w5-search-algorithms.ipynb](./canvas_files/w5-search-algorithms.ipynb)
+ * Python: [w5-search-algorithms.py](./canvas_files/w5-search-algorithms.py)
 
-Notebook: w5-search-algorithms.ipynb
-Python: w5-search-algorithms.py
+## Week 4 Resources
 
+### Demo Files
 
-Week 4 Resources
-
-Demo Files:
-
-Here are the demo files for this week. The Jupyter Notebooks (the ones ending in .ipynb), as well as their plain Python versions (ending in .py). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
+Here are the demo files for this week. The **Jupyter Notebooks** (the ones **ending** in **.ipynb**), as well as their **plain Python** versions (ending in **.py**). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
 
 * Binary Search Trees:
-
-Notebook: w4-bst-avl-tree.ipynb
-Python: w4-bst-avl-tree.py
+ * Notebook: [w4-bst-avl-tree.ipynb](./canvas_files/w4-bst-avl-tree.ipynb)
+ * Python: [w4-bst-avl-tree.py](./canvas_files/w4-bst-avl-tree.py)
 
 * Tries:
-
-Notebook: w4-trie.ipynb
-Python: w4-trie.py
-Text file used in example: tucker-quest-programming-guide.txt
+ * Notebook: [w4-trie.ipynb](./canvas_files/w4-trie.ipynb)
+ * Python: [w4-trie.py](./canvas_files/w4-trie.py)
+ * Text file used in example: [tucker-quest-programming-guide.txt](./canvas_files/w4-tucker-quest-programming-guide.txt)
 
 * Graphs:
+ * Notebook: [w4-graphs.ipynb](./canvas_files/w4-graphs.ipynb)
+ * Python: [w4-graphs.py](./canvas_files/w4-graphs.py)
 
-Notebook: w4-graphs.ipynb
-Python: w4-graphs.py
+## Week 3 Resources
 
+### Demo Files
 
-Week 3 Resources
-
-Demo Files:
-
-Here are the demo files for this week. The Jupyter Notebooks (the ones ending in .ipynb), as well as their plain Python versions (ending in .py). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
+Here are the demo files for this week. The **Jupyter Notebooks** (the ones **ending** in **.ipynb**), as well as their **plain Python** versions (ending in **.py**). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
 
 * Linked Lists:
-
-Notebook: w3-linked-lists.ipynb
-Python: w3-linked-lists.py
+ * Notebook: [w3-linked-lists.ipynb](./canvas_files/w3-linked-lists.ipynb)
+ * Python: [w3-linked-lists.py](./canvas_files/w3-linked-lists.py)
 
 * Hash Tables:
-
-Notebook: w3-hash-tables.ipynb
-Python: w3-hash-tables.py
+ * Notebook: [w3-hash-tables.ipynb](./canvas_files/w3-hash-tables.ipynb)
+ * Python: [w3-hash-tables.py](./canvas_files/w3-hash-tables.py)
 
 * Trees and Heaps:
+ * Notebook: [w3-trees-heaps.ipynb](./canvas_files/w3-trees-heaps.ipynb)
+ * Python: [w3-trees-heaps.py](./canvas_files/w3-trees-heaps.py)
 
-Notebook: w3-trees-heaps.ipynb
-Python: w3-trees-heaps.py
+## Week 2 Resources
 
+### Demo Files
 
-Week 2 Resources
-
-Demo Files:
-
-Here are the demo files for this week. The Jupyter Notebooks (the ones ending in .ipynb), as well as their plain Python versions (ending in .py). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
+Here are the demo files for this week. The **Jupyter Notebooks** (the ones **ending** in **.ipynb**), as well as their **plain Python** versions (ending in **.py**). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
 
 * Stacks and Queues:
-
-Notebook: w2-stacks-queues.ipynb
-Python: w2-stacks-queues.py
+ * Notebook: [w2-stacks-queues.ipynb](./canvas_files/w2-stacks-queues.ipynb)
+ * Python: [w2-stacks-queues.py](./canvas_files/w2-stacks-queues.py)
 
 * Arrays:
-
-Notebook: w2-arrays.ipynb
-Python: w2-arrays.py
+ * Notebook: [w2-arrays.ipynb](./canvas_files/w2-arrays.ipynb)
+ * Python: [w2-arrays.py](./canvas_files/w2-arrays.py)
 
 * Intro to Time Complexity:
-
-Notebook: w2-time-complexity-basics.ipynb
-Python: w2-time-complexity-basics.py
+ * Notebook: [w2-time-complexity-basics.ipynb](./canvas_files/w2-time-complexity-basics.ipynb)
+ * Python: [w2-time-complexity-basics.py](./canvas_files/w2-time-complexity-basics.py)
 
 * Python built-in data structures:
-
-Notebook: w2-built-in-data-structures.ipynb
-Python: w2-built-in-data-structures.py
+ * Notebook: [w2-built-in-data-structures.ipynb](./canvas_files/w2-built-in-data-structures.ipynb)
+ * Python: [w2-built-in-data-structures.py](./canvas_files/w2-built-in-data-structures.py)
 
 * Calendar class example:
+ * Notebook: [w2-calendar-example.ipynb](./canvas_files/w2-calendar-example.ipynb)
+ * Python: [w2-calendar-example.py](./canvas_files/w2-calendar-example.py)
 
-Notebook: w2-calendar-example.ipynb
-Python: w2-calendar-example.py
+### Tucker Quest Application
 
+The Tucker Quest application was something we showed as an example of how object-oriented concepts can be applied to a real application. It was something built over the entire quarter in a previous Fun Friday session. It is **not something learners are expected to read an understand this week**. I'm including the full code and documentation here, only for those who might be interested in it, since I did show it in the session.
 
-Tucker Quest Application
+* Zip File with the full code for the application: [tucker-quest-v1.6.zip](./canvas_files/w2-tucker-quest-v1.6.zip)
+* Detailed Programmer’s Guide: [tucker-quest-programming-guide-v1.2.7.docx](./canvas_files/w2-tucker-quest-programming-guide-v1.2.7.docx)
+* Instructions for how to import/export projects to Cloud9: [project upload-download instructions.docx](./canvas_files/w2-project%20upload-download%20instructions.docx)
 
-The Tucker Quest application was something we showed as an example of how object-oriented concepts can be applied to a real application. It was something built over the entire quarter in a previous Fun Friday session. It is not something learners are expected to read an understand this week. I'm including the full code and documentation here, only for those who might be interested in it, since I did show it in the session.
+## Week 1 Resources
 
-* Zip File with the full code for the application: tucker-quest-v1.6.zip
-* Detailed Programmer’s Guide: tucker-quest-programming-guide-v1.2.7.docx
-* Instructions for how to import/export projects to Cloud9 (this is standard stuff you probably learned already):  project upload-download instructions.docx
+### Demo Files
 
-Week 1 Resources
-
-Demo Files:
-
-Here are the demo files for this week. The Jupyter Notebooks (the ones ending in .ipynb), as well as their plain Python versions (ending in .py). The plain versions have the same Python code, but they won't have the nicely formatted text around it.:
+Here are the demo files for this week. The **Jupyter Notebooks** (the ones **ending** in **.ipynb**), as well as their **plain Python** versions (ending in **.py**). The plain versions have the same Python code, but they won't have the nicely formatted text around it.
 
 * Object-Oriented Inheritance and Polymorphism:
-
-Notebook: w1-oop-inheritance-polymorphism.ipynb
-Python: w1-oop-inheritance-polymorphism.py
-card_printer module:card_printer.py
-(you need to place this utility file in the same folder where you run the Notebook from)
+ * Notebook: [w1-oop-inheritance-polymorphism.ipynb](./canvas_files/w1-oop-inheritance-polymorphism.ipynb)
+ * Python: [w1-oop-inheritance-polymorphism.py](./canvas_files/w1-oop-inheritance-polymorphism.py)
+ * card_printer module: [card_printer.py](./canvas_files/w1-card_printer.py)
+  (you need to place this utility file in the same folder where you run the Notebook from)
 
 * Object-Oriented Programming Overview:
-
-Notebook: w1-oop-overview.ipynb
-Python: w1-oop-overview.py
+ * Notebook: [w1-oop-overview.ipynb](./canvas_files/w1-oop-overview.ipynb)
+ * Python: [w1-oop-overview.py](./canvas_files/w1-oop-overview.py)
 
 * Jupyter Notebook Overview:
+ * Notebook: [w1-jupyter_overview.ipynb](./canvas_files/w1-jupyter_overview.ipynb)
+ * Python: [w1-jupyter_overview.py](./canvas_files/w1-jupyter_overview.py)
 
-Notebook: w1-jupyter_overview.ipynb
-Python: w1-jupyter_overview.py
-
-Jupyter Notebook:
+### Jupyter Notebook
 
 For those who want to use Jupyter to view the demo files with all the fancy formatting. You have a few options.
 
-*  https://jupyter.org/  - The official Jupyter site. You can download and run Jupyter Lab (that's what you see me using) from the site. That's free open source software. This is not an AWS product, so I don't want to get into installation steps, but you can see everything on their site.
-*  https://studiolab.sagemaker.aws/ - SageMaker Studio Lab, which is an Amazon supported Jupyter Lab environment in the Cloud. This is  currently free for anyone (no credit card required). Check the website for registration and all details
+*  [https://jupyter.org/](https://jupyter.org/)  - The official Jupyter site. You can download and run Jupyter Lab (that's what you see me using) from the site. That's free open source software. This is not an AWS product, so I don't want to get into installation steps, but you can see everything on their site.
+*  [https://studiolab.sagemaker.aws/](https://studiolab.sagemaker.aws/) - SageMaker Studio Lab, which is an Amazon supported Jupyter Lab environment in the Cloud. This is  currently free for anyone (no credit card required). Check the website for registration and all details
 * Others - Multiple IDEs, including VS Code, will support Jupyter Notebooks
-
