@@ -150,4 +150,3 @@ The rest of memory is called the heap and is where dynamic objects created by th
 The garbage collector automatically handles memory deallocation and frees memory for reuse. The garbage collector removes an object when it detects that the object is no longer being used.
 
 ## Stacks and Queues
-
