@@ -117,6 +117,214 @@ The HTTP protocol also has a security extension that is commonly used in web app
 
 ## HTML Overview
 
+### Pre-assessment
+
+#### What is a valid file name extension for an HTML document? (Select TWO.)
+
+* .html
+* .htm
+
+Wrong answers:
+
+* .js
+* .txt
+* .css
+
+The .htm extension is an older convention, and .html is recommended as the file name extension for an HTML document today.
+
+#### What is a feature of HTML?
+
+* HTML supports mixed-character case in tag and element names.
+
+Wrong answers:
+
+* HTML is sensitive to indentation levels.
+* HTML is a compiled language.
+* HTML is governed by a single privately owned company.
+
+##### Explanation
+
+* HTML is not sensitive to indentation levels.
+* HTML is an interpreted language, not a compiled language.
+* Today, the HTML specification is governed by the World Wide Web Consortium (W3C). It is a public-interest, non-profit organization where member organizations and the public work together to develop web standards.
+
+#### Which HTML tag can be used to add an image to a webpage?
+
+* <img>
+
+Wrong answers:
+
+* <a>
+* <iframe>
+* <link>
+
+With the <img> tag, it's possible to specify the file name path of an image to include on the webpage.
+
+* Use the <a> tag to add a hyperlink to a page.
+* Use the <iframe> tag to include an inline frame to a page (a page within a page).
+* Use the <link> tag to link external documents to a page, such as a Cascading Style Sheet.
+
+### History of HTML
+
+Sir Tim Berners-Lee created HTML in the early 1990s. It was originally used to create and share scientific documents on the internet. It was later adapted to describe any type of document that a web browser can display.
+
+HTML is an open standard, and its specification has evolved over the years.
+
+* **1991**. Berners-Lee invents **HTML** while working for the European Organization for Nuclear Research (CERN).
+* **1995**. A working group organized by the Internet Engineering Task Force (IETF) publishes **HTML 2.0**.
+* **1997**. The World Wide Web Consortium (W3C) makes a recommendation to publish **HTML 3.2**.
+* **1999**. W3C makes a recommendation to publish **HTML 4.01**. This was the most widely used version of HTML throughout the 2000s and into the early 2010s.
+* **2000**. W3C makes a recommendation to publish a combination of HTML and XML called **XHTML 1.0**. It is similar to HTML, but has stricter rules to increase extensibility and interoperability with multiple data formats.
+* **2008**. W3C and WHATWG work together to release the first public **draft of HTML5**. Developers begin to adopt HTML5 in 2008, and it is used steadily after 2012.
+* **2014**. W3C makes a recommendation to publish the first official release of **HTML5**.
+* **2017**. W3C makes a recommendation to publish **HTML5.2**.
+
+Today, the World Wide Web Consortium (W3C) and the Web Hypertext Application Technology Working Group (WHATWG) govern the evolution of the HTML specification.
+
+### Structure of an HTML document
+
+An HTML document consists of three parts as follows:
+
+* Document type definition
+* Head
+* Body
+
+#### HTML example
+
+```
+<!doctype html>
+<html>
+  <head>
+    <title>This is the page title.</title>
+  </head>
+  <body>
+    <h1>This is a level 1 heading.</h1>
+    <p>The second nested element is a paragraph element that contains the text This is a paragraph.</p>
+  </body>
+</html>
+```
+
+#### Document type definition
+
+The <!doctype html> declaration specifies the version of HTML that the document uses. In this example, it specifies the version HTML5.
+
+```
+<!doctype html>
+```
+
+The **<!doctype>** declaration must be the first line in an HTML document. It informs the web browser which version of HTML the document is written in. In HTML 4.01 or XHTML 1.0, the declaration requires a reference to a Document Type Definition (DTD) document that specifies the rules for the markup language used, so browsers can parse and render the content correctly. In HTML5, the declaration no longer requires a reference to a DTD, and it consists of the following line: **<!doctype html>**.
+
+The **<!doctype>** declaration is not an HTML tag, but an instruction to the web browser. It is case-insensitive and can be written as **<!DOCTYPE html>**.
+
+#### HTML root element
+
+The HTML root element contains the head element and body element.
+
+#### Head
+
+The head element has a nested title element that defines the title of the document as **This is the page title**.
+
+The head of an HTML document contains metadata about the page and is defined using the head element. Metadata is information about data. For HTML documents, metadata is information about the data in the document. The web browser uses this information to control the content and the display of the page. Search engines also use metadata about a page.
+
+The HTML elements you can use in a head element include the following:
+
+* **<meta>**: Use this element to specify metadata about the document, such as the author and the character set used. For example, for browsers to correctly display your document content, regardless of the language used, specify the following meta element: **<meta charset="UTF-8">**. The UTF-8 character set includes characters from virtually all human languages.
+* **<title>...</title>**: Use this element to provide a title for your HTML document. As a best practice, you should always specify a title for a webpage. This title is displayed in the browser's tab for the page.
+* **<link>**: Use this element to reference an external document used by the current page. One of the most common uses for this element is to refer to an external CSS file.
+* **<style>...</style>**: Use this element to define the internal CSS rules that are used in the document. You will learn more about this element in a later course.
+
+The web browser does not display any content you define in the head element except for the content in the title element.
+
+#### Body
+
+The body element has two nested elements. The first one is a heading element that contains the text **This is a level 1 heading**.
+
+The second nested element is a paragraph element that contains the text **This is a paragraph**.
+
+The body is defined using the body element, and contains the elements of an HTML document that are displayed by the web browser. You will typically write most of the code for your webpage in the body element. HTML provides a vast number of elements you can include in the body element to structure, define, and mark up your content.
+
+Some common HTML elements found in the body element include the following:
+
+* <h1>, <h2>, <h3>, <h4>, <h5>, <h6>: Use these elements to define headings and subheadings at different nested levels.
+* <p>..</p>: Use this element to define a text paragraph. The browser displays the text on a new line and adds some white space before and after the paragraph.
+* <img>: Use this element to include a graphics file in a document.
+* <a>...</a>: Use the anchor element to define a hyperlink.
+
+### Text Elements and Comments
+
+#### Adding paragraphs
+
+```
+      <p>German shepherds are a breed of dogs that originated in Germany. They are large and muscular and typically have a black and tan coat. Some have a solid black coat. German shepherds are intelligent and loyal dogs.</p>
+
+      <p>Siamese cats originated in Thailand and are a breed of short-haired cats. They are medium-sized and have a distinct color pattern. The color of their face, ears, legs, and tails are darker than the rest of their body. Siamese cats can live up to 20 years.</p>
+```
+
+#### Defining headings
+
+You can use heading elements to format text that represent titles or subtitles in an HTML document. Use headings to define the content structure of a document, not to emphasize text. There are six levels of headings you can define with the elements that use the <h1>, <h2>, <h3>, <h4>, <h5>, and <h6> tags. Each level renders text in a progressively smaller font.
+
+```
+<!doctype html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <title>Pet Types</title>
+   </head>
+   <body>
+      <h1>Breeds of Pets</h1>
+
+      <h2>Dogs</h2>
+
+      <p>German shepherds are a breed of dogs that originated in Germany. They are large and muscular and typically have a black and tan coat. Some have a solid black coat. German shepherds are intelligent and loyal dogs.</p>
+
+      <h2>Cats</h2>
+
+      <p>Siamese cats originated in Thailand and are a breed of short-haired cats. They are medium-sized and have a distinct color pattern. The color of their face, ears, legs, and tails are darker than the rest of their body. Siamese cats can live up to 20 years.</p>
+   </body>
+</html>
+```
+
+#### Adding comments
+
+* Single line comment:
+
+```
+<!-- This is a single comment line -->
+```
+
+* Multiple line comment
+
+```
+<!-- 
+   This is the first comment line.
+   This is the second comment line.
+   This is the third comment line.
+ -->
+```
+
+### Images
+
+1. Place the **image** element in the position on the page where you want the image to be inserted. The image will appear in line with the other elements that surround it, without any line breaks.
+2. Add a source (**src**) attribute to specify the path to the image file. The value of the path is a URL.
+3. Add an alternative text (**alt**) attribute for accessibility that provides a description of the image. The browser also displays the alternative text if it cannot find the image.
+4. Optionally, add a **width** and **height** attribute to scale the image so it is displayed at the correct size on the page. The values for both attributes are expressed in pixels.
+
+### Links
+
+You can create a link in an HTML document using the **anchor** element, which is defined using the <a> tag. You specify the destination of the link in an href attribute. The value of this attribute depends on the type of destination, as follows:
+
+* For a link to a document in the same website, the href value is the **relative URL** of the document. This URL omits the protocol and domain name part of the full URL. For example, the attribute **href="pages/home.html"** refers to the document named **home.html** located in the **pages** directory on the same server as the referring page.
+* For a link to a document on a different website, the href value is the **absolute URL** of the document. For example, the attribute **href="https://aws.amazon.com"** refers to the home page of the **Amazon Web Services** website.
+* For a link to an element in the same document (a local link), the href value is the **id** of that element. This means that you have to add an id attribute to the destination element. For example, if you have an element with an **id** attribute of **"aboutUs"** in your document, you can create a link to it by specifying **href="#aboutUs"**.
+
+### HTML Development Best Practices
+
+* **Use lowercase characters consistently for HTML tag names**. This makes your code easily readable.
+* **Write valid HTML code**. Even though browsers tolerate HTML syntax errors, try to avoid writing incomplete or broken code.
+* **Use an HTML validator tool**. To check whether the HTML code in your webpage is correct, use an online validator tool. A validator tool is particularly useful if your editor or IDE does not provide a function to fully validate HTML code.
+* **Test on multiple browsers**. Because each browser can have a different way of interpreting HTML, you might notice a slight difference in how a given webpage is displayed. Test the rendering of your webpage on common browsers, such as Mozilla Firefox, Google Chrome, Apple Safari, and Microsoft Edge.
+
 ### History of HTML
 
 Sir Tim Berners-Lee created HTML in the early 1990s. It was originally used to create and share scientific documents on the internet. It was later adapted to describe any type of document that a web browser can display.
@@ -133,6 +341,8 @@ HTML is an open standard, and its specification has evolved over the years.
 * **2017**. W3C makes a recommendation to publish HTML5.2.
 
 Today, the World Wide Web Consortium (W3C) and the Web Hypertext Application Technology Working Group (WHATWG) govern the evolution of the HTML specification.
+
+### [Lab: Creating an HTML Webpage](./labs/W010Lab1HTMLPage.md)
 
 ### Summary
 
