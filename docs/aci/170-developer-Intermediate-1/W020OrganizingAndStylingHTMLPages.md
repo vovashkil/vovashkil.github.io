@@ -484,3 +484,289 @@ CSS is added to your HTML document in one of three ways:
 * Internal
 * External
 
+#### Inline
+
+Inline CSS defines the style for one individual HTML element inside of your HTML document. For example, if you want your <h1> header to be green, you add a <style> element inline with your HTML code.  
+
+```
+<h1 style="color:green;">All About Rabbit Breeds</h1>
+```
+
+The inline style works well for one or two elements on a small webpage. Using this style too frequently might make your HTML document too long and complex. It is difficult to maintain and negates the purpose of having a separate style sheet. 
+
+#### Internal
+
+Internal CSS is for formatting one HTML document. It is specified within the top <head> section of your HTML page using the same <style> element. For example, what if you want your <h1> header to be green, and the background of your page to be light yellow? You could add the <style> element into the <head> section of your HTML document.
+
+```
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    h1   {color: green;}
+    p    {color: darkblue;}
+    body {background-color: lightyellow}
+</style>
+</head>
+
+<body>
+  <h1>All About Rabbit Breeds</h1>
+    <p>There are numerous rabbit breeds in the world. Scroll down to read more!</p>
+</body>
+</html>
+```
+
+#### External
+
+External CSS is what's used on most modern webpages. With external CSS, you build a separate style sheet document that contains all of the formatting elements. This document ends with a .css extension, such as style.css. You then reference this style.css document in the <head> section of your webpage.
+
+After you build a CSS file, you can use that external CSS document and apply it to any new website that you build. External CSS is more flexible, so you can completely decouple the HTML content from the CSS formatting elements. This makes your HTML code more convenient to maintain and update.
+
+```
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>All About Rabbit Breeds</h1>
+  <p>There are numerous rabbit breeds in the world. <br> Scroll down to read more!</p>
+
+</body>
+</html>
+```
+
+The following CSS code shows the contents of the external style.css file referenced by the HTML document.
+
+```
+body {
+    background-color: lightblue;
+}
+h1 {
+    color: darkmagenta;
+}
+p {
+    color: blue;
+}
+```
+
+### Formatting Attributes
+
+#### Building with the <div> element
+
+The division element groups your content. If you remember from the previous section, the <div> tag doesn't impact your content until you add formatting to it. To use the <div> tag to group content, place your text within the <div> and </div> tags.
+
+```
+<body>
+      
+      <div>
+        <h2>Dogs</h2>
+        <p>Dogs are the most popular pet in the United Kingdom (UK).</p>
+        <p>The Labrador retriever is the most popular breed.</p>
+      </div>        
+    
+</body>
+```
+
+### HTML global attributes
+
+An attribute is a piece of additional information that determines the characteristics of a displayed element. There are many attributes that are used with specific HTML elements, but global attributes are used with all HTML elements to help identify the style, features, and formatting of your HTML content.
+
+Two main global attributes for CSS:
+
+* the class
+* and the id attribute.
+
+#### Using the class attribute
+
+The class attribute is used to apply specific styling and formatting to a group of HTML elements. To do this, you assign a class selector to an element using the class HTML global attribute. You use this selector to select or choose the HTML elements that you want to format.
+
+You then define the class selector properties either within the <head> section of the HTML document, or in a separate style sheet document.
+
+##### Class selector properties
+
+* Classes are case-sensitive
+* They begin with a dot (.)
+* Formatting applies to all of the elements that match the class being specified
+
+Locate/create a css folder and create a pets.css file inside of it. Use this pets.css for any of the CSS or style examples. The HTML document points to this file and location: <link rel="stylesheet" href="css/pets.css">.
+
+```
+.pets {
+    font-style: italic;
+    font-weight: bold;
+  }
+  
+.color {
+    background: orange;
+    padding: 10px;
+  }
+```
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/pets.css">
+</head>
+
+
+<body>
+     <div class="pets">
+        
+      <div>
+        <h2>Dogs</h2>
+        <p class="color"> Dogs are the most popular pet in the United Kingdom (UK).</p>
+        <p class="color"> The Labrador retriever is the most popular breed.</p>
+      </div>
+      
+      <div>
+        <h2>Cats</h2>
+        <p>Cats are the second most popular pet in the UK.</p>
+        <p>The British Shorthair is the most popular cat breed.</p>
+      </div>
+      
+      <div style="background-color:lightskyblue;">
+        <h2>Lizards</h2>
+        <p>Lizards are third in popularity in the UK.</p>
+        <p>Bearded dragons are one of the top lizards in captivity in the UK.</p>
+      </div>
+    
+    </div>
+    
+</body>
+</html>
+```
+
+#### The id element
+
+The **id** element is used to change the formatting for one single HTML element. The **id** element is distinctive within the doc, and it only appears once to style one element. The **id** element begins with the **#** (hash) symbol and then the name of the **id** element.
+
+The **id** element is also used to reference other elements in client-side JavaScript.
+
+In the following example, the **id** element is **#banner** and changes the formatting style for one unique HTML element.
+
+```
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+#banner {
+  background-color: lightyellow;
+  color: purple;
+  padding: 20px;
+  text-align: center;
+} 
+</style>
+</head>
+<body>
+
+<h2> Don't forget hamsters...</h2>
+<p>Hamsters exercise on their own, love to play, and are low maintenance.</p>
+
+<h1 id="banner">Hamsters are great pets too!</h1>
+
+</body>
+</html>
+```
+
+#### Which attribute to choose
+
+Both the class and id attributes are used to style HTML elements, so it's important to know the differences. When styling your document, remember the following differences:
+
+* Use the **class** attribute when you want to style multiple HTML elements the same way.
+* Use the **id** attribute when you only want to style one element separately.
+
+Global elements are useful tools for formatting and increasing the accessibility of your webpage. There is another tag that is used in nearly all of the modern webpages, the <span> tag.
+
+### Applying Spans
+
+#### HTML <span> tag
+
+The <span> tag is an inline element used to highlight or bring attention to an area of text.
+
+Remember, inline elements are written within the HTML content and they only take up as much width as they require. They do not start the content on a new line like a block element does. Like many other HTML elements, the <span> tag needs a start and end tag: <span> and </span>.
+
+Here is an example of a <span> tag:
+
+```
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Bearded Dragons As Pets</h1>
+
+<p>The <span style="color:darkgoldenrod;">bearded dragon's</span> scientific name is <span style="color:rgb(255, 0, 149);font-weight:bold">Pogona Vitticeps</span>.</p>
+<p>The average size of a bearded dragon is <span style="color:darkblue;font-weight:bold">12-24 inches</span> from their nose to the tip of their tails.</p>
+
+</body>
+</html>
+```
+
+### [Lab: Using CSS to Define Webpage Styles](./labs/W020Lab2UsingCSSForStyling.md)
+
+### Knowledge Check
+
+#### Which option best describes the use of the <span> element?
+
+* Highlights or brings attention to an area of text
+
+Wrong answers:
+
+* Alters the alignment and spacing of groups
+* Groups lines of text together
+* Links the content to other documents
+
+##### Explanation
+
+The <span> tag is an inline element used to highlight or bring attention to an area of text.
+
+The other options are incorrect because they all explain the possible behaviors of functions that do not pertain to the <span> element and its behavior. The other options are covering Grid Systems, HREF elements, and additional formatting elements.
+
+#### The class attribute applies style and formatting to a group of HTML elements. What should a developer remember when working with class attributes? (Select TWO.)
+
+* Classes are case-sensitive
+* They begin with a dot (.)
+
+Wrong answers:
+
+* Formatting applies to all elements in the document
+* They begin with a # (hash) symbol
+* Classes need a corresponding id element
+
+#### What are the benefits of using Cascading Style Sheets? (Select TWO.)
+
+* Style sheets are reusable for multiple webpages.
+* Style sheets improve readability of HTML code by removing style elements.
+
+Wrong answers:
+
+* Formatting is added to HTML only through external style sheets.
+* Style sheets improve webpage loading times.
+* Style sheets are the way to add images to HTML.
+
+### Summary
+
+* Describe the benefits of using CSS.
+* Identify how to use HTML and CSS elements to style a webpage.
+
+To make HTML visually appealing, you need to use a style sheet. A style sheet defines how the webpage looks. The style sheet identifies font type and colors, borders, backgrounds, and more. The style sheet for HTML is called Cascading Style Sheets (CSS). 
+
+CSS makes styling and maintaining your webpage more convenient by separating the HTML document from the formatting document. You can have one style sheet or as many as you need to accommodate your needs.
+
+CSS is organized into a series of rulesets. These rulesets, or rules, have two parts:
+
+* **Selector**: Identifies which HTML elements to format
+* **Declaration**: Determines how to format the element
+
+CSS is added to your HTML document in the following ways:
+
+* **Inline**: defines the style for one individual HTML element inside of your HTML document
+* **Internal**: defines  formatting for one HTML document
+* **External**: defines formatting in a separate style sheet document that can be applied to more than one webpage
+
+In this section, you also learned how to use class and id elements to format multiple or single elements in your document. You also learned how to use the <div> and <span> tags to style your webpage content.
