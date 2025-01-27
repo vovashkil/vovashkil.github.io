@@ -1,0 +1,160 @@
+#header {
+    background-color: black;
+    color: white;
+    font-size: 250%;
+}
+
+h2 {
+    background-color: darkblue;
+    color: white;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    font-family: Copperplate;
+}
+
+.nav-menu {
+    font-size: 20px;
+    font-style: italic;
+}
+
+.nav-menu a {
+    float: left;
+    display: block;
+    color: white;
+    background-color: grey;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 25%;
+    text-decoration: none;
+}
+
+.nav-menu a:hover {
+    background-color: darkblue;
+}
+
+.products {
+    float: left;
+    width: 75%;
+}
+
+.products img {
+    width: 130px;
+}
+
+.products table {
+    width: 100%;
+    padding: 5px;
+    table-layout: fixed;
+}
+
+.products p {
+    font-family: Copperplate;
+}
+
+.products tr {
+    vertical-align: bottom;
+    text-align: center;
+}
+
+.products td {
+    border: 0px solid;
+}
+
+.sidebar {
+    float: left;
+    width: 25%;
+}
+
+.sidebar p[id="italicize"] {
+    font-style: italic;
+}
+
+.location {
+    float: left;
+    width: 100%;
+}
+
+.about-us {
+    float: left;
+    width: 100%;
+}
+
+.services {
+    float: left;
+    width: 100%;
+}
+
+.services-image img {
+    height: 350px;
+}
+
+.services-image {
+    float: left;
+    width: 40%;
+    overflow: hidden;
+    margin-left: 5px;
+}
+
+.services-text {
+    float: left;
+    width: 45%;
+    padding-left: 20px;
+}
+
+.cert {
+    float: left;
+    width: 10%;
+}
+
+.cert img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50%;
+}
+
+.footer {
+    float: left;
+    width: 100%;
+    background-color: black;
+    color: white;
+    font-size: 12px;
+    text-align: center;
+}
+
+.location p,
+.about-us p {
+    padding: 20px;
+    background: lightgrey;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.location img,
+a {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.about-us img {
+    margin-left: 5px;
+    margin-right: 5px;
+    max-width: 96%;
+}
+
+.submitform input {
+    width: 120px;
+    height: 30px;
+    background-color: grey;
+    color: white;
+    font-style: italic;
+    font-size: 16px;
+    margin-right: 20px;
+    float: right;
+}
