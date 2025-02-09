@@ -1,0 +1,9 @@
+DocumentLambdaFunction:
+  Type: AWS::Serverless::Function 
+  Properties:
+    FunctionName: DocumentLambdaFunction
+    Timeout: 20
+    CodeUri: DocumentLambdaFunction/
+    Handler: app.lambda_handler
+    Runtime: python3.12
+    Role: arn:aws:iam::360029302288:role/DocumentLambdaRole
