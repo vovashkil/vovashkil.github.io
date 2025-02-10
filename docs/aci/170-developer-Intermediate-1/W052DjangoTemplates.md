@@ -478,3 +478,304 @@ For instance, **{{ date | naturalday }}** could return **yesterday**, **today**,
 * **tz** – This library helps with timezone conversions in templates. It is enabled with **{% load tz %}** and additionally with **USE_TZ = True** in the project settings. It gives access to both tags **(localtime, timezone, get_current_timezone)** and filters **(localtime, utc, timezone)**.
 
 ## Model-View-Template Example
+d
+### The requirements
+
+* One webpage must display the complete list of pets, including the pet's name, picture, and owner. The pet's name and picture can be selected to access more information about one pet.
+* A **pet webpage** must list all the information available about a single pet including vaccinations and vet visits.
+* A **new-vet-visit** link must be made available on the pet webpage to create a new visit and update the rabies vaccination date. The webpage must refresh automatically with the new information.
+
+### The software architecture
+
+* **Templates** – the site is made of two webpages, so two templates are necessary. Because they have a common structure, they can inherit from one base-skeleton template.
+ * pets.html
+ * base.html
+ * pet.html
+* **Views** – Two views are necessary to get data and render the two webpages. Another view must implement the new-vet-visit link action and write data.
+ * listPets()
+ * pet()
+ * visit()
+* **Models** – You already have models and a database with test data from the Django Models course. You must add pet pictures.
+* **URL paths** – The number of paths can be aligned with the number of views, so three paths are necessary.
+ * "pets"
+ * "pet/<str:pet_id>"
+ * "visit/<str:pet_id>"
+
+### Models pets_app/models.py
+
+```
+from django.db import models
+from datetime import datetime
+from django.utils.translation import gettext_lazy as _
+
+class Breed(models.Model):
+    name = models.CharField(max_length=100)
+    weight = models.DecimalField(max_digits=8, decimal_places=2, null=True)
+    height = models.DecimalField(max_digits=8, decimal_places=2, null=True)
+
+    def __str__(self):
+        return self.name + " - " + str(self.weight) + " - " + str(self.height)
+
+class VaccinationCard(models.Model):
+    rabies = models.DateField(default=datetime.today().strftime('%Y-%m-%d'), null=False, blank=False)
+    hepatitis = models.DateField(null=True, blank=True)
+    borrelia = models.DateField(null=True, blank=True)
+    distemper = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return str(self.pet) + " - " + str(self.rabies)
+
+class Gender(models.TextChoices):
+        FEMALE = "F", _("Female")
+        MALE = "M", _("Male")
+
+class Pet(models.Model):
+    name = models.CharField(max_length=100)
+    gender = models.CharField(max_length=6, choices=Gender.choices, default=Gender.FEMALE)
+    birth = models.DateField(default=None, null=True, blank=True)
+    owner = models.CharField(max_length=100)
+    weight = models.DecimalField(max_digits=8, decimal_places=2, null=True)
+    height = models.DecimalField(max_digits=8, decimal_places=2, null=True)
+    card = models.OneToOneField(VaccinationCard, on_delete=models.CASCADE)
+    breed = models.ManyToManyField(Breed, blank=True)
+    picture = models.ImageField(max_length=255, null=True)
+    
+    def __str__(self):
+        return self.name + " - " + self.gender + " - " + str(self.birth.year)
+
+class VetVisit(models.Model):
+    pet = models.ForeignKey(Pet, on_delete=models.CASCADE)
+    vet = models.CharField(max_length=100)
+    date = models.DateField(default=datetime.today().strftime('%Y-%m-%d'))
+    notes = models.TextField(null=True, blank=True)
+    
+    @property
+    def is_today(self):
+        return self.date == datetime.today().date()
+    
+    def __str__(self):
+        return self.pet.name + " - " + self.vet + " - " + str(self.date) + " - " + self.notes
+```
+
+### The views pets_app/views.py
+
+```
+from django.shortcuts import render
+from .models import Pet, VetVisit
+from datetime import datetime
+
+def listPets(request):
+    context = {'pets': Pet.objects.all()}
+    return render(request, "pets_app/pets.html", context)
+
+def pet(request, pet_id):
+    context = {'pet': Pet.objects.filter(id=pet_id).first()}
+    return render(request, "pets_app/pet.html", context)
+    
+def visit(request, pet_id):
+    pet = Pet.objects.filter(id=pet_id).first()
+    lastvisit = pet.vetvisit_set.last()
+    if lastvisit and not lastvisit.is_today:
+        vet = pet.vetvisit_set.last().vet
+        newvisit = VetVisit(pet=pet, vet=vet, notes="rabies vaccination")
+        newvisit.save()
+        pet.card.rabies = datetime.today().strftime('%Y-%m-%d')
+        pet.card.save()
+    context = {'pet': pet}
+    return render(request, "pets_app/pet.html", context)
+```
+
+### The templates pets_app/templates/pets_app/
+
+#### base.html
+
+```
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Pets Application</title>
+    <link rel="icon" href="{% static 'favicon.ico' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+</head>
+
+<body>
+    <div class="banner">
+        <table>
+            <tr>
+                <td><img src="{% static 'logo-white.png' %}"></td>
+                <td>Pets Application</td>
+            </tr>
+        </table>
+    </div>
+    <div class="nav-menu">
+        <a href="{% url 'index' %}">Home</a>
+    </div>
+
+{% block content %}
+{% endblock content %}
+
+    <div class="footer">
+        <p>&copy; {% now "Y" %}, Amazon Web Services, Inc. or its Affiliates. All rights reserved.</p>
+    </div>
+</body>
+
+</html>
+```
+
+#### pets.html
+
+```
+{% extends "pets_app/base.html" %}
+{% block content %}
+<div class="pets" id="pets-link">
+
+    <h2>Pets</h2>
+    <table>
+        <tr>
+            {% for p in pets %}
+            {% if forloop.counter0|divisibleby:3 %}
+        </tr>
+        <tr>
+            {% endif %}
+            <td><a href="{% url 'pet' p.id %}">
+                <img src="{{ p.picture.url }}" width="120" />
+                <p>{{ p.name }}</a></p>
+                <p>{{ p.owner }}</p>
+            </td>
+            {% endfor %}
+        </tr>
+    </table>
+</div>
+{% endblock content %}
+```
+
+#### pet.html
+
+```
+{% extends "pets_app/base.html" %}
+{% block content %}
+<div class="pet">
+    <h2>{{ pet.name }}</h2>
+    <div class="pet">
+        <img src="{{ pet.picture.url }}" width="200" /><br/>
+        Gender: {{ pet.gender }}<br/>
+        Birth: {{ pet.birth|date:"Y-M-d" }}<br/>
+        Breed: {% for b in pet.breed.all %}
+            {% if forloop.last %}
+                {{ b.name|lower }}
+            {% else %}
+                {{ b.name|lower }},
+            {% endif %}
+        {% endfor %}<br/>
+        Owner: {{ pet.owner|title }}<br/>
+        <br/>
+        Weight: {{ pet.weight|floatformat }} lb<br/>
+        Height: {{ pet.height|floatformat }} in<br/>
+        <br/>
+        Vaccines: rabies {{ pet.card.rabies }} / 
+            hepatitis {{ pet.card.hepatitis|default_if_none:"never" }} / 
+            borrelia {{ pet.card.borrelia|default_if_none:"never" }} / 
+            distemper {{ pet.card.distemper|default_if_none:"never" }}<br/>
+        <br/>
+        Vet visits: 
+        <ul>
+            {% for vv in pet.vetvisit_set.all %}
+                <li>{{ vv.date|date:"Y-M-d" }}: vet {{ vv.vet|title }}
+                    {% if vv.notes %}
+                        wrote <i>{{ vv.notes|striptags }}</i>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+        <a class="btn btn-info pull-right" 
+            href="{% url 'visit' pet.id %}">
+            New visit today with rabies vaccine
+        </a><br/><br/>
+    </div>
+</div>
+{% endblock content %}
+```
+
+### Final result
+
+#### Main page
+
+The **/pets** URL is served by the **listPets** view that renders **pets.html**. A **for** tag helps looping over all the pets by iterating over the **pets** variable in the template context.
+
+#### Pet link
+
+Each pet's picture and name are selectable with a **url** tag link pointing to the **pet path**.
+
+#### Pet webpage
+
+The pet path is **pet/<str:pet_id>** and is served by the **pet** view. That view renders the **pet.html** template. Vaccinations and visits are listed because of the **pet** data in the template context.
+
+#### New visit link
+
+A url tag helps create a link towards the **visit/<str:pet_id>** path.
+
+#### New visit and vaccination
+
+The visit path is served by the **visit** view. It modifies the database and re-renders the same template, **pet.html**. The **rabies vaccination date** has changed and a **new visit** is in the log.
+
+### [Lab: Creating Templates in a Web Framework](./labs/W052Lab2DjangoTemplates.md)
+
+### Knowledge Check
+
+#### Which template engines are built into the Django framework?
+
+* Django template language (DTL) and Jinja2
+
+Wrong answers:
+
+* Django template language (DTL) and Mako
+* Cheetah and Django template language (DTL)
+* Genshi and Jinja2
+
+##### Explanation
+
+Django ships built-in backends for its own template system. One is the Django template language, and the other one is Jinja2.
+
+Cheetah, Genshi, and Mako are three Python-based template frameworks.
+
+#### Which steps does a Django developer follow to render an existing template? (Select THREE.)
+
+* Create a view and code the business logic.
+* Set the template data in a context variable.
+* Render the template by passing the context.
+
+Wrong answers:
+
+* Create a template model.
+* Set the template data in a template model.
+* Render the template by passing the template model.
+
+A view implements the logic of manipulating data by using models. Then, the view places the data used by a template in a context variable. Finally, the view calls a function to render the template by passing the context as an argument.
+
+#### Which of the following are built-in Django template filters? (Select THREE.)
+
+* time
+* float
+* upper
+
+Wrong answers:
+
+* for
+* integer
+* double
+
+##### Explanation
+
+These template filters can be applied to date and time, numeric, and string variables.
+
+**for** is not a filter but a tag. It is used to create loops.
+
+**integer** and **double** are not tags nor filters.
+
+### Summary
+
+* The **Django template system** supports multiple **template engines**. Django comes with its own backend, the **Django template language**. It is configured in the project settings.
+* **Application data** can be passed from a view to a template through a **context** object at rendering time. There are multiple ways to render a template. The data can be accessed with **double curly braces**.
+* Templates are made of HTML elements combined with **template tags** and **template filters**. The template language proposes many tags and filters. Some might come from extra libraries that need to be configured or loaded.
