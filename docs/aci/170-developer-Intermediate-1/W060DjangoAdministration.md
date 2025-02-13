@@ -466,4 +466,58 @@ After viewing the list of pets and selecting **Milo**, the **Change** pet webpag
 
 There are a multitude of possibilities to modify the default behavior provided by the admin application. For instance, the action behind the **SAVE** button can be changed, or many **admin.ModelAdmin** attributes can be overridden. In addition, templates can be replaced and JavaScript customizations can be called. For more information, see [The Django Admin Site](https://docs.djangoproject.com/en/5.0/ref/contrib/admin/) on the Django website.
 
-### [Lab: Administering a Web Application]()
+### [Lab: Administering a Web Application](./labs/W060Lab1DjangoAdmin.md)
+
+### Knowledge Check
+
+#### Which decorator can a developer use to register a custom model to the admin application?
+
+* @admin.register()
+
+Wrong answers:
+
+* @admin.action()
+* @admin.display()
+* @admin.model()
+
+##### Explanation
+
+* The **@admin.action()** and **@admin.display()** decorators are used to customize the admin interface.
+* The **@admin.model()** decorator does not exist.
+
+#### What are the high-level attributes that apply to a user in the auth module? (Select TWO.)
+
+* is_staff
+* is_superuser
+
+Wrong answers:
+
+* is_admin
+* is_me
+* is_incorrect
+
+##### Explanation
+
+Setting **is_staff** to **True** allows this user to access the admin site. Setting **is_superuser** to **True** treats this user as having all permissions without assigning any permission in particular.
+
+#### Which ModelAdmin attribute defines columns when listing data?
+
+* list_display
+
+Wrong answers:
+
+* actions
+* empty_value_display
+* __str__
+
+##### Explanation
+
+* The **empty_value_display** and **actions** attributes are used to customize the admin interface in other ways.
+* **__str__** is a class function in Python to give a human representation of an object.
+
+### Summary
+
+* The Django admin application is enabled in **settings.py** and **urls.py**. The admin site is accessible at a configured URL or at the default **admin/** URL.
+* Your custom Django application's models are registered to the admin application in **admin.py** by using either the **register** function or a decorator.
+* An authentication and authorization module manages users, groups, and permissions. Users have high-level permissions to be visitors or admins. You can edit low-level permissions to give admins the authorization to work with custom models and edit their data.
+* Managing model data is done on the admin site. The templates can be modified, especially how lists of objects are displayed. This can be achieved by overriding the **admin.ModelAdmin** class attributes and functions.

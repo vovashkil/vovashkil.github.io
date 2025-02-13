@@ -111,7 +111,7 @@ Usually each HTML file represents one webpage. In the preceding example, two web
 
 This is called **template inheritance**, and it is a Django feature. You can use it to build a base skeleton template that contains all the common elements of your site. It defines blocks that child templates can override.
 
-DTL permits extending a base template like this: **`\{\% extends "pets_app/base.html" \%\}`**. Note that the base template might be placed in the same application or in a different application. The consequence of using **`extends`** is that the block content in the parent template, defined as **`{% block content %}` ... `{% endblock content %}`**, is overridden by the corresponding block content in the child template.
+DTL permits extending a base template like this: **`\{\% extends "pets_app/base.html" \%\}`**. Note that the base template might be placed in the same application or in a different application. The consequence of using **`extends`** is that the block content in the parent template, defined as **`\{\% block content \%\}` ... `\{\% endblock content \%\}`**, is overridden by the corresponding block content in the child template.
 
 1. **Base template**. The base template **base.html** defines all the common elements on the website. Here, you can find a banner div element and a footer div element. The background HTML color is lightpink.
 2. **Block content**. This **skeleton** template indicates a placeholder for more specific content. This is achieved with the **block tag** and the **endblock tag**. The placeholder's name is **content**. This block part will be overridden by a child template with a block that has the same name.
@@ -130,13 +130,13 @@ You can reference a template from the following sources:
 
 #### Referencing by inheritance
 
-A child template invokes a parent template with the **`extends`** tag. The parent template can be referenced with an absolute path from the templates/ directory as in **`{% extends "pets_app/base.html" %}`** or with a relative path to the child template as in **`{% extends "./base.html" %}`**.
+A child template invokes a parent template with the **`extends`** tag. The parent template can be referenced with an absolute path from the templates/ directory as in **`\{\% extends "pets_app/base.html" \%\}`** or with a relative path to the child template as in **`\{\% extends "./base.html" \%\}`**.
 
 Child template -> (extends) -> Parent template
 
 #### Embedding a template
 
-A similar use case to inheritance is when you need to include a common HTML code in many templates. It is possible with DTL by using **`{% include "pets_app/contact.html" %}`**.
+A similar use case to inheritance is when you need to include a common HTML code in many templates. It is possible with DTL by using **`\{\% include "pets_app/contact.html" \%\}`**.
 
 Template -> (includes) -> Common template
 
@@ -245,7 +245,7 @@ Use template tags to induce presentation logic for how things should be displaye
 
 The template inheritance **extends** tag is used to avoid repeating HTML code across multiple templates, and it signals that the current template is a child of a parent template. It works with two other tags called **block** and **endblock**. They delimit which part of the parent template will be overridden by the child template.
 
-A similar tag called **include** has been introduced as a way of embedding a template within a template. For instance, **`{% include "pets_app/contact.html" %}`** will start a rendering process of a subtemplate with the same context data. You can pass extra parameters like this: **`{% include "pets_app/subheader.html" with title="Rocky" %}`**.
+A similar tag called **include** has been introduced as a way of embedding a template within a template. For instance, **`\{\% include "pets_app/contact.html" \%\}`** will start a rendering process of a subtemplate with the same context data. You can pass extra parameters like this: **`\{\% include "pets_app/subheader.html" with title="Rocky" \%\}`**.
 
 There are some key differences between **`extends`** and **`include`**. The **`extends`** tag must be the first tag in a template, while the **include** tag can be used anywhere. When using the **`extends`** tag, child templates **inherit** all block tags from the parent. The **`include`** tab simply renders the included template without inheritance.
 
@@ -255,7 +255,7 @@ The recommendation is to use the **`extends`** tag for the overall site templati
 
 When you want to include a link on a webpage to another webpage, edit the first template, the **from-template**, to point to a second template, the **to-template**. This is achieved by using another Django template language tag called url.
 
-The **`{% url 'pet' pet.id %}`** example is used to create a URL to the next template through its path and view. The first argument, **'pet'**, is the path name in **urls.py**. The second argument, **pet.id**, is a dynamic string element in the path. The corresponding path in **urls.py** could be **`path("pet/<str:pet_id>", views.pet, name="pet")`**. So, in this case, the url tag will resolve to a string like **`pet/42`**, for example. File paths and URL paths must never be hardcoded in a Django template. Instead, they must be resolved using tags.
+The **`\{\% url 'pet' pet.id \%\}`** example is used to create a URL to the next template through its path and view. The first argument, **'pet'**, is the path name in **urls.py**. The second argument, **pet.id**, is a dynamic string element in the path. The corresponding path in **urls.py** could be **`path("pet/<str:pet_id>", views.pet, name="pet")`**. So, in this case, the url tag will resolve to a string like **`pet/42`**, for example. File paths and URL paths must never be hardcoded in a Django template. Instead, they must be resolved using tags.
 
 ##### The indirect reference from the from-template to the to-template, involving a path and a view
 
