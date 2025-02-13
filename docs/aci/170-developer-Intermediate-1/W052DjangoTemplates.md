@@ -130,13 +130,13 @@ You can reference a template from the following sources:
 
 #### Referencing by inheritance
 
-A child template invokes a parent template with the **extends** tag. The parent template can be referenced with an absolute path from the templates/ directory as in **{% extends "pets_app/base.html" %}** or with a relative path to the child template as in **{% extends "./base.html" %}**.
+A child template invokes a parent template with the **`extends`** tag. The parent template can be referenced with an absolute path from the templates/ directory as in **`{% extends "pets_app/base.html" %}`** or with a relative path to the child template as in **`{% extends "./base.html" %}`**.
 
-Child template -> (extendts) -> Parent template
+Child template -> (extends) -> Parent template
 
 #### Embedding a template
 
-A similar use case to inheritance is when you need to include a common HTML code in many templates. It is possible with DTL by using **{% include "pets_app/contact.html" %}**.
+A similar use case to inheritance is when you need to include a common HTML code in many templates. It is possible with DTL by using **`{% include "pets_app/contact.html" %}`**.
 
 Template -> (includes) -> Common template
 
@@ -144,7 +144,7 @@ Template -> (includes) -> Common template
 
 A view might return some HTML content directly like this: **return HttpResponse('<h1>Hello from Pets application</h1>')**. This class is imported from **django.http**. Although it might seem practical, mixing HTML in your Python code is an anti-pattern.
 
-To separate the concerns, the view must use a template for presenting the data on a webpage by using the **render()** function from **django.shortcuts**. As an example, your view might render a template like this: **return render(request, "pets_app/pets.html", context)**. The template is always referenced with an absolute path from the **templates/** directory. The HTTP request and the context holding application data are passed as arguments. This context data can be accessed in the template.
+To separate the concerns, the view must use a template for presenting the data on a webpage by using the **render()** function from **django.shortcuts**. As an example, your view might render a template like this: **`return render(request, "pets_app/pets.html", context)`**. The template is always referenced with an absolute path from the **templates/** directory. The HTTP request and the context holding application data are passed as arguments. This context data can be accessed in the template.
 
 View -> (Renders) -> Template
 
