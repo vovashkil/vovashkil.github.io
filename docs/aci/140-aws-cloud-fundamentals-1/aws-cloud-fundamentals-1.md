@@ -1528,7 +1528,7 @@ The following is an example of a permissions policy that permits S3 Batch Operat
         "s3:PutObjectTagging",
         "s3:PutObjectVersionTagging"
       ],
-      "Resource": "arn:aws:s3:::{{<DOC-EXAMPLE-SOURCE-BUCKET>}}/*"
+      "Resource": "arn:aws:s3:::{{\<DOC-EXAMPLE-SOURCE-BUCKET\>}}/*"
     },
     {
       "Effect": "Allow",

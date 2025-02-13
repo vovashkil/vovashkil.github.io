@@ -115,7 +115,7 @@ DTL permits extending a base template like this: **`{% extends "pets_app/base.ht
 
 1. **Base template**. The base template **base.html** defines all the common elements on the website. Here, you can find a banner div element and a footer div element. The background HTML color is lightpink.
 2. **Block content**. This **skeleton** template indicates a placeholder for more specific content. This is achieved with the **block tag** and the **endblock tag**. The placeholder's name is **content**. This block part will be overridden by a child template with a block that has the same name.
-3. **Child template**. The child template **pets.html** includes the **extends** element that points to the parent template.
+3. **Child template**. The child template **pets.html** includes the **`extends`** element that points to the parent template.
 4. **Child content**. The child template includes a **block** element and an **endblock** element. Inside, the code defines the content that overrides its parent. The background HTML color is lightblue.
 5. **Preview**. The result of **rendering the child template pets.html** is a webpage made in pink by the parent template and in blue by the child template.
 
@@ -142,7 +142,7 @@ Template -> (includes) -> Common template
 
 #### Referencing from a view
 
-A view might return some HTML content directly like this: **return HttpResponse('<h1>Hello from Pets application</h1>')**. This class is imported from **django.http**. Although it might seem practical, mixing HTML in your Python code is an anti-pattern.
+A view might return some HTML content directly like this: **`return HttpResponse('<h1>Hello from Pets application</h1>')`**. This class is imported from **django.http**. Although it might seem practical, mixing HTML in your Python code is an anti-pattern.
 
 To separate the concerns, the view must use a template for presenting the data on a webpage by using the **render()** function from **django.shortcuts**. As an example, your view might render a template like this: **`return render(request, "pets_app/pets.html", context)`**. The template is always referenced with an absolute path from the **templates/** directory. The HTTP request and the context holding application data are passed as arguments. This context data can be accessed in the template.
 
@@ -185,7 +185,7 @@ def pet(request, pet_id):
 
 #### Shortcut
 
-This is a two-line implementation. The **django-shortcuts** module gives a **render()** function that encapsulates the template rendering for you.
+This is a two-line implementation. The **django-shortcuts** module gives a **`render()`** function that encapsulates the template rendering for you.
 
 ```
 from .models import Pet
@@ -200,9 +200,9 @@ def pet(request, pet_id):
 
 ### Accessing data in a template
 
-The data available in a template might come from the Django framework, like the **request** object, or directly from a view with the **context** object. There is no distinction within a template as to where the data is coming from. In fact, the **context** dict is internally expanded to include the request object. In the preceding code example, two variables called **pet** and **request** are made available from inside the template. The **pet** variable comes from the context because it was populated with **{ "pet": ... }**.
+The data available in a template might come from the Django framework, like the **request** object, or directly from a view with the **context** object. There is no distinction within a template as to where the data is coming from. In fact, the **context** dict is internally expanded to include the request object. In the preceding code example, two variables called **pet** and **request** are made available from inside the template. The **pet** variable comes from the context because it was populated with **`{ "pet": ... }`**.
 
-Access contextual data with **double curly braces**. Examples include **{{ pet.name }}** or **{{ request.method }}**. The following code shows how the **pets_app/pet.html** template can be implemented.
+Access contextual data with **double curly braces**. Examples include **`{{ pet.name }}`** or **`{{ request.method }}`**. The following code shows how the **pets_app/pet.html** template can be implemented.
 
 #### Pet template
 
@@ -239,23 +239,23 @@ The **gender** field is a **models.TextChoices** enumeration, and **pet.get_gend
 
 ### Built-in template tags
 
-Use template tags to induce presentation logic for how things should be displayed to webpage visitors. Tags are recognized in templates by curly braces with percentages as **{% tag ... %}**.
+Use template tags to induce presentation logic for how things should be displayed to webpage visitors. Tags are recognized in templates by curly braces with percentages as **`{% tag ... %}`**.
 
 #### Template composition tags
 
 The template inheritance **extends** tag is used to avoid repeating HTML code across multiple templates, and it signals that the current template is a child of a parent template. It works with two other tags called **block** and **endblock**. They delimit which part of the parent template will be overridden by the child template.
 
-A similar tag called **include** has been introduced as a way of embedding a template within a template. For instance, **{% include "pets_app/contact.html" %}** will start a rendering process of a subtemplate with the same context data. You can pass extra parameters like this: **{% include "pets_app/subheader.html" with title="Rocky" %}**.
+A similar tag called **include** has been introduced as a way of embedding a template within a template. For instance, **`{% include "pets_app/contact.html" %}`** will start a rendering process of a subtemplate with the same context data. You can pass extra parameters like this: **`{% include "pets_app/subheader.html" with title="Rocky" %}`**.
 
-There are some key differences between **extends** and **include**. The **extends** tag must be the first tag in a template, while the **include** tag can be used anywhere. When using the **extends** tag, child templates **inherit** all block tags from the parent. The **include** tab simply renders the included template without inheritance.
+There are some key differences between **`extends`** and **`include`**. The **`extends`** tag must be the first tag in a template, while the **include** tag can be used anywhere. When using the **`extends`** tag, child templates **inherit** all block tags from the parent. The **`include`** tab simply renders the included template without inheritance.
 
-The recommendation is to use the **extends** tag for the overall site templating, the **base.html**, where webpages share a common structure and styling. On the other hand, the **include** tag is useful for reusing the same pieces of code, like an internal header.
+The recommendation is to use the **`extends`** tag for the overall site templating, the **base.html**, where webpages share a common structure and styling. On the other hand, the **include** tag is useful for reusing the same pieces of code, like an internal header.
 
 #### Linking tag
 
 When you want to include a link on a webpage to another webpage, edit the first template, the **from-template**, to point to a second template, the **to-template**. This is achieved by using another Django template language tag called url.
 
-The **{% url 'pet' pet.id %}** example is used to create a URL to the next template through its path and view. The first argument, **'pet'**, is the path name in **urls.py**. The second argument, **pet.id**, is a dynamic string element in the path. The corresponding path in **urls.py** could be **path("pet/<str:pet_id>", views.pet, name="pet")**. So, in this case, the url tag will resolve to a string like **pet/42**, for example. File paths and URL paths must never be hardcoded in a Django template. Instead, they must be resolved using tags.
+The **`{% url 'pet' pet.id %}`** example is used to create a URL to the next template through its path and view. The first argument, **'pet'**, is the path name in **urls.py**. The second argument, **pet.id**, is a dynamic string element in the path. The corresponding path in **urls.py** could be **`path("pet/<str:pet_id>", views.pet, name="pet")`**. So, in this case, the url tag will resolve to a string like **`pet/42`**, for example. File paths and URL paths must never be hardcoded in a Django template. Instead, they must be resolved using tags.
 
 ##### The indirect reference from the from-template to the to-template, involving a path and a view
 
@@ -263,9 +263,9 @@ From template -> (Links to) -> Path -> (Calls) -> View -> (Renders) -> To templa
 
 #### Loops tags
 
-If the view passes a list variable to a template, you need to iterate through that list to display its elements on the webpage. The **for** tag is used to loop over each item in an array. You can loop over a list by using **{% for obj in list %}** and in reverse order with **{% for obj in list reversed %}**. If the list is empty, you can use an optional **{% empty %}** clause whose following text is displayed. Finally, the loop ends with an **{% endfor %}** clause.
+If the view passes a list variable to a template, you need to iterate through that list to display its elements on the webpage. The **`for`** tag is used to loop over each item in an array. You can loop over a list by using **`{% for obj in list %}`** and in reverse order with **`{% for obj in list reversed %}`**. If the list is empty, you can use an optional **`{% empty %}`** clause whose following text is displayed. Finally, the loop ends with an **`{% endfor %}`** clause.
 
-The **cycle** tag can be used inside a **for** loop. It takes a list of values as arguments and it returns one value in a round-robin way each time it is called. A classic use case for this tag is when you need to alternate between two background colors for table rows. Also, a cycle can be restarted from its first item with the **resetcycle** tag.
+The **cycle** tag can be used inside a **`for`** loop. It takes a list of values as arguments and it returns one value in a round-robin way each time it is called. A classic use case for this tag is when you need to alternate between two background colors for table rows. Also, a cycle can be restarted from its first item with the **`resetcycle`** tag.
 
 ##### Listing all the pets from a pets variable example
 
@@ -301,7 +301,7 @@ The **cycle** tag can be used inside a **for** loop. It takes a list of values a
 
 #### Choices tags
 
-If you need to evaluate a variable to decide how the HTML code should be, the **if** tag is useful. The variable argument evaluates to **True** if it exists, it is not empty, and it is not a **False** Boolean value. You can output one branch or multiple branches with **elif** and **else**. Finally, the if tag block ends with an **{% endif %}** clause.
+If you need to evaluate a variable to decide how the HTML code should be, the **`if`** tag is useful. The variable argument evaluates to **True** if it exists, it is not empty, and it is not a **False** Boolean value. You can output one branch or multiple branches with **`elif`** and **`else`**. Finally, the if tag block ends with an **`{% endif %}`** clause.
 
 Continuing on the previous example, you can derive from the **Weight** column to a **Small**, **Medium**, or **Large** pet using an **if** tag.
 
@@ -345,15 +345,15 @@ Continuing on the previous example, you can derive from the **Weight** column to
 
 #### Date and time tag
 
-You do not need the view to place the current date and time in the context object. You can fetch it directly from the template using the **now** tag without any contextual information from the view. The tag is followed by the date formatting. For example, this tag **{% now "F jS, Y, H:i T" %}** might output **September 20th, 2024, 15:23 UTC**.
+You do not need the view to place the current date and time in the context object. You can fetch it directly from the template using the **`now`** tag without any contextual information from the view. The tag is followed by the date formatting. For example, this tag **`{% now "F jS, Y, H:i T" %}`** might output **September 20th, 2024, 15:23 UTC**.
 
-Continuing on with the previous example, you can modify the copyrights section in the base template to avoid hardcoding the year. This translates into: **<p>&copy; {% now "Y" %}, Amazon Web Services, Inc. or its Affiliates. All rights reserved.</p>**
+Continuing on with the previous example, you can modify the copyrights section in the base template to avoid hardcoding the year. This translates into: **`<p>&copy; {% now "Y" %}, Amazon Web Services, Inc. or its Affiliates. All rights reserved.</p>`**
 
 ### Built-in template filters
 
 You have the choice to transform data in the view using Python or in the template by using filters. You should use filters to display the data on a webpage when the transformation is intended solely for the presentation layer.
 
-A filter is recognized in templates by a pipe following a variable, as in **{{ variable | filter }}**. Note that all the spaces inside the curly braces are optional and are ignored when rendered. It is sometimes possible to pipe multiple filters, as in **{{ variable | filter1 | filter2 }}**. Also, many filters accept or necessitate an argument, as in **{{ variable | filter:argument }}**.
+A filter is recognized in templates by a pipe following a variable, as in **`{{ variable | filter }}`**. Note that all the spaces inside the curly braces are optional and are ignored when rendered. It is sometimes possible to pipe multiple filters, as in **`{{ variable | filter1 | filter2 }}`**. Also, many filters accept or necessitate an argument, as in **`{{ variable | filter:argument }}`**.
 
 Visit [Built-in template tags and filters](https://docs.djangoproject.com/en/stable/ref/templates/builtins/) in the Django documentation.
 
@@ -423,7 +423,7 @@ These filters are applied with variables holding data from the **datetime** Pyth
 | before = datetime( 2031, 4, 17, 14, 00), after = datetime( 2032, 5, 17, 14, 00)| {{ before | timesince:after }} | Formats a date as the time since that date compared to today or an optional date | 1 year, 1 month |
 | before = datetime( 2031, 4, 17, 14, 00), after = datetime( 2031, 4, 17, 15, 30) | {{ after | timesuntil:before }} | Formats a date as the time until that date compared to today or an optional date | 1 hour, 30 minutes |
 
-In the webpage listing pets, you can replace the **Birth** column by an **Age** column and use the **timesince** tag without any argument to compare the birth date with today's date: **{{ p.birth | timesince }}**.
+In the webpage listing pets, you can replace the **Birth** column by an **Age** column and use the **timesince** tag without any argument to compare the birth date with today's date: **`{{ p.birth | timesince }}`**.
 
 The **date** and **time** filters accept many format strings. For more information, visit the [Date filter](https://docs.djangoproject.com/en/stable/ref/templates/builtins/#date) in the Django documentation.
 
@@ -456,7 +456,7 @@ A dictionary or a list variable can be manipulated or formatted using filters. A
 
 ### Extra tags and filters
 
-By loading extra packages, you can unlock extra tags and filters. You can insert a load tag towards the top of your template as in **{% load feature %}** where the **feature** is a custom template tag set.
+By loading extra packages, you can unlock extra tags and filters. You can insert a load tag towards the top of your template as in **`{% load feature %}`** where the **feature** is a custom template tag set.
 
 Some tags and filters might be accessible by configuring extra applications or middleware in the project settings or by setting variables. The **load** tag is not always necessary.
 
@@ -466,19 +466,19 @@ The following tag sets must be enabled in the project settings, or they must be 
 
 With this **static** tag set, you can avoid hardcoding a path to a static file in your HTML code. It will make your code future-proof in case the static artifacts change location, which is likely to be the case between a development environment and the production environment. Only the settings will differ, not the code.
 
-As an example, after loading the static tag set with **{% load static %}**, you can point to your stylesheet with **<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">**. Django will resolve a path based on the settings. If the static files are local and **STATIC_ROOT** is **static/**, it can become **/static/css/main.css**.
+As an example, after loading the static tag set with **`{% load static %}`**, you can point to your stylesheet with **`<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">`**. Django will resolve a path based on the settings. If the static files are local and **STATIC_ROOT** is **static/**, it can become **/static/css/main.css**.
 
-* **csrf_token** – Cross-site request forgery (CSRF) is a malicious exploit of a website. You need to protect your application's post forms against it. By adding the **django.middleware.csrf.CsrfViewMiddleware** package in the **MIDDLEWARE** setting, you get access to the tag in all your templates. You can use the tag inside a **<form>** element to enable the protection against CSRF by typing: **{% csrf_token %}**.
-* **humanize** – This library eases how text is presented to visitors. By adding the **django.contrib.humanize** package in the **INSTALLED_APPS** setting and using **{% load humanize %}** in a template, you get access to extra filters.
+* **csrf_token** – Cross-site request forgery (CSRF) is a malicious exploit of a website. You need to protect your application's post forms against it. By adding the **django.middleware.csrf.CsrfViewMiddleware** package in the **MIDDLEWARE** setting, you get access to the tag in all your templates. You can use the tag inside a **<form>** element to enable the protection against CSRF by typing: **`{% csrf_token %}`**.
+* **humanize** – This library eases how text is presented to visitors. By adding the **django.contrib.humanize** package in the **INSTALLED_APPS** setting and using **`{% load humanize %}`** in a template, you get access to extra filters.
 
-For instance, **{{ date | naturalday }}** could return **yesterday**, **today**, or **tomorrow**. For more information, visit [django.contrib.humanize](https://docs.djangoproject.com/en/stable/ref/contrib/humanize/) in the Django documentation.
+For instance, **`{{ date | naturalday }}`** could return **yesterday**, **today**, or **tomorrow**. For more information, visit [django.contrib.humanize](https://docs.djangoproject.com/en/stable/ref/contrib/humanize/) in the Django documentation.
 
-* **i18n** – This library stands for *internationalization** and helps indicate translatable text in templates. It is enabled by **{% load i18n %}** and additionally with **USE_I18N = True** in the project settings. It unlocks access to a translate tag, such as **{% translate "This is a pets service." %}**.
-* **l10z** – This library stands for **localization** and controls how values are displayed in templates. It can effect how numbers and dates are shown. It is enabled with **{% load l10z %}**, which gives access to a **localize** filter as in **{{ date | localize }}**.
-* **tz** – This library helps with timezone conversions in templates. It is enabled with **{% load tz %}** and additionally with **USE_TZ = True** in the project settings. It gives access to both tags **(localtime, timezone, get_current_timezone)** and filters **(localtime, utc, timezone)**.
+* **i18n** – This library stands for *internationalization** and helps indicate translatable text in templates. It is enabled by **`{% load i18n %}`** and additionally with **`USE_I18N = True`** in the project settings. It unlocks access to a translate tag, such as **`{% translate "This is a pets service." %}`**.
+* **l10z** – This library stands for **localization** and controls how values are displayed in templates. It can effect how numbers and dates are shown. It is enabled with **`{% load l10z %}`**, which gives access to a **localize** filter as in **`{{ date | localize }}`**.
+* **tz** – This library helps with timezone conversions in templates. It is enabled with **`{% load tz %}`** and additionally with **`USE_TZ = True`** in the project settings. It gives access to both tags **(localtime, timezone, get_current_timezone)** and filters **(localtime, utc, timezone)**.
 
 ## Model-View-Template Example
-d
+
 ### The requirements
 
 * One webpage must display the complete list of pets, including the pet's name, picture, and owner. The pet's name and picture can be selected to access more information about one pet.
