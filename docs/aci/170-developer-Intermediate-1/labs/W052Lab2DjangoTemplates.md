@@ -317,22 +317,38 @@ Image description: Image shows the file tree view of the AWS Cloud9 file menu. I
 
 In the bicycle_app > templates > index.html file, add the following Django template language static template tag to the top of the file. It should appear above the <!DOCTYPE html> line.
 
-
+```django
+{% raw %}
 {% load static %}
-Still in index.html, edit the path to the CSS, the browser tab icon, and the company logo to use the {% static %} template tag.
+{% endraw %}
+```
+
+Still in index.html, edit the path to the CSS, the browser tab icon, and the company logo to use the {% raw %}{% static %}{% endraw %} template tag.
 
 In the head section, update the path to the logo-black.png so that it matches this:
 
-
+```django
+{% raw %}
 <link rel="icon" href="{% static 'logo-black.png' %}">
+{% endraw %}
+```
+
 Still in the head section, also update the path to the CSS file so that it matches this:
 
-
+```django
+{% raw %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+{% endraw %}
+```
+
 Towards the top of the body section, in the banner div, modify the image source path for the logo-black.png so that the line looks like this:
 
-
+```django
+{% raw %}
 <td><img src="{% static 'logo-black.png' %}"></td>
+{% endraw %}
+```
+
 Save the changes.
 
 If you return to the terminal where the runserver process is active, notice how it shows the following errors:
@@ -403,17 +419,17 @@ The logo-black.png image referenced in the JavaScript
  Caution: Do not update the references to images in the products table. You address that issue separately later.
 
 If you need to see the corrected code for the six image references, choose here.
-Line 108: <img src="{% static 'map.jpeg' %}" width="130px">
+Line 108: {% raw %}<img src="{% static 'map.jpeg' %}" width="130px">{% endraw %}
 
-Line 117: <img src="{% static 'biking-outdoors.jpeg' %}">
+Line 117: {% raw %}<img src="{% static 'biking-outdoors.jpeg' %}">{% endraw %}
 
-Line 128: <img src="{% static 'repair.jpeg' %}" height="350">
+Line 128: {% raw %}<img src="{% static 'repair.jpeg' %}" height="350">{% endraw %}
 
-Line 148: <img src="{% static 'specialist.png' %}" height="130">
+Line 148: {% raw %}<img src="{% static 'specialist.png' %}" height="130">{% endraw %}
 
-Line 163: updateBanner("white", "black", "{% static 'logo-white.png' %}");
+Line 163: {% raw %}updateBanner("white", "black", "{% static 'logo-white.png' %}");{% endraw %}
 
-Line 167: updateBanner("black", "white", "{% static 'logo-black.png' %}");
+Line 167: {% raw %}updateBanner("black", "white", "{% static 'logo-black.png' %}");{% endraw %}
 
 Refresh the webpage again.
 
@@ -474,32 +490,49 @@ Return to the tab where the new empty products.html file is, and choose Edit > P
 
 Add the following additional lines to the top of the products.html file:
 
-
+```django
+{% raw %}
 {% extends "index.html" %}
 {% block content %}
+{% endraw %}
+```
+
 Add the following additional line to the bottom of the products.html file:
 
-
+```django
+{% raw %}
 {% endblock content %}
+{% endraw %}
+```
+
 Delete everything inside the table element, and replace it with the following HTML code:
 
-
+```html
 <tr>
   product listings displays here
 </tr>
+```
+
 Update the form start tag so that it matches what is shown here:
 
-
+```html
 <form action="order_result" method="POST" id="order_form"></a>
+```
+
 Add the csrf_token template tag just below the form start tag and above the table start tag.
 
-
+```django
+{% raw %}
 {% csrf_token %}
+{% endraw %}
+```
+
 Save the changes.
 
 The products.html template file should now look like this:
 
-
+```django
+{% raw %}
 {% extends "index.html" %}
 {% block content %}
 <div class="products" id="products-link">
@@ -519,11 +552,18 @@ The products.html template file should now look like this:
     </form>
 </div>
 {% endblock content %}
+{% endraw %}
+```
+
 Return to the index.html file and add these lines where the products table used to be, just below the <!–product list goes here–> HTML comment:
 
-
+```django
+{% raw %}
 {% block content %}
 {% endblock content %}
+{% endraw %}
+```
+
 Save the change.
 
 The relevant section of the index.html Django template now looks like this:
@@ -565,7 +605,8 @@ Return to the products.html in the file editor.
 
 Replace the product listings displays here text with the following code:
 
-
+```django
+{% raw %}
 {% for i in <FMI-1> %}
     {% if forloop.counter0|divisibleby:3 %}
         </tr>
@@ -582,6 +623,9 @@ Replace the product listings displays here text with the following code:
         </p>
     </td>
 {% endfor %}
+{% endraw %}
+```
+
 Replace the three fill me in (FMI) placeholders so that the for loop iterates through the object passed to the products template by the index view.
 
  Tip: Analyze the context object contents in the view.py code. The paragraph element displays the name of the product and the price of the product to the web app user.
@@ -590,6 +634,8 @@ Save the changes.
 
 If you need to see the solution code for the products.html file, choose here.
 
+```django
+{% raw %}
 {% extends "index.html" %}
 {% block content %}
 <div class="products" id="products-link">
@@ -624,6 +670,9 @@ If you need to see the solution code for the products.html file, choose here.
     </form>
 </div>
 {% endblock content %}
+{% endraw %}
+```
+
 Reload the webpage.
 
 With just a few lines of code in your template, the webpage is now displaying the entire product catalog. Take a moment to revel in the moment!
@@ -652,8 +701,12 @@ Not all the values inserted into the form are actually presented to the end user
 
 To ensure that the user can easily return to the products page at any time, open the index.html template and update the Products menu hyperlink in the nav-menu div so that it matches this:
 
-
+```django
+{% raw %}
 <a href="{% url 'index' %}">Products</a>
+{% endraw %}
+```
+
  Tip: You can learn more about the url template variable in the Django Documentation.
 
 Save the change, refresh the webpage, and test the link Products menu link.
@@ -667,7 +720,8 @@ In the templates directory, create a new file named order_result.html.
 
 Open the new file in the file editor and paste in the following code:
 
-
+```django
+{% raw %}
 {% extends "index.html" %}
 {% block content %}
 
@@ -718,6 +772,9 @@ Open the new file in the file editor and paste in the following code:
 </div>
 
 {% endblock content %}
+{% endraw %}
+```
+
 Update two lines of code in views.py.
 
 Open views.py in the file editor.
@@ -742,7 +799,7 @@ Open django > bicycle_app > static > css > main.css in the file editor.
 
 After the .products tr selector code (around line 67), add the following two class selectors code:
 
-
+```css
 .order-details {
     padding-left: 15px;
     padding-right:15px;
@@ -767,6 +824,8 @@ After the .products tr selector code (around line 67), add the following two cla
     }
     color: black;
 }
+```
+
  Note: The order_results.html template includes div elements that reference these css classes, so the styles defined here are used in the test that you conduct in the next step.
 
 Save the changes.
@@ -790,7 +849,8 @@ In the templates directory, create a new file named order_history.html.
 
 Open the new file in the file editor, and paste in the following code:
 
-
+```django
+{% raw %}
 <FMI-1>
 <FMI-2>
 <div class="products">
@@ -817,6 +877,9 @@ Open the new file in the file editor, and paste in the following code:
     </div>
 </div>
 {% endblock content %}
+{% endraw %}
+```
+
 Replace the FMI placeholders in the code that you pasted in, to achieve the following:
 
 The extends template tag is used to implement template inheritance so that the order_history template renders as a block inside of the index.html template.
@@ -827,6 +890,8 @@ You indicate to Django where the for loop logic should end in the template.
 
 If you need to see the order_results.html file solution code, choose here.
 
+```django
+{% raw %}
 {% extends "index.html" %}
 {% block content %}
 
@@ -877,6 +942,9 @@ If you need to see the order_results.html file solution code, choose here.
 </div>
 
 {% endblock content %}
+{% endraw %}
+```
+
 Update three lines of code in views.py.
 
 Open views.py in the file editor.
@@ -894,10 +962,16 @@ Save the changes.
 
 Add an Order History link to the webpage menu.
 
-Open the index.html template and in the nav-menu div, add the following new hyperlink just below the <a href=“{% url ‘index’ %}”>Products</a> line:
+Open the index.html template and in the nav-menu div, add the following new hyperlink just below the 
+line:
 
-
+```django
+{% raw %}
+<a href=“{% url ‘index’ %}”>Products</a>
 <a href="{% url 'all_orders' %}">Order history</a>
+{% endraw %}
+```
+
 Save the change.
 
 Adjust the CSS to account for the new link by following these steps:
@@ -922,6 +996,8 @@ Congratulations! You now have three different views working!
 
 If you need to see the order_history.html file solution code, choose here.
 
+```django
+{% raw %}
 {% extends "index.html" %}
 {% block content %}
 <div class="products">
@@ -948,6 +1024,9 @@ If you need to see the order_history.html file solution code, choose here.
     </div>
 </div>
 {% endblock content %}
+{% endraw %}
+```
+
 Task 3.5: Implement lookup order
 You might have noticed that the order_history.html file does not yet provide a functioning hyperlink to the order details for each order that it lists. You implement that last bit of logic next.
 
@@ -955,7 +1034,7 @@ Open views.py in the text editor and locate the lookup_order function.
 
 Delete the current function and instead paste in the following code:
 
-
+```python
 def lookup_order(request, order_id):
     print('LOG: in "lookup_order" function')
     order_id=int(order_id)
@@ -970,12 +1049,18 @@ def lookup_order(request, order_id):
     items = Order_Item.objects.filter(order_number=order_id).values() 
     context = {'order_details': items, 'order': order_data}
     return render(request, "order_result.html", context)
+```
+
 Save the changes.
 
 Open the order_history.html file in the text editor and update the <td><a href="">Order details</a></td> line so that it now includes a destination value.
 
-
+```django
+{% raw %}
 <td><a href="{% url 'lookup_order' order.id %}">Order details</a></td>
+{% endraw %}
+```
+
 Save the change.
 
  Task complete: In this task, you improved the website by authoring new templates that can collect user data and render data from the database tables to the user.
