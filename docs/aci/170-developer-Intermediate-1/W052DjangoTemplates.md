@@ -600,7 +600,23 @@ The following tag sets must be enabled in the project settings, or they must be 
 
 With this **static** tag set, you can avoid hardcoding a path to a static file in your HTML code. It will make your code future-proof in case the static artifacts change location, which is likely to be the case between a development environment and the production environment. Only the settings will differ, not the code.
 
-As an example, after loading the static tag set with **`{% load static %}`**, you can point to your stylesheet with **`<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">`**. Django will resolve a path based on the settings. If the static files are local and **STATIC_ROOT** is **static/**, it can become **/static/css/main.css**.
+As an example, after loading the static tag set with
+
+```django
+{% raw %}
+{% load static %}
+{% endraw %}
+```
+
+you can point to your stylesheet with
+
+```django
+{% raw %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+{% endraw %}
+```
+
+Django will resolve a path based on the settings. If the static files are local and **STATIC_ROOT** is **static/**, it can become **/static/css/main.css**.
 
 * **csrf_token** – Cross-site request forgery (CSRF) is a malicious exploit of a website. You need to protect your application's post forms against it. By adding the **django.middleware.csrf.CsrfViewMiddleware** package in the **MIDDLEWARE** setting, you get access to the tag in all your templates. You can use the tag inside a **<form>** element to enable the protection against CSRF by typing:
 
