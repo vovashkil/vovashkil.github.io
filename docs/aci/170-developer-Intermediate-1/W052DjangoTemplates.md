@@ -602,14 +602,61 @@ With this **static** tag set, you can avoid hardcoding a path to a static file i
 
 As an example, after loading the static tag set with **`{% load static %}`**, you can point to your stylesheet with **`<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">`**. Django will resolve a path based on the settings. If the static files are local and **STATIC_ROOT** is **static/**, it can become **/static/css/main.css**.
 
-* **csrf_token** – Cross-site request forgery (CSRF) is a malicious exploit of a website. You need to protect your application's post forms against it. By adding the **django.middleware.csrf.CsrfViewMiddleware** package in the **MIDDLEWARE** setting, you get access to the tag in all your templates. You can use the tag inside a **<form>** element to enable the protection against CSRF by typing: **`{% csrf_token %}`**.
-* **humanize** – This library eases how text is presented to visitors. By adding the **django.contrib.humanize** package in the **INSTALLED_APPS** setting and using **`{% load humanize %}`** in a template, you get access to extra filters.
+* **csrf_token** – Cross-site request forgery (CSRF) is a malicious exploit of a website. You need to protect your application's post forms against it. By adding the **django.middleware.csrf.CsrfViewMiddleware** package in the **MIDDLEWARE** setting, you get access to the tag in all your templates. You can use the tag inside a **<form>** element to enable the protection against CSRF by typing:
+
+```django
+{% raw %}
+{% csrf_token %}
+{% endraw %}
+```
+
+* **humanize** – This library eases how text is presented to visitors. By adding the **django.contrib.humanize** package in the **INSTALLED_APPS** setting and using
+
+```django
+{% raw %}
+{% load humanize %}
+{% endraw %}
+```
+
+in a template, you get access to extra filters.
 
 For instance, **`{{ date | naturalday }}`** could return **yesterday**, **today**, or **tomorrow**. For more information, visit [django.contrib.humanize](https://docs.djangoproject.com/en/stable/ref/contrib/humanize/) in the Django documentation.
 
-* **i18n** – This library stands for *internationalization** and helps indicate translatable text in templates. It is enabled by **`{% load i18n %}`** and additionally with **`USE_I18N = True`** in the project settings. It unlocks access to a translate tag, such as **`{% translate "This is a pets service." %}`**.
-* **l10z** – This library stands for **localization** and controls how values are displayed in templates. It can effect how numbers and dates are shown. It is enabled with **`{% load l10z %}`**, which gives access to a **localize** filter as in **`{{ date | localize }}`**.
-* **tz** – This library helps with timezone conversions in templates. It is enabled with **`{% load tz %}`** and additionally with **`USE_TZ = True`** in the project settings. It gives access to both tags **(localtime, timezone, get_current_timezone)** and filters **(localtime, utc, timezone)**.
+* **i18n** – This library stands for *internationalization** and helps indicate translatable text in templates. It is enabled by
+
+```django
+{% raw %}
+{% load i18n %}
+{% endraw %}
+```
+
+and additionally with **`USE_I18N = True`** in the project settings. It unlocks access to a translate tag, such as
+
+```django
+{% raw %}
+{% translate "This is a pets service." %}
+{% endraw %}
+```
+
+* **l10z** – This library stands for **localization** and controls how values are displayed in templates. It can effect how numbers and dates are shown. It is enabled with
+
+```django
+{% raw %}
+{% load l10z %}
+{% endraw %}
+```
+
+which gives access to a **localize** filter as in **`{{ date | localize }}`**.
+
+* **tz** – This library helps with timezone conversions in templates. It is enabled with
+
+```django
+{% raw %}
+{% load tz %}
+{% endraw %}
+```
+
+and additionally with **`USE_TZ = True`** in the project settings. It gives access to both tags **(localtime, timezone, get_current_timezone)** and filters **(localtime, utc, timezone)**.
 
 ## Model-View-Template Example
 
@@ -637,7 +684,7 @@ For instance, **`{{ date | naturalday }}`** could return **yesterday**, **today*
 
 ### Models pets_app/models.py
 
-```
+```python
 from django.db import models
 from datetime import datetime
 from django.utils.translation import gettext_lazy as _
@@ -693,7 +740,7 @@ class VetVisit(models.Model):
 
 ### The views pets_app/views.py
 
-```
+```python
 from django.shortcuts import render
 from .models import Pet, VetVisit
 from datetime import datetime
@@ -723,7 +770,8 @@ def visit(request, pet_id):
 
 #### base.html
 
-```
+```django
+{% raw %}
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -756,11 +804,13 @@ def visit(request, pet_id):
 </body>
 
 </html>
+{% endraw %}
 ```
 
 #### pets.html
 
-```
+```django
+{% raw %}
 {% extends "pets_app/base.html" %}
 {% block content %}
 <div class="pets" id="pets-link">
@@ -783,11 +833,13 @@ def visit(request, pet_id):
     </table>
 </div>
 {% endblock content %}
+{% endraw %}
 ```
 
 #### pet.html
 
-```
+```django
+{% raw %}
 {% extends "pets_app/base.html" %}
 {% block content %}
 <div class="pet">
@@ -830,6 +882,7 @@ def visit(request, pet_id):
     </div>
 </div>
 {% endblock content %}
+{% endraw %}
 ```
 
 ### Final result
