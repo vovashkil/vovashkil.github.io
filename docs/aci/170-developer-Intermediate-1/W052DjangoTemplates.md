@@ -472,7 +472,7 @@ Continuing on with the previous example, you can modify the copyrights section i
 ```django
 {%- raw %}
 <p>&copy; {% now "Y" %}, Amazon Web Services, Inc. or its Affiliates. All rights reserved.</p>
-{% endraw -%}
+{%- endraw -%}
 ```
 
 ### Built-in template filters
@@ -509,8 +509,7 @@ There are many possibilities for manipulating strings in a template. The followi
 | value = "I am the vet" | `{% raw %}{{ value | cut:" " }}{% endraw %}` | Removes all values of arg from the given string | Iamthevet |
 | value = "<h1>I'm the vet</h1>" | `{% raw %}{{ value | escape }}{% endraw %}` | Escapes HTML characters: < > ' " & | &lt;h1&gt;I&#x27;m the vet&lt;/h1&gt; |
 | value = "I am the vet\nWelcome" | `{% raw %}{{ value | linebreaks }}{% endraw %}` | Replaces line breaks with appropriate HTML | <p>I am the vet<br>Welcome</p>
-value = "I am the vet\nWelcome" |
-| `{% raw %}{{ value | linebreaksbr }}{% endraw %}` | Converts all newlines to HTML line breaks | I am the vet<br>Welcome |
+| value = "I am the vet\nWelcome" | `{% raw %}{{ value | linebreaksbr }}{% endraw %}` | Converts all newlines to HTML line breaks | I am the vet<br>Welcome |
 | value = "I am the vet" | `{% raw %}{{ value | wordwrap:5 }}{% endraw %}` | Wraps words at specified line length | I am\nthe \nvet |
 | value = "I'm the Vet!   " | `{% raw %}{{ value | slugify }}{% endraw %}` | Converts to ASCII, converts spaces to hyphens, removes characters that aren’t alphanumerics, underscores, or hyphens, converts to lowercase; also strips leading and trailing whitespace | im-the-vet |
 | value = "<h1>I'm the vet</h1>" | `{% raw %}{{ value | striptags }}{% endraw %}` | Strips all HTML tags | I'm the vet |
