@@ -582,7 +582,7 @@ The webpage now renders with the product listings display here message displayin
 
 Take a moment to understand what you just did!
 
- Analysis: You moved the products div into a separate HTML template. However, the index function defined in the views.py file still renders the page as if all the HTML code was contained in a single HTML file. Your index view is constructing a webpage from two templates, as illustrated in the following diagram. The extends template tag in the line {% extends “index.html” %} is what makes it work. You can read more about the extends tag in the Django Documentation.
+ Analysis: You moved the products div into a separate HTML template. However, the index function defined in the views.py file still renders the page as if all the HTML code was contained in a single HTML file. Your index view is constructing a webpage from two templates, as illustrated in the following diagram. The extends template tag in the line {% raw %}{% extends “index.html” %}{% endraw %} is what makes it work. You can read more about the extends tag in the Django Documentation.
 
 Both templates also make use of the block tag, which is also an essential element of how Django implements template inheritance. The block tag is described in detail in the Django Documentation.
 
