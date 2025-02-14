@@ -279,7 +279,13 @@ The **gender** field is a **models.TextChoices** enumeration, and **pet.get_gend
 
 ### Built-in template tags
 
-Use template tags to induce presentation logic for how things should be displayed to webpage visitors. Tags are recognized in templates by curly braces with percentages as **`{% tag ... %}`**.
+Use template tags to induce presentation logic for how things should be displayed to webpage visitors. Tags are recognized in templates by curly braces with percentages as
+
+```django
+{% raw %}
+{% tag ... %}
+{% endraw %}
+```
 
 #### Template composition tags
 
@@ -309,7 +315,15 @@ The recommendation is to use the **`extends`** tag for the overall site templati
 
 When you want to include a link on a webpage to another webpage, edit the first template, the **from-template**, to point to a second template, the **to-template**. This is achieved by using another Django template language tag called url.
 
-The **`\{\% url 'pet' pet.id \%\}`** example is used to create a URL to the next template through its path and view. The first argument, **'pet'**, is the path name in **urls.py**. The second argument, **pet.id**, is a dynamic string element in the path. The corresponding path in **urls.py** could be **`path("pet/<str:pet_id>", views.pet, name="pet")`**. So, in this case, the url tag will resolve to a string like **`pet/42`**, for example. File paths and URL paths must never be hardcoded in a Django template. Instead, they must be resolved using tags.
+The example
+
+```django
+{% raw %}
+{% url 'pet' pet.id %} 
+{% endraw %}
+```
+
+is used to create a URL to the next template through its path and view. The first argument, **'pet'**, is the path name in **urls.py**. The second argument, **pet.id**, is a dynamic string element in the path. The corresponding path in **urls.py** could be **`path("pet/<str:pet_id>", views.pet, name="pet")`**. So, in this case, the url tag will resolve to a string like **`pet/42`**, for example. File paths and URL paths must never be hardcoded in a Django template. Instead, they must be resolved using tags.
 
 ##### The indirect reference from the from-template to the to-template, involving a path and a view
 
@@ -317,13 +331,46 @@ From template -> (Links to) -> Path -> (Calls) -> View -> (Renders) -> To templa
 
 #### Loops tags
 
-If the view passes a list variable to a template, you need to iterate through that list to display its elements on the webpage. The **`for`** tag is used to loop over each item in an array. You can loop over a list by using **`{% for obj in list %}`** and in reverse order with **`{% for obj in list reversed %}`**. If the list is empty, you can use an optional **`{% empty %}`** clause whose following text is displayed. Finally, the loop ends with an **`{% endfor %}`** clause.
+If the view passes a list variable to a template, you need to iterate through that list to display its elements on the webpage. The **`for`** tag is used to loop over each item in an array. You can loop over a list by using
 
-The **cycle** tag can be used inside a **`for`** loop. It takes a list of values as arguments and it returns one value in a round-robin way each time it is called. A classic use case for this tag is when you need to alternate between two background colors for table rows. Also, a cycle can be restarted from its first item with the **`resetcycle`** tag.
+```django
+{% raw %}
+{% for obj in list %}
+{% endraw %}
+```
+
+and in reverse order with
+
+```django
+{% raw %}
+{% for obj in list reversed %}
+{% endraw %}
+```
+
+If the list is empty, you can use an optional
+
+```django
+{% raw %}
+{% empty %}
+{% endraw %}
+```
+
+clause whose following text is displayed. Finally, the loop ends with an
+
+```django
+{% raw %}
+{% endfor %}
+{% endraw %}
+```
+ 
+clause.
+
+The **`cycle`** tag can be used inside a **`for`** loop. It takes a list of values as arguments and it returns one value in a round-robin way each time it is called. A classic use case for this tag is when you need to alternate between two background colors for table rows. Also, a cycle can be restarted from its first item with the **`resetcycle`** tag.
 
 ##### Listing all the pets from a pets variable example
 
-```
+```django
+{% raw %}
 {% extends "pets_app/base.html" %}
 {% block content %}
 <div class="pets" style="background-color: lightblue;">
@@ -351,15 +398,25 @@ The **cycle** tag can be used inside a **`for`** loop. It takes a list of values
     </table>
 </div>
 {% endblock content %}
+{% endraw %}
 ```
 
 #### Choices tags
 
-If you need to evaluate a variable to decide how the HTML code should be, the **`if`** tag is useful. The variable argument evaluates to **True** if it exists, it is not empty, and it is not a **False** Boolean value. You can output one branch or multiple branches with **`elif`** and **`else`**. Finally, the if tag block ends with an **`{% endif %}`** clause.
+If you need to evaluate a variable to decide how the HTML code should be, the **`if`** tag is useful. The variable argument evaluates to **True** if it exists, it is not empty, and it is not a **False** Boolean value. You can output one branch or multiple branches with **`elif`** and **`else`**. Finally, the if tag block ends with an
+
+```django
+{% raw %}
+{% endif %}
+{% endraw %}
+```
+
+clause.
 
 Continuing on the previous example, you can derive from the **Weight** column to a **Small**, **Medium**, or **Large** pet using an **if** tag.
 
-```
+```django
+{% raw %}
 {% extends "pets_app/base.html" %}
 {% block content %}
 <div class="pets" style="background-color: lightblue;">
@@ -395,13 +452,28 @@ Continuing on the previous example, you can derive from the **Weight** column to
     </table>
 </div>
 {% endblock content %}
+{% endraw %}
 ```
 
 #### Date and time tag
 
-You do not need the view to place the current date and time in the context object. You can fetch it directly from the template using the **`now`** tag without any contextual information from the view. The tag is followed by the date formatting. For example, this tag **`{% now "F jS, Y, H:i T" %}`** might output **September 20th, 2024, 15:23 UTC**.
+You do not need the view to place the current date and time in the context object. You can fetch it directly from the template using the **`now`** tag without any contextual information from the view. The tag is followed by the date formatting. For example, this tag 
 
-Continuing on with the previous example, you can modify the copyrights section in the base template to avoid hardcoding the year. This translates into: **`<p>&copy; {% now "Y" %}, Amazon Web Services, Inc. or its Affiliates. All rights reserved.</p>`**
+```django
+{% raw %}
+{% now "F jS, Y, H:i T" %}
+{% endraw %}
+```
+
+might output **September 20th, 2024, 15:23 UTC**.
+
+Continuing on with the previous example, you can modify the copyrights section in the base template to avoid hardcoding the year. This translates into:
+
+```django
+{% raw %}
+<p>&copy; {% now "Y" %}, Amazon Web Services, Inc. or its Affiliates. All rights reserved.</p>
+{% endraw %}
+```
 
 ### Built-in template filters
 
@@ -510,7 +582,15 @@ A dictionary or a list variable can be manipulated or formatted using filters. A
 
 ### Extra tags and filters
 
-By loading extra packages, you can unlock extra tags and filters. You can insert a load tag towards the top of your template as in **`{% load feature %}`** where the **feature** is a custom template tag set.
+By loading extra packages, you can unlock extra tags and filters. You can insert a load tag towards the top of your template as in
+
+```django
+{% raw %}
+{% load feature %}
+{% endraw %}
+```
+
+where the **feature** is a custom template tag set.
 
 Some tags and filters might be accessible by configuring extra applications or middleware in the project settings or by setting variables. The **load** tag is not always necessary.
 
