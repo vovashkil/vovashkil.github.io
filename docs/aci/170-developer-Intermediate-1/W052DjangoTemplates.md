@@ -111,7 +111,21 @@ Usually each HTML file represents one webpage. In the preceding example, two web
 
 This is called **template inheritance**, and it is a Django feature. You can use it to build a base skeleton template that contains all the common elements of your site. It defines blocks that child templates can override.
 
-DTL permits extending a base template like this: **`` `` {% extends 'pets_app/base.html' %} `` ``**. Note that the base template might be placed in the same application or in a different application. The consequence of using **extends** is that the block content in the parent template, defined as **```{% block content %}``` ... ```{% endblock content %}```**, is overridden by the corresponding block content in the child template.
+DTL permits extending a base template like this:
+
+```
+{% extends 'pets_app/base.html' %}
+```
+
+Note that the base template might be placed in the same application or in a different application. The consequence of using **extends** is that the block content in the parent template, defined as
+
+```
+{% block content %}
+...
+{% endblock content %}
+```
+
+is overridden by the corresponding block content in the child template.
 
 1. **Base template**. The base template **base.html** defines all the common elements on the website. Here, you can find a banner div element and a footer div element. The background HTML color is lightpink.
 2. **Block content**. This **skeleton** template indicates a placeholder for more specific content. This is achieved with the **block tag** and the **endblock tag**. The placeholder's name is **content**. This block part will be overridden by a child template with a block that has the same name.
