@@ -375,6 +375,7 @@ Serialize the data and pretty-print it to the console.
 Return a static message as an HttpResponse to the /order_history page, indicating that the order_history page loaded and that testers should check the runserver console for test results.
 Add the following commented-out code at the bottom of the function that can later be uncommented when you have an order_history.html template in which to display the content:
 
+```python
 #The 2 lines below is uncommented in the next lab
 #context = {'orders': orders}
 #return render(request, "order_history.html", context)
@@ -396,6 +397,8 @@ def all_orders(request):
     #The 2 lines below are uncommented in the next lab
     #context = {'orders': orders}
     #return render(request, "order_history.html", context)
+```
+
 Save the change and load the webpage. To load the page, you need to add /order_history to the end of the preview URL.
 
  Note: If you authored the code correctly, the webpage displays the hardcoded response.
@@ -530,7 +533,8 @@ In the bicycle_app > templates directory, create a new file named test_form.html
 
 Open it in the file editor and paste in the following HTML:
 
-
+```django
+{% raw %}
 <h2>Test page for submitting form data</h2>
 <form action="order_result" method="POST">
     {% csrf_token %} 
@@ -554,6 +558,9 @@ Open it in the file editor and paste in the following HTML:
 
     <input type="submit" value="Submit" name="placeOrder">
 </form>
+{% endraw %}
+```
+
  Note: The form provides mostly hardcoded sample data so that you can soon test if the view logic can take submitted data and write it to the Order and Order_Item tables in the database. An analysis of this code appears later in this lab.
 
 Save the changes to the file.
@@ -573,8 +580,7 @@ Comment out the return HttpResponse… line
 
 Just below the line you commented out, add these two new lines:
 
-
-context = {'product_items': product_items}    
+context = {'product_items': product_items}
 return render(request, "test_form.html", context)
 The index function still retrieves the Product information from the database, but now rather than sending a hardcoded one line response to the browser, it instead renders the test_form.html template file to the user, along with a context object that contains product data that the template can reference.
 
@@ -589,7 +595,15 @@ Image description: Image shows a webpage with “Test page for submitting form d
 
  Note: If you analyze the test_form.html template in the AWS Cloud9 file editor, you might notice a few details:
 
-The {% csrf_token %} Django Template variable was included in the form, because the Django settings have CSRF protection enabled.
+The  Django Template variable
+
+```django
+{% raw %}
+{% csrf_token %}
+{% endraw %}
+```
+
+was included in the form, because the Django settings have CSRF protection enabled.
 
 The {{ product_items.0.product_name }} is included to prove the point that data retrieved by the index function defined in views.py can be used to populate what appears in the form. So the word “cassette” is pulled from the database. By contrast the word “crankset” was hardcoded in the template.
 
@@ -643,10 +657,10 @@ Observe the structure of the Order model too. These values also need to be calcu
 
 Back in the views.py file, in the process_order function, add the following code:
 
-
+```python
 if request.method == "POST":
    print('LOG: in "process_order" function - POST  received')
-   #save POST data and convert from Djanjo QueryDict to  Python Dict
+   #save POST data and convert from Django QueryDict to  Python Dict
     received_data = dict(request.POST)
 
     # parse into Python "lists"
@@ -667,6 +681,8 @@ if request.method == "POST":
 else:
     #should never get here
    return HttpResponse('process_order must receive a POST  action.')
+```
+
  Note: You can indent or outdent multiple lines of code in the AWS Cloud9 file editor by selecting them, and then from the Edit menu choose Line > Indent or Line > Outdent as necessary.
 
 Replace all five FMI (fill me in) placeholders in the code so that all values related to each product in the form data that was submitted are saved to Python lists.
