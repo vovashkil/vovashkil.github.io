@@ -111,7 +111,9 @@ Usually each HTML file represents one webpage. In the preceding example, two web
 
 This is called **template inheritance**, and it is a Django feature. You can use it to build a base skeleton template that contains all the common elements of your site. It defines blocks that child templates can override.
 
-DTL permits extending a base template like this: `` `` {% extends "pets_app/base.html" %} `` ``. Note that the base template might be placed in the same application or in a different application. The consequence of using **`extends`** is that the block content in the parent template, defined as **`` {% block content %} `` ... `` {% endblock content %} ``**, is overridden by the corresponding block content in the child template.
+`` {% extends "pets_app/base.html" %} ``
+
+DTL permits extending a base template like this: ```{% extends "pets_app/base.html" %}```. Note that the base template might be placed in the same application or in a different application. The consequence of using **`extends`** is that the block content in the parent template, defined as **`` {% block content %} `` ... `` {% endblock content %} ``**, is overridden by the corresponding block content in the child template.
 
 
 To display Django code inline within Markdown, enclose the code snippet with single backticks (). For example, to display the Django template tag {% extends 'base.html' %}, you would write it as `` {% extends 'base.html' %} `` in your Markdown file. This will render as {% extends 'base.html' %}. If the code itself contains backticks, use double backticks ( `) or more, as needed, ensuring the number of backticks is different from those in the code. For instance, to show `` code ``, use `` `` code `` ``. 
