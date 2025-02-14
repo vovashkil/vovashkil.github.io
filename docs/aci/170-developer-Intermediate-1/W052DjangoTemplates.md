@@ -460,9 +460,9 @@ Continuing on the previous example, you can derive from the **Weight** column to
 You do not need the view to place the current date and time in the context object. You can fetch it directly from the template using the **`now`** tag without any contextual information from the view. The tag is followed by the date formatting. For example, this tag 
 
 ```django
-{% raw %}
+{%- raw %}
 {% now "F jS, Y, H:i T" %}
-{% endraw %}
+{%- endraw %}
 ```
 
 might output **September 20th, 2024, 15:23 UTC**.
@@ -470,9 +470,9 @@ might output **September 20th, 2024, 15:23 UTC**.
 Continuing on with the previous example, you can modify the copyrights section in the base template to avoid hardcoding the year. This translates into:
 
 ```django
-{% raw %}
+{%- raw %}
 <p>&copy; {% now "Y" %}, Amazon Web Services, Inc. or its Affiliates. All rights reserved.</p>
-{% endraw %}
+{%- endraw %}
 ```
 
 ### Built-in template filters
