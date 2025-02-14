@@ -479,7 +479,7 @@ Continuing on with the previous example, you can modify the copyrights section i
 
 You have the choice to transform data in the view using Python or in the template by using filters. You should use filters to display the data on a webpage when the transformation is intended solely for the presentation layer.
 
-A filter is recognized in templates by a pipe following a variable, as in **{%- raw %}{{ variable | filter }}{%- endraw %}**. Note that all the spaces inside the curly braces are optional and are ignored when rendered. It is sometimes possible to pipe multiple filters, as in **{%- raw %}{{ variable | filter1 | filter2 }}{%- endraw %}**. Also, many filters accept or necessitate an argument, as in **{%- raw %}{{ variable | filter:argument }}{%- endraw %}**.
+A filter is recognized in templates by a pipe following a variable, as in `{% raw %}{{ variable | filter }}{% endraw %}`. Note that all the spaces inside the curly braces are optional and are ignored when rendered. It is sometimes possible to pipe multiple filters, as in `` {% raw %}{{ variable | filter1 | filter2 }}{% endraw %} ``. Also, many filters accept or necessitate an argument, as in **`{%- raw %}{{ variable | filter:argument }}{%- endraw %}`**.
 
 Visit [Built-in template tags and filters](https://docs.djangoproject.com/en/stable/ref/templates/builtins/) in the Django documentation.
 
@@ -491,9 +491,9 @@ There are many possibilities for manipulating strings in a template. The followi
 
 | Data | Filter | Purpose | Outcome |
 |---------------------- | ------------------- | -------------------------------------| ----------- |
-| value = "helLo wOrld" | {% raw %}{{ value | lower }}{% endraw %} | Converts a string into all lowercase | hello world |
-| value = "helLo wOrld" | {%- raw %}{{ value | upper }}{% endraw %} | Converts a string into all uppercase | HELLO WORLD |
-| value = "helLo wOrld" | {%- raw %}{{ value | capfirst }}{%- endraw %} | Capitalizes the first character | HelLo wOrld |
+| value = "helLo wOrld" | `{% raw %}{{ value | lower }}{% endraw %}` | Converts a string into all lowercase | hello world |
+| value = "helLo wOrld" | `` {%- raw %}{{ value | upper }}{% endraw %} `` | Converts a string into all uppercase | HELLO WORLD |
+| value = "helLo wOrld" | {% raw %}{{ value \| capfirst }}{%- endraw %} | Capitalizes the first character | HelLo wOrld |
 | value = "helLo wOrld" | {%- raw %}{{ value | title }}{% endraw -%} | Converts a string into title-case | Hello World |
 | value = None | {% raw %}{{ value | default_if_none:"never" }}{% endraw %} | Returns the value if not None or a given default otherwise | never |
 | value = "helLo wOrld" | {% raw %}{{ value | truncatechars:8 }}{% endraw %} | Truncates a string and adds "..." | helLo w… |
