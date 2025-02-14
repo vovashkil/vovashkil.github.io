@@ -113,13 +113,13 @@ This is called **template inheritance**, and it is a Django feature. You can use
 
 DTL permits extending a base template like this:
 
-```
+```django
 {% extends 'pets_app/base.html' %}
 ```
 
 Note that the base template might be placed in the same application or in a different application. The consequence of using **extends** is that the block content in the parent template, defined as
 
-```
+```django
 {% block content %}
 ...
 {% endblock content %}
@@ -393,7 +393,7 @@ There are many possibilities for manipulating strings in a template. The followi
 
 | Data | Filter | Purpose | Outcome |
 |---------------------- | ------------------- | -------------------------------------| ----------- |
-| value = "I'm the vet"	| {{ value | addslashes }} | Adds slashes before quotes | I\'m the vet |
+| value = "I'm the vet" | {{ value | addslashes }} | Adds slashes before quotes | I\'m the vet |
 | value = "I am the vet" | {{ value | cut:" " }} | Removes all values of arg from the given string | Iamthevet |
 | value = "<h1>I'm the vet</h1>" | {{ value | escape }} | Escapes HTML characters: < > ' " & | &lt;h1&gt;I&#x27;m the vet&lt;/h1&gt; |
 | value = "I am the vet\nWelcome" | {{ value | linebreaks }} | Replaces line breaks with appropriate HTML | <p>I am the vet<br>Welcome</p>
@@ -410,8 +410,8 @@ value = "I am the vet\nWelcome" |
 
 | Data | Filter | Purpose | Outcome |
 |---------------------- | ------------------- | -------------------------------------| ----------- |
-| value = "https://www.example.org/foo?a=b&c=d"	| {{ value | urlencode }} | Escapes a value for use in a URL | https%3A//www.example.org/foo%3Fa%3Db%26c%3Dd |
-| value = "Check out www.example.org and contact ana@example.com" | {{ value | urlize }} | Converts URLs and email addresses in text into clickable links | Check out <a href="http://www.example.org" rel="nofollow">www.example.org</a> and contact <a href="mailto:ana@example.com">ana@example.com</a> |
+| value = "<https://www.example.org/foo?a=b&c=d>" | {{ value | urlencode }} | Escapes a value for use in a URL | https%3A//www.example.org/foo%3Fa%3Db%26c%3Dd |
+| value = "Check out <www.example.org> and contact <ana@example.com>" | {{ value | urlize }} | Converts URLs and email addresses in text into clickable links | Check out <a href="http://www.example.org" rel="nofollow">www.example.org</a> and contact <a href="mailto:ana@example.com">ana@example.com</a> |
 | value = "800-COLLECT" | {{ value | phone2numeric }} | Converts a phone number with letters to numerical | 800-2655328 |
 
 #### Numeric filters
@@ -502,18 +502,18 @@ For instance, **`{{ date | naturalday }}`** could return **yesterday**, **today*
 ### The software architecture
 
 * **Templates** – the site is made of two webpages, so two templates are necessary. Because they have a common structure, they can inherit from one base-skeleton template.
- * pets.html
- * base.html
- * pet.html
+* pets.html
+* base.html
+* pet.html
 * **Views** – Two views are necessary to get data and render the two webpages. Another view must implement the new-vet-visit link action and write data.
- * listPets()
- * pet()
- * visit()
+* listPets()
+* pet()
+* visit()
 * **Models** – You already have models and a database with test data from the Django Models course. You must add pet pictures.
 * **URL paths** – The number of paths can be aligned with the number of views, so three paths are necessary.
- * "pets"
- * "pet/<str:pet_id>"
- * "visit/<str:pet_id>"
+* "pets"
+* "pet/<str:pet_id>"
+* "visit/<str:pet_id>"
 
 ### Models pets_app/models.py
 
