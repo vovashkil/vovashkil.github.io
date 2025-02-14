@@ -462,7 +462,7 @@ You do not need the view to place the current date and time in the context objec
 ```django
 {%- raw %}
 {% now "F jS, Y, H:i T" %}
-{%- endraw %}
+{% endraw -%}
 ```
 
 might output **September 20th, 2024, 15:23 UTC**.
@@ -472,7 +472,7 @@ Continuing on with the previous example, you can modify the copyrights section i
 ```django
 {%- raw %}
 <p>&copy; {% now "Y" %}, Amazon Web Services, Inc. or its Affiliates. All rights reserved.</p>
-{%- endraw %}
+{% endraw -%}
 ```
 
 ### Built-in template filters
@@ -505,26 +505,26 @@ There are many possibilities for manipulating strings in a template. The followi
 
 | Data | Filter | Purpose | Outcome |
 |---------------------- | ------------------- | -------------------------------------| ----------- |
-| value = "I'm the vet" | `{% raw %}{{ value | addslashes }}{% endraw %}` | Adds slashes before quotes | I\'m the vet |
+| value = "I'm the vet" | `{% raw %}{{ value | addslashes }}{% endraw %}` | Adds slashes before quotes | I\\'m the vet |
 | value = "I am the vet" | `{% raw %}{{ value | cut:" " }}{% endraw %}` | Removes all values of arg from the given string | Iamthevet |
-| value = "<h1>I'm the vet</h1>" | {{ value | escape }} | Escapes HTML characters: < > ' " & | &lt;h1&gt;I&#x27;m the vet&lt;/h1&gt; |
-| value = "I am the vet\nWelcome" | {{ value | linebreaks }} | Replaces line breaks with appropriate HTML | <p>I am the vet<br>Welcome</p>
+| value = "<h1>I'm the vet</h1>" | `{% raw %}{{ value | escape }}{% endraw %}` | Escapes HTML characters: < > ' " & | &lt;h1&gt;I&#x27;m the vet&lt;/h1&gt; |
+| value = "I am the vet\nWelcome" | `{% raw %}{{ value | linebreaks }}{% endraw %}` | Replaces line breaks with appropriate HTML | <p>I am the vet<br>Welcome</p>
 value = "I am the vet\nWelcome" |
-| {{ value | linebreaksbr }} | Converts all newlines to HTML line breaks | I am the vet<br>Welcome |
-| value = "I am the vet" | {{ value | wordwrap:5 }} | Wraps words at specified line length | I am\nthe \nvet |
-| value = "I'm the Vet!   " | {{ value | slugify }} | Converts to ASCII, converts spaces to hyphens, removes characters that aren’t alphanumerics, underscores, or hyphens, converts to lowercase; also strips leading and trailing whitespace | im-the-vet |
-| value = "<h1>I'm the vet</h1>" | {{ value | striptags }} | Strips all HTML tags | I'm the vet |
-| value = "Buddy" | {{ value | center:10 }} | Centers the value in a field of a given width | '  Buddy   ' |
-| value = "Buddy" | {{ value | ljust:10 }} | Left-aligns the value in a field of a given width | 'Buddy     ' |
-| value = "Buddy" | {{ value | rjust:10 }} | Right-aligns the value in a field of a given width | '     Buddy' |
+| `{% raw %}{{ value | linebreaksbr }}{% endraw %}` | Converts all newlines to HTML line breaks | I am the vet<br>Welcome |
+| value = "I am the vet" | `{% raw %}{{ value | wordwrap:5 }}{% endraw %}` | Wraps words at specified line length | I am\nthe \nvet |
+| value = "I'm the Vet!   " | `{% raw %}{{ value | slugify }}{% endraw %}` | Converts to ASCII, converts spaces to hyphens, removes characters that aren’t alphanumerics, underscores, or hyphens, converts to lowercase; also strips leading and trailing whitespace | im-the-vet |
+| value = "<h1>I'm the vet</h1>" | `{% raw %}{{ value | striptags }}{% endraw %}` | Strips all HTML tags | I'm the vet |
+| value = "Buddy" | `{% raw %}{{ value | center:10 }}{% endraw %}` | Centers the value in a field of a given width | '  Buddy   ' |
+| value = "Buddy" | `{% raw %}{{ value | ljust:10 }}{% endraw %}` | Left-aligns the value in a field of a given width | 'Buddy     ' |
+| value = "Buddy" | `{% raw %}{{ value | rjust:10 }}{% endraw %}` | Right-aligns the value in a field of a given width | '     Buddy' |
 
 * URL, email, and phone formatting
 
 | Data | Filter | Purpose | Outcome |
 |---------------------- | ------------------- | -------------------------------------| ----------- |
-| value = "<https://www.example.org/foo?a=b&c=d>" | {{ value | urlencode }} | Escapes a value for use in a URL | https%3A//www.example.org/foo%3Fa%3Db%26c%3Dd |
-| value = "Check out <www.example.org> and contact <ana@example.com>" | {{ value | urlize }} | Converts URLs and email addresses in text into clickable links | Check out <a href="http://www.example.org" rel="nofollow">www.example.org</a> and contact <a href="mailto:ana@example.com">ana@example.com</a> |
-| value = "800-COLLECT" | {{ value | phone2numeric }} | Converts a phone number with letters to numerical | 800-2655328 |
+| value = "<https://www.example.org/foo?a=b&c=d>" | `{% raw %}{{ value | urlencode }}{% endraw %}` | Escapes a value for use in a URL | https%3A//www.example.org/foo%3Fa%3Db%26c%3Dd |
+| value = "Check out <www.example.org> and contact <ana@example.com>" | `{% raw %}{{ value | urlize }}{% endraw %}` | Converts URLs and email addresses in text into clickable links | Check out <a href="http://www.example.org" rel="nofollow">www.example.org</a> and contact <a href="mailto:ana@example.com">ana@example.com</a> |
+| value = "800-COLLECT" | `{% raw %}{{ value | phone2numeric }}{% endraw %}` | Converts a phone number with letters to numerical | 800-2655328 |
 
 #### Numeric filters
 
