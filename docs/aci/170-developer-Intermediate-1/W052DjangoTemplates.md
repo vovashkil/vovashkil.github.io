@@ -113,13 +113,13 @@ This is called **template inheritance**, and it is a Django feature. You can use
 
 DTL permits extending a base template like this:
 
-```django
+```text
 {% extends 'pets_app/base.html' %}
 ```
 
 Note that the base template might be placed in the same application or in a different application. The consequence of using **extends** is that the block content in the parent template, defined as
 
-```django
+```text
 {% block content %}
 ...
 {% endblock content %}
