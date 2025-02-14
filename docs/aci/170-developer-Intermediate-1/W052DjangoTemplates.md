@@ -576,7 +576,7 @@ A dictionary or a list variable can be manipulated or formatted using filters. A
 | value = ['Willow', 'Luna', 'Milo'] | {{ value | join:", " }} | Joins a list with a string | Willow, Luna, Milo |
 | value = "Buddy" | {{ value | make_list }} | Returns a string turned into a list | ['B', 'u', 'd', 'd', 'y'] |
 | value = ['Willow', 'Luna', 'Milo'] | {{ value | random }} | Returns a random item from the given list | Luna |
-| value = ['Willow', 'Luna', 'Milo'] | {{ value | slice:":2" }} | Returns a slice of the list | ['Willow', 'Luna'] |
+| value = ['Willow', 'Luna', 'Milo'] | {% raw %}{{ value | slice:":2" }}{% endraw %} | Returns a slice of the list | ['Willow', 'Luna'] |
 | value = ['Willow', 'Luna', 'Milo'] | {{ value | unordered_list }} | Returns an HTML unordered list | <li>Willow</li><li>Luna</li><li>Milo</li> |
 | value = "Willow\nLuna\nMilo" | {{ value | linenumbers }} | Displays text with line numbers | 1. Willow\n2. Luna\n3. Milo |
 
