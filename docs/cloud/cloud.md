@@ -109,3 +109,40 @@ Data flow between Oracle Talent Management and other HCM modules ensures ease an
 * Perform Advanced Interview Management
 * Manage Recruitment Activities
 * Onboard New Hires
+
+### Key Metrics
+
+* Focus and align the recruitment strategy
+* Track and measure the effectiveness if the recruitment and onboarding processes
+
+#### Offer Acceptance Rate
+
+#### Time to Hire
+
+## OMBP Workforce Goals to Performance: Process Steps
+
+* Track Engagement
+* Align Goals and Business Objectives
+* Track Progress and Continuous Feedback
+* Perform Ad Hoc and Periodic Evaluations
+* Conduct Talent Review Meeting
+* Monitor Goals and Performance Metrics
+
+### Key Design Considerations
+
+* Track Engagement - Touchpoints
+...
+
+### Key Metrics
+
+* Percentage of workers aligned with organization goals
+* Performance goal progress
+
+Example - customer satisfaction level 90%
+
+### Key Takeaways
+
+* The OMBP opens channels for effective communication between managers and employees.
+* It ensures organizational objectives are clearly communicated and aligned with worker goals.
+* It promotes a blended approach with frequent check-ins and conversations.
+* Key metrics provide valuable insights into the effectiveness and achievement of goals.
