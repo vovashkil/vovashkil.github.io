@@ -12,3 +12,6 @@ __pycache__
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+
+# Cloud9 environment
+.c9/
