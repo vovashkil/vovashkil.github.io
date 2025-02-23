@@ -146,3 +146,72 @@ Example - customer satisfaction level 90%
 * It ensures organizational objectives are clearly communicated and aligned with worker goals.
 * It promotes a blended approach with frequent check-ins and conversations.
 * Key metrics provide valuable insights into the effectiveness and achievement of goals.
+
+## Skills Insight to Workforce Agility (HCM Talent Management)
+
+### OMBP Skills Insight to Workforce Agility: Process Steps
+
+* Review Impact of Investment on Employee Development
+* Support Employee Growth and Skills
+* Manage Skills-Based Talent Planning
+* Manage Organization Talent Planning
+* Assess Succession Planning
+
+### Skills Insight to Workforce Agility" Key Metrics
+
+* High Risk of Los
+* Career Readiness Summary
+
+## Employee Experience to Business Outcome (Talent Management)
+
+### OMBP Employee Experience to Business Outcome: Process Steps
+
+* Engage Employees with Targeted Campaigns
+* Provide Contextual Guidance
+* Embed Tools to Empower Employees to Take Action
+* Create Consistent Experience Across Multiple Solutions
+* Enable Employees to Enlarge Their Network
+* Create a Culture of Inclusion and Celebration of Values
+* Create Transparency and Track Outcomes
+
+### Key Design Considerations
+
+* Engage Employees with Targeted Campaigns
+ * Targeted Campaigns
+* Provide Contextual Guidance
+ * Create Journeys
+  * Guided Learning
+  * Embedded Videos
+  * Links
+* Embed Tools to Empower Employees to Take Action
+ * Decide on tools for engagement
+* Create Consistent Experience Across Multiple Solutions
+ * Integrate Other Oracle Fusion Cloud Solutions
+* Enable Employees to Enlarge Their Network
+ * Oracle ME (My Experience)
+  * Profile Setup
+  * Connections
+* Create a Culture of Inclusion and Celebration of Values
+ * Setup Oracle Celebrations
+* Create Transparency and Track Outcomes
+ * View KPIs
+  * accountability
+  * recognition
+
+### Key Metrics
+
+* Headcount by Sentiment
+ * Provides the percentage by headcount of employee sentiments [Negative, Neutral, Positive]felt in the organization
+* \# Journeys Completed and Safety Incidents
+ * Provides details of the annual number of journeys completed compared to safety incidents
+
+### Key Takeaways
+
+* Enables organizations to use advanced analytics for talent assessment
+* Guided skill-based innovation and fosters discussions to evaluate talent
+* Enables individuals to take charge of their career growth through personalized skill recommendations.
+* Facilitates talent planning including succession planning, and ensures a resilient and agile workforce
+
+## Knowledge Check
+
+# HR and Payroll
