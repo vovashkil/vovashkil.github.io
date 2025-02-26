@@ -15,3 +15,5 @@
 ## [Developer Intermediate 1: Python 3](./170-developer-Intermediate-1/developer-intermediate-1.md)
 
 ## [AWS Cloud Operations 1](./180-aws-cloud-operations-1/aws-cloud-operations-1.md)
+
+## [Career Services 2](./320-career-services-2/career-services-2.md)
