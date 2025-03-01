@@ -325,3 +325,352 @@ A single monolithic architecture application split into three separate microserv
 ### The Twelve-Factor App Methodology
 
 The Twelve-Factor App methodology, created by Adam Wiggins, is a set of guidelines for building scalable and reliable web applications. Microservice architectures combine successful and proven concepts from various fields and often incorporate design patterns from the Twelve-Factor App.
+
+### The twelve factors
+
+Each of the following twelve factors are directly applicable to serverless application development and are the default capabilities of the AWS serverless platform:
+
+* Codebase
+* Dependencies
+* Config
+* Backing services
+* Build, release, run
+* Processes
+* Port binding
+* Concurrency
+* Disposability
+* Dev and prod parity
+* Logs
+* Admin processes
+
+#### Codebase
+
+Use one codebase tracked in a revision control system and deployed into multiple environments. The codebase is a tracking database that keeps track of all changes to the code. This is also known as a code repository, code repo, or repo.
+
+All code deployments to different environments, such as production, staging, or development, share the same code repo.
+
+#### Dependencies
+
+Explicitly declare and isolate dependencies.
+
+The application shouldn't assume any required dependencies will preexist on the user's system. Required dependencies should be packaged with the application. The application should also use a dependency isolation mechanism while running to prevent any preexisting dependencies from being used by the application. This ensures the application ships and runs with the correct version of the required dependencies without any preexisting system configuration causing a conflict with the application.
+
+This means that if your application requires Python 3, but the user's system already has a broken version of Python 3 installed, your application will still run properly. It will use the version of Python 3 you packaged with the application and ignore the preexisting version on the user's system when the application is run.
+
+Another advantage of explicitly declaring dependencies is that it will serve as documentation for any new developers joining the team. They can find all the libraries and packages needed to build and run an application in one place.
+
+#### Config
+
+Store config in the environment.
+
+Configuration that varies between deployments should be stored in the environment and not as constants in the code. This could be system environment variables or local configuration files that are stored on the file system.
+
+An example configuration setting is the database host. This is going to be different in your development, staging, testing, and production environments. Ideally, you want the same code in each environment. So, you should externalize the database setting, removing the setting from the code and storing it in a configuration file or an environment variable.
+
+The following is an example of an external configuration file.
+
+* Configuration.ini
+
+```bash
+# Settings file for your application, separate and outside of your course code.
+
+[Database]
+dbname="testdb"
+dbserver="db.example.lan"
+```
+
+#### Backing services
+
+Treat backing services as attached resources.
+
+Services used by the application over a network, such as databases, should be treated as resources to the application. They should be able to be swapped from a local database to a cloud-hosted database without changes to the core code.
+
+#### Build, release, run
+
+Strictly separate build and run stages.
+
+The codebase is deployed through three stages—the build stage, the release stage, and the run stage. A Twelve-Factor App uses strict separation between these stages. Code isn't changed when it is in the run stage. You always start at the beginning by supplying the updated code to the build stage.
+
+The Twelve-Factor App stages are as follows:
+
+* **Build**: This takes code from your repository, retrieves the defined dependencies, and creates an artifact for the next stage.
+* **Release**: The release combines the built artifact with the settings to prepare the application for the run stage.
+* **Run**: The output from the release stage is delivered to a service to be launched or run. An example of this is an Amazon Elastic Compute Cloud (Amazon EC2) instance.
+
+#### Processes
+
+Run the app as one or more stateless processes.
+
+The application is run as one or more stateless processes that share nothing between processes. This allows processes to not interfere with each other and scale as needed for process-specific tasks.
+
+A stateless app persists data to an external resource, such as Amazon DynamoDB. After processing completes, nothing is kept locally that is needed for future processing. A stateless app can be conveniently moved between processing nodes.
+A share-nothing process can perform its processing without having to coordinate with other processes doing the same task. The work has already been divided up, such as using a load balancer for balancing requests for a web application. Each process servicing those requests works independently of each other and can be moved to other hosts effortlessly.
+
+#### Port binding
+
+Export services through port binding.
+
+Twelve-Factor Apps are self-contained because they include everything needed to expose themselves as a service on a port. They do not require the support of external services to create or make themselves available.
+
+A web server, for example, would export HTTP as a service and bind to port 80. The developer can visit http://localhost/ to access it without the need to previously install and configure a dedicated web server. After it's deployed, the same service could respond to requests coming from an application load balancer, as well.
+
+#### Concurrency
+
+Scale out through the process model.
+
+Twelve-Factor Apps' processes are high priority and are modeled from the Unix processes model for running service daemons. A developer can specify a process type while architecting their application to optimize process performance. This allows many process types to run concurrently without conflicting with other processes and are all managed by the operating system's process manager locally.
+
+#### Disposability
+
+Maximize robustness with fast startup and graceful shutdown.
+
+Application processes should be disposable and conveniently stopped and started to achieve fast scaling and rapid deployment. Processes should also protect against sudden hardware or software failure and recover quickly.
+
+#### Dev and prod parity
+
+Keep development, staging, and production as similar as possible.
+
+The application should be designed for continuous development and deployment. The following gaps should be kept as short as possible:
+
+* **Time gap**: This is the time it takes a developer to deploy code.
+* **Personnel gap**: The developers creating the code should also be involved with its deployment.
+* **Tools gap**: The toolset available in development should be similar to the tools available in production.
+
+#### Logs
+
+Treat logs as event streams.
+
+An application should stream event details, unbuffered, to a standard output that can be monitored live by the developer. The application should never be concerned with writing and storing log files.
+
+For example, when submitting an order for payment processing, the developer is monitoring what happens during development. In production, the application logs can be captured and archived for viewing. This is helpful when tracing production issues.
+
+#### Admin processes
+
+Run admin and management tasks as one-off processes.
+
+Admin tasks should run similarly to long-running processes of the application, using the same codebase and config of the release. Developers can run one-time tasks and commands, provided they deploy the proper environment with the application. An example of this is a one-time script to fix database records that were created by a bad deployment.
+
+### [Applying the Twelve-Factor App Methodology to Serverless Applications](https://aws.amazon.com/blogs/compute/applying-the-twelve-factor-app-methodology-to-serverless-applications/)
+
+### Microservices Communication Protocols
+
+### APIs
+
+APIs are mechanisms that enable two software components to communicate with each other using a set of definitions and protocols. For example, the weather bureau’s software system contains daily weather data. The weather app on your phone “talks” to this system by way of APIs and shows you daily weather updates on your phone.
+
+Microservices communicate through API *endpoints*, which are essential for building scalable and efficient applications. It is important for developers to choose the right protocol for their specific needs, and to ensure that they are properly implemented for higher performance and reliability.
+
+#### GraphQL
+
+GraphQL is a query language for APIs that gives applications the ability to fetch the exact data that they need from a server. In a single request, a GraphQL query can describe the data it wants. The server responds with a JSON object of the results requested by the application. GraphQL APIs are highly flexible and efficient, because clients can query data in a more declarative and intuitive way.
+
+To use GraphQL, AWS AppSync should be used.
+
+![GraphQL API diagram](./images/W08Img020APIGraphQL.png)
+
+#### REST
+
+Representational State Transfer (REST) is a lightweight, stateless protocol that is commonly used for building web services. It follows a client-server model, where the client sends requests to the server, and the server responds with data. REST APIs are typically designed using HTTP methods, such as GET, POST, PUT, and DELETE, and they use JSON or XML as the data format. REST web services are also called RESTful web services.
+
+![REST API Diagram](./images/W08Img030APIRest.png)
+
+#### SOAP
+
+Simple Object Access Protocol (SOAP) is an older technology that requires a strict communication contract between systems. New web service standards have been added over time to accommodate technology changes, but they create additional overheads. REST was developed after SOAP and inherently solves many of its shortcomings.
+
+SOAP is a protocol that defines rigid communication rules. It has several associated standards that control every aspect of the data exchange. For example, here are some standards SOAP uses:  
+
+* Web Services Security (WS-Security) specifies security measures like using unique identifiers called *tokens*.  
+* Web Services Addressing (WS-Addressing) requires including routing information as metadata.
+* WS-ReliableMessaging standardizes error handling in SOAP messaging.
+* Web Services Description Language (WSDL) describes the scope and function of SOAP web services.
+
+When you send a request to a SOAP API, you must wrap your HTTP request in a SOAP envelope. This is a data structure that modifies the underlying HTTP content with SOAP request requirements. Due to the envelope, you can also send requests to SOAP web services with other transport protocols, like TCP or Internet Control Message Protocol (ICMP). However, SOAP APIs and SOAP web services always return XML documents in their responses. 
+
+#### WebSocket API
+
+WebSocket API is another modern web API development that uses JSON objects to pass data. A WebSocket API supports two-way communication between client apps and the server. The server can send callback messages to connected clients, making it more efficient than REST API.
+
+### How to Design an Application Using Microservices
+
+#### Identify the business problem
+
+Start by identifying the business problem that your application will solve. This will help you determine the functionality that your application will need.
+
+#### Define the microservices
+
+Break down the functionality of your application into smaller, independent services. Each service should have a clear purpose and should be responsible for a specific set of tasks.
+
+#### Choose the technology stack
+
+Choose the technology stack that will best support your microservices. This could include a variety of technologies, such as Java, Python, and Node.js.
+
+#### Design the data model
+
+Design a data model that will be used by all of your microservices. This model should be scalable and should be able to handle large amounts of data. For example, Amazon DynamoDB, Amazon Relational Database Service (Amazon RDS), or Amazon Aurora can be used.
+
+#### Implement the microservices
+
+Each service should be deployed independently. Choose the compute service where your code will run, such as AWS Lambda or Amazon Elastic Container Service (Amazon ECS).
+
+#### Integrate the microservices
+
+Integrate the microservices using a messaging system, such as Amazon Simple Notification Service (Amazon SNS) and Amazon Simple Queue Service (Amazon SQS). This will allow the services to communicate with each other.
+
+#### Test the microservices
+
+Test each microservice to ensure that it is working correctly. This will help you identify any bugs or issues that might need to be addressed.
+
+#### Deploy the microservices
+
+Deploy the microservices to a production environment. This will allow your application to be used by users.
+
+#### Monitor the microservices
+
+Monitor the microservices to ensure that they are running smoothly. This will help you identify any issues that might arise, so you can make any necessary changes. AWS CloudWatch, AWS CloudTrail, and AWS X-Ray can be used for monitoring and troubleshooting.
+
+#### Maintain the microservices
+
+Maintain the microservices by updating them with new features and fixing any bugs or issues that might arise. This will help ensure that your application remains reliable and efficient.
+
+### Decomposing an application
+
+*Decomposing an application* refers to the process of breaking down a monolithic application into smaller, independent services that can be developed, deployed, and managed separately. By breaking down an application into microservices, developers can better understand the individual components, making it more convenient to identify and address issues. The goal of decomposing an application into microservices is to improve the overall architecture of the application and make it more scalable, reliable, and flexible.
+
+After you decide to decompose a monolith in your application, you should choose the appropriate decomposition patterns. You can use multiple patterns to decompose your applications, such as breaking them down by business capability and then by subdomain.
+
+Two typical patterns you might see are **Brownfield** and **Greenfield** projects. Brownfield projects involve developing and deploying a new software system within the context of existing or legacy systems. Greenfield projects involve creating a system from scratch for a completely new environment, without any legacy code involved.
+
+The following are some of the other decompose patterns available:
+
+* Decompose by business capability
+* Decompose by subdomain
+* Decompose by transactions
+* Service per team pattern
+* Branch by abstraction pattern
+
+#### [Patterns for Decomposing Monoliths ](https://docs.aws.amazon.com/prescriptive-guidance/latest/modernization-decomposing-monoliths/decomposing-patterns.html)
+
+### How to Build This: Serverless Microservice Application
+
+### Food delivery application example
+
+Users place orders to vendors and delivery guys pick them up. Vendors don't have direct interaction with the users, just the delivery guy. The users don't have direct contact with anybody, any of the individuals on the marketplace. They just see the order on the app and delivery guys deliver it to the users.
+
+The application will be in charge of displaying the menus, communicating the orders to the restaurants, and ensuring that food gets delivered to hungry customers as soon as possible.
+
+In a microservices architecture, the application is composed of independent services that communicate over well-defined APIs. This agile approach will help you improve maintainability and scalability.
+
+#### A typical serverless microservices infrastructure
+
+A typical serverless microservices infrastructure is composed of Amazon API Gateway and AWS Lambda functions. API Gateway makes it easy to create, maintain, and secure REST APIs at any scale. You can think of API Gateway as the front door to access your backend.
+
+Lambda lets you run code without having to think about servers or clusters. Lambda will take care of everything required to run and scale the execution to meet the actual traffic demands with high availability.
+
+You’ll create Lambda functions for each business process. API Gateway will synchronously trigger the right Lambda function, depending on the service you need to reach.
+
+#### Lambda functions for services as an example
+
+* user service
+* order service
+* payment service
+* menu service
+* delivery service
+
+#### User authentication
+
+Amazon Cognito lets you add user sign-up, sign-in, and access control to your apps quickly. Cognito has a concept called “user pools,” which you can think of as a user directory. You can use a Cognito user pool to control who can access your API in API Gateway. This is useful when you have different personas using your app. In this app, the user that wants to order food should have access to different APIs than the restaurant owner and the person delivering the food.  
+
+#### Choosing a database
+
+Relational databases are a solid choice when you’re building a transactional system and want data accuracy and consistency. Amazon Aurora is a MySQL and Postgres compatible relational database built for the cloud. He’ll use Aurora to perform CRUD operations on food orders. In this example, Aurora can be used to perform CRUD operations on food orders.
+
+#### Search / user experience in the app
+
+Amazon Elasticsearch provides a fast and personalized search experience for your app. Elasticsearch achieves fast responses because it searches an index instead of the text directly. This is like retrieving pages in a book related to a keyword by scanning the index as opposed to searching every word of every page.
+
+#### When a user logs into the app
+
+The user will search for their favorite restaurants or for a specific food. This functionality is built on API Gateway calling a Lambda function and the Lambda function requesting the searched item in Elasticsearch. 
+
+#### Payment processing
+
+To process payments, you can use a third party payment processor so you can get your app to market as soon as possible. You would use Lambda to trigger the third-party payment processor.
+
+#### Once the payment has been processed
+
+You'll use a Lambda function to trigger Amazon's Simple Notification Service. Simple Notification Service is a pub/sub messaging service that can be used to send messages to millions of users. Lambda triggering Simple Notification Service is a common architecture pattern for event-driven apps. You can use Lambda with the Simple Notification Service solutions construct to pre-configure these services together with security best practices built in.
+
+#### When the order is confirmed
+
+It is sent to a central message queue managed by Amazon Simple Queue Service. Simple Queue Service is a message queuing service that enables you to decouple and scale microservices. It is really important that the purchases are kept in order so that there are no delays for the users. A first in, first out queue will ensure that the order in which the messages are sent and received is strictly preserved. It will also ensure that the message is only delivered once and that no duplicates are introduced into the queue.
+
+#### Verifying the status
+
+Amazon Location Service makes it easy for developers to add location functionality to their app. Location geofences gives your application the ability to detect and act when a tracked device enters or exits a geographical boundary you define as a geofence. When a location update crosses the boundaries of one or more geofences, Amazon EventBridge receives the geofence event.
+
+EventBridge is a serverless event bus that makes it easier to build event-driven applications at scale. EventBridge will route the data from the geofence to a Lambda function which will then publish a message to SNS and trigger a notification to your users.
+
+This architecture pattern of using location service for map and geofence data and passing that data to EventBridge to react in real time can be used for almost every app that needs to manage deliveries.
+
+#### Example summary to build an ecommerce app with location-based notifications
+
+Add user sign-in with Amazon Cognito. Use API Gateway with AWS Lambda to build each microservice. All of your order data is stored in Amazon Aurora. Use Amazon Elasticsearch to provide a quick search experience in your app. Notify users of their order with Amazon Simple Notification Service. Use a FIFO queue with Amazon Simple Queue Service to process orders. Send real-time notifications based on the location of the delivery worker using Amazon Location Service.
+
+### Knowledge Check
+
+#### Choose the decompose patterns. (Select TWO.)
+
+* Decompose by business capability
+* Decompose by subdomain
+
+Wrong answers:
+
+* Decompose by examination
+* Decompose by review
+* Decompose by shared database
+
+#### An app is being deployed to four environments: development, staging, testing, and production. How many code repositories would be used for this application, according to the Twelve-Factor app?
+
+* One repository used by all environments
+
+Wrong answers:
+
+* Four repositories, one for each environment
+* Two repositories, one for non-production and one for production
+* Five repositories, one for each environment, and one to track changes between those environments.
+
+##### Explanation
+
+* Having four repositories one each environment would lead to code duplication and make it difficult to maintain consistency across environments.
+* While having two repositories is sometimes used in practice, it's not in line with the Twelve-Factor App methodology. It still introduces the problem of maintaining multiple codebases, which can lead to drift between production and non-production environments.
+* Having five repositories is the furthest from the Twelve-Factor App principles. It not only creates multiple codebases but also adds complexity with an additional repository to track changes. This would make version control and deployment processes unnecessarily complicated.
+
+#### How should modern application dependencies be handled?
+
+* Explicitly declared, isolated, and packaged with the application
+
+Wrong answers:
+
+* Listed as a pre-requisite before installing the application
+* Reinstalled, even if it already exists on the user environment
+* Ignored because most modern environments have what is needed already
+
+##### Explanation
+
+* Listed as a pre-requisite before installing the application
+ * While this approach was common in the past, it's not ideal for modern applications. It can lead to version conflicts, inconsistencies across environments, and difficulties in deployment and scaling. It also doesn't ensure that the exact versions of dependencies are used across all installations.
+
+* Reinstalled, even if it already exists on the user environment
+ * This approach is inefficient and can lead to conflicts with existing system libraries. It doesn't respect the user's environment and can cause unnecessary duplication of resources. Moreover, it doesn't guarantee consistency across different environments.
+
+* Ignored because most modern environments have what is needed already
+ * This is a dangerous assumption that can lead to numerous problems. Different environments may have different versions of dependencies, leading to inconsistent behavior. It also makes the application less portable and more difficult to deploy in new environments.
+
+ ### Summary
+
+* What a microservice architecture is and how it differs from a monolithic architecture
+* The Twelve-Factor app methodology
+* Microservice communication protocols
+* How to design an application using microservices
+* How to decompose a monolithic application into a microservice application

@@ -17,3 +17,5 @@
 ## [AWS Cloud Operations 1](./180-aws-cloud-operations-1/aws-cloud-operations-1.md)
 
 ## [Career Services 2](./320-career-services-2/career-services-2.md)
+
+## [Career Services 3](./340-career-services-3/career-services-3.md)
