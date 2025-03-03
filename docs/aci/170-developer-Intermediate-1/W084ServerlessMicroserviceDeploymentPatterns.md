@@ -965,6 +965,6 @@ The other options are incorrect because using AWS CodeDeploy and Amazon CloudWat
 * How to demonstrate writing proper Lambda functions
 * How to write and troubleshoot Python Lambda functions
 
-### [Lab: Creating a Serverless Web App Backend with Amazon DynamoDB]()
+### [Lab: Creating a Serverless Web App Backend with Amazon DynamoDB](./labs/W080Lab1ServerlessBackendDynamoDb.md)
 
-### [Lab: Creating AWS Lambda Functions to List and Save Customers]()
+### [Lab: Creating AWS Lambda Functions to List and Save Customers](./labs/W080Lab2LambdaListCustomers.md)

@@ -1,0 +1,6 @@
+{
+	    "ID": {"S": "ABD124"},
+	        "firstname": {"S": "Martha"},
+		    "lastname": {"S": "Rivera"}
+}
+
