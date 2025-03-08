@@ -818,3 +818,205 @@ Express workflows employ an at-least-once model. Therefore, they are ideal for o
 * [Tutorials for Step Functions](https://docs.aws.amazon.com/step-functions/latest/dg/tutorials.html)
 
 ## Identifying Step Functions Use Cases
+
+### Use cases
+
+Step Functions manages your application's components and logic, so you can write less code and focus on building and updating your application quickly.
+
+### Function orchestration
+
+For function orchestration, you create a workflow that runs a group of Lambda functions (steps) in a specific order.
+
+The workflow can handle taking the output from one Lambda function and passing it on to the next Lambda function's input. The last step in your workflow gives a result.
+
+![Example pf function orchestration](./images/W09Img100LambdaOrchestrationExample.png)
+
+With Step Functions, you can watch how each step in your workflow interacts with one another. You can make sure that each step performs its intended function.
+
+* [Orchestration tutorial](https://docs.aws.amazon.com/step-functions/latest/dg/getting-started-with-sfn.html#get-started-tutorials-intro)
+
+### Branching
+
+What if you're a bank that needs to automate customer transactions? In this example, a customer requests a credit limit increase. Using a *Choice* state, you can have Step Functions make decisions based on the Choice state’s input.
+
+If the request is more than your customer’s preapproved credit limit, you can have Step Functions send your customer's request to a manager for sign-off.
+
+If the request is less than your customer’s preapproved credit limit, you can have Step Functions approve the request automatically.
+
+![Example of branching](./images/W09Img102StepFunctionsBranchingExample.png)
+
+#### Error handling
+
+In this use case, a customer requests a username for a new account. The first time the customer requests the username, the request is unsuccessful.
+
+![Error handling example](./images/W09Img104StepFunctionsErrorHandlingRetry.png)
+
+Using a *Retry* statement, you can have Step Functions try your customer's request again.
+
+After the retry is processed for the second time, your customer’s request is successful.
+
+In a similar use case, a customer requests an unavailable username. Using a *Catch* statement, you have Step Functions suggest an available username. If your customer takes the available username, you can have Step Functions go to the next step in your workflow, which is to send a confirmation email. If your customer doesn’t take the available username, you have Step Functions go to a different step in your workflow, which is to start the sign-up process over.
+
+* [Code example](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-error-handling.html)
+
+### Human-in-the-loop
+
+With the use of a banking app, one of your customers sends money to a client. Your customer then waits for a confirmation email indicating that the transaction was completed.
+
+Using a callback and a task token, you have Step Functions tell Lambda to send your customer’s money and report back when your customer’s client receives it.
+
+After Lambda reports back that your customer’s client received the money, you can have Step Functions go to the next step in your workflow. This step sends your customer a confirmation email.
+
+![Human-in-the-loop example](./images/W09Img106StepFunctionsHumanInLoop.png)
+
+* [Code example](https://docs.aws.amazon.com/step-functions/latest/dg/callback-task-sample-sqs.html)
+
+#### Parallel processing
+
+In this example, your customer converts a video file into five different display resolutions, so viewers can watch the video on multiple devices.
+
+Using a Parallel state, Step Functions inputs the video file so Lambda can process it into the five display resolutions at the same time.
+
+![Parallel processing example](./images/W09Img108StepFunctionsParallel.png)
+
+#### Dynamic parallelism
+
+What if one of your customers orders three items, and you need to prepare each item for delivery? First, you check each item's availability, gather each item, and then package each item for delivery.
+
+Using a Map state, Step Functions has Lambda process each of your customer's items in parallel. After all of your customer's items are packaged for delivery, Step Functions goes to the next step in your workflow. This step will send your customer a confirmation email with tracking information.
+
+![Dynamic parallelism example](./images/W09Img110StepFunctionsDynamicParallelism.png)
+
+* [Dynamically Process Data with a Map State](https://docs.aws.amazon.com/step-functions/latest/dg/sample-map-state.html)
+
+## API Operations
+
+### API Gateway with Step Functions
+
+With Amazon API Gateway, you can create, publish, maintain, and monitor HTTP and REST APIs. You can also integrate Step Functions with API Gateway. You define a *Task* state (in Step Functions) that directly calls an API Gateway HTTP or API Gateway REST endpoint without needing to write additional code or rely on other infrastructure.
+
+A *Task* state definition includes all the necessary information for the API call. You can also select different authorization methods based on your application needs.
+
+Step Functions supports the ability to call HTTP endpoints through API Gateway but does not currently support the ability to call generic HTTP endpoints.
+
+### Creating a step function using API Gateway
+
+You can use API Gateway to associate Step Functions APIs with methods in an API Gateway API. When an HTTPS request is sent to an API method, API Gateway invokes the Step Functions API actions.
+
+To create a function using API Gateway, follows these steps:
+
+1. Create an AWS Identity and Access Management (IAM) role for API Gateway.
+2. Create your API Gateway API.
+3. Test and deploy the API Gateway API.
+
+The following is a JSON example of a task making calls to an API Gateway API. Here, the **Type** is "**Task**", and the Resource is "**apigateway:invoke**".
+
+```json
+{
+    "Type": "Task",
+    "Resource":"arn:aws:states:::apigateway:invoke", 
+    "Parameters": {
+        "ApiEndpoint": "example.execute-api.us-east-1.amazonaws.com",
+        "Method": "GET", 
+        "Headers": { 
+            "key": ["value1", "value2"] 
+        },
+        "Stage": "prod",
+        "Path": "bills",
+        "QueryParameters": {
+            "billId": ["123456"]
+        },
+        "RequestBody": {},
+        "AuthType": "NO_AUTH"
+    } 
+}
+```
+
+For detailed instructions about how to complete each of these steps, run the following "Creating a Step Functions API Using API Gateway" tutorial.
+
+* [Creating a Step Functions API Using API Gateway ](https://docs.aws.amazon.com/step-functions/latest/dg/tutorial-api-gateway.html)
+
+### API Gateway feature support
+
+The *Step Functions API Gateway integration* supports some, but not all, API Gateway features.
+
+The following features are supported by both the step functions API Gateway REST API and API Gateway HTTP API integrations:
+
+* **Authorizers**: IAM (using Signature Version 4), No Auth, Lambda Authorizers (request-parameter-based and token-based with custom header)
+* **API types**: Regional
+* **API management**: API Gateway API domain names, API stage, Path, Query Parameters, Request Body
+
+### Quotas
+
+Step Functions places quotas on the sizes of certain state machine parameters. These parameters might include the number of API actions you can make during a certain time period or how many state machines you can define. The quotas are designed to prevent a misconfigured state machine from consuming all the resources of the system. These are not hard quotas, and you can request a service quota increase if needed. Quotas might differ significantly based on whether your state machine uses Standard or Express workflows.
+
+### Step Functions APIs
+
+You can access and use Step Functions by using the AWS Management Console, AWS SDKs, or APIs. You can run a Step Functions state machine by doing the following:
+
+* Call the Step Functions **StartExecutionAPI** action.
+* Associate the Step Functions APIs with API operations in API Gateway. When an HTTPS request is sent to an API operation, API Gateway invokes the Step Functions API actions.
+
+The following table lists the most common Step Functions APIs and their descriptions.
+
+| API ACTION | DESCRIPTION |
+| ---------- | ----------- |
+| **Create** | Upload state machines that are defined in JSON. Register activity workers. |
+| **StartExecution** | Return an ARN that identifies the run. |
+| **StopExecution** | Return the date that the state machine stopped. |
+| **List** | List all state machines, runs, and activities. |
+| **Describe** | Describe individual state machines, runs, and activities. |
+| **GetExecutionHistory** | Get the history of a state machine run as a list of events. |
+
+**Important**: If you use the Step Functions API actions using AWS SDK integrations, make sure the API actions are in camel case and the parameter names are in Pascal case.
+
+For example, you can use the Step Functions API action **startSyncExecution** and specify its parameter as **StateMachineArn**.
+
+* [AWS Step Functions API Reference guide](https://docs.aws.amazon.com/step-functions/latest/apireference/Welcome.html)
+
+### Knowledge Check
+
+#### Which outcome can be prevented by putting AWS Step Functions quotas in place?
+
+* A misconfigured state machine from consuming all the resources of the system
+
+Wrong answers:
+
+* Overuse of the underlying hardware
+* A misconfiguration that increases the cost of running the state machine
+* Unauthorized use of Step Functions
+
+Step Functions places quotas on the sizes of certain state machine parameters. These parameters might include the number of API actions that can be made during a certain time period or how many state machines can be defined. These quotas are designed to prevent a misconfigured state machine from consuming all the resources of the system.
+
+#### Which are three types of AWS Step Functions use cases? (Select THREE.)
+
+* Branching
+* Human-in-the-loop
+* Dynamic parallelism
+
+Wrong answers:
+
+* Step Functions chaining
+* Asymmetric parallelism
+* Functioning
+
+#### With AWS Step Functions, visual workflows can be built to provide fast translation of business requirements. Which additional performance benefits are available when working with Step Functions? (Select TWO.)
+
+* Automatically scale the operations and underlying compute.
+* Manage state, checkpoints, and restarts to make sure the application runs in order and as expected.
+
+Wrong answers:
+
+* Write and build the Step Functions automatically based on the services selected. 
+* Integrate with third-party messaging systems to improve communications.
+* Step Functions provide their own internal authentication so developers don't need to consider security.
+
+Step Functions automatically scales the operations and underlying compute to run the steps of the application in response to changing workloads.
+
+Step Functions manages state, checkpoints, and restarts to make sure that the application runs in order and as expected.
+
+### Summary
+
+Step Functions helps you coordinate and manage the components of distributed microservices. As your applications initiate, Step Functions tracks exactly which workflow step your application is in. It stores information in an event log of data that is passed between application components.
+
+You reviewed how to work with Step Functions and identified architectural use cases for the different types of services. You learned how other AWS services integrate with Step Functions. Finally, you learned how to create, publish, maintain, and monitor HTTP and REST APIs using API Gateway.
