@@ -316,3 +316,505 @@ You can find a REST API's root URL in the API Gateway console. You can also use 
 The API Gateway pattern is a form of synchronous communication.
 
 ## Decoupled Messaging Integration
+
+Asynchronous integration patterns are built and designed to allow microservices to work and communicate independently and eliminate latency. Asynchronous patterns are built to decouple services by sending and receiving all messages through an intermediary queue. Using a queue or queueing service enables services to remain loosely coupled. Decoupling the services using a queue can improve system resilience and scalability and promote service discovery.
+
+### A message broker and a message queue
+
+#### Amazon MQ
+
+Message brokers make it possible for software systems, which often use different programming languages on various technologies, to communicate and exchange information. Amazon MQ is a managed message broker service for Apache ActiveMQ and RabbitMQ that streamlines setup, operation, and management of message brokers on AWS.
+
+Amazon MQ works with your existing applications and services without the need to manage, operate, or maintain your own messaging system. Amazon MQ is useful for migrating applications from existing message brokers that rely on compatibility with APIs. These include Java Message Service (JMS) or protocols such as Advanced Message Queuing Protocol (AMQP) - AMQP 0-9-1, AMQP 1.0, Message Queuing Telemetry Transport (MQTT), OpenWire, and Simple (or Streaming) Text Oriented Message Protocol (STOMP).
+
+This makes Amazon MQ different from Amazon SQS and Amazon SNS, which are queue and topic services. These are highly scalable, straightforward to use, and don't require you to set up message brokers. Amazon SQS and Amazon SNS are best for new applications that benefit from nearly unlimited scalability and simple APIs.
+
+* [Amazon MQ Developer Guide](https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/welcome.html)
+
+### Messaging types
+
+Messaging can be defined into three types.
+
+* Message Queues
+* Pub-Sub Pattern
+* Event-Driven Messaging
+
+#### Message Queues
+
+A message queue acts as a buffer that decouples senders (producers) and receivers (consumers) of messages. Producers enqueue messages into the queue, and consumers dequeue and process them.
+
+This pattern is useful for asynchronous communication, load leveling, and handling bursts of traffic.
+
+#### Pub-Sub Pattern
+
+In the pub-sub pattern, a message is published to a topic, and multiple interested subscribers receive the message. This pattern enables broadcasting events or messages to multiple consumers asynchronously.
+
+Pub-sub is an example of a queue or topic service. Amazon SNS is useful when building a pub-sub messaging system.
+
+#### Event-Driven Messaging
+
+Event-driven messaging involves capturing and reacting to events that occur in the system. Events are published to a message broker, and interested services subscribe to specific event types. This pattern enables loose coupling and allows services to react to events without direct dependencies.
+
+### Two main messaging patterns that use an intermediary queue
+
+There are two main messaging patterns that use an intermediary queue: the decouple messaging pattern and the pub-sub pattern.
+
+#### Decouple messaging pattern
+
+This pattern provides asynchronous communication between microservices by using an asynchronous poll model. When the backend system receives a call, it immediately responds with a request identifier and then asynchronously processes the request. A loosely coupled architecture can be built, which avoids bottlenecks caused by synchronous communication, latency, and I/O. In the pattern's use case, Amazon SQS and Lambda are used to implement asynchronous communication between different microservices.
+
+You should consider using this pattern for the following scenarios:
+
+* You want to create loosely coupled architecture.
+* All operations don’t need to be completed in a single transaction, and some operations can be asynchronous.
+* The downstream system cannot handle the incoming transactions per second (TPS) rate. The messages can be written to the queue and processed based on the availability of resources.
+
+A disadvantage of this pattern is that business transaction actions are synchronous. Even though the calling system receives a response, some part of the transaction might still continue to be processed by downstream systems.
+
+#### Decouple messaging use case
+
+The following section explores a use case for decoupled messaging.
+
+In this use case, the insurance system has a sales database that is automatically updated with the customer transaction details after a monthly payment is made. The following diagram depicts how to build this system by using the decouple messaging pattern.
+
+![Decouple messaging use case](./images/W09Img052DecoupleMessaging.png)
+
+1. **Make payment**. The frontend application calls the API Gateway with the payment information after a user makes their monthly payment.
+2. **Update with payment details**. The API Gateway runs the *Customer* Lambda function that saves the payment information in an Amazon Aurora database. It then writes the transaction details in a message to the *Sales* Amazon SQS and responds to the calling system with a success message.
+3. **Read transaction details**. A Sales Lambda function pulls the transaction details from the SQS message and updates the sales data. Failure and retry logic to update the sales database is incorporated as part of the Sales Lambda function.
+
+Message queues can help in a number of ways to make your applications and services more efficient.
+
+## Publish-Subscribe Integration
+
+Asynchronous messaging allows services to communicate by sending and receiving messages through a queue. Pub-sub messaging is an asynchronous communication model.
+
+### Pub-sub pattern
+
+In the pub-sub pattern, a message is published to a topic, and multiple interested subscribers receive the message. In the following image, the publishers on the left send messages about different topics to a message queue. The subscribers then automatically receive the messages.
+
+![Pub-sub pattern](./images/W09Img062PubSubPattern.png)
+
+This pattern enables broadcasting events or messages to multiple consumers asynchronously. The pub-sub pattern also allows communication among multiple AWS services, such as Amazon SQS, Lambda, or Amazon Simple Storage Service (Amazon S3), without creating interdependency. Pub-sub messaging provides instant event notifications for these distributed systems.
+
+### Message queues differ from pub-sub messaging
+
+A message queue is another form of asynchronous communication used in serverless and microservices architectures. Messages are stored in the queue until they are processed and deleted. *Message queues require the sender to know who they are exchanging messages with*. Message ordering might also cause bottlenecks in the system.
+
+In contrast, the pub-sub pattern provides more flexibility. Several interested subscribers can receive messages simultaneously and asynchronously. *Publishers don't need to know who the subscribers are*. Message handling is more scalable and reliable, and it gives better performance.
+
+* [Message Queues](https://aws.amazon.com/message-queue/)
+* [Amazon Simple Queue Service](https://aws.amazon.com/sqs/)
+
+### How the pub-sub system works
+
+The pub-sub system has four key components.
+
+* Messages
+* Topics
+* Subscribers
+* Publishers
+
+#### Messages
+
+A message is communication data sent from a sender to a receiver. Message data types can be anything from strings to complex objects representing text, video, sensor data, audio, or other digital content.
+
+#### Topics
+
+Every message has a topic associated with it. The topic acts like an intermediary channel between senders and receivers. It maintains a list of receivers who are interested in messages about that topic.
+
+#### Subscribers
+
+A subscriber is the message recipient. Subscribers must register (or subscribe) to topics of interest. They can perform different functions or do something different with the message in parallel.
+
+#### Publishers
+
+The publisher is the component that sends messages. It creates messages about a topic and sends them only once to all subscribers of that topic. This interaction between the publisher and subscribers is a one-to-many relationship. The publisher doesn’t need to know who is using the information it is broadcasting, and the subscribers don’t need to know where the message comes from.
+
+### Microservices and the pub-sub pattern
+
+Applications developed with a pub-sub pattern have separate application and communication logic. Microservices publish events as messages in a channel that subscribers can listen to. For example, a factory can use a pub-sub pattern to enable equipment to publish problems or failures to a channel. A subscriber then receives the messages to display and log the equipment issues.
+
+Consider using this pattern if any of the following applies to you:
+
+* You have an event-driven architecture.
+* You can enable loosely coupled architecture.
+* You don't need to complete all operational parts of a transaction before the response back to the calling system (certain operations can be asynchronous).
+* You need to scale to volumes that are beyond the capability of a traditional data center. This level of scalability is primarily because of parallel operations, message caching, tree-based routing, and other features built into the pub-sub model.
+
+### Benefits of pub-sub messaging
+
+The pub-sub model enables event-driven architecture, which is required in several modern applications. You can use events to invoke and communicate between decoupled services. An event is a change in state, or an update, like an item being placed in a shopping cart.
+
+Pub-sub messaging provides significant advantages to developers who build applications that rely on real-time events.
+
+* **Eliminate polling**. Message topics allow instantaneous, push-based delivery, eliminating the need for message consumers to periodically check, or poll, for new information and updates. This promotes faster response time and reduces the delivery latency that can be particularly problematic in systems where delays cannot be tolerated.
+* **Implement dynamic targeting**. The pub-sub pattern makes the discovery of services more convenient, more natural, and less error-prone. Instead of maintaining a roster of peers so an application can send messages, a publisher will post messages to a topic. Then, any interested party will subscribe its endpoint to the topic and start receiving these messages. Multiple subscribers can change, upgrade, or disappear, and the system adjusts dynamically.
+* **Decouple and scale independently**. The pub-sub pattern makes the software more flexible. Publishers and subscribers are decoupled and work independently from each other, so you can develop and scale them independently. You can decide to handle orders one way this month and another way the following month. Adding or changing functionality won’t send ripple effects across the system because with the pub-sub pattern, you can flex how everything works together.
+* **Streamline communication**. Code for communications and integration is some of the most difficult code to write. The pub-sub model reduces complexity by removing all the point-to-point connections with a single connection to a message topic. The topic will manage subscriptions to decide which messages should be delivered to which endpoints. Fewer callbacks result in looser coupling and code that is straightforward to maintain and extend.
+* **Provide high durability**. Pub-sub messaging services often provide high durability and at-least-once delivery by storing copies of the same message on multiple servers.
+* **Secure messages**. Message topics authenticate applications that try to publish content and allow you to use encrypted endpoints to secure messages in transit over the network.
+
+### Pub-sub use case
+
+In this use case, an SNS topic is used to publish events to several dependent microservices in an insurance system. After a customer makes their monthly payment, the information must be updated in subsystems, such as customer or sales. An email must be sent to the customer with the payment confirmation. This pattern can be implemented by using either Amazon SNS or Amazon EventBridge. The following diagram focuses on the Amazon SNS implementation.
+
+![Pub-sub use case](./images/W09Img064PubSubUseCase.png)
+
+1. **User makes a payment**. The user payment moves through the API gateway, invoking the Lambda function called "payments."
+2. **Message is sent to "payments" SNS topic**. After a user makes a payment, an SNS message is sent by the "payments" Lambda function to the "payments" SNS topic.
+3. **Subscribers receive the message**. This SNS topic has three subscribers that receive a copy of the message and process it.
+4. **Data is processed**. The message is then processed and the information is written to the appropriate database.
+
+### Pub-sub pattern disadvantages
+
+The following are disadvantages to using this pattern:
+
+* The pub-sub pattern typically cannot guarantee delivery of messages to all subscriber types.
+ * Some services, such as Amazon SNS, can provide exactly-once delivery to some subscriber subsets.
+* Another disadvantage is that a publisher might assume that a subscriber is listening to a channel when, in fact, they are not.
+
+## Event-Based Integration
+
+EventBridge is a serverless service that uses events to connect application components. You can conveniently build scalable event-driven applications. You can use EventBridge to route events from custom applications, AWS services, and third-party software to any of the consumer applications across your organization.
+
+### Example
+
+EventBridge is an asynchronous communication flow. Events are changes to your environment, such as a new MP3 file uploaded to an Amazon S3 bucket. When the MP3 is uploaded, an event is sent that invokes an action, such as a Lambda function that transcribes the audio.
+
+![Event-driven example](./images/W09Img072EventDrivenExample.png)
+
+### How EventBridge works
+
+EventBridge provides real-time access to changes in data without needing to write additional code.
+
+#### Event buses
+
+An *event bus* is a router that receives events and delivers them to zero or more destinations, or targets. Event buses are well-suited for routing events from many sources to many targets with optional transformation of events before delivery to a target.
+
+Rules associated with the event bus evaluate events as they arrive. Each rule checks whether an event matches the rule's pattern. If the event does match, EventBridge sends the event.
+
+You associate a rule with a specific event bus, so the rule only applies to events received by that event bus.
+
+![Event bus](./images/W09Img074EventBridgeExample.png)
+
+#### How event buses work
+
+An event source, which can be an AWS service, your own custom application, or a software as a service (SaaS) provider, sends an event to an event bus.
+
+EventBridge then evaluates the event against each rule defined for that event bus. For each event that matches a rule, EventBridge then sends the event to the targets specified for that rule. Optionally, as part of the rule, you can also specify how EventBridge should transform the event before sending it to the targets.
+
+An event might match multiple rules, and each rule can specify up to five targets. (An event might not match any rules. In which case, EventBridge takes no action.)
+
+![How EventBridge works.](./images/W09Img076EventBridgeFunctioning.png)
+
+#### Events
+
+An event often represents an indicator of a change in a resource or environment. An EventBridge event is a JSON object sent to an event bus or pipe.
+
+Events use a specific JSON structure. Every event has the same top-level envelope fields, such as the source of the event, timestamp, and Region. This is followed by a detail field, which is the body of the event.
+
+For example, when an Amazon EC2 Auto Scaling group creates a new Amazon EC2 instance, it emits an event with source: “aws.autoscaling” and detail: **EC2 instance created successfully**.
+
+The following is the example JSON event object code.
+
+```json
+{
+  "version": "0",
+  "id": "UUID",
+  "source": "aws.autoscaling",
+  "account": "ARN",
+  "time": "timestamp", 
+  "region": "region",
+  "resources": [ 
+     "ARN"  
+   ], 
+  "detail": {
+   EC2 instance created successfully
+  }
+}
+```
+
+#### Event sources
+
+EventBridge can receive events from event sources, including the following:
+
+* AWS services
+* Custom applications
+* SaaS partners
+
+#### Rules
+
+A rule receives incoming events and sends them as appropriate to targets for processing. The following are some specifics for using rules:
+
+* Each rule is defined for a specific event bus and only applies to events on that event bus.
+* A single rule can send an event to up to five targets.
+* By default, you can configure up to 300 rules for each event bus.
+
+You can specify how each rule invokes its targets based on the following:
+
+* A schedule to invoke the targets at regular intervals
+* An event pattern, which contains one or more filters to match events, can include filters that match the following:
+ * **Event metadata** – This is data about the event, such as the event source or the account or Region where the event originated.
+ * **Event data** – This includes the properties of the event itself. These properties vary according to event.
+ * **Event content** – This is the actual property value of the event data.
+
+#### Usage examples
+
+Common use cases for event buses include the following:
+
+You can use an event bus as a broker between different workloads, services, or systems.
+
+You can use multiple event buses in your applications to divide up the event traffic. For example, creating a bus to process events containing personally identifiable information (PII) and another bus for events that don't.
+
+You can aggregate events by sending events from multiple event buses to a centralized event bus. This centralized bus can be in the same account as the other buses but can also be in a different account or Region.
+
+![EventBridge Usage example.](./images/W09Img078EventBridgeUsageExample.png)
+
+### EventBridge use case
+
+In the following illustration, EventBridge is used to build a version of the pub-sub pattern where subscribers are defined by using event rules.
+
+![EventBridge has rules that are sent to Lambda functions for processing on the backend.](./images/W09Img080EventBridgeUseCase.png)
+
+1. **User makes a payment**. The user submits a payment to the system.
+2. **Message is sent across default event bus**. After a user makes a payment, the "payments" Lambda function sends a message to EventBridge by using the default event bus.
+3. **Rules are invoked**. The default event bus has three different rules pointing to different targets.
+4. **Messages are processed**. Each microservice processes the messages and performs the required actions.
+
+### [Lab: Connecting Serverless Functions with Amazon API Gateway](./labs/W090Lab1ConnectingServerlessFunctionsWithApiGateway.md)
+
+### Knowledge Check
+
+#### How does using a message queue differ from a publish-subscribe (pub-sub) messaging pattern? (Select TWO.)
+
+* Messages are stored in the queue until they are processed and deleted.
+* Message queues require the sender to know who they are exchanging messages with.
+
+Wrong answers:
+
+* Several interested subscribers can receive identical messages simultaneously.
+* Publishers don't need to know who the subscribers are.
+* A message queue provides more flexibility.
+
+##### Explanation
+
+* Messages are stored in the queue until they are processed and deleted. Message queues require the sender to know who they are exchanging messages with.
+* The pub-sub pattern provides more flexibility. Multiple subscribers can receive messages simultaneously and asynchronously.
+
+#### Which type of communication method does the API gateway integration pattern use?
+
+* Synchronous
+
+Wrong answers:
+
+* Asynchronous
+* Publish-subscribe (pub-sub)
+* Fan-out
+
+#### Which distribution pattern has a single request-response model?
+
+* One-to-one
+
+Wrong answers:
+
+* Fan-out
+* One-to-many
+* Publish-subscribe (pub-sub)
+
+In the one-to-one distribution pattern, one microservice sends a request directly to another microservice called the responder. The responder then sends its reply directly to the requesting microservice.
+
+### Summary
+
+* Describe microservice integration pattern types.
+* Identify AWS services used for synchronous and asynchronous integration.
+* Use API Gateway for microservice integration.
+
+Microservice integration patterns identify the ways microservices communicate and interact. When decomposing a larger application into more agile microservices, planning how to integrate these services into your existing environment is critical. Understanding the types of communication patterns that work best for your business use case can help you plan for integration. Testing and combining different messaging patterns can help you correctly integrate your new services into your infrastructure. Successful integration is key to achieving the greatest benefits from using microservices.
+
+## Microservices and Step Functions
+
+### Pre-assessment
+
+#### What does a task state represent when working with AWS Step Functions?
+
+* A unit of work
+
+Wrong answers:
+
+* Current run state of the function
+* The end objective
+* Amazon States Language (ASL)
+
+A *task state* represents a unit of work that another AWS service, such as AWS Lambda, performs.
+
+#### Which type of run model does a standard workflow follow?
+
+* Exactly-once
+
+Wrong answers:
+
+* At-least-once
+* More-than-once
+* Not-quite-once
+
+Express workflows define an at-least-once workflow execution. This means each step in the workflow executes at least once, and some steps can execute more than once. Each step runs for up to 5 minutes.
+
+#### What is the definition of a workflow when working with AWS Step Functions?
+
+* A sequence of steps that often matches a business process
+
+Wrong answers:
+
+* A single unit of work performed by a state machine
+* A visual designer that helps to prototype and build workflows faster
+* Individual steps in the state machine
+
+A workflow describes a sequence of steps that often matches a business process.
+
+## Orchestrating Microservices Using Step Functions
+
+Step Functions helps you coordinate and manage the components of distributed microservices. As your applications initiate, Step Functions track exactly which workflow step your application is in. It then stores information in an event log of data that is passed between application components. If there is an error on the network or a component fails, your application starts where it left off.
+
+Using Step Functions makes your development cycles faster and more intuitive because you can identify and purposefully build your application workflow. The workflow is built independently from your business logic so that you can make changes to one without impacting the other. Step Functions provides a reliable way to coordinate components and step through the functions of your application.
+
+### Orchestration service
+
+Step Functions is an orchestration service. Orchestration is the process of centrally managing a workflow by breaking it into multiple steps, adding flow logic, and tracking the inputs and outputs between the steps. A central component, called the orchestrator, is responsible for monitoring and coordinating the interactions between these microservices.
+
+Manually orchestrating workflows across multiple microservices is challenging. Additionally, embedding orchestration code directly into services is not best practice because this introduces tighter coupling and would impact replacing any individual services.
+
+Step Functions provides a visual workflow engine to manage service orchestration complexities, such as error handling and serialization. You can scale and change applications quickly without adding coordination code.
+
+![An example of a microservices workflow with parallel and sequential steps invoked by Step Functions](./images/W09Img092MicroservicesWorkflow.png)
+
+### Step Functions features
+
+#### Build and update applications quickly
+
+By using Step Functions, you can build visual workflows that provide fast translation of business requirements into technical requirements. You can build applications in minutes. When needs change, you can exchange or reorganize components without customizing any code.
+
+#### Scale and recover reliably
+
+Step Functions automatically scales the operations and underlying compute to run the steps of your application for you in response to changing workloads. Step Functions scales automatically to help ensure that the performance of your application workflow remains consistent as the frequency of requests increases.
+
+#### Evolve applications effortlessly
+
+Step Functions manages state, checkpoints, and restarts for you to make sure that your application runs in order and as expected. It has built-in retry and catch and rollback capabilities to deal with errors and exceptions automatically.
+
+* [AWS Step Functions Features](https://aws.amazon.com/step-functions/features/)
+
+### Key concepts
+
+This section introduces you to important Step Functions concepts.
+
+| Term | Description |
+| -------- | ----------------------------------- |
+| Workflow | This describes a sequence of steps and often matches a business process. |
+| Workflow Studio | This is a visual workflow designer that helps you to prototype and build workflows faster. |
+| States | These are individual steps in your state machine that perform a variety of functions in the state machine. |
+| State machines | This is a workflow defined using JSON text representing the individual states or steps in the workflow, along with fields, such as StartAt, TimeoutSeconds, and Version. |
+| Amazon States Language (ASL) | This is a JSON-based, structured language used to define your state machine. It's a collection of states that can do work (Task state), determine which states to transition to next (Choice state), and stop an execution with an error (Fail state). |
+| Task | This represents a single unit of work performed by a state machine. |
+| I/O configuration | Individual states in a workflow receive JSON data as input and usually pass JSON data as output to the next state. Step Functions provides multiple filters to control the input and output data flow between states. |
+
+## Working With Step Functions
+
+### State management
+
+Step Functions is based on state machines and tasks. Step Functions is one of the many services that gives you the ability to connect Lambda functions together into serverless workflows called state machines. A *state machine* is a series of event-driven steps. Each individual step in a workflow is called a *state*.
+
+A *task state* represents a unit of work that another AWS service, such as AWS Lambda, performs. A task state can call any AWS service or API. With Step Functions built-in controls, you examine the state of each step in your workflow to make sure that your application runs in the correct order and as expected.
+
+The following image depicts the variety of benefits of using step functions. Step Functions provides multiple decision paths to follow. The function's decision can select a task based on data. It can run tasks in parallel, allow for a duration or wait period before running the next task, and automatically retry failed tasks.
+
+![Step Functions use](./images/W09Img094StepFunctionsUse.png)
+
+* [Optimized Integrations](https://docs.aws.amazon.com/step-functions/latest/dg/connect-to-services.html#connect-to-services-optimized)
+
+### Defining states
+
+States are elements in your state machine. Individual states make decisions based on their input, perform actions from those inputs, and pass output to other states.
+
+States can perform a variety of different task functions in your state machine, including the following:
+
+* **Choice** – Choose the appropriate branch of the flow.
+* **Fail or Succeed** – Stop the flow based on pass or fail.
+* **Pass** – Pass the input to the output as is or combined with some fixed data.
+* **Wait** – Delay the flow for a specific amount of time.
+* **Parallel** – Begin parallel branching within the flow.
+* **Map** – Run the same steps for multiple entries of an array in the state input.
+
+### Amazon States Language
+
+In Step Functions, you define your workflows in the Amazon States Language (ASL). ASL is a JSON-based, structured language used to define your state machine, a collection of states. A state is referred to by its name, which can be any string, but it must be unique within the scope of the entire state machine.
+
+A Step Functions execution receives JSON text as input and passes that input to the first state in the workflow.
+
+The state machine always has a *StartAt* field, which indicates the name where processing starts. The state machine also always has a *States section*, which defines all of the states within the state machine. Each state must have a *Type* field indicating the type of state it is. Each state type is designed for a different type of logic, and some fields are relevant to specific state types.
+
+Most states have a *Next* or *End* field, which tells the state machine what to do on completion of that state. States are not processed in the order listed. The *Next* field drives the order of operations.
+
+![State Machine example](./images/W09Img096StateMachineExample.png)
+
+In this example, **FirstState** is a *Task state* that runs a Lambda function and indicates that the next step is **SecondState**.
+
+**SecondState** is a *Pass state* type and indicates that processing ends after it completes.
+
+The following is an example of the state machine described here written in ASL.
+
+![State machine written in ASL](./images/W09Img098StateMachineInAsl.png)
+
+1. **Comment**. A state machine might have a string field named Comment, provided for a human-readable description of the machine. This is an optional field. In the image, the **Comment** field reads **optional description**.
+2. **Startat**. A state machine must have a string field named StartAt, and its value must exactly match one of names of the States fields. The interpreter starts running the machine at the named state. In the image, the **Startat** value is called **FirstState**. This **FirstState** value matches the initial state in the list.
+3. **States**. A state machine must have an object field named **States**, and its fields represent the states.
+4. **Type**. **Type, or task_type**, is the type of task to run. It can be one of the following values:
+ * **activity** – An activity
+ * **function** – A Lambda function
+ * **servicename** – The name of a supported connected service
+5. **Resource**. This is a required value. It appears as a URI, especially an Amazon Resource Name (ARN) that uniquely identifies the specific task to execute. 
+6. **Transitions**. After a state runs, Step Functions uses the value of the Next field to determine the next state to advance to. Next fields also specify state names as strings. This string is case-sensitive and must match the name of a state specified in the state machine description exactly. In the example, the **Next** state is to run **SecondState**.
+7. **End**. A task state must set either the End field to true if the state ends the execution or must provide a state in the Next field that is run when the Task state is complete. In the example the **End** value is **true**.
+
+* [Amazon States Language](https://states-language.net/spec.html)
+
+### Standard and Express workflows
+
+When you create a state machine, you select a *Type* of either Standard or Express. The default Type for a state machine is *Standard*. A state machine with a Type that is Standard is called a *Standard workflow*, and a state machine with a Type that is Express is called an *Express workflow*.
+
+Executions are instances where you run your workflow to perform tasks.
+
+#### Standard workflows
+
+Standard workflows follow an *exactly-once* model where your tasks and states never run more than once unless you configure them to. This makes Standard workflows better suited for actions that should only ever be completed once, such as starting an Amazon EMR cluster or processing a payment.
+
+The specifications for Standard workflows are as follows:
+
+* 2,000 per second execution rate
+* 4,000 per second state transition rate
+* Priced by state transition
+* Show execution history and visual debugging
+* Support all service integrations and patterns
+
+Standard workflows are ideal for long-running (up to 1 year), durable, and auditable workflows because they show execution history and visual debugging. You can retrieve the full execution history using the Step Functions API for up to 90 days after your execution completes.
+
+#### Express workflows
+
+Asynchronous Express workflows define an *at-least-once* workflow execution. This means each step in the workflow executes at least once, and some steps can execute more than once. Each step runs for up to 5 minutes. Synchronous Express workflows define an *at-most-once* workflow execution. This means each step in the workflow executes no more than once.
+
+Express workflows specifications are as follows:
+
+* 100,000 per second execution rate
+* Nearly unlimited state transition rate
+* Priced by number and duration of executions
+* Send execution history to Amazon CloudWatch
+* Display execution history and visual debugging based on the Amazon CloudWatch Log level enabled
+* Support all service integrations and most patterns
+
+Express workflows are ideal for high-volume, event-processing workloads, such as Internet of Things (IoT) data ingestion, streaming data processing and transformation, and mobile app backends. They can run for up to 5 minutes.
+
+Express workflows employ an at-least-once model. Therefore, they are ideal for orchestrating idempotent actions, such as transforming input data and storing by way of a PUT action in Amazon DynamoDB. Express workflow executions are billed by the number of executions, the duration of execution, and the memory consumed while the execution ran.
+
+* [Tutorials for Step Functions](https://docs.aws.amazon.com/step-functions/latest/dg/tutorials.html)
+
+## Identifying Step Functions Use Cases
