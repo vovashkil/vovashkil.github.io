@@ -1,0 +1,6 @@
+	
+https://sbsdpnudyd.execute-api.us-west-2.amazonaws.com
+
+API_ENDPOINT_URL=INSERT_INVOKE_URL/license && echo $API_ENDPOINT_URL
+
+API_ENDPOINT_URL=https://sbsdpnudyd.execute-api.us-west-2.amazonaws.com/license && echo $API_ENDPOINT_URL
