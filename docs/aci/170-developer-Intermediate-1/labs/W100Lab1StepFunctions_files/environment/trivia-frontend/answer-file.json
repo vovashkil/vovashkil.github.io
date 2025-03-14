@@ -1,0 +1,35 @@
+{
+    "envName": "triviafrontend",
+    "appId": "1234567890123",
+    "defaultEditor": "Visual Studio Code",
+    "providers": {
+      "awscloudformation": {
+        "configLevel": "project",
+        "useProfile": true,
+        "profileName": "default"
+      }
+    },
+    "categories": {
+      "auth": {
+        "plugins": {
+          "awsCognitoAuthPlugin": {
+            "userPoolId": "us-east-1_abcdefg",
+            "userPoolClientId": "abcdefgh1234567890",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "storage": {
+        "plugins": {
+          "awsS3StoragePlugin": {
+            "bucketName": "my-bucket",
+            "region": "us-east-1"
+          }
+        }
+      }
+    }
+  }
+  
+  
+  
+  

@@ -1,0 +1,10 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "sam-game"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-amq6oyc2kars"
+s3_prefix = "sam-game"
+region = "us-west-2"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
