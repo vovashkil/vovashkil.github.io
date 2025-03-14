@@ -1,0 +1,16 @@
+aws lambda invoke --function-name UnzipLambdaFunction \
+--cli-binary-format raw-in-base64-out \
+--payload '{"detail": {"bucket": {"name": "documentbucket-360029302288"}, "object": {"key": "zipped/8d247914.zip"}}}' response1.json
+
+
+aws lambda invoke --function-name WriteToDynamoLambdaFunction \
+--cli-binary-format raw-in-base64-out \
+--payload '{"detail": {"bucket": {"name": "documentbucket-360029302288"}}, "application": {"app_uuid": "8d247914"}}' response2.json
+
+aws lambda invoke --function-name CompareFacesLambdaFunction \
+--cli-binary-format raw-in-base64-out \
+--payload '{"detail": {"bucket": {"name": "documentbucket-360029302288"}}, "application": {"app_uuid": "8d247914"}}' response3.json
+
+aws lambda invoke --function-name CompareDetailsLambdaFunction \
+--cli-binary-format raw-in-base64-out \
+--payload '{"detail": {"bucket": {"name": "documentbucket-360029302288"}}, "application": {"app_uuid": "8d247914"}}' response4.json
