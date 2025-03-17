@@ -54,7 +54,8 @@
 2. Expert Review
  * Successful processes reviewed & optimized
 
-= OMBP
+#### OMBP
+
  * Educate stakeholders
  * Demonstrate business processes
  * Plan an adoption path
@@ -214,4 +215,136 @@ Example - customer satisfaction level 90%
 
 ## Knowledge Check
 
-# HR and Payroll
+## Skills Check: Foundations Talent OMBP
+
+### Application links in Journeys are limited to HCM applications
+
+* **FALSE**
+* TRUE
+
+### Hiring Managers are engaged during the Advanced Interview Management step in the Attract Talent to Onboard New Hires process
+
+* **FALSE**
+* TRUE
+
+### Check-ins can be scheduled in Touchpoints
+
+* False
+* **TRUE**
+
+### During which step of the Employee Experience to Business Outcome process can Individuals use Connections to find and connect with others?
+
+* Engage Employees with Targeted Campaigns
+* Create a Culture of Inclusion and Celebration of Values
+* **Enable Employees to Enlarge their Network**
+* Embed Tools to Empower Employees to Take Action
+
+### During which step of the Skills insight to Workforce Agility process are leadership discussions held to assess talent?
+
+* **Organizational Talent Planning**
+* Access Succession Planning
+* Review impact of Investment on Employee Development
+* Manager Skills-Based Talent Planning
+
+### Which tool can managers use to view and manage goals for their team members?
+
+* Touchpoints
+* Career and Performance
+* **Team Goal Center**
+* Team Skills Center
+
+### Teams Skills Center is a view-only dashboard that displays a summary of a team's core skills
+
+* TRUE
+* **FALSE**
+
+### The Recruiting Activity Center can be accessed by Recruiters and anyone in the Hiring team
+
+* FALSE
+* **TRUE**
+
+### Which step of the Attract Talent to Onboard New Hires process provides new hires with early system access?
+
+* Manage Recruitment Activities
+* Attract the Right Talent
+* **Onboard New Hires**
+* Drive Candidate Engagement
+
+### Employees can use Skills Center to review skills relevant to them and skills common to their peers in the same role
+
+* FALSE
+* **TRUE**
+
+### What embedded technology can assists employees in crafting meaningful acknowledgement notes in Oracle Celebrate?
+
+* **Generative AI**
+* Google Assist
+* HR Helpdesk
+* Knowledgebase
+
+### The Workforce Goals to Performance OMBP does not offer traditional evaluations
+
+* TRUE
+* **FALSE**
+
+## HR and Payroll
+
+### Oracle Human Capital Management (HCM) Cloud
+
+* Human Resource
+* Payroll
+
+#### Human Resource
+
+* Manage workforce
+* Streamline HR
+* Optimize workforce
+* Ensure compliance
+
+#### Payroll
+
+* Process payroll on a global scale
+
+### HR and Payroll: Primary Modules
+
+* Core HR: Foundation of HCM
+* Benefits: Flexible and easy self-service Benefits tools
+* Connections: Interactive social directory
+* Journeys: Guided and personalized workflows
+
+### HR and Payroll: Additional Modules
+
+* HR Help Desk: Private HR case management
+* Digital Assistant: Quick answers and actions
+* Experience Design Studio: Easy-to-design best practice HR processes
+* Work life: Employee engagement and wellbeing
+
+### HR and Payroll: Summary
+
+* Oracle HR and Payroll offer a unified system for a diverse workforce
+* It standardized processes through modules, enhancing efficiency with prebuilt workflows and customizable rules.
+
+## HR and Payroll Oracle Modern Best Practice - Oracle Fusion Cloud HCM Foundations
+
+### HR and Payroll OMBP Benefits
+
+* Streamlines benefits enrollment
+* Addressing workforce issues
+* Delivers efficiency
+
+### Oracle Fusion Cloud HR and Payroll OMBP
+
+* Benefits to Coverage [Benefits module]
+ * Support benefits enrollment process
+ * Use innovative tools to guide employees and provide insights
+* Workforce Issue to Resolution [HR HelpDesk module]
+ * Help address HR challenges and employee concerns
+ * Streamline operations to create a productive workforce
+* Workforce Plan to Budget [Various HCM modules]
+ * Integrate strategy with headcount budget management
+ * Boost efficiency, agility, and control
+
+### Oracle Fusion Cloud HR and Payroll OMBP summary
+
+* OMBP driving project success and business outcomes in HR and Payroll
+* Modules supporting each OMBP to ensure seamless execution
