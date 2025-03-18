@@ -482,7 +482,7 @@ EventBridge is a serverless service that uses events to connect application comp
 
 EventBridge is an asynchronous communication flow. Events are changes to your environment, such as a new MP3 file uploaded to an Amazon S3 bucket. When the MP3 is uploaded, an event is sent that invokes an action, such as a Lambda function that transcribes the audio.
 
-![Event-driven example](./images/W09Img072EventDrivenExample.png)
+![Event-driven example](./images/W09Img072EventBus.png))
 
 ### How EventBridge works
 
