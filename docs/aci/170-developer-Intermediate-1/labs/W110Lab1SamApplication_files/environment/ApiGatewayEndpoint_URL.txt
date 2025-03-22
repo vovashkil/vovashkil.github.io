@@ -1,0 +1,20 @@
+CloudFormation outputs from deployed stack
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Outputs                                                                                                                                                               
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Key                 ListCustomers                                                                                                                                     
+Description         URL of your API                                                                                                                                   
+Value               https://oglkc3n9hg.execute-api.us-east-1.amazonaws.com/ListCustomers                                                                              
+
+Key                 ApiGatewayEndpoint                                                                                                                                
+Description         URL for API only                                                                                                                                  
+Value               https://oglkc3n9hg.execute-api.us-east-1.amazonaws.com/                                                                                           
+
+Key                 SaveCustomer                                                                                                                                      
+Description         URL of your API                                                                                                                                   
+Value               https://oglkc3n9hg.execute-api.us-east-1.amazonaws.com/SaveCustomer                                                                               
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Successfully created/updated stack - customer-app in us-east-1
+

@@ -1,0 +1,89 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  SaveCustomer:
+    Type: AWS::Serverless::Function
+    Properties:
+      Role:
+        Fn::Sub: arn:aws:iam::${AWS::AccountId}:role/SaveCustomer
+      CodeUri: SaveCustomer
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Policies:
+      - DynamoDBWritePolicy:
+          TableName:
+            Ref: LabCustomers
+      Events:
+        Sum:
+          Type: HttpApi
+          Properties:
+            Path: /SaveCustomer
+            Method: post
+            ApiId:
+              Ref: HttpApi
+    Metadata:
+      SamResourceId: SaveCustomer
+  ListCustomers:
+    Type: AWS::Serverless::Function
+    Properties:
+      Role:
+        Fn::Sub: arn:aws:iam::${AWS::AccountId}:role/ListCustomers
+      CodeUri: ListCustomers
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName:
+            Ref: LabCustomers
+      Events:
+        Sum:
+          Type: HttpApi
+          Properties:
+            Path: /ListCustomers
+            Method: get
+            ApiId:
+              Ref: HttpApi
+    Metadata:
+      SamResourceId: ListCustomers
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: $default
+      CorsConfiguration:
+        AllowOrigins:
+        - '*'
+        AllowHeaders:
+        - '*'
+        AllowMethods:
+        - GET
+        - POST
+  LabCustomers:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: LabCustomers
+      AttributeDefinitions:
+      - AttributeName: ID
+        AttributeType: S
+      KeySchema:
+      - AttributeName: ID
+        KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+Outputs:
+  SaveCustomer:
+    Description: URL of your API
+    Value:
+      Fn::Sub: https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/SaveCustomer
+  ListCustomers:
+    Description: URL of your API
+    Value:
+      Fn::Sub: https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/ListCustomers
+  ApiGatewayEndpoint:
+    Description: URL for API only
+    Value:
+      Fn::Sub: https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/
