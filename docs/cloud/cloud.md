@@ -348,3 +348,119 @@ Example - customer satisfaction level 90%
 
 * OMBP driving project success and business outcomes in HR and Payroll
 * Modules supporting each OMBP to ensure seamless execution
+
+## Benefits to Coverage: Human Resources and Payroll
+
+### OMBP Benefits to Coverage: Process Steps
+
+* Communication of Benefits
+* Automated Processing
+* Guided Enrollment
+* Proactive Exception Identification
+* Non-disruptive Query and Error Resolution
+* Communication with Vendors
+* Seamless Payroll Processing
+
+### Key Design Considerations: Benefits to Coverage
+
+1. Communicate Benefits
+ * Set HCM Communicate
+  * Relevant Information
+  * Embedded links
+2. Automated Processing
+ * Reduces double data entry
+  * Contact - integrated with Core HR
+  * Dependent information - Integrated with Core HR
+3. Guided enrollment
+ * Guided Journeys
+  * Step-by-Step Guide - Informed decision-making
+  * Embedded Resources - Informed decision-making
+ * Employee Satisfaction
+ * Engagement
+ * Reduce the confusion and stress
+4. Proactive Exception Identification
+ * Set Action Items
+5. Non-Disruptive Query and Error Resolution
+ * Centralized platform
+ * Real-time data
+  * Resolve enrolment transactions
+  * Reducing issues and administrative costs
+6. Communication with Vendors - Configured in Benefits Administration -> Plan Configuration area
+ * Set Plan Carrier
+7. Seamless Payroll Processing - Configured in Benefits Administration -> Plan Configuration area
+ * Set Payroll Element
+
+### Benefits to Coverage: Key Metrics
+
+Metrics are measurable values that HR professionals and analysts use to evaluate the efficiency, effectiveness, and success of a business process with an Oracle Fusion applications.
+
+#### Tools-> Reports & Analytics
+
+* Open Life Event
+* Open Action Items
+* Life Events by Status
+
+Benefits Enrollment Dashboard / Post Open Enrollment Summary
+
+### Key Takeaways
+
+* Employees experience a modern and personalized benefits enrollment journey.
+* Innovative tools  provide guidance and insights.
+* HR can design aa simplified, direct process with supportive content.
+* Streamlined enrollment and error prevention optimize benefits administration for employees.
+* Benefits Service Center provides visibility, oversight, and control for administration in one place.
+
+### Skills Check: Foundations HR Payroll OMBP
+
+#### Which tool provides Benefits Administrators with visibility, oversight, and control over benefits administration?
+
+* Journeys
+* **Benefits Service Centre**
+* Reports and Analytics
+* Manage Employment
+
+#### Which step of the Benefits to Coverage process provides employees with a modern and personalized benefits journey?
+
+* Seamless Payroll Processing
+* Communicate Benefits
+* Non-disruptive Query and Error Resolution
+* **Guided enrollment**
+
+#### Real-time access to Workforce Insights does not offer trending analysis
+
+* **FALSE**
+* TRUE
+
+#### The Benefits to Coverage OMBP does not include process steps for benefits administration
+
+* TRUE
+* **FALSE**
+
+#### Action plans and workflows should be designed to ensure compliance, enhance efficiency, and provide seamless progression of HR cases
+
+* FALSE
+* **TRUE**
+
+#### Digital assistance and Knowledge are recommended to receive immediate help
+
+* FALSE
+* **TRUE**
+
+#### After an HR Helpdesk ticket is created, employees have no visibility into the issue until Support reaches out to them
+
+* **FALSE**
+* TRUE
+
+#### The Workforce Plan to Budget OMBP is recommended for HR use only
+
+* TRUE
+* **FALSE**
+
+#### Which step of the Workforce Plan to Budget process provides business leaders with the hiring status of a position?
+
+* **Manage Positions**
+* Optimize Workforce
+* Manage Budgeting
+* Analyze Trends
+
+## Introduction to Workforce Management (Oracle Fusion Applications Foundation: HCM)
