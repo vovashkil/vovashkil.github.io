@@ -5,6 +5,7 @@
 ## Cloud
 
 ### Six benefits of cloud computing
+
 * <b>Trade fixed expense for variable expense</b> – Instead of having to invest heavily in data centers and servers before you know how you’re going to use them, you can pay only when you consume computing resources, and pay only for how much you consume.
 * <b>Benefit from massive economies of scale</b> – By using cloud computing, you can achieve a lower variable cost than you can get on your own. Because usage from hundreds of thousands of customers is aggregated in the cloud, providers such as AWS can achieve higher economies of scale, which translates into lower pay as-you-go prices.
 * <b>Stop guessing capacity</b> – Eliminate guessing on your infrastructure capacity needs. When you make a capacity decision prior to deploying an application, you often end up either sitting on expensive idle resources or dealing with limited capacity. With cloud computing, these problems go away. You can access as much or as little capacity as you need, and scale up and down as required with only a few minutes’ notice.
@@ -31,14 +32,14 @@
 * Payroll
 
 * Employee Experience (Oracle ME)
- * HCM Communicate
- * Touchpoints
- * Journeys
- * Connections
- * HR Help Desk
- * Digital Assistant
- * Grow
- * Celebrate
+* HCM Communicate
+* Touchpoints
+* Journeys
+* Connections
+* HR Help Desk
+* Digital Assistant
+* Grow
+* Celebrate
 
 ### Oracle Modern Best Practice (OMBP)
 
@@ -49,17 +50,20 @@
 #### The OMBP Journey
 
 1. Exhaustive Analysis
- * Thousands of implementations
- * Processes analyzed
+
+* Thousands of implementations
+* Processes analyzed
+
 2. Expert Review
- * Successful processes reviewed & optimized
+
+* Successful processes reviewed & optimized
 
 #### OMBP
 
- * Educate stakeholders
- * Demonstrate business processes
- * Plan an adoption path
- * Structure implementation scope
+* Educate stakeholders
+* Demonstrate business processes
+* Plan an adoption path
+* Structure implementation scope
 
 #### OMBP Summary
 
@@ -178,33 +182,33 @@ Example - customer satisfaction level 90%
 ### Key Design Considerations
 
 * Engage Employees with Targeted Campaigns
- * Targeted Campaigns
+* Targeted Campaigns
 * Provide Contextual Guidance
- * Create Journeys
-  * Guided Learning
-  * Embedded Videos
-  * Links
+* Create Journeys
+* Guided Learning
+* Embedded Videos
+* Links
 * Embed Tools to Empower Employees to Take Action
- * Decide on tools for engagement
+* Decide on tools for engagement
 * Create Consistent Experience Across Multiple Solutions
- * Integrate Other Oracle Fusion Cloud Solutions
+* Integrate Other Oracle Fusion Cloud Solutions
 * Enable Employees to Enlarge Their Network
- * Oracle ME (My Experience)
-  * Profile Setup
-  * Connections
+* Oracle ME (My Experience)
+* Profile Setup
+* Connections
 * Create a Culture of Inclusion and Celebration of Values
- * Setup Oracle Celebrations
+* Setup Oracle Celebrations
 * Create Transparency and Track Outcomes
- * View KPIs
-  * accountability
-  * recognition
+* View KPIs
+* accountability
+* recognition
 
 ### Key Metrics
 
 * Headcount by Sentiment
- * Provides the percentage by headcount of employee sentiments [Negative, Neutral, Positive]felt in the organization
+* Provides the percentage by headcount of employee sentiments [Negative, Neutral, Positive]felt in the organization
 * \# Journeys Completed and Safety Incidents
- * Provides details of the annual number of journeys completed compared to safety incidents
+* Provides details of the annual number of journeys completed compared to safety incidents
 
 ### Key Takeaways
 
@@ -335,14 +339,14 @@ Example - customer satisfaction level 90%
 ### Oracle Fusion Cloud HR and Payroll OMBP
 
 * Benefits to Coverage [Benefits module]
- * Support benefits enrollment process
- * Use innovative tools to guide employees and provide insights
+* Support benefits enrollment process
+* Use innovative tools to guide employees and provide insights
 * Workforce Issue to Resolution [HR HelpDesk module]
- * Help address HR challenges and employee concerns
- * Streamline operations to create a productive workforce
+* Help address HR challenges and employee concerns
+* Streamline operations to create a productive workforce
 * Workforce Plan to Budget [Various HCM modules]
- * Integrate strategy with headcount budget management
- * Boost efficiency, agility, and control
+* Integrate strategy with headcount budget management
+* Boost efficiency, agility, and control
 
 ### Oracle Fusion Cloud HR and Payroll OMBP summary
 
@@ -364,31 +368,44 @@ Example - customer satisfaction level 90%
 ### Key Design Considerations: Benefits to Coverage
 
 1. Communicate Benefits
- * Set HCM Communicate
-  * Relevant Information
-  * Embedded links
+
+* Set HCM Communicate
+* Relevant Information
+* Embedded links
+
 2. Automated Processing
- * Reduces double data entry
-  * Contact - integrated with Core HR
-  * Dependent information - Integrated with Core HR
+
+* Reduces double data entry
+* Contact - integrated with Core HR
+* Dependent information - Integrated with Core HR
+
 3. Guided enrollment
- * Guided Journeys
-  * Step-by-Step Guide - Informed decision-making
-  * Embedded Resources - Informed decision-making
- * Employee Satisfaction
- * Engagement
- * Reduce the confusion and stress
+
+* Guided Journeys
+* Step-by-Step Guide - Informed decision-making
+* Embedded Resources - Informed decision-making
+* Employee Satisfaction
+* Engagement
+* Reduce the confusion and stress
+
 4. Proactive Exception Identification
- * Set Action Items
+
+* Set Action Items
+
 5. Non-Disruptive Query and Error Resolution
- * Centralized platform
- * Real-time data
-  * Resolve enrolment transactions
-  * Reducing issues and administrative costs
+
+* Centralized platform
+* Real-time data
+* Resolve enrolment transactions
+* Reducing issues and administrative costs
+
 6. Communication with Vendors - Configured in Benefits Administration -> Plan Configuration area
- * Set Plan Carrier
+
+* Set Plan Carrier
+
 7. Seamless Payroll Processing - Configured in Benefits Administration -> Plan Configuration area
- * Set Payroll Element
+
+* Set Payroll Element
 
 ### Benefits to Coverage: Key Metrics
 
@@ -464,3 +481,188 @@ Benefits Enrollment Dashboard / Post Open Enrollment Summary
 * Analyze Trends
 
 ## Introduction to Workforce Management (Oracle Fusion Applications Foundation: HCM)
+
+### Workforce Management: Modules
+
+* Time and Labor
+* Absence
+* Health and Safety
+
+### Data and Design Flow
+
+Core HR -> Workforce Management -> Payroll
+
+### Workforce Management and Rewards OMBP
+
+* Absence Tracking to Compliant Absence Management
+* Workforce Schedule to Payment
+* Recognition to Reward - Compensation Module
+
+### Skills Check: Foundations Workforce Management OMBP
+
+#### Who edits time entries in the Time Compliance and Splits step of the Workforce Schedule to Payment process?
+
+* Line Manager
+* Payroll Clerk
+* Time and Labor Administrator
+* **Employee**
+
+#### Who approves leave requests in the Absence Planning and approval step of the Absence Policy to Compliance process?
+
+* **Line Manager**
+* Employee
+* HR Specialist
+* It is auto-approved
+
+#### Who submits the flow to transfer time cards to payroll in the Transfer Time to Payroll or Project step of the Workforce Schedule to Payment process?
+
+* Payroll Clerk
+* **Time and Labor Specialist**
+* Line Manager
+* Payroll Manager
+
+#### Managers are limited to one plan per workforce compensation planning cycle
+
+* TRUE
+* **FALSE**
+
+#### Performance ratings can be viewed in the Workforce Compensation Planning tool
+
+* FALSE
+* **TRUE**
+
+#### A line manager can create a shift in the Teams Schedule view
+
+* **TRUE**
+* FALSE
+
+#### Which step in the Absence Policy to Compliance process uses analytics for trends and compliance?
+
+* Absence Assistance
+* **Understand Absence Trends/Compliance**
+* Absence Planning and Approval
+* Accounting for Absence
+
+#### Oracle payslips can be retrieved by using Oracle Digital Assistant (ODA)
+
+* FALSE
+* **TRUE**
+
+#### An absence Request can be created by using Oracle Digital Assistant (ODA)
+
+* FALSE
+* **TRUE**
+
+## Introduction: Oracle Cloud Success Navigator
+
+Essential Platform to Deploy and Manage Oracle Cloud Solutions
+
+### Oracle Cloud Applications
+
+* HCM
+* ERP
+* SCM
+* CX
+
+## Oracle Cloud Implementation
+
+* Specific Methodology
+* Set of Tools
+* Best Practices
+* Structured Approach
+
+### Objectives
+
+* Introduce Oracle Cloud Success Navigator
+* Explain the key capabilities of Success Navigator
+ * Cloud Journey
+ * Starter Configuration
+ * Milestones & Cloud Quality Standards
+ * Capability which supports with Continuous Innovation
+
+### Oracle Cloud Success Navigator
+
+* Interactive digital platform
+* Clear cloud transformation roadmap
+* Starter Environments
+* Guidance for implementation
+* Key milestone tracking
+* AI Assistance
+* Quarterly Release Insights
+* Oracle Modern Best Practices
+* Guidance for continuous innovation
+
+#### Supporting all stages of your Oracle Cloud Journey
+
+* New customers
+ * framework with criteria for success
+ * milestones and checklists
+* Existing customers
+ * contextually relevant insights
+ * preview environments
+ * innovate and optimize with AI
+* Implementation partners
+ * collaborate for customer
+ * transparency to all stakeholders
+
+#### Key capabilities
+
+* Cloud Journey
+ * prescriptive leading practices and actionable guidance
+* Starter Configuration
+ * end-to-end business flows
+ * in customers's Test environment
+ * comprehensive learning content
+* Milestones and Cloud Quality Standards
+ * evaluate implementation
+* Continuous Innovation
+ * release updates
+
+#### Cloud Journey
+
+Use a shared view of stages and activities.
+
+* Mobilize
+* Prototype
+* Validate
+* Deploy
+* Evolve
+
+Incorporate key milestones and success criteria.
+
+Evaluate progress.
+
+#### Starter Configuration
+
+* Request a Starter Configuration
+* Evaluate Oracle Modern Best Practices
+* Educate your organization
+
+#### Milestones and Cloud Quality Standards
+
+* Incorporate key milestones and activities
+* Ensure transparency and alignment
+* Use built-in assessments
+
+#### Continuous Innovation
+
+* Find, prioritize, and get familiar with new and existing features all in one place
+* Experience new features hands-on in a preview environment
+
+#### Define your Roadmap
+
+Prioritize and plan to deploy the features that matter most to you
+
+#### Theme-based Adoption Center
+
+* Explore new theme-based Adoption Centers
+* Understand your innovation opportunities
+
+#### Summary
+
+* Purpose of Oracle Cloud Success Navigator
+* Key capabilities of Oracle Cloud Success Navigator
+ * Cloud Journey
+ * Starter Configuration
+ * Milestones & Cloud Quality Standards
+ * Continuous Innovation
