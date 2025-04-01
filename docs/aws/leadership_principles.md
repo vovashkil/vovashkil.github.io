@@ -2,7 +2,7 @@
 
 * back to repo's main [README.md](../../README.md)
 * back to [Cloud related cheatsheet](../cloud/cloud.md)
-* back to [AWS Cloud](./aws-cloud.md)
+* back to [AWS Cloud](../cloud/aws.md)
 
 ## Customer Obsession
 
