@@ -1,11 +1,21 @@
-### What is DevOps?
+# DevOps
+
+* back to repo's main [README.md](../../README.md)
+* back to [Cloud related cheatsheet](../cloud/cloud.md)
+* back to [AWS Cloud](../aws/aws-cloud.md)
+
+## What is DevOps?
+
 DevOps is a combination of:
+
 * Cultural philosophies for removing barriers and sharing end-to-end responsibility
 * Processes developed for speed and quality, that streamline the way people work
 * Tools that align with processes and automate repeatable tasks, making the release process more efficient and the application more reliable
 
-#### DevOps culture
+### DevOps culture
+
 Core principles to achieve a DevOps culture:
+
 * Create a highly collaborative environment
 * Automate when possible
 * Focus on customer needs
@@ -14,7 +24,8 @@ Core principles to achieve a DevOps culture:
 * Continuously experiment and learn
 * Continuously improve
 
-#### DevOps Practices
+### DevOps Practices
+
 * Communication and collaboration
 * Monitoring and observability
 * Continuous integration (CI)
@@ -22,8 +33,10 @@ Core principles to achieve a DevOps culture:
 * Microservices architecture
 * Infrastructure as code
 
-#### DevOps Tools
+### DevOps Tools
+
 Categories:
+
 * Cloud
 * Development
 * CI/CD

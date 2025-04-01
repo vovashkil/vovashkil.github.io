@@ -2,10 +2,11 @@
 
 * back to repo's main [README.md](../../README.md)
 * back to [Cloud related cheatsheet](../cloud/cloud.md)
+* back to [AWS Cloud](./aws-cloud.md)
 
 ## [AWS Leadership Principles](./leadership_principles.md)
 
-### Cloud Environment
+## Cloud Environment
 
 In every cloud environment there're things that need to be managed. They are:
 
@@ -15,11 +16,11 @@ In every cloud environment there're things that need to be managed. They are:
 * Scalability
 * Cost
 
-### AWS Well-Architected Framework
+## AWS Well-Architected Framework
 
-### The 6 Pillars of the AWS Well-Architected Framework
+## The 6 Pillars of the AWS Well-Architected Framework
 
-1\. Operational Excellence
+### 1\. Operational Excellence
 
 #### Design Principles
 
@@ -35,7 +36,7 @@ Operations teams need to understand their business and customer needs so they ca
 
 Everything continues to change—your business context, business priorities, and customer needs. It’s important to design operations to support evolution over time in response to change, and to incorporate lessons learned through their performance.
 
-2\. Security
+### 2\. Security
 
 #### Design Principles
 
@@ -55,7 +56,7 @@ You should have a well-defined and practiced process for responding to security 
 
 The AWS Shared Responsibility Model enables organizations that adopt the cloud to achieve their security and compliance goals. Because AWS physically secures the infrastructure that supports our cloud services, as an AWS customer you can focus on using services to accomplish your goals. The AWS Cloud also provides greater access to security data and an automated approach to responding to security events.
 
-3\. Reliability
+### 3\. Reliability
 
 #### Design Principles
 
@@ -76,7 +77,7 @@ Changes to your workload or its environment must be anticipated and accommodated
 
 Low-level hardware component failures are something to be dealt with every day in an on-premises data center. In the cloud, however, these are often abstracted away. Regardless of your cloud provider, there is the potential for failures to impact your workload. You must therefore take steps to implement resiliency in your workload, such as fault isolation, automated failover to healthy resources, and a disaster recovery strategy.
 
-4\. Performance Efficiency
+### 4\. Performance Efficiency
 
 #### Design Principles
 
@@ -94,7 +95,7 @@ Reviewing your choices on a regular basis ensures you are taking advantage of th
 
 The optimal solution for a particular workload varies, and solutions often combine multiple approaches. AWS Well-Architected workloads use multiple solutions and enable different features to improve performance
 
-5\. Cost Optimization
+### 5\. Cost Optimization
 
 #### Design Principles
 
@@ -112,7 +113,7 @@ Design decisions are sometimes directed by haste rather than data, and as the te
 
 Using the appropriate services, resources, and configurations for your workloads is key to cost savings
 
-6\. Sustainability
+### 6\. Sustainability
 
 #### Design Principles
 
@@ -137,7 +138,7 @@ Analyze hardware patterns to identify opportunities that reduce workload sustain
 
 In your development and deployment process, identify opportunities to reduce your sustainability impact by making changes, such as updating systems to gain performance efficiencies and manage sustainability impacts. Use automation to manage the lifecycle of your development and test environments, and use managed device farms for testing.
 
-### AWS Well-Architected Tool
+## AWS Well-Architected Tool
 
 It allows to build infrastructures that are:
 

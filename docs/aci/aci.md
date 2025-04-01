@@ -1,6 +1,8 @@
 # AWS Cloud Institute
 
 * back to repo's main [README.md](../../README.md)
+* back to [Cloud related cheatsheet](../cloud/cloud.md)
+* back to [AWS Cloud](../aws/aws-cloud.md)
 
 ## [AWS Business Foundations](./100-aws-business-foundations/aws-business-foundations.md)
 
