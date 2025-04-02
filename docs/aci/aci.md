@@ -2,7 +2,7 @@
 
 * back to repo's main [README.md](../../README.md)
 * back to [Cloud related cheatsheet](../cloud/cloud.md)
-* back to [AWS Cloud](../aws/aws-cloud.md)
+* back to [AWS Cloud](../cloud/aws.md)
 
 ## [AWS Business Foundations](./100-aws-business-foundations/aws-business-foundations.md)
 
