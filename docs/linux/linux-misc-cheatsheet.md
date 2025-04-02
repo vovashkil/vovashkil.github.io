@@ -84,20 +84,20 @@ apt --fix-broken install
 
 #### On Debian 10 / Debian 9 (this doesn't work in Debian 11(bullseye))
 
-1. Apply the change to /etc/default/grub
+1\. Apply the change to /etc/default/grub
 
 ```bash
 GRUB_CMDLINE_LINUX="" -> GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"
 ```
 
-2. Update grub
+2\. Update grub
 
 ```bash
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-3. change interfaces name to eth0, eth1, ... in /etc/network/interfaces, /etc/network/interfaced.d/*
-4. Reboot
+3\. change interfaces name to eth0, eth1, ... in /etc/network/interfaces, /etc/network/interfaced.d/*
+4\. Reboot
 
 ```bash
 reboot
@@ -105,7 +105,7 @@ reboot
 
 #### On Debian 12
 
-1. Create corresponding files under `/etc/systemd/network/`
+1\. Create corresponding files under `/etc/systemd/network/`
 
 ```bash
 $ cat /etc/systemd/network/10-eth0.link
