@@ -7,5 +7,5 @@
 
 * **HCM** [Human Capital Management](../oracle/hcm.md)
 * **ERP** Enterprise Resource Planning
-* **SCM** Supply Chain and Manufacturing
+* **SCM** [Supply Chain and Manufacturing](../oracle/scm.md)
 * **CX** Customer Experience
