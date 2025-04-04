@@ -189,3 +189,65 @@
 * It ensures seamless integration and real-time data synchronization across the SCM modules.
 
 ### OMBPs within Supply Chan Management
+
+## Innovation: Design to Release
+
+### What is Oracle Innovation Management?
+
+#### Product Lifecycle Management
+
+* Innovation Management
+* Product Development
+* Product Information Management
+
+INNOVATE -> DEVELOP -> COMMERCIALIZE
+
+### Primary Solutions in Innovation Management
+
+* Ideation Management: Capture, collect, and manage ideas
+* Product Requirements: Define, manage, and track requirements
+* Product Concept Design: Generate, analyze, and approve concepts
+* Proposal Management: Generate, analyze, and approve proposals
+
+### OMBP Design to Release: Process Steps
+
+* Review Product Design
+* Develop Product
+* Collaborate with Suppliers
+* Establish Product Costs
+* Evaluate Readiness
+* Release to Production
+
+### Design to Release: Key Metrics
+
+* Material cost
+* Resource cost
+* Overhead cost
+
+### Design to Release: Key Takeaways
+
+* Use the Ideation dashboard to effectively review and analyze ideas
+* Communicate securely with internal and external stakeholders
+* Navigate seamlessly between Innovation Management and Product Development Cloud
+* Determine product release effectively by using Product Design dashboards
+* Ensure a controlled product release through the data governance process
+
+### Skill Check: Innovation Design to Release OMBP
+
+#### How can suppliers suggest existing product updates to product managers?
+
+* Using the Ideation dashboard
+* Using the Product Development work area
+* **Using the Supplier portal**
+
+#### Which two are primary solutions in Oracle Innovation Management?
+
+* **Proposal Management**
+* Invoice Management
+* Order Management
+* **Ideation Management**
+
+#### Resource cost refers to ongoing business expenses, sucj as rent and utilities, that a company incurs to maintain its operations
+
+* True
+* **False** [The answer: Overhead cost]
