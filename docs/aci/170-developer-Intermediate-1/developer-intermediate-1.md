@@ -19,6 +19,8 @@ You must achieve a passing score of 85% or higher on all weekly assessments to p
 
 In this 11-week course, you can expect to spend approximately 8 hours each week on e-learning, including hands-on labs and assessments. You also have many opportunities to attend ILT sessions each week, which are available live or on-demand. Although ILT attendance is not required for course completion, each session is an opportunity to connect with and learn from your AWS instructor and other learners.
 
+## [Slack Canvas Information - Development Intermediate 1](./canvas.md)
+
 ## [Capstone Project: Building a Customer Onboarding Application](./W000CapstoneCustomerOnboardingApplication.md)
 
 ## Schedule
