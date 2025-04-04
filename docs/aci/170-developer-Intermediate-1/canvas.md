@@ -9,7 +9,7 @@
 Instructor(s) Information
 
 Fernando Teixeira
-teiferna@amazon.com
+<teiferna@amazon.com>
 
 ## Additional Resources, Links, Diagrams, Examples
 

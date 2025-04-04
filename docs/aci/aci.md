@@ -16,6 +16,8 @@
 
 ## [Developer Intermediate 1: Python 3](./170-developer-Intermediate-1/developer-intermediate-1.md)
 
+## [Level Up Developer Intermediate 1](./175-level-up-developer-Intermediate-1/level-up-developer-intermediate-1.md)
+
 ## [AWS Cloud Operations 1](./180-aws-cloud-operations-1/aws-cloud-operations-1.md)
 
 ## [AWS Cloud Operations 2](./185-aws-cloud-operations-2/aws-cloud-operations-2.md)
