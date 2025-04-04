@@ -1,0 +1,34 @@
+@startuml
+
+class SuperClass {
+}
+
+class Subclass extends SuperClass {
++ public_attribute
+--
+- _private_attribute
+--
++ public_method(<args>)
+--
+- _private_method(<args>)
+}
+
+class Class2 {
++ public_attribute_2
+--
+- _private_attribute_2
+--
++ public_method_2(<args>)
+--
+- _private_method_2(<args>)
+}
+
+enum Enum1 {
+VALUE_1
+VALUE_2
+VALUE_3
+}
+
+Subclass *-- Class2 : contains
+
+@enduml

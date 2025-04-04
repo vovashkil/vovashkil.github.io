@@ -1,0 +1,32 @@
+@startuml
+
+actor user
+participant component1
+participant component2
+database "database" as db
+
+autonumber
+
+user -> component1: request1
+activate component1
+
+  loop loop description
+    component1 -> component2: request2
+    activate component2
+      component2 -> db: request3
+      activate db
+        component2 <-- db: response3
+      deactivate db
+      component2 -> component2: self action
+      component1 <-- component2: response2
+    deactivate component2
+  end loop1
+
+  alt case1
+    user <-- component1: error response
+  else case2
+   user <-- component1: response1
+  end
+deactivate component1
+
+@enduml

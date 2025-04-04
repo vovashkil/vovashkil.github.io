@@ -65,50 +65,174 @@
 | -------------------- | --------------------------- |
 | 0 - Initial Document | [Design Document.docx](./canvas_files/Design%20Document_v00.docx) |
 | 1 - Business Requirements | [Design Document.docx](./canvas_files/Design%20Document_v01.docx) |
-| 2 - Functional Requirements | Design Document.docx |
-| 3 - Frontend Design | Design Document.docx |
-| 4 - API Design | Design Document.docx |
-| 5 - Service Design I | Design Document.docx |
-| 6 - Service Design II | Design Document.docx |
-| 7 - Database Table Design | Design Document.docx |
-| 8 - Database Query Design | Design Document.docx |
-| 9 - Architecture Design | Requirements.docx Design Document.docx |
-| 10 - Technology Decisions | Design Document.docx |
-| 11 - Project Tracking | Design Document.docx |
+| 2 - Functional Requirements | [Design Document.docx](./canvas_files/Design%20Document_v02.docx) |
+| 3 - Frontend Design | [Design Document.docx](./canvas_files/Design%20Document_v03.docx) |
+| 4 - API Design | [Design Document.docx](./canvas_files/Design%20Document_v04.docx) |
+| 5 - Service Design I | [Design Document.docx](./canvas_files/Design%20Document_v05.docx) |
+| 6 - Service Design II | [Design Document.docx](./canvas_files/Design%20Document_v06.docx) |
+| 7 - Database Table Design | [Design Document.docx](./canvas_files/Design%20Document_v07.docx) |
+| 8 - Database Query Design | [Design Document.docx](./canvas_files/Design%20Document_v08.docx) |
+| 9 - Architecture Design | [Requirements.docx](./canvas_files/Requirements.docx) [Design Document.docx](./canvas_files/Design%20Document_v09.docx) |
+| 10 - Technology Decisions | [Design Document.docx](./canvas_files/Design%20Document_v10.docx) |
+| 11 - Project Tracking | [Design Document.docx](./canvas_files/Design%20Document_v11.docx) |
 
 ## Diagram Sources
 
 ### Architecture Diagram
 
-NDS_Arch.drawio
+[NDS_Arch.drawio](./canvas_files/NDS_Arch.drawio)
 
 ### Diagramming Tools
 
-Title
-	Link
+| Title | Link |
+| ----- | ---- |
+| draw.io | [https://app.diagrams.net/](https://app.diagrams.net/) |
+| PlantUML | [plantuml.com](http://plantuml.com/) |
 
-draw.io
-	https://app.diagrams.net/
+#### [PlantUML Reference Guide](./canvas_files/PlantUML_Language_Reference_Guide_en.pdf)
 
-PlantUML
-	plantuml.com
+#### PlantUML Diagram Templates
+
+##### [Class Diagram](./canvas_files/class_diagram.puml)
+
+```uml
+@startuml
+
+class SuperClass {
+}
+
+class Subclass extends SuperClass {
++ public_attribute
+--
+- _private_attribute
+--
++ public_method(<args>)
+--
+- _private_method(<args>)
+}
+
+class Class2 {
++ public_attribute_2
+--
+- _private_attribute_2
+--
++ public_method_2(<args>)
+--
+- _private_method_2(<args>)
+}
+
+enum Enum1 {
+VALUE_1
+VALUE_2
+VALUE_3
+}
+
+Subclass *-- Class2 : contains
+
+@enduml
+```
+
+##### [Sequence Diagram](./canvas_files/sequence_diagram.puml)
+
+```uml
+@startuml
+
+actor user
+participant component1
+participant component2
+database "database" as db
+
+autonumber
+
+user -> component1: request1
+activate component1
+
+  loop loop description
+    component1 -> component2: request2
+    activate component2
+      component2 -> db: request3
+      activate db
+        component2 <-- db: response3
+      deactivate db
+      component2 -> component2: self action
+      component1 <-- component2: response2
+    deactivate component2
+  end loop1
+
+  alt case1
+    user <-- component1: error response
+  else case2
+   user <-- component1: response1
+  end
+deactivate component1
+
+@enduml
+```
+
+##### [Entity Relationship Diagram (DynamoDB)](./canvas_files/dynamodb_erd.puml)
+
+```uml
+@startuml
 
 
+! $PrimaryHashKeyIcon = "<color:red><&key></color>"
+! $PrimaryRangeKeyIcon = "<color:red><&layers></color>"
+! $GSIHashKeyIcon = "<color:darkgreen><&key></color>"
+! $GSIRangeKeyIcon = "<color:darkgreen><&layers></color>"
+! $DefaultType = ""
 
-PlantUML Reference Guide
+hide methods
 
-https://awsdevelopers.slack.com/files/U06PCHHS24T/F0874S7NT7F/plantuml_language_reference_guide_en.pdf
+!unquoted procedure Table($table)
+entity $table << (T,#FF7700) Table >>
+!endprocedure
 
-PlantUML Diagram Templates
+!unquoted procedure PrimaryHashKey($val, $type=$DefaultType)
+Type($val, $type, $PrimaryHashKeyIcon)
+!endprocedure
 
-Class Diagram
+!unquoted procedure PrimaryRangeKey($val, $type=$DefaultType)
+Type($val, $type, $PrimaryRangeKeyIcon)
+!endprocedure
 
-https://awsdevelopers.slack.com/files/U06PCHHS24T/F087A7490R2/class_diagram.puml
+!unquoted procedure GSIHashKey($val, $type=$DefaultType)
+Type($val, $type, $GSIHashKeyIcon)
+!endprocedure
 
-Sequence Diagram
+!unquoted procedure GSIRangeKey($val, $type=$DefaultType)
+Type($val, $type, $GSIRangeKeyIcon)
+!endprocedure
 
-https://awsdevelopers.slack.com/files/U06PCHHS24T/F087A5BQHD2/sequence_diagram.puml
+!unquoted procedure Attribute($val, $type=$DefaultType)
+Type($val, $type)
+!endprocedure
 
-Entity Relationship Diagram (DynamoDB)
+!unquoted procedure Type($val, $type=$DefaultType, $icon="")
+!if ($type=="")
++$icon $val
+!else
++$icon $val : $type
+!endif
+!endprocedure
 
-https://awsdevelopers.slack.com/files/U06PCHHS24T/F0877F4E4UB/dynamodb_erd.puml
+Table(MyTable) {
+    PrimaryHashKey(primaryHashKey, String)
+    PrimaryRangeKey(primaryRangeKey, String)
+
+    <GSI Name>: GSI
+    GSIHashKey(gsiHashKey, String)
+    GSIRangeKey(gsiRangeKey, String)
+
+    Attributes:
+    Attribute(attribue, String)
+}
+
+legend top right
+|= Icon |= Type |
+|  $PrimaryHashKeyIcon | Primary Hash Key |
+|  $PrimaryRangeKeyIcon | Primary Range Key |
+|  $GSIHashKeyIcon | GSI Hash Key |
+|  $GSIRangeKeyIcon | GSI Range Key |
+end legend
+@enduml
+```

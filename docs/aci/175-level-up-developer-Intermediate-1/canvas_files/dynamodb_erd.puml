@@ -1,0 +1,63 @@
+@startuml
+
+
+! $PrimaryHashKeyIcon = "<color:red><&key></color>"
+! $PrimaryRangeKeyIcon = "<color:red><&layers></color>"
+! $GSIHashKeyIcon = "<color:darkgreen><&key></color>"
+! $GSIRangeKeyIcon = "<color:darkgreen><&layers></color>"
+! $DefaultType = ""
+
+hide methods
+
+!unquoted procedure Table($table)
+entity $table << (T,#FF7700) Table >>
+!endprocedure
+
+!unquoted procedure PrimaryHashKey($val, $type=$DefaultType)
+Type($val, $type, $PrimaryHashKeyIcon)
+!endprocedure
+
+!unquoted procedure PrimaryRangeKey($val, $type=$DefaultType)
+Type($val, $type, $PrimaryRangeKeyIcon)
+!endprocedure
+
+!unquoted procedure GSIHashKey($val, $type=$DefaultType)
+Type($val, $type, $GSIHashKeyIcon)
+!endprocedure
+
+!unquoted procedure GSIRangeKey($val, $type=$DefaultType)
+Type($val, $type, $GSIRangeKeyIcon)
+!endprocedure
+
+!unquoted procedure Attribute($val, $type=$DefaultType)
+Type($val, $type)
+!endprocedure
+
+!unquoted procedure Type($val, $type=$DefaultType, $icon="")
+!if ($type=="")
++$icon $val
+!else
++$icon $val : $type
+!endif
+!endprocedure
+
+Table(MyTable) {
+    PrimaryHashKey(primaryHashKey, String)
+    PrimaryRangeKey(primaryRangeKey, String)
+
+    <GSI Name>: GSI
+    GSIHashKey(gsiHashKey, String)
+    GSIRangeKey(gsiRangeKey, String)
+
+    Attributes:
+    Attribute(attribue, String)
+}
+
+legend top right
+|= Icon |= Type |
+|  $PrimaryHashKeyIcon | Primary Hash Key |
+|  $PrimaryRangeKeyIcon | Primary Range Key |
+|  $GSIHashKeyIcon | GSI Hash Key |
+|  $GSIRangeKeyIcon | GSI Range Key |
+end legend
+@enduml
