@@ -251,3 +251,68 @@ INNOVATE -> DEVELOP -> COMMERCIALIZE
 
 * True
 * **False** [The answer: Overhead cost]
+
+## Supply Chain Planning OMBP
+
+* Integrated Business Plan to Execution
+* Demand to Management
+* Demand Forecast to Supply Plan
+
+### Integrated Business Plan to Execution
+
+### Demand to Management
+
+### Demand Forecast to Supply Plan
+
+### Skill Check: Supply Chain Planning
+
+#### Which process step in the Demand Forecast to Supply Plan OMBP involved actions such as expediting open orders and adding capacity?
+
+* Align Financial Goals
+* Shape Demand
+* Release Orders
+* **Address Supply Issues**
+
+#### Which applications belong to the Supply Chain Planning suite?
+
+* **Sales and Operations Planning, Demand Management, and Supply Planning**
+* Rapid Planning, Service Plan Planning, and Inventory Optimization
+* Inventory Management, Product Information Management, and Order Management
+* Sales Planning, Inventory Planning, and Distribution Planning
+
+#### What is a commonly used measurement of forecast error in Oracle Cloud Demand Management?
+
+* Tracking Signal
+* Fulfillment Percentage
+* Root Mean Squared Error
+* **MAPE**
+
+#### The Supply Chain Planning suite is a backward-looking set of applications focused on cataloging historical performance
+
+* True
+* **False**
+
+#### Which Oracle Modern Best Practice focuses on managing planning cycles for a longer planning horizon?
+
+* Insight to Sourcing
+* Replenishment Plan to Purchase Aggregation
+* Demand Forecast to Supply Chain
+* **Integrated Business Plan to Execution**
+
+## Procurement OMBP
+
+* Supplier Registration to Spend Compliance
+* Insight to Sourcing
+* Contract Creation to Procurement Compliance
+* Requisition to Payment
+* Supplier Invoice to Payment
+
+### Supplier Registration to Spend Compliance
+
+### Insight to Sourcing
+
+### Contract Creation to Procurement Compliance
+
+### Requisition to Payment
+
+### Supplier Invoice to Payment
