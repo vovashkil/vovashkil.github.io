@@ -15,4 +15,4 @@
 
 ## Schedule
 
-* Week 1: []()
+* Week 1: [DevOps 2: Review of Continuous Integration and Continuous Delivery](./W010DevOps2CICD.md)
