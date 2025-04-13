@@ -213,8 +213,136 @@ By adopting CI/CD best practices, organizations can reduce manual errors, improv
 8. Provide and receive feedback
     Establish a culture of continuous improvement by providing constructive feedback on the CI/CD pipeline and development practices. Actively soliciting feedback from team members and stakeholders to identify areas for optimization and enhancement.
 
-## [AWS SimuLearn Challenge: CI/CD Pipelines for APIs]()
+## [AWS SimuLearn Challenge: CI/CD Pipelines for APIs](./labs/W010Lab1CiCdPipelinesForApi.md)
 
 In this lab, you have been assigned the vital task of repairing and finalizing the CI/CD pipeline for the company’s APIs. While the core architecture is already in place, some key configurations are missing. Your goal is to complete the required tests and make sure the pipeline is fully operational. When your task is successfully completed, the Task Manager application will be fully functional, so employees can create and manage tasks efficiently.
 
 This challenge is a timed challenge. It begins with Step 1 where you encounter a scripted dialog to give you context. Step 2 you are provided details on the task and you must solve the challenge. The timer starts at this moment. Step 3, work through the problem and complete all challenges before the timer expires. You may retry this challenge unlimited times.
+
+### Knowledge Check
+
+#### What is the primary goal of continuous integration (CI)?
+
+* Automate the build and testing process
+
+Wrong answers:
+
+* Automate the deployment process
+* Improve collaboration between development and operations teams
+* Reduce the time between code changes and deployment
+
+#### Explanation
+
+The primary goal of continuous integration (CI) is to automate the build and testing process, ensuring that code changes are regularly integrated and validated. This reduces the risk of integration issues and improves the overall quality of the code base.
+
+The other options are incorrect because of the following reasons:
+
+* Automating the deployment process is incorrect because CI is focused on automating the build and testing phases of the software development lifecycle, not the deployment to production environments. Deployment automation is typically handled by separate practices, like continuous delivery (CD) or DevOps pipelines.
+* Improving collaboration between development and operations teams is incorrect. Although CI can facilitate better collaboration by providing a shared codeline and automated feedback loops, its primary goal is focused on the integration of code changes through automated builds and tests.
+* Reducing the time between code changes and deployment is incorrect as the primary goal. Although CI helps to reduce cycle times by catching issues earlier in an automated fashion, the main purpose is to consistently integrate and validate code changes through automated builds and tests, not specifically to reduce deployment times.
+
+#### What is the approach used in continuous integration and continuous delivery (CI/CD) to fully automate the building, testing, and deployment of an application without manual intervention?
+
+* Continuous deployment (CD)
+
+Wrong answers:
+
+* Continuous integration (CI)
+* Continuous testing (CT)
+* Continuous delivery (CD)
+
+##### Explanation
+
+Continuous deployment is a software development approach in which code is regularly built, tested, and released to production in a fully automated process. Manual intervention or approval is not required in continuous deployment. Many organizations use continuous deployment to optimize their processes for releasing software updates and applications.
+
+The other options are incorrect because of the following reasons:
+
+* Continuous integration (CI) is incorrect because CI focuses on frequent integrations of code changes into a central repository. It does not cover the deployment aspect mentioned in the question.
+* Continuous testing (CT) is incorrect because CT refers to the process of running automated tests throughout the software development lifecycle. It does not include the deployment aspect stated in the question.
+* Continuous delivery (CD) is incorrect. Although continuous delivery automatically prepares code changes for release to production, including building, testing, and releasing the updated application to a staging environment, manual approval is required before changes are pushed to production.
+
+#### What is the main purpose of the continuous deployment stage in a continuous integration and continuous delivery (CI/CD) pipeline?
+
+* Deploy the application to production
+
+Wrong answers:
+
+* Automate the testing process
+* Merge code changes into the main branch
+* Monitor the application in production
+
+##### Explanation
+
+The main purpose of the continuous deployment stage is to automatically deploy the application to the production environment, without manual intervention.
+
+The other options (automate testing, merge code, and monitor in production) are not primary purposes of this stage.
+
+#### Which statement about continuous integration and continuous delivery (CI/CD) is false?
+
+* Many organizations shy away from CI/CD due to the significant time and effort required to implement it.
+
+Wrong answers:
+
+* CI/CD pipelines allow for continuous delivery (CD).
+* CI/CD pipelines enable development teams to work in parallel on different features.
+* CI/CD is a process that manages everything from code editing to deployment.
+
+##### Explanation
+
+Although it is true that large-scale changes might require some adjustment, the notion that CI/CD is difficult to implement is a misconception. CI/CD pipelines can provide significant benefits, such as faster software delivery, increased efficiency, and improved software quality, with relatively low effort.
+
+The other options are incorrect because of the following reasons:
+
+* CI/CD pipelines enable continuous delivery, which means the ability to automatically build, test, and deploy code changes to production environments safely and quickly.
+* CI/CD pipelines do not inherently enable parallel work on different features. The purpose of CI/CD is to automate the building, testing, and deployment process, not facilitate parallel development. Teams can still work in parallel on features, using techniques like branching, but CI/CD pipelines themselves do not enable this.
+* CI/CD manages the entire software delivery lifecycle from when developers commit code changes until those changes are deployed to production environments.
+
+### Summary
+
+#### Review of DevOps Principles
+
+DevOps is an approach that emphasizes collaboration and communication between software developers and IT professionals so they will be able to work together in delivering services and products faster. The purpose of these principles is to improve the process of building, testing, and releasing software.
+
+* **Continuous Integration (CI)**: Developers regularly merge their code changes into a central repository, where automated builds and tests are run to detect integration issues early.
+* **Continuous Deployment (CD)**: The process of automatically deploying code changes to production environments after successful testing, without manual intervention.
+* **Automation**: Automating repetitive tasks, such as building, testing, and deploying applications, to increase efficiency, reduce errors, and improve consistency.
+* **Monitoring and Observability**: Implementing comprehensive monitoring and observability practices to gain insights into the health and performance of applications and infrastructure, enabling faster issue detection and resolution.
+* **Continuous Feedback**: Actively gathering and incorporating feedback from various stakeholders, such as end-users, operations teams, and management, to continuously improve the software development and delivery process.
+* **Shift-Left**: Shifting quality, security, and compliance checks earlier in the development lifecycle, instead of waiting until the end, to identify and address issues sooner.
+
+#### CI/CD Core Principles
+
+CI/CD stands for Continuous Integration/Continuous Deployment. It is a set of software development practices where code is merged into a shared repository frequently, where it is built, tested, and deployed to a production-like environment.
+
+The core principles of CI/CD include:
+
+* automated testing
+* version control
+* frequent integration
+* continuous deployment
+
+The goal is to reduce the time from making a code change to having it in production, while finding and fixing issues early.
+
+#### Benefits and Challenges of CI/CD
+
+CI/CD (Continuous Integration/Continuous Deployment) is an important lever for modern software delivery, if used right can bring several benefits, but with challenges as well:
+
+| Benefits | Challenges |
+| ------------------------------- | ------------------------------- |
+| 1\. Autonomous teams: It reduces dependency on the DevOps team. As the pipelines became self-serve, the developers can focus on coding. | 1\. Learning curve: Complex pipelines and tooling requires developers and the entire organization to learn new technologies and ways of doing things. |
+| 2\. Faster development: It ensures code quality and speeds up the feedback loop. This makes projects run faster and with more constancy. | 2\. Human error: Despite all the automation, bugs can still appear in configurations, or in post-integration pipelines. |
+| 3\. Cost reduction: It eliminates long deployment times, operational expenses for manually carried out processes, and infrastructure costs. | 3\. Dependency hell: Too many processes, too many tools, and an overwhelming amount of information can happen when having too many build systems and orchestrators, each with its own concepts and syntax. |
+| 4\. Improved scalability: It integrates well with lean and agile methodologies. | 4\. Security risk exposure: Although CI/CD can potentially help to improve security, such as in Secure CI/CD explained on O'Reilly, poorly configure or uncontrolled pipelines can also introduce new vulnerabilities. |
+
+#### Best Practices for CI/CD Pipelines
+
+The following best practices smooth the way for seamless integration of code changes, reliable delivery of new features, and reduced risk when deploying updates:
+
+1. Implement security checks at every stage of the CI/CD pipeline to find vulnerabilities early.
+2. Build artifacts once and reuse them throughout the pipeline for consistency and efficiency.
+3. Facilitate quick feedback to developers when issues occur so they can promptly roll back and fix code.
+4. Commit code daily for early identification of issues while changes are still fresh.
+5. Balance test coverage and performance. Avoid overly long testing cycles.
+6. Clean pre-production environments between deployments to avoid outdated configurations.
+7. Document release and rollback plans for transparency and identifying improvements.
+8. Encourage ongoing feedback from monitoring, testing, and deployment to empower continuous improvements in the evolving CI/CD loop.

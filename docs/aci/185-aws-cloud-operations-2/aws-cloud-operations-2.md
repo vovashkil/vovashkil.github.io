@@ -16,3 +16,5 @@
 ## Schedule
 
 * Week 1: [DevOps 2: Review of Continuous Integration and Continuous Delivery](./W010DevOps2CICD.md)
+
+* Week 1: [DevOps 2: DevOps 2: Automate Testing with Continuous Integration](./W012DevOps2AutomateTesting.md)
