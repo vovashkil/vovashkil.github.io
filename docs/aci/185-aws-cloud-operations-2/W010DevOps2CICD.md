@@ -150,12 +150,19 @@ Using IaC ensures consistency and repeatability in the deployment process.
 It outlines the following steps:
 
 1. Unit Tests
+
     Unit tests are typically carried out first to validate the functionality of individual components within the codebase. CodeBuild runs these tests automatically, ensuring that each unit of code behaves as expected.
+
 2. AWS CodeBulid
+
     After passing the unit tests, the code moves to the build stage where CodeBuild compiles the code, packages it, and prepares it for deployment. This stage ensures that the code is in a deployable state and ready for further testing.
+
 3. Resource Provisioning
+
     Using the infrastructure as code paradigm, CloudFormation provisions the necessary resources for the feature to function properly in the AWS environment. This includes setting up serverless functions, databases, and other infrastructure components required by the notification feature.
+
 4. Integration Tests
+
     With the resources provisioned, the code is deployed to a test environment where integration tests are conducted. These tests verify that the newly implemented feature integrates seamlessly with existing components of the project management platform.
 
 Unit tests are mentioned in different phases of the CI/CD pipeline. This reflects the nuanced role of unit testing in modern DevOps practices. The placement and usage of unit tests can vary based on team practices, tooling, and specific pipeline configurations. This flexible approach allows for faster feedback and more efficient development cycles.
@@ -197,20 +204,35 @@ Continuous Integration and Continuous Deployment (CI/CD) are essential practices
 By adopting CI/CD best practices, organizations can reduce manual errors, improve code quality, and increase deployment frequency. With CI/CD, teams can catch issues early in the development lifecycle and quickly roll out new features and bug fixes. Implementing CI/CD also helps improve collaboration, visibility, and transparency across the entire software development lifecycle.
 
 1. Prioritize Security
+
     Security scans can include code scanning for vulnerabilities, dependency scanning, and automated security testing, to ensure that security is a top priority throughout the development process.
+
 2. Build once and reuse
+
     Use Docker containers or similar technologies to create a consistent build environment, ensuring that builds are reproducible and can be reused across different stages of the pipeline, reducing inconsistencies and improving efficiency.
+
 3. Find the issue early in the process
+
     Integrate automated testing, including unit tests, integration tests, and code quality checks, into the CI/CD pipeline to identify and address issues as early as possible, minimizing the impact on downstream stages and accelerating feedback loops.
+
 4. Commit your code regularly
+
     Encourage developers to commit their code frequently to the version control system, which facilitates continuous integration. This makes it possible for changes to be integrated and tested in small, manageable increments, reducing the likelihood of integration conflicts and improving collaboration.
+
 5. Optimize and streamline the tests
+
     Identify and prioritize critical tests while optimizing and parallelizing test runtime to minimize the overall testing time, ensuring fast feedback without compromising on test coverage or quality.
+
 6. Clean your environments
+
     Automate environment provisioning and teardown processes to ensure that development, testing, and production environments are clean and consistent, reducing the risk of environment-related issues and improving reliability.
+
 7. Keep a good record
+
     Maintain comprehensive documentation and logs of all changes, deployments, and pipeline runtimes to facilitate auditing, troubleshooting, and historical analysis, ensuring transparency and accountability throughout the CI/CD process.
+
 8. Provide and receive feedback
+
     Establish a culture of continuous improvement by providing constructive feedback on the CI/CD pipeline and development practices. Actively soliciting feedback from team members and stakeholders to identify areas for optimization and enhancement.
 
 ## [AWS SimuLearn Challenge: CI/CD Pipelines for APIs](./labs/W010Lab1CiCdPipelinesForApi.md)
