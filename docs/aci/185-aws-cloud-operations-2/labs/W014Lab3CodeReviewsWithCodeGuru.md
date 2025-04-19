@@ -350,4 +350,4 @@ Choose End lab and then confirm that you want to end your lab.
 
 Additional resources
 For more information about how to use Amazon CodeGuru Reviewer, see What is Amazon CodeGuru Reviewer?.
-For More informatino about how to use AWS CodePipeline, see What is AWS CodePipeline?.
+For More information about how to use AWS CodePipeline, see What is AWS CodePipeline?.
