@@ -287,4 +287,496 @@ The preceding script performs the following events during the deployment:
 
 ## Review of AWS CodePipeline
 
+A continuous delivery service for fast and reliable application updates.
+
+* What it does:
+  * Builds, tests, and deploys your code every time there is a code change
+  * Integrates with third-party tools and AWS
+
+Use it to model and visualize your software release process.
+
+### CodePipeline stages example
+
+* Source
+* Build
+* Test
+* Staging
+* Production
+
+### Pipeline goals
+
+* Deploy safely without impacting customers and business
+* Validate/test code numerous ways:
+  * Code
+  * Integration with direct dependencies is functioning correctly.
+  * Entire application stack is operational.
+* Support multiple environments
+  * Development, staging, and production
+
+### AWS CodePipeline actions
+
+1. **Source**. Specify where source code is stored.
+    * Amazon S3
+    * AWS CodeCommit
+    * GitHub
+    * GitHub Enterprise
+    * Amazon ECR
+2. **Build**. Specify how application should be built.
+    * AWS CodeBuild
+    * CloudBees
+    * Jenkins
+    * TeamCity
+3. **Test**. Specify how application should be tested.
+    * AWS CodeBuild
+    * Jenkins
+    * Ghost Inspector
+4. **Deploy**. Specify how application should be deployed.
+    * AWS CloudFormation
+    * AWS CodeDeploy
+    * Amazon ECS
+    * AWS OpsWorks Stacks
+5. **Invoke**. Specify custom function to invoke.
+    * AWS Lambda
+6. **Approval**. Publish Amazon SNS topic for manual approval.
+    * Amazon SNS
+
+### AWS CodePipeline: Supported sources
+
+Automatically push a release and pull latest source code
+
+* Select branch:
+  * AWS CodeCommit
+  * GitHub
+  * GitHub Enterprise
+* Select object/prefix:
+  * Amazon S3
+* Select Docker tag:
+  * Amazon ECR
+
+### A three-stage pipeline
+
+* AWS CodePipeline
+  * MyApplication
+      1. Stage 1: Source
+          * Action - Source: AWS CodeCommit
+          * Transition to Stage 2
+      2. Stage 2: Build
+          * Action - BuildMyApp: AWS CodeBuild
+          * Transition to Stage 3
+      3. Stage 3: Deploy
+          * Action - DeployMyApp: AWS CodeDeploy
+
+### Parallel actions in a pipeline
+
+* AWS CodePipeline
+  * MyApplication
+      1. Stage 1: Source
+          * Action - Source: AWS CodeCommit
+          * Transition to Stage 2
+      2. Stage 2: Build
+          * Parallel Actions:
+            * BuildMyApp: AWS CodeBuild AND NotifyDevelopers: AWS Lambda
+          * Transition to Stage 3
+      3. Stage 3: Deploy
+          * Action - DeployMyApp: AWS CodeDeploy
+
+### Sequential actions in a pipeline
+
+* AWS CodePipeline
+  * MyApplication
+      1. Stage 1: Source
+          * Action - Source: AWS CodeCommit
+          * Transition to Stage 2
+      2. Stage 2: Build
+          * Parallel Actions:
+            * BuildMyApp: AWS CodeBuild AND NotifyDevelopers: AWS Lambda
+          * Transition to Stage 3
+      3. Stage 3: Deploy
+          * Sequential Actions
+            * DeployMyApp: AWS CodeDeploy
+            * TestAPI: Runscope
+
+### Manual approvals in a pipeline
+
+* AWS CodePipeline
+  * MyApplication
+      1. Stage 1: Build
+          * BuildMyApp: AWS CodeCommit
+          * Transition to Stage 2
+      2. Stage 2: Staging-Deploy
+          * DeployMyApp: AWS CodeDeploy
+          * QATeamReview: Review
+          * Manual approvals
+      3. Stage 3: Prod-Deploy
+          * DeployMyApp: AWS CodeDeploy
+
+### Structuring a pipeline
+
+Structuring a pipeline can be done in JSON.
+
+* at least two actions per pipeline. Those actions could be in the same stage.
+
+```json
+{
+  "version": 2010-09-09,
+  "transform": [
+    {
+      "replace": [
+        "https://my-source-repo.com/my-repo.git",
+        "my-branch"
+      ]
+    }
+  ],
+  "pipeline": {
+    "name": "MyTwoStagePipeline",
+    "roleArn": "arn:aws:iam::123456789012:role/MyCodePipelineRole",
+    "artifactStore": {
+      "type": "S3",
+      "location": "s3://my-code-pipeline-artifacts"
+    },
+    "stages": [
+      {
+        "name": "Source",
+        "actions": [
+          {
+            "name": "SourceCode",
+            "actionType": {
+              "category": "Source",
+              "owner": "AWS",
+              "provider": "CodeCommit",
+              "version": "1"
+            },
+            "inputArtifacts": [],
+            "outputArtifacts": [
+              {
+                "name": "SourceArtifact"
+              }
+            ],
+            "configuration": {
+              "RepositoryName": "my-code-repo",
+              "BranchName": "main",
+              "RoleArn": "arn:aws:iam::123456789012:role/MyCodePipelineRole"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Build",
+        "actions": [
+          {
+            "name": "BuildApplication",
+            "actionType": {
+              "category": "Build",
+              "owner": "AWS",
+              "provider": "CodeBuild",
+              "version": "1"
+            },
+            "inputArtifacts": [
+              {
+                "name": "SourceArtifact"
+              }
+            ],
+            "outputArtifacts": [
+              {
+                "name": "BuildArtifact"
+              }
+            ],
+            "configuration": {
+              "ProjectName": "my-codebuild-project",
+              "RoleArn": "arn:aws:iam::123456789012:role/MyCodePipelineRole"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Creating and updating a pipeline through infrastructure as code
+
+* AWS CLI
+* AWS CloudFormation
+
+You can download that JSON using our get pipeline call. This will not give you CloudFormation compliant JSON. You can't just copy paste, but what you can do is start structuring that yourself. If you have made it manually and you wanna start using CloudFormation, grab some of that content, export it and then adjust that structure so it fits directly into your CloudFormation template. 
+
+### Example: Invoking AWS Lambda in a pipeline
+
+* AWS CodePipeline
+  * MyApplication
+      1. Stage 1: Source
+          * Action - Source: Versioned Amazon S3 bucket
+          * Transition to Stage 2
+      2. Stage 2: Deploy
+          * DeployMyApp: In-place update with AWS CodeDeploy
+          * Transition to Stage 3
+      3. Stage 3: Test
+          * Auto Scaling deployment group
+          * Transition to Stage 4
+      4. Invoke
+          * Invoke action to test deployment
+          * putJobSuccessResult
+      5. Deploy to prod stage
+
+### Using resources from another AWS account in a pipeline
+
+* Account A
+  * Pipeline
+    * Source
+    * Deploy
+  * Create AWS KMS key to use in pipeline.
+  * Set up account policies and roles.
+  * Edit the pipeline to use Account B resources.
+* Account B
+  * AWS CodeDeploy
+    * Deployment group
+  * Set up account policies and cross-account role to allow Account A to access Account B AWS CodeDeploy resources.
+
+Account A uses AWS CodeDeploy resources of Account B.
+
+### Creating cross-region/cross-account pipeline
+
+Multiple pipelines can be strung together to effectively create one long pipeline.
+Output artifact of one pipeline becomes a source for next pipeline.
+
+### Artifact encryption in a pipeline
+
+By default, AWS CodePipeline uses server-side encryption with the Amazon S3-managed encryption keys (SSY-S3) to protect artifacts.
+
+* Best practices:
+  * Use customer managed key instead of the default Amazon S3 key.
+  * Rotate the key on a schedule to meet security requirements.
+
+### Considerations when designing your CI/CD pipeline
+
+* Stages
+* Types of tests
+* Order of tests
+  * Can any be run in parallel?
+* Detect and report failures
+* Regions
+* Provisioning and management
+* Rollbacks
+
+### Patterns and anti-patterns of delivery and deployment
+
+| Anti-pattern | Pattern |
+| ------------ | ------- |
+| Manual intervention | Automated process |
+| Hardcoding config values inside the source code or using different tools in each dev environment | All config values and tools externalized into build/deployment-time properties and resources |
+| Only running analysis/tests at the commit stage, taking extended time to discover simple problems | Having the commit build run as quickly as possible to uncover common build problem first |
+| Making last-minute changes to force a build to work | Failing fast using CD reduces the need for last-minute fixes |
+| Writing an app where each component is tightly coupled with every other | Decoupling components of your app to allow updates of individual components |
+
 ### AWS CodePipeline
+
+The goal of building out a CI/CD pipeline is to be able to automate the entire software development and delivery process. That way, you can focus entirely on writing code. A CI/CD pipeline automates the validation of code, the integration with your services, and the deployment through multiple environments.
+
+AWS CodePipeline is a continuous delivery service that you can use to model, visualize, and automate the different stages of your software release process. It can be integrated with the AWS developer tools you learned about in this module for building, testing, and deploying your software versions.
+
+* Rapid delivery
+  * ![Rapid delivery](./images/W02Img040CodePipelineRapidDelivery.png)
+* Configurable workflow
+  * ![Configurable workflow](./images/W02Img042CodePipelineConfigurableWorkflow.png)
+* Fully managed service
+  * ![Fully managed service](./images/W02Img044CodePipelineFullyManaged.png)
+* Little effort to integrate
+  * ![Little effort to integrate](./images/W02Img046CodePipelineLittleEffortToIntegrate.png)
+
+### CodePipeline actions
+
+CodePipeline includes a number of actions that help you configure, build, test, and deploy resources for your automated release process. An action is a set of operations performed on application code and configured to run in the pipeline at a specified point. This can include a source action from a code change, an action for deploying the application to instances, and so on. For example, a deployment stage might contain a deployment action that deploys code to a compute service like Amazon EC2 or AWS Lambda.
+
+You can use CodePipeline to add actions to stages in your CI/CD pipeline. Each action can be associated with a provider that performs the action.
+
+1. **Source**. Specify where source code is stored.
+2. **Build**. Specify how the application should be built.
+3. **Test**. Specify how the application should be tested.
+4. **Deploy**. Specify how the application should be deployed.
+5. **Invoke**. Specify a custom function to invoke.
+6. **Approval**. Publish an Amazon Simple Notification Service (Amazon SNS) topic for manual approval.
+
+## Code Testing in Continuous Delivery
+
+Application testing continues through continuous delivery and continuous deployment.
+
+After all designated tests in the build phase of a CI/CD pipeline have completed successfully, the next step is to continue with the designated tests in staging and production. In continuous delivery, the testing strategy moves to the service integration tests, performance and compliance tests, and user interface tests. Here the testing becomes more complex as more of the code is tested together in some form of replica of a production environment. Each software update you submit runs through each of these tests. As an application developer, your responsibility is to take appropriate action based on the results of these tests.
+
+### Types of testing in staging
+
+The number and type of tests an organization runs depends on DevOps maturity along with testing need, costs, and time to deliver software products. Additionally, specific tests are run in suitable environments. The names of those environments include beta and gamma. The following list includes some testing that organizations run during the staging phase of the CI/CD pipeline:
+
+* Integration testing
+* Component testing
+* System testing
+* User acceptance testing
+* Synthetic testing
+* Compliance testing
+
+**Tests that run in the build phase of the CI/CD pipeline might be run again in the staging phase.**
+
+### Beta and gamma environments
+
+After the build artifacts are created, tests continue to run in the beta environment. Beta is the first place where a code change in one service can interact with another service. Gamma should mimic the production environment as closely as possible to provide the most realistic tests for the code. Data here is often a snapshot of real production data, with any private or potentially sensitive personal data removed from the data set.
+
+![Beta and gamma environments](./images/W02Img050BetaAndGammaEnvironments.png)
+
+**While gamma and beta environments are valuable for thorough testing and validation, they may not be strictly necessary in all cases. The decision to use them, or any other testing environments, should be based on specific needs and requirements.**
+
+### Integration testing
+
+Integration tests are performed to ensure that the final version of the application or service works with all other components of the process. It includes testing with real-life data input. Integration tests are used to determine if independently developed units of software work correctly when they are connected to each other.
+
+Integration tests are first run in a development (dev) environment. Dev environments are often a single machine and not representative of the distributed service environment. The integration tests call the beta service, which uses the beta database and the beta stages of the dependencies. If all of the integration tests pass on beta and all other approval workflows pass, the code changes for the service to run in gamma. After that deployment has completed successfully, the integration tests will run, contacting the gamma stage. This means integration and acceptance testing is done with the gamma database and gamma downstream services.
+
+The beta and gamma stages usually run the same test workflow with the same inputs to the tests. This helps ensure both environments are producing the same expected results. Occasionally, teams might require different tests or different test inputs in beta instead of gamma. This is achieved using test suites, which means that different test code is written for beta and gamma.
+
+But why run these tests twice, in both beta and gamma? Beta is the test environment, and it's constantly in flux. Not only because the service is constantly changing, but because it's where the dependencies are also constantly updating. Running the integration tests locally can give you and your team confidence in the changes being made, and that the dependencies are working as expected. Having the tests run in beta provides continued confidence. On each new change, the tests will ensure that the team has not broken any existing behavior (a regression), new behavior is working as expected, and the beta dependencies are continuing to hold up their end of the agreement. The integration tests are poised to catch any of these issues as soon as possible and stop code changes from moving any further through the pipeline towards production.
+
+Beta's volatile environment is why gamma testing is so important. Gamma should be much more stable and closer to a copy of production quality code. Changes only make it here if they worked in beta, based on the feedback provided by the tests. As for other team’s code, gamma will read data from their production services, making the setup as production-like as possible. If the integration tests work in gamma, there is high confidence that the code will also work in production.
+
+But why not run the integration tests in production? Some teams might run a small subset of their integration tests in production (often referred to as smoke tests), but generally, integration tests are not run there. Good integration tests should be interacting and manipulating the system they're testing. You don't want to make 40 real orders every time the service deploys. This could be happening multiple times a day!
+
+### The need for integration tests
+
+Imagine that a team just finished working on a new feature. The team believes it is a solid design and every single class created or modified is tested by a unit test. The code coverage is great and all the unit tests pass. The code is deployed. The person on-call starts to get tickets about how the new feature isn't working as expected. It turns out the input being sent to the downstream service is causing it to throw errors. The team conducts an evaluation of the errors, referred to as a correction of errors (COE). As a part of the process, it starts with a question of *why didn't testing catch this issue?* *Why didn't testing catch the bad input to the downstream service?*
+
+Teams find themselves in this situation from time to time. A very common recurring theme is that during feature development, assumptions were made that proved to be incorrect. There's nothing wrong with making assumptions. In fact, they're a necessary part of good software development practices. When a mock object is created, it is assumed that there is an understanding of how that object is going to behave. When making an assertion, it's one-part measurement and one-part assumption. Assumptions also exist in the test inputs because it's necessary to assume that this is the right representation of data that this class will see in production. Sooner or later, the team is confronted with the question: *How does the team know all these assumptions are right?*
+
+Integration tests measure and verify the communication points between the objects within the service and between this service and other services. This is the first time all of the pieces of the service are tested together. These tests help determine how good the assumptions really were. Integration tests have higher level scope than unit tests, and they tend to focus on the end result of the service rather than the code method details. They do both of these things by interacting with the service in the same way one of the customers would and verifying the results they get back from the service. This means nothing is mocked (ideally, at least)—not inside the service or any of the dependencies.
+
+### Regression testing
+
+Test cases run for each build to determine whether existing functionalities are still working. Regression testing also verifies that changes in one part of the code didn't introduce any new defects.
+
+Regression testing is expensive in terms of time and money, especially when done manually. It accounts for almost half of software maintenance costs and up to 80 percent of the testing budget. Regression testing can involve running a large number of tests. Certain testing techniques have been developed to reduce the number of tests that need to be run, which minimizes the time it takes to carry out testing while providing adequate code coverage.
+
+### Regression testing
+
+Test cases run for each build to determine whether existing functionalities are still working. Regression testing also verifies that changes in one part of the code didn't introduce any new defects.
+
+Regression testing is expensive in terms of time and money, especially when done manually. It accounts for almost half of software maintenance costs and up to 80 percent of the testing budget. Regression testing can involve running a large number of tests. Certain testing techniques have been developed to reduce the number of tests that need to be run, which minimizes the time it takes to carry out testing while providing adequate code coverage.
+
+### User acceptance testing (UAT)
+
+User acceptance testing (UAT) is part of the last phase of your software testing process. This is where actual users test the software to ensure it can handle the required tasks. Users of the system perform tests in line with what would occur in real-life scenarios.
+
+The goal of UAT is to verify that the software works for the users of the system and meets the documented requirements. These tests are useful because they do the following:
+
+* Capture user requirements in a verifiable way.
+* Identify problems that other tests such as unit or integration tests might have missed.
+* Provide an overview of the completeness of the work.
+
+### Synthetic testing
+
+Synthetic testing is a method of understanding your user’s experience in an application by predicting behavior. Synthetic testing is often accomplished by using web browser emulation or scripted recordings of web transactions. Scripts are created to simulate the path or action an end user would take on a site. Those paths are then continuously monitored for performance, availability, and response time measures. Synthetic testing is useful because it can help you identify problems before a user experiences them. The monitoring results push to a monitoring service, which can then activate alerts in the case of failures or slowdowns. 
+
+Synthetic testing can run in a CI/CD pipeline to block a release that would break the product. Alternatively, it can run as part of the CD process to evaluate the state of the application immediately after a deployment is finished.
+
+#### Uses
+
+You can use synthetic testing to do the following:
+
+* Monitor application uptime.
+* Establish baseline of performance across countries.
+* Monitor performance.
+* Detect problems caused by third-party scripts.
+* Monitor database uptime.
+
+#### Limitations
+
+The following are limitations of synthetic testing:
+
+* User actions are simulated.
+* Real users might experience other issues that synthetic testing does not capture.
+
+### [Lab: Using AWS CodePipeline for Integration Testing](./labs/W020Lab1CodePipelineIntegrationTesting.md)
+
+In this lab, you use CodePipeline to automate integration testing on an application. Integration tests are used to determine if independently developed units of software work correctly when they are connected to each other. The lab guides you in reviewing code for an application and a corresponding integration test.
+
+In this lab, you will perform the following tasks:
+
+* Review the existing application, branch structure, and CI/CD pipeline.
+* Configure CodePipeline to run the integration test and create reports.
+* Add integration tests to the application code and push to a code repository.
+* Update the existing application to fix issues discovered by integration testing.
+
+### Knowledge Check
+
+#### Which testing type ensures that changes made do not introduce bugs in other parts of the application?
+
+* Regression testing
+
+Wrong answers:
+
+* Synthetic testing
+* User acceptance testing (UAT)
+* Integration testing
+
+##### Explanation
+
+Regression testing verifies that changes in one part of the code didn't introduce any new defects. 
+
+The other responses are incorrect because of the following:
+
+* UAT is the last phase of your software testing process. This is where actual users test the software to ensure it can handle the required tasks.
+* Synthetic testing is a method of understanding your user’s experience in an application by predicting behavior.
+* Integration tests measure and verify the communication points between the objects within the service and between this service and other services.
+
+#### What is the primary purpose of integration testing?
+
+* To verify the communication between objects within a service and other services
+
+Wrong answers:
+
+* To find and fix bugs in individual methods and classes
+* To replace the need for unit testing by testing the entire system as a whole
+* To achieve high code coverage by testing all possible code paths
+
+##### Explanation
+
+Integration tests measure and verify the communication points between the objects within the service and between this service and other services.
+
+The other responses are incorrect because of the following:
+
+* Unit testing is a better form of testing for high code coverage than integration testing because unit testing focuses on evaluating functional fitness.
+* Unit testing and integration testing are used as separate and complementary practices, they are not replacements for each other.
+* Integration tests focus on the end result of the service rather than the code method details, which is the purpose of unit testing.
+
+#### Why do organizations use AWS CodeDeploy?
+
+* To automate the deployment of applications to compute services
+
+Wrong answers:
+
+* To monitor the performance of applications running on AWS
+* To provision and manage virtual machines in the AWS Cloud
+* To manage access control and authentication for AWS resources
+
+##### Explanation
+
+With CodeDeploy, organizations can rapidly release new features, avoid downtime during deployment, and handle the complexity of updating applications.
+
+The other responses are incorrect because of the following:
+
+* Although monitoring application performance is important, this is not the primary purpose of CodeDeploy. Amazon CloudWatch is the service used for monitoring applications running on AWS.
+* CodeDeploy is focused on application deployment not provisioning and managing virtual machines. Amazon EC2 is the service used for provisioning and managing virtual machines in the AWS Cloud.
+* Access control and authentication for AWS resources are managed by AWS Identity and Access Management (IAM) not CodeDeploy.
+
+### Summary
+
+Types of testing that occur during the build and staging phases of the CI/CD pipeline
+
+* How CodeDeploy works with AppSpec files to deploy applications to supported compute services
+* How CodePipeline uses CodePipeline actions to initiate the workflow of each phase of the CI/CD pipeline
+* How the application developer's role includes handling testing results that occur through the phases of the CI/CD pipeline
+
+An application developer's role in CI/CD depends on the organization's size and team structure. It ranges from managing the entire pipeline to focusing solely on application development. Common responsibilities include collaborating with other developers, optimizing cloud performance, automating testing and delivery, and partnering with security engineers to address vulnerabilities.
+
+### Additional Resources
+
+* [What is CodeDeploy?](https://docs.aws.amazon.com/codedeploy/latest/userguide/welcome.html)
+
+* [What is AWS CodePipeline?](https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome.html)
+
+* [CodePipeline](https://docs.aws.amazon.com/whitepapers/latest/practicing-continuous-integration-continuous-delivery/testing-stages-in-continuous-integration-and-continuous-delivery.html)
