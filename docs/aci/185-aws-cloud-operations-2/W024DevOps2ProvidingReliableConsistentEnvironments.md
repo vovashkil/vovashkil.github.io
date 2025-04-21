@@ -116,19 +116,19 @@ An AWS Proton service instance is an instantiation of a service template in a sp
 ### How AWS Proton works
 
 1. **Environment template creation**. A platform team creates and registers environment templates with AWS Proton, which defines the shared resources. Examples of shared resources include virtual private clouds (VPCs), databases, clusters, and so forth. Multiple applications or resources could reside in a single environment.
-    * [Environment template creation](./images/W02Img081ProtonEnvironmentTemplateCreation.png)
+    * ![Environment template creation](./images/W02Img081ProtonEnvironmentTemplateCreation.png)
 2. **Environment deployment**. AWS Proton deploys one or more environments, based on an environment template.
-    * [Environment deployment](./images/W02Img082ProtonEnvironmentDeployment.png)
+    * ![Environment deployment](./images/W02Img082ProtonEnvironmentDeployment.png)
 3. **Service template creation**.
 
     A platform team creates and registers service templates with AWS Proton, which defines the related infrastructure, monitoring, and CI/CD resources as well as compatible environment templates. Examples of services include Fargate, Lambda, EC2 instances, and other AWS services.
 
     AWS Proton services are application specific, and developers need to configure them according to the needs of their specific project. If a service template includes a pipeline, developers must indicate the code repository that holds their application code.
 
-    * [Service template creation](./images/W02Img083ProtonServiceTemplateCreation.png)
+    * ![Service template creation](./images/W02Img083ProtonServiceTemplateCreation.png)
 4. **Service template selection**. As a developer, you select a registered service template and provide a link to your source code repository.
-    * [Service template selection](./images/W02Img084ProtonServiceTemplateSelection.png)
+    * ![Service template selection](./images/W02Img084ProtonServiceTemplateSelection.png)
 5. **AWS Proton provisioning**. AWS Proton provisions the service with a CI/CD pipeline for your service instances.
-    * [AWS Proton provisioning](./images/W02Img085ProtonProvisioning.png)
+    * ![AWS Proton provisioning](./images/W02Img085ProtonProvisioning.png)
 6. **Service is live**. AWS Proton provisions and manages the service and the service instances that are running the source code as was defined in the selected service template. A service instance is an instantiation of the selected service template in an environment for a single stage of a pipeline (for example Production).
-    * [Service is live](./images/W02Img086ProtonServiceLive.png)
+    * ![Service is live](./images/W02Img086ProtonServiceLive.png)
