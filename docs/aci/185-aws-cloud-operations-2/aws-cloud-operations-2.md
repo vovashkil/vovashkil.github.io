@@ -22,4 +22,5 @@
   * [DevOps 2: Integrating Code Reviews in Automated Testing](./W016DevOps2IntegratingCodeReviewsInTesting.md)
 * Week 2:
   * [DevOps 2: Integrating with the CI/CD Pipeline](./W020DevOps2CiCdPipelineIntegration.md)
+  * [DevOps 2: Deployment Strategies for Continuous Delivery and Deployment](./W022DevOps2DeploymentsStrategiesForCd.md)
   
