@@ -1,0 +1,4 @@
+DevLinuxSecurityGroup sg-0d910887ca99c78e5
+DevRDSSecurityGroup sg-01a10b391f7f57e36
+Subnet1Public subnet-030b3a75a275fd53f
+Subnet2Public subnet-0aa589b22421fa3cc
