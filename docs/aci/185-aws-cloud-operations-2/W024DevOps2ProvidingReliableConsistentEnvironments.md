@@ -120,12 +120,12 @@ An AWS Proton service instance is an instantiation of a service template in a sp
 2. **Environment deployment**. AWS Proton deploys one or more environments, based on an environment template.
     * ![Environment deployment](./images/W02Img082ProtonEnvironmentDeployment.png)
 3. **Service template creation**.
+    * ![Service template creation](./images/W02Img083ProtonServiceTemplateCreation.png)
 
     A platform team creates and registers service templates with AWS Proton, which defines the related infrastructure, monitoring, and CI/CD resources as well as compatible environment templates. Examples of services include Fargate, Lambda, EC2 instances, and other AWS services.
 
     AWS Proton services are application specific, and developers need to configure them according to the needs of their specific project. If a service template includes a pipeline, developers must indicate the code repository that holds their application code.
 
-    * ![Service template creation](./images/W02Img083ProtonServiceTemplateCreation.png)
 4. **Service template selection**. As a developer, you select a registered service template and provide a link to your source code repository.
     * ![Service template selection](./images/W02Img084ProtonServiceTemplateSelection.png)
 5. **AWS Proton provisioning**. AWS Proton provisions the service with a CI/CD pipeline for your service instances.
