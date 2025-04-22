@@ -25,4 +25,4 @@
   * [DevOps 2: Deployment Strategies for Continuous Delivery and Deployment](./W022DevOps2DeploymentsStrategiesForCd.md)
   * [DevOps 2: Providing Reliable and Consistent DevOps Environments](./W024DevOps2ProvidingReliableConsistentEnvironments.md)
 * Week 3:
-  * [DevOps 2:DevSecOps](./W030DevOps2DevSecOps.md)
+  * [DevOps 2: DevSecOps](./W030DevOps2DevSecOps.md)
