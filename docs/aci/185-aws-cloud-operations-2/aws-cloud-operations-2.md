@@ -26,3 +26,4 @@
   * [DevOps 2: Providing Reliable and Consistent DevOps Environments](./W024DevOps2ProvidingReliableConsistentEnvironments.md)
 * Week 3:
   * [DevOps 2: DevSecOps](./W030DevOps2DevSecOps.md)
+  * [DevOps 2: Applying DevSecOps](./W032DevOps2ApplyingDevSecOps.md)
