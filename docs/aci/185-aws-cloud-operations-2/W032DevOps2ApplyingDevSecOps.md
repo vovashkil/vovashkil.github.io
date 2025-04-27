@@ -393,7 +393,7 @@ In summary, DevSecOps best practices include the following:
 * **Promote security awareness**: Companies make security awareness a part of their core values when building software. Every team member who plays a role in developing applications must share the responsibility of protecting software users from security threats.
 * **Shift right**: Shift right indicates the importance of focusing on security after the application is deployed. Some vulnerabilities might escape earlier security checks and become apparent only when customers use the software.
 
-### [Lab: Using Amazon Inspector for Vulnerability Scanning]()
+### [Lab: Using Amazon Inspector for Vulnerability Scanning](./labs/W030Lab1AmazonInspectorForVulnerabilityScanning.md)
 
 In this lab, you work with Amazon Inspector to scan for vulnerabilities in pre-existing AWS resources, such as Amazon EC2 instances and AWS Lambda functions. You learn about the importance of security scanning, how to configure Amazon Inspector, and how to interpret and remediate findings.
 

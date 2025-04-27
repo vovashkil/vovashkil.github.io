@@ -316,3 +316,122 @@ INNOVATE -> DEVELOP -> COMMERCIALIZE
 ### Requisition to Payment
 
 ### Supplier Invoice to Payment
+
+### Skill Check: Procurement
+
+#### To which two types of documents can procurement contracts be added
+
+* Purchase Orders
+* Purchase Agreements
+
+Wrong answers:
+
+* Purchase Requisitions
+* Purchase Invoice
+
+#### Which two processes are included in the Contract Creation to Procurement Compliance Oracle Modern Best Practice
+
+* Promote Compliance
+* Manage Deviations
+
+Wrong answers:
+
+* Process Payments
+* Monitor Negotiations
+
+#### Based on which two elements can purchase orders be automatically generated for suppliers
+
+* Contract Terms
+* Negotiated Pricing
+
+Wrong answers:
+
+* Dynamic Discounting
+* Compliance Acknowledgement
+
+#### Which two processes belong to the Requisition to Payment OMBP
+
+* Approve Purchase Orders
+* Receive Goods and Services
+
+Wrong answers:
+
+* Register Suppliers
+* Create Author Contracts
+
+#### For access to the supplier portal, which Oracle Modern Best Practice has to be completed
+
+* Supplier Registration to Spend Authorized
+
+Wrong answers:
+
+* Insight to Sourcing
+* Contract Creation to Spend Compliance
+* Requisition to Payment
+
+#### When creating a sourcing event, what should be added to ensure policy compliance
+
+* Questions
+
+Wrong answers:
+
+* Spending Patterns
+* Consolidated Scoring
+* Responses
+
+#### Which OMBP involves evaluation and awarding a negotiation
+
+* Insight to Sourcing
+
+Wrong answers:
+
+* Supplier Registration to Spend Authorized
+* Contract Creation to Spend Compliance
+* Requisition to Payment
+
+#### For a supplier to begin transacting, which business relationship should they have
+
+* Spend Authorized
+
+Wrong answers:
+
+* Validation Confirmed
+* Compliant
+* Prospective
+
+## Manufacturing
+
+### Skill Check: Manufacturing
+
+#### Which term is used when materials are deducted from on-hand inventory upon completion of a production work order
+
+* Backflush
+
+Wrong answers:
+
+* Periodic Inventory Count
+* Kan-Ban
+* Two-Bin
+
+#### In which status must a work order be in order to create cost accounting distributions
+
+* Closed
+
+Wrong answers:
+
+* Completed
+* WIP
+* Released
+
+#### On which activities does the Production Order to Costing OMBP focus
+
+* Managing and completing work orders, then capturing their costs
+
+Wrong answers:
+
+* Preparing shipments for orders, then recording shipping costs
+* Receiving and inspecting material, then issuing serial and lot numbers.
+
+## Order Management
+
+### Quote to Revenue
