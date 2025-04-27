@@ -404,13 +404,13 @@ In this lab, you perform the following tasks:
 * Analyze and interpret vulnerability findings.
 * Remediate vulnerabilities.
 
-### [AWS SimuLearn: Secure Self-Service Infrastructure]()
+### AWS SimuLearn: Secure Self-Service Infrastructure
 
 In this AWS SimuLearn assignment, you will review a real-world scenario helping a fictional customer design a solution on AWS. After the design is complete, you will build the proposed solution in a guided lab within a live AWS Console environment. You will gain hands-on experience working with AWS services, using the same tools technology professionals use to construct AWS solutions.
 
 For this assignment, you will help the new head of the IT Services department at a web gaming company who has limited staff to deploy IT services to other departments. The IT Services department is looking for a way to hand off these deployments to the other departments themselves, something like a self-service tool in which configurations already meet compliance requirements and resources are secure.
 
-### [AWS SimuLearn: Securing Your Servers]()
+### AWS SimuLearn: Securing Your Servers
 
 In this AWS SimuLearn assignment, you will review a real-world scenario helping a fictional customer design a solution on AWS. After the design is complete, you will build the proposed solution in a guided lab within a live AWS Console environment. You will gain hands-on experience working with AWS services, using the same tools technology professionals use to construct AWS solutions.
 
