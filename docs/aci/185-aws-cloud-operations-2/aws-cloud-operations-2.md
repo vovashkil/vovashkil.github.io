@@ -27,3 +27,6 @@
 * Week 3:
   * [DevOps 2: DevSecOps](./W030DevOps2DevSecOps.md)
   * [DevOps 2: Applying DevSecOps](./W032DevOps2ApplyingDevSecOps.md)
+* Week 4:
+  * [IaC: Review of Infrastructure as Code](./W040IaCReviewIaC.md)
+  * [IaC: IaC as Part of a DevOps Workflow](./W042IaCDevOpsWorkflow.md)
