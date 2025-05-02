@@ -151,3 +151,119 @@ In this lab, you will perform the following tasks:
 * Push the modified stack to the source code repository
 
 ### Developer Responsibilities in Writing and Maintaining IaC Templates
+
+#### Application architecture and dependencies
+
+As an application developer, one of your primary responsibilities is to identify the cloud resources required to run your application successfully. This involves understanding the application's architecture, components, and dependencies. You need to determine the types of resources needed, such as compute instances, like Amazon Elastic Compute Cloud (Amazon EC2); databases, like Amazon Relational Database Service (Amazon RDS) or Amazon DynamoDB; load balancers; networking components, such as virtual private clouds (VPCs), subnets, and security groups; storage, like Amazon Elastic Block Store (Amazon EBS) and Amazon Simple Storage Service (Amazon S3); and other services or resources your application requires.
+
+To identify the required resources, start by breaking down the application into its various components and mapping them to the corresponding cloud resources. For example, if your application has a web tier, you might need EC2 instances or an Amazon Elastic Container Service (Amazon ECS) cluster for hosting the web servers. If it has a database tier, you might need an Amazon RDS instance or a DynamoDB table. If your application requires file storage, you might need an Amazon Elastic File System (Amazon EFS) or S3 bucket.
+
+#### Mapping application components to cloud resources
+
+Once you identify your application's components, the next step is to map each component to the appropriate cloud resources. This mapping process involves understanding the capabilities and limitations of different AWS services and selecting the most suitable resources for your application's needs.
+
+For example, if your application requires a relational database, you might choose Amazon RDS as the cloud resource. If your application needs a NoSQL database, you might choose Amazon DynamoDB. If your application requires object storage, you might choose Amazon S3. If your application needs a message queue, you might choose Amazon Simple Queue Service (Amazon SQS) or Amazon Simple Notification Service (Amazon SNS).
+
+It's important to consider factors such as scalability, performance, availability, and cost when mapping application components to cloud resources. You should also consider the integration and compatibility of different services, as well as any specific requirements or constraints your application might have.
+
+1. **Define resources**
+
+   Once a developer identifies the required cloud resources for their application, the next step is to define the resources in the IaC templates. IaC templates are essentially code files that describe the desired state of an infrastructure, including the resources the developer wants to provision and their configurations.
+
+   In your IaC templates, you will define the resources using the syntax and constructs provided by the IaC tool you are using, such as AWS CloudFormation or Terraform. For example, in a CloudFormation template, you would define an EC2 instance using the AWS::EC2::Instance resource type, and specify its properties, such as the instance type, Amazon Machine Image (AMI), and security groups.
+
+   When defining resources in your IaC templates, follow best practices and adhere to the principles of infrastructure as code. This includes using descriptive names, organizing resources logically, and providing comments and documentation to improve readability and maintainability.
+
+2. **Configure resource properties and settings**
+
+   After defining the resources in the IaC templates, the developer must configure the properties and settings according to the application's requirements. This includes specifying resources like instance types, AMIs, security group rules, database configurations, and any other resource-specific settings.
+
+   For example, if you are defining an EC2 instance, you might configure properties such as the instance type (*InstanceType*), AMI (*ImageId*), key pair (*KeyName*), and security groups (*SecurityGroupIds*). If you are defining an Amazon RDS instance, you might configure properties such as the database engine (*Engine*), instance class (*DBInstanceClass*), allocated storage (*AllocatedStorage*), and database credentials (*MasterUsername* and *MasterUserPassword*).
+
+   Developers must consider the configurations and settings carefully for each resource, as the settings can significantly impact an application's performance, scalability, security, and cost. They should also follow best practices and organizational standards when configuring resource properties.
+
+3. **Handle resource dependencies and relationships**
+
+    In most applications, cloud resources are not isolated entities; they often have dependencies and relationships with other resources. For example, an EC2 instance might depend on a security group, an Amazon RDS instance might depend on a subnet and security group, and a load balancer might depend on target groups and listeners.
+
+    When writing IaC templates, handling these dependencies and relationships correctly is crucial. Most IaC tools provide mechanisms for defining resource dependencies, such as the *DependsOn* property in AWS CloudFormation or the *depends_on* meta-argument in Terraform.
+
+    By properly handling resource dependencies, developers ensure that resources are created, updated, and deleted in the correct order, preventing errors and ensuring the successful deployment of the infrastructure. Additionally, they can define relationships between resources, such as attaching an EC2 instance to an Elastic Load Balancing (ELB) target group or associating an Amazon RDS instance with a security group.
+
+### How Developers and Infrastructure Teams Work Together over IaC
+
+#### Collaborative development
+
+Application developers and cloud development teams work together in an iterative manner, collaborating on the infrastructure as code (IaC) codebase. Application developers can review and provide feedback on the infrastructure configurations, ensuring they align with the application's requirements, while infrastructure teams can suggest optimizations or best practices to the application developers.
+
+Through collaborative development, teams can use IaC in conjunction with containerization, which decouples applications from the underlying operating system and infrastructure. Since the operating system and hardware resources are automatically provisioned, and the application is encapsulated within containers, these technologies complement each other for various deployment scenarios, such as testing, staging, and production environments. For instance, the infrastructure team might propose using Amazon Elastic Container Service (Amazon ECS) or Amazon Elastic Kubernetes Service (Amazon EKS) for containerized workloads, while the application might provide developers with insights into the application's scaling and resource requirements.
+
+#### Testing and validation
+
+Both application development and cloud development teams participate in testing and validating the IaC configurations. This involves creating temporary environments (for example, development or staging) and deploying the infrastructure using the IaC tools. Application developers can then test their applications in these environments, ensuring the provisioned infrastructure meets their needs.
+
+For instance, the infrastructure team might use AWS CloudFormation to create a staging environment, and the application developers can deploy their application to the provisioned resources for testing purposes.
+
+#### Monitoring and maintenance
+
+Both application development and cloud development teams also collaborate on monitoring and maintaining the deployed infrastructure. Infrastructure teams monitor the health and performance of the provisioned resources, while application developers monitor the application's behavior and performance within the infrastructure.
+
+For instance, the infrastructure team might use Amazon CloudWatch to monitor the EC2 instances and Elastic Load Balancing (ELB) load balancers, while the application developers use application-level monitoring tools to track the application's performance and identify potential issues.
+
+By working together over infrastructure as code, application developers and infrastructure teams can achieve faster and more reliable deployments, consistent environments across different stages (for example, development, staging, and production), and better collaboration and knowledge sharing.
+
+### Knowledge Check
+
+#### What is CI/CD, and how does it relate to infrastructure as code (IaC)?
+
+* CI/CD stands for continuous integration/continuous delivery, and it is a software development practice that automates the building, testing, and deployment of applications, often using IaC for infrastructure provisioning and management.
+
+Wrong answers:
+
+* CI/CD stands for continuous integration/continuous deployment, and it is a software development practice that is completely separate from IaC.
+* CI/CD stands for continuous improvement/continuous development, and it is a project management methodology that has no direct relation to IaC.
+* CI/CD stands for continuous integration/continuous deployment, and it is a security practice that ensures the continuous monitoring and hardening of infrastructure, which can be achieved through IaC.
+
+##### Explanation
+
+The other options are incorrect because of the following:
+
+* CI/CD practices are often integrated with IaC for infrastructure provisioning and management, rather than being completely separate.
+* CI/CD does not stand for continuous improvement/continuous development, and it is directly related to software development practices that involve IaC.
+* The primary purpose of CI/CD is related to software development and deployment practices, not specifically security monitoring and hardening, although it can contribute to security indirectly.
+
+#### How do application developers and infrastructure teams typically work together over IaC?
+
+* Application developers and infrastructure teams collaborate closely, with developers writing IaC templates and infrastructure teams reviewing and providing feedback.
+
+Wrong answers:
+
+* Application developers write IaC templates independently, and infrastructure teams deploy them without collaboration.
+* Infrastructure teams write and maintain all IaC templates, and application developers have no involvement.
+* Application developers and infrastructure teams work in silos, with no collaboration or communication regarding IaC.
+
+##### Explanation
+
+The other options are incorrect because both teams should be involved and a lack of communication between them is neither effective nor a best practice for IaC implementation.
+
+#### Why is version control important when working with IaC templates?
+
+* Version control for IaC templates allows for easy rollback to previous versions if issues arise during deployment, and enables collaboration and tracking of changes made by multiple team members.
+
+Wrong answers:
+
+* Version control is not more important for IaC templates compared to other types of code or configuration files.
+* Version control is only necessary for IaC templates if multiple teams are working on them simultaneously.
+* Version control is primarily used for tracking changes made to IaC templates, but it does not provide any benefits for rollback or collaboration.
+
+##### Explanation
+
+The other options are incorrect because version control is particularly crucial for IaC templates due to the potential impact of infrastructure changes and the need for collaboration among multiple teams. In addition, version control is beneficial for IaC templates even in single-team scenarios, because it allows for tracking changes, rolling back if needed, and maintaining a history of infrastructure code.
+
+### Summary
+
+#### IaC as part of a DevOps workflow
+
+* Differences between imperative and declarative approaches.
+* How resource pooling, software-defined intelligence, and a unified API fit into DevOps.
+* How manual scripting fits into DevOps, and how to mitigate risks associated with it.
