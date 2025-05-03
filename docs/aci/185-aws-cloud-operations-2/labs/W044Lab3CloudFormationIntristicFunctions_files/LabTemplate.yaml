@@ -1,0 +1,137 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "CloudFormation Utilities"
+
+# Configures resources dynamically during stack creation or update.
+Parameters:
+
+  # Retrieves the latest AMI ID from the AWS Systems Manager Parameter Store.
+  LatestAmiId:
+    Description: Latest Linux2 AMI
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+
+
+  # Enables dynamic resource configuration based on the environment chosen during stack creation.
+  Environment:
+    Type: String
+    Description: Environment (Development or Production)
+    AllowedValues:
+      - Development
+      - Production
+    Default: Development
+
+# Associates values or configurations with specific conditions or keys to meet client needs.
+Mappings:
+  EnvironmentConfigMap:
+    # Development requires proof of life and minimal traffic
+    Development:
+      InstanceType: t2.micro
+    #Production needs may vary for different use cases. For example, higher traffic or data management regulations may require accommodation. 
+    Production:
+      InstanceType: t3.medium
+
+# Defines AWS resources to create, configure, and manage using logical IDs.
+Resources:
+
+  # Provisions and configures the EC2 instance.
+  LabInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref LatestAmiId
+      InstanceType: !FindInMap [EnvironmentConfigMap, !Ref Environment, InstanceType]
+      SubnetId: !ImportValue PublicSubnetId
+      SecurityGroupIds:
+        - !Ref InstanceSecurityGroup
+      UserData:
+        # Encodes the multi-line UserData script as base64 and substitutes the Environment parameter value using the !Sub function
+        Fn::Base64: !Sub | 
+          #!/bin/bash
+
+          yum update -y
+          yum install -y httpd
+          systemctl start httpd
+          systemctl enable httpd
+
+          # Wait for the instance ID, public IP, and public DNS name to be available
+          INSTANCE_ID=""
+          PUBLIC_IP=""
+          PUBLIC_DNS_NAME=""
+          while [ -z "$INSTANCE_ID" ] || [ -z "$PUBLIC_IP" ] || [ -z "$PUBLIC_DNS_NAME" ]; do
+            INSTANCE_ID=$(TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` && curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id)
+            PUBLIC_IP=$(TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` && curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4)
+            PUBLIC_DNS_NAME=$(TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` && curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/public-hostname)
+            if [ -z "$INSTANCE_ID" ] || [ -z "$PUBLIC_IP" ] || [ -z "$PUBLIC_DNS_NAME" ]; then
+              echo "Waiting for instance ID, public IP, and public DNS name..."
+              sleep 10
+            fi
+          done
+
+          cat <<EOF > /var/www/html/index.html
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+          <title>What Success Looks Like</title>
+          <style>
+          body {
+          width: 80%;
+          margin: auto;
+          text-align: center;
+          }
+          img {
+          margin-top: 5vh;
+          }
+          ul {
+          text-align: left;
+          list-style-position: inside;
+          }
+          div {
+          border: 1px solid black;
+          width: max-content;
+          margin: auto;
+          padding: 10px;
+          }
+          </style>
+          </head>
+          <body>
+          <h1>AWS CloudFormation Utilities Applied!</h1>
+          <p>EC2 Instance ID: $INSTANCE_ID</p>
+          <p>Public IPv4 Address: $PUBLIC_IP</p>
+          <p>Public DNS Name: $PUBLIC_DNS_NAME</p>
+          <!-- The !Sub function (used above) substitutes the value of the Environment parameter. -->
+          <p>Environment: ${Environment}</p> 
+          <div>
+          <h3>Deployment Validation</h3>
+          <ul>
+          <li>The EC2 Instance ID is present.</li>
+          <li>The Public IPv4 Address is present.</li>
+          <li>The Public DNS Name is present.</li>
+          <li>The Environment type is accurately displayed.</li>
+          </ul>
+          </div>
+          <a href="https://aws.amazon.com/what-is-cloud-computing">
+          <img src="https://d0.awsstatic.com/logos/powered-by-aws.png" alt="Powered by AWS Cloud Computing">
+          </a>
+          </body>
+          </html>
+          EOF
+
+  # Defines a security group to allow inbound HTTP traffic to the EC2 instance
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable HTTP access on port 80
+      VpcId: !ImportValue LabVPCId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+# Exposes important resource information or values for reference or further use
+Outputs:
+  InstancePublicDNSName:
+    Description: Public DNS Name of the EC2 instance
+    Value: !GetAtt LabInstance.PublicDnsName
+  WebsiteURL:
+    Description: URL to access the Apache HTTP server
+    Value: !Sub http://${LabInstance.PublicDnsName}
