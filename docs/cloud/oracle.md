@@ -8,4 +8,4 @@
 * **HCM** [Human Capital Management](../oracle/hcm.md)
 * **ERP** [Enterprise Resource Planning](../oracle/erp.md)
 * **SCM** [Supply Chain and Manufacturing](../oracle/scm.md)
-* **CX** Customer Experience
+* **CX** [Customer Experience](../oracle/cx.md)
