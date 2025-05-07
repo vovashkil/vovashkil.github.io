@@ -11,6 +11,11 @@
 * **SCM** Supply Chain and Manufacturing
 * **CX** Customer Experience
 
-## Oracle Fusion Cloud CX
+## Oracle Fusion Cloud CX: Modules
+
+* Marketing
+* Sales
+* Service
+* CX Platform
 
 ## Marketing

@@ -235,7 +235,7 @@ The other options are incorrect because the AWS CDK does not support Perl, SQL, 
 
 #### IaC as part of a DevOps workflow
 
-In this topic, you learned about infrastructure as code (IaC) as part of a DevOps workflow. This included the following: 
+In this topic, you learned about infrastructure as code (IaC) as part of a DevOps workflow. This included the following:
 
 * Examined the common components and requirements of IaC tools.
 * Explored AWS and third-party IaC tools, including AWS CloudFormation, AWS Cloud Development Kit (AWS CDK) , and Terraform.

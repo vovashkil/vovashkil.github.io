@@ -30,3 +30,7 @@
 * Week 4:
   * [IaC: Review of Infrastructure as Code](./W040IaCReviewIaC.md)
   * [IaC: IaC as Part of a DevOps Workflow](./W042IaCDevOpsWorkflow.md)
+  * [IaC: IaC Tools](./W044IaCTools.md)
+  * [IaC: Building Templates in AWS CloudFormation](./W046IaCBuildingTemplatesAwsCloudFormation.md)
+* Week 5:
+  * [IaC: Working with AWS CloudFormation Stacks](./W050IaCCloudFormationStacks.md)
