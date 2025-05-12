@@ -34,3 +34,5 @@
   * [IaC: Building Templates in AWS CloudFormation](./W046IaCBuildingTemplatesAwsCloudFormation.md)
 * Week 5:
   * [IaC: Working with AWS CloudFormation Stacks](./W050IaCCloudFormationStacks.md)
+  * [IaC: Expanding AWS CloudFormation Usage](./W052IaCExpandingCfUsage.md)
+  
