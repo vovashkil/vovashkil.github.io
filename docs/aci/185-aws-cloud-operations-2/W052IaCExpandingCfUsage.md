@@ -323,7 +323,64 @@ In this AWS SimuLearn assignment, you will review a real-world scenario helping 
 
 For this assignment, you will help reduce human error and standardize a robotics research deployment infrastructure.
 
-### How often does Amazon EventBridge send metric data to Amazon CloudWatch?
+* [Sample File](./files/W0520SimuLearn_sample_code.txt)
+* [CloudFormation Template File](./files/W0522SimuLearn_template-1747028811596.yaml)
+
+#### Create a CloudFormation template and deploy Stack 1
+
+```yaml
+Resources:
+  RobotAppServer:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-087c17d1fe0178315
+      SecurityGroups:
+      - !Ref RobotAppSecurityGroup
+  RobotAppSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp: 0.0.0.0/0
+  RobotS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Delete
+```
+
+#### Create a CloudFormation template and deploy Stack 2 with EC2 type t2.small
+
+```yaml
+Resources:
+  RobotAppServer:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: t2.small
+      ImageId: ami-087c17d1fe0178315
+      SecurityGroups:
+      - !Ref RobotAppSecurityGroup
+  RobotAppSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp: 0.0.0.0/0
+  RobotS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Delete
+```
+
+![SimuLearn is Done](./images/W05Img084IaCSimuLearnAutomationwithCloudFormation.png)
+
+### Knowledge Check
+
+#### How often does Amazon EventBridge send metric data to Amazon CloudWatch?
 
 * Every 1 minute
 

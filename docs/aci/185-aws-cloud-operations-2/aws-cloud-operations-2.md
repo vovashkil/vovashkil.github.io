@@ -35,4 +35,5 @@
 * Week 5:
   * [IaC: Working with AWS CloudFormation Stacks](./W050IaCCloudFormationStacks.md)
   * [IaC: Expanding AWS CloudFormation Usage](./W052IaCExpandingCfUsage.md)
+  * [IaC: Examining AWS Cloud Development Kit (AWS CDK)](./W054IaCExaminingAwsCdk.md)
   
