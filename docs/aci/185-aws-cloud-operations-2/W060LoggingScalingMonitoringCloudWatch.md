@@ -1034,3 +1034,582 @@ The following image shows a Lambda Insights single-function performance monitori
 ![Example of Lambda Insights single-function performance monitoring dashboard.](./images/W06Img022LoggingServerlessSinglefunctionDashboard.png)
 
 ### CloudWatch Container Insights
+
+#### Enhanced observability
+
+Imagine that your team has embraced containerized applications, using Amazon Elastic Container Service (Amazon ECS) and Amazon Elastic Kubernetes Service (Amazon EKS) to efficiently deploy and manage your microservices architecture. In the dynamic world of containers, the operation teams can face challenges in gaining comprehensive insights into the health and performance of these distributed applications.
+
+Here is where Amazon CloudWatch Container Insights becomes valuable. For example, during a high-traffic period, your team notices a sudden increase in latency across several containers and identifies spikes in resource utilization. Without CloudWatch Container Insights, pinpointing the root causes of these performance issues would be like finding a needle in a haystack.
+
+By implementing CloudWatch Container Insights, your team can gain real-time visibility into containerized applications. The service aggregates and analyzes metrics like CPU and memory usage, network performance, and error rates across the entire container environment.
+
+It provides actionable insights, such as diagnostic information that help your team troubleshoot and optimize the containerized environment for improved efficiency.
+
+#### Using CloudWatch Container Insights
+
+CloudWatch Container Insights is available for Amazon ECS, Amazon EKS, and Kubernetes platforms on Amazon Elastic Compute Cloud (Amazon EC2). CloudWatch Container Insights supports collecting metrics from clusters deployed on AWS Fargate for both Amazon ECS and Amazon EKS.
+
+CloudWatch Container Insights collects data as *performance log* events using embedded metric format. With embedded metric format, you can generate custom metrics asynchronously in the form of logs written to Amazon CloudWatch Logs. You can embed custom metrics with detailed log event data, and CloudWatch automatically extracts the custom metrics so that you can visualize and alarm on them, for real-time incident detection.
+
+The performance log events are entries that use a structured JSON schema that permits high-cardinality data to be ingested and stored at scale. From this data, CloudWatch creates aggregated metrics at the cluster, node, pod, task, and service level as CloudWatch metrics. The metrics that CloudWatch Container Insights collects are available in CloudWatch automatic dashboards, and are also viewable in the **Metrics** section of the CloudWatch console. When you deploy CloudWatch Container Insights, it automatically creates a log group for the performance log events. You don't need to create this log group yourself.
+
+**Metrics are not visible until the container tasks have been running for some time.**
+
+The following example is a cluster-wide performance dashboard that you can use to get a high-level perspective. The different views permit you to methodically narrow down to find the root cause, from cluster to node to pod to container.
+
+![Screenshot of CloudWatch Container Insights with performance monitoring on the clusters level.](./images/W06Img024LoggingCloudWatchContainerInsights.png)
+
+You can use the CloudWatch Container Insights dashboards to drill down into more detailed views to gain additional insights. For example, in the following image, the containers view shows CPU and memory utilization relative to the pod limits. This view reveals that the fluent-bit container was peaking at 77 percent utilization. By diving into these different views, you can more easily identify the root cause of issues. The dashboards also provide various views to analyze telemetry data from different dimensions.
+
+When you drill into container-level details, the filters automatically populate with related components for that container. This helps users to quickly identify which node a failing container is on, and explore potential risks to other neighboring components on that node. Using the nested views and automatic filtering makes root-cause analysis highly efficient. This gives visibility into containerized workloads from high-level monitoring to pod and container metrics. This visibility helps troubleshoot and optimize container performance.
+
+![Screenshot of CloudWatch Container Insights on the Containers level.](./images/W06Img026LoggingCloudWatchContainerInsightsContainerLevel.png)
+
+To help you manage your CloudWatch Container Insights costs, CloudWatch doesn't automatically create all possible metrics from the log data. However, you can view additional metrics and additional levels of granularity by using CloudWatch Logs Insights to analyze the raw performance log events.
+
+CloudWatch Container Insights in Amazon EKS and Kubernetes uses a containerized CloudWatch agent to detect all running containers in a cluster. It then collects performance data at each layer of the performance stack.
+
+It can use an AWS KMS key to encrypt the collected logs and metrics. To allow this encryption, you must manually enable AWS KMS encryption for the log group that receives CloudWatch Container Insights data. This results in CloudWatch Container Insights encrypting this data with the provided KMS key. Only symmetric KMS keys are supported for encrypting log groups, and asymmetric keys cannot be used.
+
+#### Setting up CloudWatch Container Insights on Amazon ECS
+
+You can use one or both of the following options to enable CloudWatch Container Insights on Amazon ECS clusters:
+
+* Use the AWS Management Console or the AWS Command Line Interface (AWS CLI) to start collecting cluster-level, task-level, and service-level metrics.
+* Deploy the CloudWatch agent as a daemon service to start collecting instance-level metrics on clusters that are hosted on Amazon EC2 instances.
+
+For new clusters, you can use either the Amazon ECS console or the AWS CLI. For existing clusters, you use the AWS CLI. The following examples show you how to use the AWS CLI to set up CloudWatch Container Insights.
+
+##### New Amazon ECS cluster
+
+You can use the AWS CLI to set account-level permission to enable CloudWatch Container Insights for any new Amazon ECS clusters created in your account. To do so, enter the following command.
+
+```shell
+aws ecs put-account-setting --name "containerInsights" --value "enabled"
+```
+
+##### Existing Amazon ECS cluster
+
+To enable CloudWatch Container Insights on an existing Amazon ECS cluster, enter the following command.  
+
+```shell
+aws ecs update-cluster-settings --cluster myCICluster --settings name=containerInsights,value=enabled
+```
+
+#### Setting up CloudWatch Container Insights on Amazon EKS
+
+You can use the Amazon EKS add-on to install CloudWatch Container Insights with enhanced observability for Amazon EKS. Amazon EKS add-on provides installation and management of operational capabilities for Amazon EKS clusters. The add-on installs the CloudWatch agent to send infrastructure metrics from the cluster and installs Fluent Bit to send container logs.
+
+To install the Amazon EKS add-on, use the following steps.
+
+1. Set up the necessary permissions by attaching the **CloudWatchAgentServerPolicy** to your worker nodes. To do so, enter the following command. Replace **my-worker-node-role** with the IAM role used by your Kubernetes worker nodes.
+
+    ```shell
+    aws iam attach-role-policy \
+    --role-name my-worker-node-role \
+    --policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+    ```
+
+2. Run the following add-on command and replace **my-cluster-name** with the name of your cluster.
+
+    ```shell
+    aws eks create-addon --cluster-name my-cluster-name --addon-name amazon-cloudwatch-observability
+    ```
+
+When the Amazon EKS add-on is enabled, the enhanced **Container Insights** page looks like the following image, with the high-level summary of your clusters. The CloudWatch Container Insights dashboard shows cluster status and alarms. It uses predefined thresholds for CPU and memory to quickly identify which resources are having higher consumption, so you can take proactive actions to avoid performance impact.
+
+![Screenshot of enhanced Amazon CloudWatch Container Insights.](./images/W06Img028LoggingCloudWatchContainerInsightsEKS.png)
+
+### Performance log reference
+
+The following section includes reference information about how CloudWatch Container Insights uses performance log events to collect metrics. Remember, when you deploy CloudWatch Container Insights, it automatically creates a log group for the performance log events. You don't need to create this log group yourself.
+
+#### CloudWatch Container Insights performance log events for Amazon ECS
+
+The following example shows the performance log events that CloudWatch Container Insights collects from Amazon ECS.
+
+This log is in CloudWatch Logs, in a log group named **/aws/ecs/containerinsights/CLUSTER_NAME/performance**. Within that log group, each container instance will have a log stream named **AgentTelemetry-CONTAINER_INSTANCE_ID**.
+
+You can query the logs using queries such as **{ $.Type = "Container" }** to view all container log events.
+
+```json
+{
+    "Version":"0",
+    "Type":"Container",
+    "ContainerName":"sleep",
+    "TaskId":"7ac4dfba69214411b4783a3b8189c9ba",
+    "TaskDefinitionFamily":"sleep360",
+    "TaskDefinitionRevision":"1",
+    "ContainerInstanceId":"0d7650e6dec34c1a9200f72098071e8f",
+    "EC2InstanceId":"i-0c470579dbcdbd2f3",
+    "ClusterName":"MyCluster",
+    "Image":"busybox",
+    "ContainerKnownStatus":"RUNNING",
+    "Timestamp":1623963900000,
+    "CpuUtilized":0.0,
+    "CpuReserved":10.0,
+    "MemoryUtilized":0,
+    "MemoryReserved":10,
+    "StorageReadBytes":0,
+    "StorageWriteBytes":0,
+    "NetworkRxBytes":0,
+    "NetworkRxDropped":0,
+    "NetworkRxErrors":0,
+    "NetworkRxPackets":14,
+    "NetworkTxBytes":0,
+    "NetworkTxDropped":0,
+    "NetworkTxErrors":0,
+    "NetworkTxPackets":0
+}
+```
+
+#### CloudWatch Container Insights performance log events for Amazon EKS and Kubernetes
+
+The following example shows the performance log events that CloudWatch Container Insights collects from Amazon EKS and Kubernetes clusters.
+
+```json
+{
+  "AutoScalingGroupName": "eksctl-myCICluster-nodegroup-standard-workers-NodeGroup-1174PV2WHZAYU",
+  "CloudWatchMetrics": [
+    {
+      "Metrics": [
+        {
+          "Unit": "Percent",
+          "Name": "node_cpu_utilization"
+        },
+        {
+          "Unit": "Percent",
+          "Name": "node_memory_utilization"
+        },
+        {
+          "Unit": "Bytes/Second",
+          "Name": "node_network_total_bytes"
+        },
+        {
+          "Unit": "Percent",
+          "Name": "node_cpu_reserved_capacity"
+        },
+        {
+          "Unit": "Percent",
+          "Name": "node_memory_reserved_capacity"
+        },
+        {
+          "Unit": "Count",
+          "Name": "node_number_of_running_pods"
+        },
+        {
+          "Unit": "Count",
+          "Name": "node_number_of_running_containers"
+        }
+      ],
+      "Dimensions": [
+        [
+          "NodeName",
+          "InstanceId",
+          "ClusterName"
+        ]
+      ],
+      "Namespace": "ContainerInsights"
+    },
+    {
+      "Metrics": [
+        {
+          "Unit": "Percent",
+          "Name": "node_cpu_utilization"
+        },
+        {
+          "Unit": "Percent",
+          "Name": "node_memory_utilization"
+        },
+        {
+          "Unit": "Bytes/Second",
+          "Name": "node_network_total_bytes"
+        },
+        {
+          "Unit": "Percent",
+          "Name": "node_cpu_reserved_capacity"
+        },
+        {
+          "Unit": "Percent",
+          "Name": "node_memory_reserved_capacity"
+        },
+        {
+          "Unit": "Count",
+          "Name": "node_number_of_running_pods"
+        },
+        {
+          "Unit": "Count",
+          "Name": "node_number_of_running_containers"
+        },
+        {
+          "Name": "node_cpu_usage_total"
+        },
+        {
+          "Name": "node_cpu_limit"
+        },
+        {
+          "Unit": "Bytes",
+          "Name": "node_memory_working_set"
+        },
+        {
+          "Unit": "Bytes",
+          "Name": "node_memory_limit"
+        }
+      ],
+      "Dimensions": [
+        [
+          "ClusterName"
+        ]
+      ],
+      "Namespace": "ContainerInsights"
+    }
+  ],
+  "ClusterName": "myCICluster",
+  "InstanceId": "i-1234567890123456",
+  "InstanceType": "t3.xlarge",
+  "NodeName": "ip-192-0-2-0.us-west-2.compute.internal",
+  "Sources": [
+    "cadvisor",
+    "/proc",
+    "pod",
+    "calculated"
+  ],
+  "Timestamp": "1567096682364",
+  "Type": "Node",
+  "Version": "0",
+  "kubernetes": {
+    "host": "ip-192-168-75-26.us-west-2.compute.internal"
+  },
+  "node_cpu_limit": 4000,
+  "node_cpu_request": 1130,
+  "node_cpu_reserved_capacity": 28.249999999999996,
+  "node_cpu_usage_system": 33.794636630852764,
+  "node_cpu_usage_total": 136.47852169244098,
+  "node_cpu_usage_user": 71.67075111567326,
+  "node_cpu_utilization": 3.4119630423110245,
+  "node_memory_cache": 3103297536,
+  "node_memory_failcnt": 0,
+  "node_memory_hierarchical_pgfault": 0,
+  "node_memory_hierarchical_pgmajfault": 0,
+  "node_memory_limit": 16624865280,
+  "node_memory_mapped_file": 406646784,
+  "node_memory_max_usage": 4230746112,
+  "node_memory_pgfault": 0,
+  "node_memory_pgmajfault": 0,
+  "node_memory_request": 1115684864,
+  "node_memory_reserved_capacity": 6.7109407818311055,
+  "node_memory_rss": 798146560,
+  "node_memory_swap": 0,
+  "node_memory_usage": 3901444096,
+  "node_memory_utilization": 6.601302600149552,
+  "node_memory_working_set": 1097457664,
+  "node_network_rx_bytes": 35918.392817386324,
+  "node_network_rx_dropped": 0,
+  "node_network_rx_errors": 0,
+  "node_network_rx_packets": 157.67565245448117,
+  "node_network_total_bytes": 68264.20276554905,
+  "node_network_tx_bytes": 32345.80994816272,
+  "node_network_tx_dropped": 0,
+  "node_network_tx_errors": 0,
+  "node_network_tx_packets": 154.21455923431654,
+  "node_number_of_running_containers": 16,
+  "node_number_of_running_pods": 13
+}
+```
+
+### CloudWatch Application Insights
+
+#### Detecting common application problems
+
+Application monitoring is fundamental for maintaining the application's health, reliability, and security. It empowers you to proactively address issues, optimize performance, and deliver a positive user experience.
+
+To gain comprehensive insights into the performance and health of your applications that were built with technologies such as Microsoft IIS, .NET, and Microsoft SQL Server, you can use Amazon CloudWatch Application Insights.
+
+CloudWatch Application Insights simplifies the monitoring and troubleshooting of applications by automatically detecting common problems, correlating data from various AWS resources, and providing a consolidated view of application health.
+
+* Automatic problem detection
+    CloudWatch Application Insights automates the detection of common application issues, such as latency spikes, error rates, and resource constraints. The automated approach accelerates the identification of problems and reduces the mean time to repair (MTTR) to troubleshoot your application issues.
+* Correlation across resources
+    CloudWatch Application Insights correlates data from various AWS resources, including Amazon EC2 instances, databases, and load balancers. This correlation provides a holistic view of how different components contribute to application performance, thus streamlining troubleshooting efforts.
+* Preconfigured dashboards
+    CloudWatch Application Insights generates preconfigured dashboards that display key performance metrics and logs related to detected issues. These dashboards offer a centralized and visualized overview. This facilitates quick analysis and decision-making.
+* Intelligent anomaly detection
+    CloudWatch Application Insights employs intelligent anomaly detection algorithms to identify abnormal patterns in application data. This helps organizations proactively address issues before they impact the end-user experience.
+
+#### CloudWatch Application Insights
+
+When you add your applications to Amazon CloudWatch Application Insights, it scans the resources in the applications and recommends and configures metrics and logs on CloudWatch for application components. Example application components include SQL Server backend databases and Microsoft IIS - web tiers.
+
+CloudWatch Application Insights uses historical data to analyze metric patterns and detect anomalies. It continuously detects errors and exceptions from your application, operating system, and infrastructure logs. It correlates these observations by using a combination of classification algorithms and built-in rules.
+
+When errors and anomalies are detected, CloudWatch Application Insights generates CloudWatch Events that you can use to set up notifications or take actions. Then it automatically creates dashboards that show the relevant observations and problem severity information to help you prioritize your actions.
+
+For common problems in .NET and SQL application stacks, such as application latency, SQL Server failed backups, memory leaks, large HTTP requests, and canceled I/O operations, it provides additional insights that point to a possible root cause and steps for resolution.
+
+The following concepts are important for understanding how CloudWatch Application Insights monitors your application.
+
+##### Component
+
+A component is an auto-grouped, standalone, or custom grouping of similar resources that make up an application. We recommend grouping similar resources into custom components for better monitoring.
+
+##### Observation
+
+An observation is an individual event (metric anomaly, log error, or exception) that is detected with an application or application resource.
+
+##### Problem
+
+Problems are detected by correlating, classifying, and grouping related observations.
+
+#### How CloudWatch Application Insights works
+
+CloudWatch Application Insights monitors applications by employing an automated and intelligent approach to detect, correlate, and analyze data from various AWS resources in the following four steps.
+
+1. **Application discovery and configuration**: When you initially configure an application with CloudWatch Application Insights, it examines the various components of the application to suggest important metrics, log files, and other information sources. You can then configure your application based on these recommendations.
+2. **Data preprocessing**: CloudWatch Application Insights continuously analyzes the data sources being monitored across the application resources. This is to discover metric anomalies and log errors (also called observations).
+3. **Intelligent problem detection**: The CloudWatch Application Insights engine detects problems in your application by correlating observations with classification algorithms and built-in rules. It creates automated CloudWatch dashboards, which include contextual information about the problems, to help you troubleshoot.
+4. **Alert and action**: When CloudWatch Application Insights detects a problem with your application, it generates CloudWatch Events to notify you of the problem.
+
+CloudWatch Application Insights retains problems for 55 days and observations for 60 days.
+
+##### Example scenario
+
+Let's say you have an ASP.NET application that is backed by a SQL Server database. Suddenly, your database begins to malfunction because of high memory pressure. This leads to application performance degradation and possibly HTTP 500 errors in your web servers and load balancer.
+
+With CloudWatch Application Insights and its intelligent analytics, you can identify the application layer that is causing the problem by checking the dynamically created dashboard that shows the related metrics and log file snippets. In this case, the problem might be at the SQL database layer.
+
+#### Events and notifications
+
+When issues arise with your application, CloudWatch Application Insights can identify these problems and create CloudWatch Events to alert you about them. For each application that is added to CloudWatch Application Insights, a CloudWatch event is published for the following events on a best effort basis.
+
+##### Problem creation
+
+This event is invoked when CloudWatch Application Insights detects a new problem.
+
+* Detail type: **"Application Insights Problem Detected"**
+* Detail:
+  * **problemId**: The detected problem ID.
+  * **region**: The AWS Region where the problem was created.
+  * **resourceGroupName**: The resource group for the registered application for which the problem was detected.
+  * **status**: The status of the problem. Possible status and definitions are as follows:
+    * **In progress**: A new problem has been identified. The problem is still receiving observations.
+    * **Recovering**: The problem is stabilizing. You can manually resolve the problem when it is in this state.
+    * **Resolved**: The problem is resolved. There are no new observations about this problem.
+    * **Recurring**: The problem was resolved within the past 24 hours. It has reopened as a result of additional observations.
+  * **severity**: The severity of the problem.
+  * **problemUrl**: The console URL for the problem.
+
+##### Problem update
+
+This event is invoked when the problem is updated with a new observation or when an existing observation is updated and the problem is subsequently updated. The updates include a resolution or closure of the problem.
+
+* Detail type: **"Application Insights Problem Updated"**
+* Detail:
+  * **problemId**: The created problem ID.
+  * **region**: The AWS Region where the problem was created.
+  * **resourceGroupName**: The resource group for the registered application for which the problem was detected.
+  * **status**: The status of the problem.
+  * **severity**: The severity of the problem.
+  * **problemUrl**: The console URL for the problem.
+
+#### Viewing and troubleshooting problems detected
+
+CloudWatch Application Insights detects problems with your applications and infrastructure and provides insights to help troubleshoot issues.
+
+##### CloudWatch Application Insights overview pane
+
+The CloudWatch Application Insights overview pane displays the following:
+
+* The severity of the problems detected: High, Medium, or Low
+* A short summary of the problem
+* The problem source
+* The time that the problem started
+* The resolution status of the problem
+* The affected resource group
+
+To view the details of a specific problem, under **Problem Summary**, select the description of the problem. A detailed dashboard displays insights into the problem and related metric anomalies and snippets of log errors. You can provide feedback on the relevance of the insight by selecting whether it is useful.
+
+If a new resource is detected that is not configured, the problem summary description takes you to the **Edit configuration** wizard to configure your new resource.
+
+![Example screenshot of detected problems dashboard in CloudWatch Application Insights.](./images/W06Img030LoggingCloudWatchAppInsights.png)
+
+##### CloudWatch Application Insights Problem summary page
+
+CloudWatch Application Insights provides the following information about detected problems on the **Problem summary** page:
+
+* A short summary of the problem
+* The start time and date of the problem
+* The problem severity: High, Medium, or Low
+* The status of the detected problem: In progress or Resolved
+* Insight: Automatically generated insights on the detected problem and possible root cause
+* Feedback on insights: Feedback that you have provided about the usefulness of the insights generated by CloudWatch Application Insights
+* Related observations: A detailed view of the metric anomalies and error snippets of relevant logs related to the problem across various application components
+
+![Example screenshot of detailed detected problem summary in CloudWatch Application Insights.](./images/W06Img032LoggingCloudWatchAppInsightsProblemSum.png)
+
+##### CloudWatch agent merge conflict failures
+
+CloudWatch Application Insights installs and configures the CloudWatch agent on customer instances. This includes creation of a CloudWatch agent configuration file with configurations for metrics or logs. A merge conflict can occur if a customer's instance already has a CloudWatch agent configuration file with different configurations defined for the same metrics or logs.
+
+To resolve the merge conflict, use the following steps:
+
+1. Identify the CloudWatch agent configuration files on your system.
+2. Remove the resource configurations that you want to use in CloudWatch Application Insights from the existing CloudWatch agent configuration file. If you want to only use Application Insights configurations, delete the existing CloudWatch agent configuration files.
+
+##### Alarms not created
+
+For some metrics, CloudWatch Application Insights predicts the alarm threshold based on previous data points for the metric. To enable this prediction, the following criteria must be met.
+
+* **Recent data points**: There must be a minimum of 100 data points from the last 24 hours. The data points don't have to be continuous and can be scattered throughout the 24-hour time frame.
+* **Historical data**: There must be a minimum of 100 data points spanning the time frame from 15 days before the current date to 1 day before the current date. The data points don't have to be continuous and can be scattered throughout the 15-day time frame.
+
+##### Feedback
+
+You can provide feedback on the automatically generated insights on detected problems by designating them useful or not useful. Your feedback on the insights, along with your application diagnostics (metric anomalies and log exceptions), are used to improve the future detection of similar problems.
+
+##### Configuration errors
+
+CloudWatch Application Insights uses your configuration to create monitoring telemetries for the components. When Application Insights detects an issue with your account or your configuration, information is provided in the **Remarks** field of the **Application summary** about how to resolve the configuration issue for your application.
+
+Overall, CloudWatch Application Insights aims to proactively detect problems, provide actionable insights to troubleshoot issues, and collect feedback to continuously improve. The console overview and detailed dashboards help you monitor and resolve application and infrastructure problems effectively.
+
+### CloudWatch Anomaly Detection
+
+#### Anomaly detection
+
+In a dynamic and scalable cloud environment, where workloads can fluctuate rapidly, proactive anomaly detection becomes crucial for identifying abnormal patterns that might indicate potential problems. It's also an essential component in ensuring the reliability and performance of cloud-based systems.
+
+Early detection of anomalies let organizations address issues before they impact end users. This reduces downtime and prevents potential revenue loss. Proactive monitoring also facilitates resource optimization to ensure that resources are efficiently used and costs are well managed.
+
+#### Benefits of CloudWatch anomaly detection
+
+Anomaly detection in CloudWatch is grounded in statistical methods that establish a baseline for normal behavior. By continuously analyzing metric data, CloudWatch identifies deviations from this baseline to signal potential anomalies.
+
+For example, a financial services organization might use CloudWatch anomaly detection to strengthen its cybersecurity measures. By monitoring network traffic, access logs, and system behavior, the organization can set up anomaly detection alarms to identify unusual patterns that might indicates a security threat. For example, a sudden increase in failed login attempts or anomalous data access patterns invokes alerts, and this prompts the security team to investigate and respond quickly.
+
+CloudWatch anomaly detection acts as a proactive security layer. The organization can use it to detect and mitigate potential security incidents before they escalate. This not only enhances the overall security posture but also safeguards sensitive financial data and maintains customer trust in the organization's services.
+
+#### Using CloudWatch anomaly detection
+
+CloudWatch anomaly detection uses machine learning algorithms. These algorithms continuously analyze the metrics of systems and applications, determine normal baselines, and display anomalies with minimal user intervention.
+
+The algorithms generate an anomaly detection model. The model generates a range of expected values that represent normal metric behavior.
+
+You can use the model of expected values in two ways:
+
+* Create anomaly detection alarms based on a metric's expected value. These types of alarms don't have a static threshold for determining alarm state. Instead, they compare the metric's value to the expected value based on the anomaly detection model. You can choose whether the alarm is invoked when the metric value is above the band of expected values, below the band, or both.
+* When viewing a graph of metric data, overlay the expected values onto the graph as a band. This makes it visually clear which values in the graph are out of the normal range.
+
+Anomaly detection algorithms can adjust for the seasonality and trend changes of metrics. Seasonality changes could be hourly, daily, or weekly. After it is built, the model will be updated every 5 minutes with any new metric data. In a graph with anomaly detection, the gray bands indicate the expected values according the CloudWatch machine learning models, and the anomalous values are red lines that go beyond the bands.
+
+![Example screenshot of a graph with anomaly detection.](./images/W06Img034LoggingCloudWatchAnomalyDetection.png)
+
+#### How CloudWatch anomaly detection works
+
+When you enable anomaly detection for a metric, CloudWatch applies machine learning algorithms to the metric's past data to create a model of the metric's expected values. The model assesses both trends and hourly, daily, and weekly patterns of the metric. The algorithm trains on up to 2 weeks of metric data, but you can enable anomaly detection on a metric even if the metric does not have a full 2 weeks of data.
+
+You specify a value for the anomaly detection threshold that CloudWatch uses, along with the model to determine the normal range of values for the metric. A higher value for the anomaly detection threshold produces a thicker band of normal values.
+
+The machine learning model is specific to a metric and a statistic. For example, if you enable anomaly detection for a metric using the **AVG** statistic, the model is specific to the **AVG** statistic.
+
+When CloudWatch creates a model for many common metrics from AWS services, it ensures that the band doesn’t extend outside of logical values. For example, a band for a statistic that can’t be negative will never extend below zero, and a band for a percentage metric will stay between 0 and 100.
+
+After you create a model, CloudWatch anomaly detection continually evaluates the model and makes adjustments to it to ensure that it is as accurate as possible. This includes retraining the model to adjust if the metric values evolve over time or have sudden changes. And it also includes predictors to improve the models of metrics that are seasonal, spiky, or sparse.
+
+After you enable anomaly detection on a metric, you can choose to exclude specified time periods of the metric from being used to train the model. This way, you can exclude deployments or other unusual events from being used for model training, to ensure that the most accurate model is created.
+
+Using anomaly detection models for alarms incurs charges on your AWS account.
+
+### CloudWatch Metric Streams
+
+#### Use case
+
+AWS Partners have used the Amazon CloudWatch metrics to create various monitoring, alerting, and cost management tools. To access the metrics, the Partners used to create polling fleets that called the **ListMetrics** and **GetMetricDatafunctions** for each of their customers.
+
+These fleets must scale in proportion to the number of AWS resources created by each of the Partners’ customers and the number of CloudWatch metrics that are retrieved for each resource. This polling is simply undifferentiated heavy lifting that each Partner must do. It adds no value, and takes time that could be better invested in other ways.
+
+With CloudWatch metric streams, instead of polling (which can result in 5 to 10 minutes of latency), metrics are delivered to an Amazon Data Firehose stream. This helps Partners to scale down their polling fleets substantially, and lets them build tools that can respond more quickly when key cost or performance metrics change in unexpected ways.
+
+![Screenshot of the Create a metric stream page in the CloudWatch console.](./images/W06Img036LoggingCloudWatchMetricStreams.png)
+
+#### CloudWatch metric streams
+
+CloudWatch metric streams are a feature that you can use to continually stream CloudWatch metrics to other AWS destinations and several third-party provider destinations.  
+
+CloudWatch metric streams provides near real-time delivery and low latency. This provides immediate access to critical performance and operational data.
+
+##### Custom setup with Amazon Data Firehose
+
+You can create a metric stream and direct it to a Firehose delivery stream. It then delivers your CloudWatch metrics to where you want them to go. Amazon Data Firehose is a fully managed service that you can use to capture, transform, and load massive volumes of streaming data from hundreds of thousands of sources into AWS services.
+
+You can stream them to a data lake such as Amazon Simple Storage Service (Amazon S3), or to any destination or endpoint supported by Firehose, including third-party providers. JSON and OTEL 0.7.0 formats are supported natively. Or you can configure transformations in your Firehose delivery stream to convert the data to a different format, such as Parquet.
+
+With a metric stream, you can continually update monitoring data, or combine this CloudWatch metric data with billing and performance data to create rich datasets. You can then use tools such as Amazon Athena to get insight into cost optimization, resource performance, and resource utilization.
+
+##### Quick Amazon S3 setup
+
+You can stream to Amazon S3 with a quick setup process. By default, CloudWatch creates the resources needed for the stream. Both JSON and OTEL 0.7.0 formats are supported.
+
+##### Quick AWS Partner setup
+
+CloudWatch provides a quick setup experience for some third-party Partners. You can use third-party service providers to monitor, troubleshoot, and analyze your applications by using the streamed CloudWatch data. When you use the quick partner setup workflow, you need to provide only a destination URL and API key for your destination, and CloudWatch handles the rest of the setup. Quick partner setup is available for the following third-party providers:
+
+* Datadog
+* Dynatrace
+* New Relic
+* Splunk Observability Cloud
+* Sumo Logic
+
+CloudWatch metric streams are fully managed and convenient to set up. Streams can scale to handle any volume of metrics, with delivery to the destination within 2 or 3 minutes. You can choose to send all available metrics to each stream that you create, or you can opt-in to any of the available AWS (EC2, S3, and others) or custom namespaces. You can also use filters to stream only specified metrics. Each metric stream can include up to 1,000 filters that either include or exclude metric namespaces or specific metrics.
+
+**A single metric stream can have only include or exclude filters, but not both.**
+
+After a metric stream is created, if new metrics are created that match the filters in place, the new metrics are automatically included in the stream. There is no limit on the number of metric streams per account or per Region. There is also no limit on the number of metric updates being streamed.
+
+Metric streams always include the **Minimum**, **Maximum**, **SampleCount**, and **Sum** statistics. You can also choose to include additional statistics at an additional charge.
+
+* [Metric steams statistics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-metric-streams-statistics.html)
+
+Metric streams are always in one of two states: *Running* or *Stopped*.
+
+* **Running**: The metric stream is running correctly. There might not be any metric data streamed to the destination because of the filters on the stream.
+* **Stopped**: The metric stream has been explicitly stopped by someone, and not because of an error. It might be useful to stop your stream to temporarily pause the streaming of data without deleting the stream.
+
+If you stop and restart a metric stream, the metric data that was published to CloudWatch while the metric stream was stopped is not backfilled to the metric stream.
+
+### AWS X-Ray
+
+AWS X-Ray is a distributed tracing service that you can use to analyze and monitor applications running on AWS. It provides a detailed view of requests as they travel through various components of a distributed application. This becomes very important for microservice applications where a single action, like adding an item to your shopping cart, can travel through many microservices.
+
+X-Ray helps you to identify performance slowdowns, troubleshoot errors, and optimize overall system efficiency. X-Ray can enhance the visibility and management of your application's performance. This ultimately leads to better user experiences and more efficient resource utilization.
+
+#### Analyzing Applications with AWS X-Ray
+
+With X-Ray, you can determine the root cause of performance issues or errors. It can help you understand how your application is used, monitor its response times, and detect and troubleshoot security and abuse issues. You can use X-Ray to analyze and debug distributed applications in both development and production environments. This includes architectures ranging from straightforward three-tier applications to those that are built using microservices.
+
+Amazon CloudWatch provides metrics and logs for monitoring applications and infrastructure. Conversely, X-Ray traces requests as they flow through your application components. With X-Ray, developers can visualize the path of a request, identify slow or failed requests, and optimize the performance of the application. X-Ray is especially useful for developers who need to analyze and troubleshoot the performance of their applications. It is also useful for operations teams that need to monitor the health and usage of AWS resources.
+
+X-Ray integrates with Amazon CloudWatch and many of its features, including CloudWatch ServiceLens, CloudWatch RUM, or Real-User Monitoring, and CloudWatch Synthetics. The AWS X-Ray Developer Guide has the most current list of services that integrate directly with X-Ray.
+
+#### X-Ray's Service map
+
+X-Ray traces and records requests to create what is called a *service map*. A service map displays the architecture of your application and the services that it uses. The service map shows the relationship between your applications, microservices, and containers, and underlying infrastructure. You can use the service map to identify the services that your application depends on and analyze their performance. X-Ray highlights trouble spots, such as areas of latency, and it provides details about components.
+
+In addition to measuring latency, X-Ray records three types of errors.
+
+1. Client-side errors, which are 400-series errors.
+2. Faults on the server side or from AWS, which are 500-series errors.
+3. Throttling errors for too many requests, which are 429 errors.
+
+#### An example using AWS X-Ray
+
+Now, let's review an example using AWS X-Ray. In this example, there is a serverless application that uses an Amazon API Gateway to communicate with a backend AWS Lambda function. The X-Ray tracing feature has been enabled in both services so that transactions and other details that occur within the application can be added to a trace.
+
+Once a request is made, within a few seconds, you can open up Amazon CloudWatch and go the X-Ray traces section to view the results. Traces will allow you to see the events that occurred within a 6-hour time period any time within the last 30 days. When you choose a trace, you can view trace details that include status, response codes, and duration information about each service or application segment.
+
+In the **Segments Timeline** section, you can choose a specific segment to view more specific information about the service or node. If you like visuals, you can choose **Go to service map** at the top of the **Trace details** page. From here, you can see a map of the group of nodes that make up your application.
+
+If you expand the **Legend and options** menu, you will see what each item on the map represents. You can choose a node to see metrics, such as requests, latency, alerts, and response times. You can choose **Analyze traces** to show a detailed analytics page with information related to that specific trace group.
+
+For example, consider an application that displays a photo to the user. The application uses an API call that invokes a Lambda function, which then retrieves the storage location of the photo from a database. If the response takes a long time, you can review the X-Ray service map to find the underlying issue. It might be a database with under-provisioned capacity that can't manage the number of requests it's receiving. Or, it might be that the Lambda function is reaching concurrency limits.
+
+X-Ray can be useful in an event-driven architecture where one application is broken into many small parts because it can help identify issues in a microservices environment. Instead of parsing through logs to find issues, you can use X-Ray to identify if the issue is coming from the client or server side, and what service or services are contributing to the root cause.
