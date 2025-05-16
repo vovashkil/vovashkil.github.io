@@ -1904,3 +1904,418 @@ The following example shows you how to share a dashboard with specific email add
     ![Copy link button is highlighted.](./images/W06Img056LoggingCloudWatchShareDashboardStep6.png)
 
 ### CloudWatch Synthetics and CloudWatch RUM
+
+#### Performance monitoring
+
+Customer experience directly influences the success and adoption of cloud-based solutions. A positive customer experience ensures that end users can seamlessly interact with and derive value from the applications and services hosted in the cloud. But how can you monitor the performance of your applications and check the customer experience?
+
+Synthetic monitoring and real user monitoring (RUM) are two approaches for monitoring and providing insight into web performance. Synthetic and RUM monitoring provide for different views of performance, and each have their own benefits. Synthetic monitoring is very well suited to regression testing and mitigating shorter-term performance issues during development. RUM is generally best suited for understanding long-term trends.
+
+##### Synthetic monitoring
+
+Synthetic monitoring involves monitoring the performance of a page in a laboratory setting, typically with automation tooling in a consistent-as-possible environment. Synthetic monitoring involves deploying scripts to simulate the path that an end-user might take through a web application. It will then report back the performance that the simulator experiences. The traffic measured is not of your actual users, but rather synthetically generated traffic collecting data on page performance.
+
+Synthetic monitoring can be an important component of regression testing and production site monitoring. Regression testing is performed after an update to ensure that changes haven't impacted existing functionality. You should test the site at every stage of development and regularly in production.
+
+If an issue arises in production, synthetic monitoring can provide insight. It helps identify, isolate, and resolve problems before these problems negatively affect user experience.
+
+##### Real user monitoring (RUM)
+
+RUM measures the performance of a page from real users' devices. Generally, a third-party script injects a script on each page to measure and report back on page load data for every request made. This technique monitors an application's actual user interactions.
+
+In RUM, the browsers of real users report back performance metrics experienced. RUM helps identify how an application is being used, including the geographic distribution of users and the impact of that distribution on the end-user experience.
+
+Unlike synthetic monitoring, RUM captures the performance of actual users regardless of device, browser, network, or geographic location. As users interact with an application, all performance timings are captured, regardless of what actions are taken or pages viewed.
+
+By using RUM, a business can better understand its users and identify the areas on its site that require the most attention. Also, RUM can help to understand the geographic or channel-distribution trends of your users. Knowing your user trends helps you better define your business plan and, from a monitoring perspective, helps you to identify key areas to target for optimization and performance improvements.
+
+### CloudWatch Synthetics
+
+You can use Amazon CloudWatch Synthetics to continually monitor your endpoints and APIs, and you can use CloudWatch Synthetics to create canaries. Canaries are configurable scripts written in Node.js or Python. They create AWS Lambda functions in your account that use Node.js or Python as a framework. Canaries work over both HTTP and HTTPS protocols.
+
+Canaries follow the same routes and perform the same actions as a customer. For example, an ecommerce site could write a canary script to simulate a user adding and removing an item to a shopping cart.
+
+This makes it possible for you to continually verify your customer experience even when you don't have any customer traffic on your applications. By using canaries, you can discover issues before your customers do.
+
+You can run a canary once or on a regular schedule. Canaries can run as often as once per minute. You can use both cron and rate expressions to schedule canaries. Some common uses for synthetics canaries include the following:
+
+* Monitoring for page-load errors
+* Providing load latency for application UI
+* Monitoring flow in your webpages
+* Checking for broken or dead links
+
+![Screenshot of CloudWatch console with Canaries page displayed.](./images/W06Img060LoggingCloudWatchCanaries.png)
+
+Canaries example in the CloudWatch console shows that the current running canary named lab-login-canary has 100 percent success rate for one test run.
+
+By default, canaries create several CloudWatch metrics in the **CloudWatchSynthetics** namespace. These metrics have **CanaryName** as a dimension. Canaries that use the **executeStep()** or **executeHttpStep()** function from the function library also have **StepName** as a dimension.
+
+* [**Library Functions Available for Canary Scripts**](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Function_Library.html)
+
+#### Sample code for canary scripts
+
+The following sample code is a canary that fails with a custom error message when a target element is not loaded.
+
+```python
+from aws_synthetics.selenium import synthetics_webdriver as webdriver
+from aws_synthetics.common import synthetics_logger as logger
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+
+def custom_selenium_script():
+    # create a browser instance
+    browser = webdriver.Chrome()
+    browser.get('https://www.example.com/')
+    logger.info('navigated to home page')
+    # set cookie
+    browser.add_cookie({'name': 'foo', 'value': 'bar'})
+    browser.get('https://www.example.com/')
+    # save screenshot
+    browser.save_screenshot('signed.png')
+    # expected status of an element
+    button_condition = EC.element_to_be_clickable((By.CSS_SELECTOR, '.submit-button'))
+    # add custom error message on failure
+    WebDriverWait(browser, 5).until(button_condition, message='Submit button failed to load').click()
+    logger.info('Submit button loaded successfully')
+    # browser will be quit automatically at the end of canary run, 
+    # quit action is not necessary in the canary script
+    browser.quit()
+
+# entry point for the canary
+def handler(event, context):
+    return custom_selenium_script()
+```
+
+### CloudWatch RUM
+
+With Amazon CloudWatch RUM, you can perform real user monitoring to collect and view client-side data about your web application performance from actual user sessions in near real time. The data that you can visualize and analyze includes page-load times, client-side errors, and user behavior. When you view this data, you can see it all aggregated together and also see breakdowns by the browsers and devices that your customers use.
+
+You can use the collected data to quickly identify and debug client-side performance issues. CloudWatch RUM helps you visualize anomalies in your application performance and find relevant debugging data such as error messages, stack traces, and user sessions. You can also use CloudWatch RUM to understand the range of end user impact, including the number of users, geolocations, and browsers used.
+
+To use CloudWatch RUM, you create an *app monitor* and provide some information. CloudWatch RUM generates a JavaScript snippet for you to paste into your application. The snippet pulls in the RUM web client code. The RUM web client captures data from a percentage of your application's user sessions, which is displayed in a pre-built dashboard. You can specify what percentage of user sessions to gather data from.
+
+End-user data that you collect for CloudWatch RUM is retained for 30 days and then automatically deleted. If you want to keep the RUM events for a longer time, you can choose to have the app monitor send copies of the events to Amazon CloudWatch Logs in your account. Then, you can adjust the retention period for that log group.
+
+With CloudWatch RUM, you incur charges for every RUM event that CloudWatch RUM receives. Each data item collected using the RUM web client is considered a RUM event. Examples of RUM events include a page view, a JavaScript error, and an HTTP error. You have options for which types of events are collected by each app monitor. You can activate or deactivate options to collect performance telemetry events, JavaScript errors, HTTP errors, and X-Ray traces.
+
+#### Performance considerations of using CloudWatch RUM
+
+##### Load performance impact
+
+The RUM web client can be installed in your web application as a JavaScript module, or it can be loaded into your web application asynchronously from a content delivery network (CDN). It does not block the application’s load process. CloudWatch RUM is designed for there to be no perceptible impact to the application’s load time.
+
+##### Runtime impact
+
+The RUM web client performs processing to record and dispatch RUM data to the CloudWatch RUM service. Because events are infrequent and the amount of processing is small, CloudWatch RUM is designed for there to be no detectable impact to the application’s performance.
+
+##### Network impact
+
+The RUM web client periodically sends data to the CloudWatch RUM service. Data is dispatched at regular intervals while the application is running, and also immediately before the browser unloads the application. Data sent immediately before the browser unloads the application is sent as beacons, which are designed to have no detectable impact on the application’s unload time.
+
+#### Regionalization
+
+The following examples illustrate strategies for using CloudWatch RUM with applications in different Regions.
+
+##### Your web application is deployed in multiple AWS Regions
+
+If your web application is deployed in multiple AWS Regions, you have three options:
+
+* Deploy one app monitor in one Region, in one account, serving all Regions.
+* Deploy separate app monitors for each Region, in unique accounts.
+* Deploy separate app monitors for each Region, all in one account.
+
+The advantage of using one app monitor is that all data will be centralized into one visualization, and all logs are written to the same log group in CloudWatch Logs. With a single app monitor, there is a small amount of extra latency for requests, and a single point of failure.
+
+Using multiple app monitors removes the single point of failure but prevents all data from being combined into one visualization.
+
+##### CloudWatch RUM hasn't launched in some Regions that your application is deployed in
+
+CloudWatch RUM is launched into many Regions and has wide geographical coverage. By setting up CloudWatch RUM in the Regions where it is available, you can get the benefits. End users can be anywhere and still have their sessions included if you have set up an app monitor in the Region that they are connecting to.
+
+However, CloudWatch RUM is not yet launched in AWS GovCloud (US-East), AWS GovCloud (US-West), or any Regions in China. You are not able to send data to CloudWatch RUM from these Regions.
+
+### CloudWatch Logs Insights
+
+Let's consider a scenario where an ecommerce organization aims to enhance the performance and security of its online platform. As the company experiences a surge in user traffic during a major sale, the development and operations team notices a sudden increase in error messages within the application logs. What tool could they use to address this issue and ensure a seamless shopping experience for their users?
+
+#### Analyzing log data with CloudWatch Logs Insights
+
+Amazon CloudWatch Logs Insights helps you efficiently identify patterns, interactively search, and analyze your log data with bar charts, line charts, and stacked area charts. You can perform queries to respond to operational or network issues. If an issue occurs, you can use CloudWatch Logs Insights to identify potential causes and validate deployed fixes.
+
+CloudWatch Logs Insights generates visualizations for queries that use the stats function and one or more aggregation functions.
+
+After you have created a query, you can save the following:
+
+* Queries, and you can run them again later
+* Queries in a folder structure to help you keep them organized
+* 1,000 CloudWatch Logs Insights queries, per Region per account
+
+After you run a query, you can add the query to a CloudWatch dashboard or copy the results to the clipboard. Queries added to dashboards run every time you load the dashboard and every time that the dashboard refreshes. These queries count toward your limit of 10 concurrent CloudWatch Logs Insights queries.
+
+##### Identification
+
+Performing queries helps you more efficiently and effectively respond to operational issues. If an issue occurs, you can use CloudWatch Logs Insights to identify potential causes and validate deployed fixes.
+
+##### Purpose-built query language
+
+CloudWatch Logs Insights includes a purpose-built query language with a few simple but powerful commands. CloudWatch Logs Insights provides sample queries, command descriptions, query autocompletion, and log field discovery to help you get started. Sample queries are included for several types of AWS service logs.
+
+##### Automatic discovery
+
+CloudWatch Logs Insights automatically discovers fields in logs from AWS services, such as Amazon Route 53, AWS Lambda, AWS CloudTrail, and Amazon Virtual Private Cloud (Amazon VPC), and any application or custom log that emits log events as JSON.
+
+A single request can query up to 50 log groups. Queries time out after 60 minutes, if they have not completed. Query results are available for 7 days.
+
+You can save queries that you have created. This can help you run complex queries when you need to, without having to re-create them each time that you want to run them.
+
+**Note**: CloudWatch Logs Insights queries incur charges based on the amount of data that is queried.
+
+##### Logs
+
+CloudWatch Logs Insights supports different log types. For every log that's sent to CloudWatch Logs, CloudWatch Logs Insights automatically generates five system fields:
+
+* **@message** contains the raw, unparsed log event. This is the equivalent of the **message** field in [InputLogEvent](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_InputLogEvent.html).
+* **@timestamp** contains the event timestamp in the log event's timestamp field. This is the equivalent of the **timestamp** field in [InputLogEvent](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_InputLogEvent.html).
+* **@ingestionTime** contains the time when CloudWatch Logs received the log event.
+* **@logStream** contains the name of the log stream that the log event was added to. Log streams group logs through the same process that generated them.
+* **@log** is a log group identifier in the form of **account-id:log-group-name**. When you query multiple log groups, this can be useful to identify which log group a particular event belongs to.
+
+CloudWatch Logs Insights inserts the **@** symbol at the start of fields for logs that it automatically processes. Logs not automatically processed by CloudWatch can be processed by using the **parse** command to extract and create ephemeral fields for use in that query.
+
+If the name of a discovered log field starts with the **@** character, CloudWatch Logs Insights displays it with an additional @ appended to the beginning. For example, if a log field name is **@example.com**, this field name is displayed as **@@example.com**.
+
+**If your network security team doesn't allow the use of web sockets, you can't currently access the CloudWatch Logs Insights portion of the CloudWatch console. You can use the CloudWatch Logs Insights query capabilities by using APIs. For more information, see [StartQuery](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html) in the Amazon CloudWatch Logs API Reference.**
+
+#### CloudWatch Logs Insights query syntax
+
+With CloudWatch Logs Insights, you use a query language to query your log groups. The query syntax supports different functions and operations that include, but aren't limited to general functions, arithmetic and comparison operations, and regular expressions.
+
+To create queries that contain multiple commands, separate the commands with the pipe character (**|**). To create queries that contain comments, set off the comments with the hash character (**#**).
+
+##### The following table describes each command
+
+| Command | Description |
+| ------- | ----------- |
+| **display** | Displays a specific field or fields in query results. |
+| **fields** | Displays specific fields in query results and supports functions and operations that you can use to modify field values and create new fields to use in your query. |
+| **filter** | Filters the query to return only the log events that match one or more conditions. |
+| **pattern** | Automatically clusters your log data into patterns. A pattern is shared text structure that recurs among your log fields. |
+| **parse** | Extracts data from a log field to create an extracted field that you can process in your query. It supports glob mode using wildcards, and also regular expressions. |
+| **sort** | Displays the returned log events in ascending (asc) or descending (desc) order. |
+| **stats** | Calculates aggregate statistics using values in the log fields. |
+| **limit** | Specifies a maximum number of log events that you want your query to return. Useful with sort to return "top 20" or "most recent 20" results. |
+| **dedup** | Removes duplicate results based on specific values in fields that you specify. |
+| **unmask** | Displays all the content of a log event that has some content masked because of a data protection policy. |
+
+#### Sample queries
+
+The following section demonstrates five general and useful query commands that you can run in the CloudWatch console.
+
+##### Example 1: Find the 25 most recently added log events
+
+```sql
+fields @timestamp, @message | sort @timestamp desc | limit 25
+```
+
+##### Example 2: Get a list of the number of exceptions per hour
+
+```sql
+filter @message like /Exception/
+    | stats count(*) as exceptionCount by bin(1h)
+    | sort exceptionCount desc
+```
+
+##### Example 3: Get a list of log events that aren't exceptions
+
+fields @message | filter @message not like /Exception/
+
+##### Example 4: Get the most recent log event for each unique value of the **server** field
+
+```sql
+fields @timestamp, server, severity, message
+| sort @timestamp desc
+| dedup server
+```
+
+##### Example 5: Get the most recent log event for each unique value of the **server** field for each **severity** type
+
+```sql
+fields @timestamp, server, severity, message
+| sort @timestamp desc
+| dedup server, severity
+```
+
+### CloudWatch Metrics Insights
+
+In the previous scenario, an ecommerce organization faces increased user traffic during a major sale. The team also wants to optimize their online platform's performance. They will need to explore hundreds of metrics like latency, error rates, database response times, and resource utilization. How can they easily gain a comprehensive understanding of how different components of the system are behaving during the surge in traffic? For example, how can they identify which servers are experiencing increased load or if there is a spike in error rates for specific API calls?
+
+#### Querying your metrics with CloudWatch Metrics Insights
+
+Amazon CloudWatch Metrics Insights is a powerful high-performance SQL query engine that you can use to query your metrics at scale. You can identify trends and patterns within all of your CloudWatch metrics in real time.
+
+You can also set alarms on any CloudWatch Metrics Insights queries that return a single time series. This is especially useful when you create alarms that watch aggregated metrics across a fleet of your infrastructure or applications. You create the alarm once, and the alarm dynamically adjusts as resources are added to or removed from the fleet.
+
+You can use the CloudWatch console to perform a CloudWatch Metrics Insights query, or you can use **GetMetricData** or **PutDashboard** with the AWS CLI or the AWS SDKs. Queries run in the console are free of charge.
+
+When you use the CloudWatch console, you can choose from a wide variety of pre-built sample queries and also create your own queries. When you create a query, you can use the builder view, the editor view, or a combination of both. An interactive builder view lets you browse through your existing metrics and dimensions to build a query. An editor view helps you write new queries. You can also use the editor view to edit the queries that you build in the builder view, and edit sample queries to customize them.
+
+![Screenshot of CloudWatch Metrics Insights - query builder page on the Multi-source query tab in the console.](./images/W06Img062LoggingCloudWatchMetricsInsights.png)
+
+You can create your queries on the **All metrics page** in the CloudWatch console. The query builder is on the **Multi source query** tab, and you can use the **Builder** view or the **Editor** view.
+
+By using the **GROUP BY** clause, you can flexibly group your metrics in real time into separate time series per specific dimension value, based on your use cases. Because CloudWatch Metrics Insights queries include an **ORDER BY** ability, you can use CloudWatch Metrics Insights to make *Top N* type queries. For example, you can scan millions of metrics in your account, and return only the top 10 most CPU consuming instances. This helps you pinpoint and remedy latency issues in your applications.
+
+#### Query components and syntax
+
+CloudWatch Metrics Insights syntax is as follows.
+
+```sql
+SELECT FUNCTION(metricName)
+FROM namespace | SCHEMA(...)
+[ WHERE labelKey OPERATOR labelValue [AND ... ] ]
+[ GROUP BY labelKey [ , ... ] ]
+[ ORDER BY FUNCTION() [ DESC | ASC ] ]
+[ LIMIT number ]
+```
+
+**None of the keywords are case-sensitive, but the identifiers such as the names of metrics, namespaces, and dimensions are case-sensitive.**
+
+#### The possible clauses in a CloudWatch Metrics Insights query
+
+##### SELECT
+
+**SELECT** is required. It specifies the function to use to aggregate observations in each time bucket (determined by the provided period). It also specifies the name of the metric to query.
+
+The valid values for **FUNCTION** are **AVG**, **COUNT**, **MAX**, **MIN**, and **SUM**.
+
+* **AVG** calculates the average of the observations matched by the query.
+* **COUNT** returns the count of the observations matched by the query.
+* **MAX** returns the maximum value of the observations matched by the query.
+* **MIN** returns the minimum value of the observations matched by the query.
+* **SUM** calculates the sum of the observations matched by the query.
+
+##### FROM
+
+**FROM** is required. It specifies the source of the metric. You can specify either the metric namespace that contains the metric that is to be queried, or a **SCHEMA** table function. Examples of metric namespaces include **"AWS/EC2"**, **"AWS/Lambda"**, and metric namespaces that you have created for your custom metrics.
+
+Metric namespaces that include **/** or any other character that is not a letter, number, or underscore must be surrounded by double quotation marks.
+
+**SCHEMA** is an optional table function that can be used within a **FROM** clause. Use **SCHEMA** to scope down the query results to only the metrics that exactly match a list of dimensions, or to metrics that have no dimensions.
+
+If you use a **SCHEMA** clause, it must contain at least one argument, and this first argument must be the metric namespace being queried. If you specify **SCHEMA** with only this namespace argument, the results are scoped down to only metrics that do not have any dimensions.
+
+If you specify **SCHEMA** with additional arguments, the additional arguments after the namespace argument must be label keys. Label keys must be dimension names. If you specify one or more of these label keys, the results are scoped down to only those metrics that have that exact set of dimensions. The order of these label keys does not matter.
+
+For example:
+
+* **SELECT AVG(CPUUtilization) FROM "AWS/EC2"** matches all **CPUUtilization** metrics in the **AWS/EC2** namespace, no matter their dimensions, and returns a single aggregated time series.
+* **SELECT AVG(CPUUtilization) FROM SCHEMA("AWS/EC2")** matches only the **CPUUtilization** metrics in the **AWS/EC2** namespace that **do not have any dimensions defined**.
+* **SELECT AVG(CPUUtilization) FROM SCHEMA("AWS/EC2", InstanceId)** matches only the **CPUUtilization** metrics that were reported to CloudWatch with exactly one dimension, **InstanceId**.
+* **SELECT SUM(RequestCount) FROM SCHEMA("AWS/ApplicationELB", LoadBalancer, AvailabilityZone)** matches only the **RequestCount** metrics that were reported to CloudWatch from **AWS/ApplicationELB** with exactly two dimensions, **LoadBalancer** and **AvailabilityZone**.
+
+##### WHERE
+
+**WHERE** is optional. It filters the results to only those metrics that match your specified expression using specific label values for one or more label keys. For example, **WHERE InstanceType = 'c3.4xlarge'** filters the results to only **c3.4xlarge** instance types, and **WHERE InstanceType != 'c3.4xlarge'** filters the results to all instance types **except c3.4xlarge**.
+
+Label values must always be enclosed with single quotation marks.
+
+The **WHERE** clause supports the following operators:
+
+* **=** Label value must match the specified string.
+* **!=** Label value must not match the specified string.
+* **AND** Both conditions that are specified must be true to match. You can use multiple AND keywords to specify two or more conditions.
+
+##### GROUP BY
+
+**GROUP BY** is optional. It groups the query results into multiple time series, each one corresponding to a different value for the specified label key or keys. For example, using **GROUP BY InstanceId** returns a different time series for each value of **InstanceId**. Using **GROUP BY ServiceName, Operation** creates a different time series for each possible combination of the values of **ServiceName** and **Operation**.
+
+With a **GROUP BY** clause, by default the results are ordered in alphabetical ascending order, using the sequence of labels specified in the **GROUP BY** clause. To change the order of the results, add an **ORDER BY** clause to your query.
+
+##### ORDER BY
+
+**ORDER BY** is optional. It specifies the order to use for the returned time series, if the query returns more than one time series. The order is based on the values found by the **FUNCTION** that you specify in the **ORDER BY** clause. The **FUNCTION** is used to calculate a single scalar value from each returned time series, and that value is used to determine the order.
+
+You also specify whether to use ascending **ASC** or descending **DESC** order. If you omit this, the default is ascending **ASC**.
+
+For example, adding an **ORDER BY MAX() DESC** clause orders the results by the maximum data point observed within the time range, in descending order, meaning that the time series that has the highest maximum data point is returned first.
+
+The valid functions to use within an **ORDER BY** clause are **AVG()**, **COUNT()**, **MAX()**, **MIN()**, and **SUM()**.
+
+If you use an **ORDER BY** clause with a **LIMIT** clause, the resulting query is a *Top N* query. **ORDER BY** is also useful for queries that might return a large number of metrics, because each query can return no more than 500 time series. If a query matches more than 500 time series, and you use an **ORDER BY** clause, the time series are sorted and then the 500 time series that come first in the sort order are the ones that are returned.
+
+##### LIMIT
+
+**LIMIT** is optional. It limits the number of time series returned by the query to the value that you specify. The maximum value that you can specify is 500, and a query that does not specify a **LIMIT** can also return no more than 500 time series. Using a **LIMIT** clause with an **ORDER BY** clause gives you a *Top N* query.
+
+##### Quotation marks or escape characters
+
+In a query, label values must always be surrounded with single quotation marks. For example, **SELECT MAX(CPUUtilization) FROM "AWS/EC2" WHERE AutoScalingGroupName = 'my-production-fleet'**.
+
+Metric namespaces, metric names, and label keys that contain characters other than letters, numbers, and underscore (**_**) must be surrounded by double quotation marks. For example, **SELECT MAX("My.Metric")**.
+
+If one of these contains a double quotation mark or single quotation mark itself (such as **Bytes"Input"**), you must escape each quotation mark with a backslash, as in **SELECT AVG("Bytes\"Input\"")**.
+
+If a metric namespace, metric name, or label key contains a word that is a reserved keyword in CloudWatch Metrics Insights, these must also be enclosed in double quotation marks. For example, if you have a metric named **LIMIT**, you would use **SELECT AVG("LIMIT")**. It is also valid to enclose any namespace, metric name, or label in double quotation marks even if it does not include a reserved keyword.
+
+* [**Reserved Keywords**](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch-metrics-insights-reserved-keywords.html)
+
+#### Sample queries
+
+The following five examples show you some useful CloudWatch Metrics Insights queries that you can use.
+
+##### Example 1: CPU utilization of EC2 instances sorted by highest
+
+```sql
+SELECT AVG(CPUUtilization)
+  FROM SCHEMA("AWS/EC2", InstanceId)
+  GROUP BY InstanceId
+  ORDER BY AVG() DESC
+```
+
+##### Example 2: Average CPU utilization across the entire fleet
+
+```sql
+SELECT AVG(CPUUtilization)
+FROM SCHEMA("AWS/EC2", InstanceId)
+```
+
+##### Example 3: Top 10 instances by highest CPU utilization
+
+```sql
+SELECT MAX(CPUUtilization)
+FROM SCHEMA("AWS/EC2", InstanceId)
+GROUP BY InstanceId
+ORDER BY MAX() DESC
+LIMIT 10
+```
+
+##### Example 4: Total requests across all load balancers
+
+```sql
+SELECT SUM(RequestCount)
+FROM SCHEMA("AWS/ApplicationELB", LoadBalancer)
+```
+
+##### Example 5: Top 10 most active load balancers
+
+```sql
+SELECT MAX(ActiveConnectionCount)
+FROM SCHEMA("AWS/ApplicationELB", LoadBalancer)
+GROUP BY LoadBalancer
+ORDER BY SUM() DESC
+LIMIT 10
+```
+
+### [Lab: Collecting and Analyzing Logs with Amazon CloudWatch Logs Insights](./labs/W060Lab1LoggingCloudWatchLogsInsights.md)
+
+In this lab, you learn to use Amazon CloudWatch Logs Insights to interactively search and analyze log data in Amazon CloudWatch Logs. You set up log groups and log streams in CloudWatch Logs and run queries against Amazon Virtual Private Cloud (Amazon VPC) flow logs and database logs to detect potential security vulnerabilities.
+
+In this lab, you perform the following tasks:
+
+* Install and configure the Amazon CloudWatch agent on the Amazon Elastic Compute Cloud (Amazon EC2) instances by using AWS Systems Manager.
+* Collect web server and system logs from an Amazon EC2 instance and publish them into CloudWatch Logs.
+* Enable Amazon VPC Flow Logs across virtual private clouds (VPCs) and subnets.
+* Enable CloudWatch Logs for an Amazon Relational Database Service (Amazon RDS) database instance.
+* Use CloudWatch Logs Insights to explore logs.
+* Use CloudWatch Logs Insights and CloudWatch metrics to inspect logs.
