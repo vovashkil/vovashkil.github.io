@@ -1613,3 +1613,294 @@ If you expand the **Legend and options** menu, you will see what each item on th
 For example, consider an application that displays a photo to the user. The application uses an API call that invokes a Lambda function, which then retrieves the storage location of the photo from a database. If the response takes a long time, you can review the X-Ray service map to find the underlying issue. It might be a database with under-provisioned capacity that can't manage the number of requests it's receiving. Or, it might be that the Lambda function is reaching concurrency limits.
 
 X-Ray can be useful in an event-driven architecture where one application is broken into many small parts because it can help identify issues in a microservices environment. Instead of parsing through logs to find issues, you can use X-Ray to identify if the issue is coming from the client or server side, and what service or services are contributing to the root cause.
+
+### Knowledge Check
+
+#### Which AWS service provides distributed tracing for applications running on AWS infrastructure?
+
+* AWS X-Ray
+
+Wrong answers:
+
+* AWS CloudTrail
+* AWS Lambda
+* Amazon CloudWatch
+
+##### Explanation
+
+AWS X-Ray is a distributed tracing service that you can use to analyze and monitor applications running on AWS. It provides a detailed view of requests as they travel through various components of a distributed application.
+
+The other options are incorrect for the following reasons:
+
+* AWS CloudTrail is a service that records API calls on your account. It doesn't provide distributed tracing capabilities like AWS X-Ray.
+* AWS Lambda is a serverless computing service that let you run code without provisioning or managing servers. While Lambda can be instrumented with AWS X-Ray to trace requests, Lambda itself is not a tracing service.
+* Amazon CloudWatch is a monitoring and observability service for AWS resources and applications. It collects and tracks metrics, monitoring log files, and set alarms. It doesn't provide distributed tracing capabilities like AWS X-Ray.
+
+#### Which Amazon CloudWatch feature provides the ability to stream near real-time CloudWatch metrics for applications to destinations like Amazon S3?
+
+* Amazon CloudWatch metric streams
+
+Wrong answers:
+
+* Amazon CloudWatch Container Insights
+* Amazon CloudWatch Lambda Insights
+* Amazon CloudWatch Application Insights
+
+##### Explanation
+
+CloudWatch metric streams provide near real-time delivery of CloudWatch metrics to destinations like Amazon S3 with low latency. Metric streams are fully managed and can handle any volume of metrics, and new metrics matching the stream filters are automatically included.
+
+The other options are incorrect for the following reasons:
+
+* CloudWatch Container Insights supports collecting metrics from clusters deployed on AWS Fargate for both Amazon ECS and Amazon EKS. It doesn't steam metrics to destinations like Amazon S3.
+* CloudWatch Lambda Insights collects system-level metrics and emits a single performance log event for every invocation of that Lambda function. It doesn't steam metrics to destinations like Amazon S3.
+* CloudWatch Application Insights scans the resources in the applications and recommends and configures metrics and logs on CloudWatch for application components. It doesn't steam metrics to destinations like Amazon S3.
+
+#### How does Amazon CloudWatch Application Insights contribute to troubleshooting issues within applications?
+
+* By providing a unified view and automated discovery of issues
+
+Wrong answers:
+
+* By focusing solely on metrics
+* Through manual analysis of distributed traces
+* By relying on third-party tools for root cause analysis
+
+##### Explanation
+
+The other options are incorrect for the following reason:
+
+* CloudWatch Application Insights contributes to troubleshooting by providing a unified view of application health. It offers automated discovery of issues to simplify the identification of root causes.
+
+### Summary
+
+#### Observability and application health
+
+Observability describes how well you can understand what is happening in a system, often with the use of metrics, logs, and traces. To achieve operational excellence and meet business objectives, you need to understand how your systems are performing.
+
+#### Monitoring with CloudWatch Lambda Insights
+
+CloudWatch Lambda Insights uses a CloudWatch Lambda extension, which is provided as a Lambda layer. When you install this extension on a Lambda function, it collects system-level metrics and emits a single performance log event for every invocation of that Lambda function. CloudWatch uses embedded metric formatting to extract metrics from the log events.
+
+Lambda Insights is compatible with any Lambda function that uses a Lambda runtime that supports Lambda extensions.
+
+After you have installed the Lambda Insights extension on a Lambda function that has been invoked, you can use the CloudWatch console to see your metrics with either a multi-function dashboard or a single-function dashboard.
+
+#### CloudWatch Container Insights
+
+CloudWatch Container Insights is available for Amazon ECS, Amazon EKS, and Kubernetes platforms on Amazon EC2. CloudWatch Container Insights supports collecting metrics from clusters deployed on AWS Fargate for both Amazon ECS and Amazon EKS. CloudWatch Container Insights collects data as performance log events using embedded metric format. With the performance log events, CloudWatch creates aggregated metrics at the cluster, node, pod, task, and service level as CloudWatch metrics.
+
+#### CloudWatch Application Insights
+
+CloudWatch Application Insights simplifies the monitoring and troubleshooting of applications by automatically detecting common problems, correlating data from various AWS resources, and providing a consolidated view of application health. When you add your applications to CloudWatch Application Insights, it scans the resources in the applications and recommends and configures metrics and logs on CloudWatch for application components. CloudWatch Application Insights uses historical data to analyze metric patterns and detect anomalies.
+
+CloudWatch Application Insights includes the following three concepts:
+
+* **Components** are auto-grouped, standalone, or custom groupings of similar resources that make up an application. It is a best practice to group similar resources into custom components for better monitoring.
+* **Observations** are individual events that are detected with an application or application resource.
+* **Problems** are detected by correlating, classifying, and grouping related observations.
+
+#### CloudWatch anomaly detection
+
+CloudWatch anomaly detection applies statistical and machine learning algorithms to CloudWatch metrics, calculates normal baselines, and minimizes surface anomalies with minimal user intervention. CloudWatch anomaly detection is available with any AWS service metric or custom CloudWatch metric that has a discernible trend or pattern. It analyzes the historical values for the chosen metric for predictable patterns that repeat over time to create a baseline. This baseline model is updated when new metric data is observed, thus reducing the need for frequent manual intervention. Furthermore, it will periodically assess the model’s performance and retrain it to adjust to changing business metrics.
+
+#### CloudWatch metric steams
+
+CloudWatch metric streams let you stream CloudWatch metrics to AWS destinations and third-party providers with minimal delay. The low latency helps you to promptly access vital performance and operational data.
+
+The following are three main usage scenarios for CloudWatch metric streams:
+
+* **Custom setup with Amazon Data Firehose**: Create a metric stream and direct it to a Firehose delivery stream that delivers your CloudWatch metrics to where you want them to go.
+* **Quick Amazon S3 setup**: Stream your metrics to an Amazon S3 bucket with one click. By default, CloudWatch creates the resources for you and streams the metrics with the JSON format.
+* **Quick AWS Partner setup**: Stream your metrics to an AWS Partner with one click. CloudWatch creates all necessary resources for you and streams the metrics to the selected AWS Partner destination.
+
+#### AWS X-Ray
+
+You can use X-Ray to analyze and debug distributed applications in both development and production environments. This includes architectures ranging from straightforward three-tier applications to those that are built using microservices.
+
+CloudWatch provides metrics and logs for monitoring applications and infrastructure. Conversely, X-Ray traces requests as they flow through application components. With X-Ray, developers can visualize the path of a request, identify slow or failed requests, and optimize the performance of the application. X-Ray is especially useful for developers who need to analyze and troubleshoot the performance of their applications. It is also useful for operations teams that need to monitor the health and usage of AWS resources.
+
+### Additional Resources
+
+* [Get Started with Amazon CloudWatch Application Insights](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/appinsights-getting-started.html)
+
+* [Set Up a Metric Stream](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-metric-streams-setup.html)
+
+## CloudWatch for Health, Availability, and Security
+
+### Pre-assessment
+
+#### A developer needs to analyze and visualize real user performance metrics for their web applications. Which Amazon CloudWatch feature is designed specifically for real user monitoring?
+
+* Amazon CloudWatch RUM
+
+Wrong answers:
+
+* Amazon CloudWatch Contributor Insights
+* Amazon CloudWatch Metrics Insights
+* Amazon CloudWatch Synthetics
+
+##### Explanation
+
+CloudWatch RUM is tailored for real user monitoring. With CloudWatch RUM, you can perform real user monitoring to collect and view client-side data about your web application performance from actual user sessions in near real time. The data that you can visualize and analyze includes page load times, client-side errors, and user behavior.
+
+The other options are incorrect for the following reasons:
+
+* CloudWatch Contributor Insights analyzes time-series data to provide a view of the top contributors that influence system performance. It doesn't provide real user monitoring.
+* CloudWatch Metrics Insights is a fast, flexible, SQL-based query engine that you can use to identify trends and patterns within millions of operational metrics. It doesn't provide real user monitoring.
+* CloudWatch Synthetics allows for the creation of canary tests to monitor APIs and other endpoints proactively. Canaries follow the same routes and perform the same actions as a customer to simulate user interaction.
+
+#### A team wants to use a query to deep dive into log data to troubleshoot application issues and discover patterns. Which Amazon CloudWatch feature would be most suitable for this?
+
+* Amazon CloudWatch Logs Insights
+
+Wrong answers:
+
+* Amazon CloudWatch Evidently
+* Amazon CloudWatch Synthetics
+* Amazon CloudWatch Metrics Insights
+
+##### Explanation
+
+CloudWatch Logs Insights helps users efficiently identify patterns, interactively search, and analyze log data with bar charts, line charts, and stacked area charts. Users can perform queries to efficiently and effectively respond to operational or network issues. If an issue occurs, they can use CloudWatch Logs Insights to identify potential causes and validate deployed fixes.
+
+The other options are incorrect for the following reasons:
+
+* You can use Amazon CloudWatch Evidently to safely validate new features by serving them to a specified percentage of your users while you roll out the features.
+* CloudWatch Synthetics allows for the creation of canary tests to monitor APIs and other endpoints proactively. Canaries follow the same routes and perform the same actions as a customer to simulate user interaction.
+* CloudWatch Metrics Insights is a fast, flexible, SQL-based query engine that you can use to identify trends and patterns within millions of operational metrics in near real time.
+
+#### Why might an organization choose to use high-resolution metrics and alarms in Amazon CloudWatch?
+
+* To increase granularity and precision in monitoring
+
+Wrong answers:
+
+* To reduce overall storage costs
+* To limit the number of alarms that can be set up
+* To facilitate seamless integration with third-party monitoring tools
+
+##### Explanation
+
+High-resolution metrics and alarms in CloudWatch are used to increase the granularity and precision of monitoring. These metrics give users more immediate visibility and greater granularity into the state and performance of their custom applications, such as observing short-lived spikes and functions.
+
+The other options are incorrect for the following reasons:
+
+* High-resolution metrics don't reduce overall storage costs.
+* High-resolution metrics don't limit the number of alarms that can be set up.
+* High-resolution metrics don't facilitate integration with third-party monitoring tools.
+
+### CloudWatch Dashboards
+
+Imagine that you are overseeing mission-critical applications where unexpected spikes in user activity occur, leading to potential performance issues. Without real-time insights, identifying the root cause becomes difficult.
+
+Now, let's consider having a unified visual interface that offers an immediate comprehensive view of your entire cloud environment. You can pinpoint anomalies, optimize resource allocation, and ensure the seamless functioning of your applications. This is where Amazon CloudWatch dashboards can be useful.
+
+### Using CloudWatch dashboards
+
+Amazon CloudWatch dashboards are customizable home pages in the CloudWatch console that you can use to monitor your resources in a single view, even those resources that are spread across different Regions. You can use CloudWatch dashboards to create customized views of the metrics and alarms for your AWS resources.
+
+With dashboards, you can create the following:
+
+* A single view for selected metrics and alarms to help you assess the health of your resources and applications across one or more Regions. You can use different visual settings for each metric on each graph, so that you can readily track the same metric across multiple graphs.
+* An operational playbook that provides guidance for team members during operational events about how to respond to specific incidents.
+* A common view of critical resource and application measurements that can be shared by team members for faster communication flow during operational events.
+
+![Example of a CloudWatch dashboard view.](./images/W06Img040LoggingCloudWatchDashboardExample.png)
+
+You can create dashboards from the console or by using the AWS Command Line Interface (AWS CLI) or **PutDashboard** API operation. You can add dashboards to a favorites list, where you can access not only your favorite dashboards, but also your recently visited dashboards.
+
+#### Cross-account observability dashboards
+
+If you have multiple AWS accounts, you can set up CloudWatch cross-account observability and then create rich cross-account dashboards in your monitoring accounts. These dashboards can include graphs of metrics from source accounts and CloudWatch Logs Insights widgets with queries of log groups from source accounts. Additionally, alarms that you create in the monitoring account can watch metrics in source accounts.
+
+You can monitor and troubleshoot applications that span multiple accounts within a Region. You can seamlessly search, visualize, and analyze your metrics, logs, traces, and Amazon CloudWatch Application Insights applications in any of the linked accounts without account boundaries.
+
+You can set up one or more AWS accounts as monitoring accounts and link them with multiple source accounts. A monitoring account is a central AWS account that can view and interact with observability data generated from source accounts. A source account is an individual AWS account that generates observability data for the resources that reside in it. Source accounts share their observability data with the monitoring account.
+
+With CloudWatch cross-account observability, you can do the following in a dashboard of a monitoring account:
+
+* Search, view, and create graphs of metrics that reside in source accounts. A single graph can include metrics from multiple accounts.
+* Create alarms in the monitoring account that watch metrics in source accounts.
+* View the log events from log groups located in source accounts, and run CloudWatch Logs Insights queries of log groups in source accounts. A single CloudWatch Logs Insights query in a monitoring account can query multiple log groups in multiple source accounts at once.
+* View nodes from source accounts in a trace map in X-Ray. You can then filter the map to specific source accounts.
+
+#### Cross-account cross-Region dashboards
+
+You can create cross-account cross-Region dashboards, which summarize your CloudWatch data from multiple AWS accounts and multiple Regions into one dashboard. From this high-level dashboard you can get a view of your entire application, and also drill down into more specific dashboards without having to sign in and out of accounts or switch Regions.
+
+You can create cross-account cross-Region dashboards on the AWS Management Console and programmatically. Before you can create a **cross-account cross-Region dashboard**, you must **enable at least one sharing account** and **at least one monitoring account**. Additionally, to be able to use the CloudWatch console to create a **cross-account dashboard**, you must **enable the console for cross-account functionality**.
+
+#### Creating a CloudWatch dashboard
+
+You can create multiple dashboards, and you can add dashboards to a favorites list. You aren't limited to the number of dashboards that you can have in your AWS account. All dashboards are global. They are not Region-specific.
+
+The following example shows you how to create a dashboard from the CloudWatch console.
+
+1. Open the CloudWatch console. In the left navigation pane, choose **Dashboards**.
+
+    ![Screenshot of the CloudWatch console with the Dashboards link highlighted in the navigation pane.](./images/W06Img041LoggingCloudWatchCreateDashboardStep1.png)
+
+2. On the **Dashboards** page, choose **Create dashboard**.
+
+    ![Screenshot of CloudWatch Dashboards page. In the Custom Dashboards section, the Create dashboard button is highlighted.](./images/W06Img042LoggingCloudWatchCreateDashboardStep2.png)
+
+3. In the **Create new dashboard** dialog box, enter a name for the dashboard, and then choose **Create dashboard**.
+
+    ![Create new dashboard dialog box.](./images/W06Img043LoggingCloudWatchCreateDashboardStep3.png)
+
+4. The **Add widget** dialog box appears. Choose the types of widgets that you want to add. In this example, the **Bar** widget is selected. Choose **Next**.
+
+    ![Add widget dialog box with Bar widget selected.](./images/W06Img044LoggingCloudWatchCreateDashboardStep4.png)
+
+5. Following the **Bar** widget example, the **Add metric graph** dialog box appears. Select the metrics that you want to add, and then choose **Create widget**.
+
+    ![Add metric graph dialog box.](./images/W06Img045LoggingCloudWatchCreateDashboardStep5.png)
+
+6. Choose **Save** to save the dashboard settings.
+
+    ![Save dashboard page is displayed with the Save button highlighted.](./images/W06Img046LoggingCloudWatchCreateDashboardStep6.png)
+
+### Sharing your dashboards
+
+You can share your CloudWatch dashboards with people who don't have direct access to your AWS account. You can share dashboards across teams, with stakeholders, and with people external to your organization.
+
+When you share dashboards, you can designate who can view the dashboard in the following three ways:
+
+* Share a single dashboard and designate specific email addresses of the people who can view the dashboard. Each of these users creates their own password that they must enter to view the dashboard.
+* Share a single dashboard publicly, so that anyone who has the link can view the dashboard.
+* Share all the CloudWatch dashboards in your account and specify a third-party single sign-on (SSO) provider for dashboard access. All users who are members of this SSO provider's list can access all the dashboards in the account. To enable this, you integrate the SSO provider with Amazon Cognito. The SSO provider must support SAML 2.0.
+
+When you share a dashboard, by default the permissions that CloudWatch creates restrict access to only the alarms and CloudWatch Contributor Insights rules that are on the dashboard when it is shared. If you add new alarms or Contributor Insights rules to the dashboard, and you want them to be seen by the people whom you shared the dashboard with, you must update the policy to allow these resources.
+
+**All people that you share the dashboard with are granted these permissions for the account. If you share the dashboard publicly, everyone who has the link to the dashboard has these permissions.**
+
+#### Sharing a single dashboard with specific users
+
+The following example shows you how to share a dashboard with specific email addresses that you choose.
+
+1. Go to the CloudWatch **Dashboards** page and choose the name of your dashboard.
+
+    ![CloudWatch Dashboards page with two dashboard names. One of the dashboard names is highlighted.](./images/W06Img051LoggingCloudWatchShareDashboardStep1.png)
+
+2. Choose **Actions** > **Share dashboard**.
+
+    ![On the test-dashboard-12345 dashboard page, the Share dashboard link is highlighted on the Actions drop-down menu.](./images/W06Img052LoggingCloudWatchShareDashboardStep2.png)
+
+3. In the **Share your dashboard and require a username and password** section, choose **Start sharing**.
+
+    |[Share your dashboard and require a username and password section is highlighted.](./images/W06Img053LoggingCloudWatchShareDashboardStep3.png)
+
+4. In the **Add email addresses** text box, enter the email addresses that you want to share the dashboard with. When you have all the email addresses entered, read the agreement, and then choose **Confirm and preview policy**.
+
+    ![Username and password protected dashboard page, with the Confirm and preview policy button highlighted.](./images/W06Img054LoggingCloudWatchShareDashboardStep4.png)
+
+5. The **Accept dashboard sharing policy** dialog box appears. Confirm that the resources that will be shared are correct, and choose **Accept policy and generate shareable link**.
+
+    ![Accept dashboard sharing policy dialog box with Accept policy and generate shareable link button highlighted.](./images/W06Img055LoggingCloudWatchShareDashboardStep5.png)
+
+6. On the next page, choose **Copy link**. You can then paste this link into an email message and send it to the invited users. They automatically receive a separate email with their username and a temporary password to use to connect to the dashboard.
+
+    ![Copy link button is highlighted.](./images/W06Img056LoggingCloudWatchShareDashboardStep6.png)
+
+### CloudWatch Synthetics and CloudWatch RUM
