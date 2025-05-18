@@ -2319,3 +2319,602 @@ In this lab, you perform the following tasks:
 * Enable CloudWatch Logs for an Amazon Relational Database Service (Amazon RDS) database instance.
 * Use CloudWatch Logs Insights to explore logs.
 * Use CloudWatch Logs Insights and CloudWatch metrics to inspect logs.
+
+### CloudWatch Contributor Insights for Security
+
+#### CloudWatch Contributor Insights
+
+Amazon CloudWatch Contributor Insights is a tool designed to help organizations gain a deeper understanding of their system and application behavior by analyzing log data. CloudWatch Contributor Insights analyzes time-series data to provide a view of the top contributors that influence system performance. This can be beneficial for troubleshooting, optimizing performance, and enhancing the overall reliability of applications and systems. After it is set up, CloudWatch Contributor Insights runs continuously without requiring additional user intervention. This helps developers and operators more quickly isolate, diagnose, and remediate issues during an operational event.
+
+You can use CloudWatch Contributor Insights to analyze log data and create time series that display contributor data. You can see metrics about the Top-N contributors, the total number of unique contributors, and their usage. This helps you find the most active users and understand who or what is impacting system performance. For example, you can find bad hosts, identify the heaviest network users, or find the URLs that generate the most errors.
+
+You can build your rules from scratch. When you use the AWS Management Console, you can also use sample rules that AWS has created. Rules define the log fields that you want to use to define contributors, such as **IpAddress**. All rules analyze incoming data in real time. You can also filter the log data to find and analyze the behavior of individual contributors.
+
+CloudWatch also provides built-in rules that you can use to analyze metrics from other AWS services. If you are signed in to an account that is set up as a monitoring account in CloudWatch cross-account observability, you can create CloudWatch Contributor Insights rules in that monitoring account that analyze log groups in both source accounts and in the monitoring account. You can also create a single rule that analyzes log groups in multiple accounts.
+
+**If you use CloudWatch Contributor Insights, you are charged for each occurrence of a log event that matches a rule.**
+
+### Analyzing VPC flow logs with CloudWatch Contributor Insights to improve security
+
+You can use rules in CloudWatch Contributor Insights to gain security visibility into your VPC flow logs. The rules analyze flow logs in targeted groups in Amazon CloudWatch Logs and display the Top-N contributors for a given log field or combination of log fields.
+
+For example, you can produce a list of the Top-N contributors based on data transferred or blocked requests. You can add filters to these rules to count only those log events that meet a certain criteria (for example, blocked requests by source IP when the destination port is 22).
+
+#### VPC Flow Logs
+
+VPC Flow Logs is a feature that you can use to capture information about the IP traffic going to and from network interfaces in your VPC. Flow log data can be published to the following locations: CloudWatch Logs, Amazon Simple Storage Service (Amazon S3), or Amazon Data Firehose. After you create a flow log, you can retrieve and view the flow log records in the log group, bucket, or delivery stream that you configured.
+
+Flow logs can help you with a number of tasks, such as the following:
+
+* Diagnosing overly restrictive security group rules
+* Monitoring the traffic that is reaching your instance
+* Determining the direction of the traffic to and from the network interfaces
+
+Flow log data is collected outside of the path of your network traffic, and therefore does not affect network throughput or latency. You can create or delete flow logs without any risk of impact to network performance.
+
+##### the default logging format of a flow log
+
+```log
+<version> <account-id> <interface-id> <srcaddr> <dstaddr> <srcport> <dstport> <protocol> <packets> <bytes> <start> <end> <action> <log-status>
+```
+
+VPC Flow Logs supports the addition of metadata to log entries, such as VPC ID, instance ID, and TCP flags. You can customize the order of these fields. Rules in CloudWatch Contributor Insights are built by matching the field position in the log event with the name of the field or alias. In the default logging format, the position of the **\<interface-id\>** field is 3, but this might not be the case if you are using a customized logging format.
+
+For example, with the default logging format, if you want to track the Top-N contributors for the number of bytes transferred by unique source IP addresses, you need to change the positions of the **\<bytes\>** and **\<srcaddr\>** fields. In the default logging format, **\<srcaddr\>** maps to position 4 and **\<bytes\>** maps to position 10.
+
+* [VPC Flow Logs](https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html)
+
+### Using a CloudWatch Contributor Insights rule to evaluate VPC flow log groups
+
+A CloudWatch Contributor Insights rule is applied to one or many CloudWatch log groups. You can have a single rule apply to VPC flow logs for an entire AWS account in a selected AWS Region or across an AWS Organizations account in a selected Region. 
+
+This is valuable because you can use a single rule to track the Top-N contributors across all of your flow logs in a Region. For example, you can track the Top-N contributors by aggregating the number of rejected requests by source IP and destination port. You can add more contributors to show the top rejected requests by source IP, destination port, interface ID, or subnet ID.
+
+If all of your VPC flow logs share a prefix name in CloudWatch Logs, such as **/vpc/flowlogs/\***, you can create a rule that applies to every CloudWatch log group that shares this prefix name.
+
+#### Creating a custom rule to track top SSH connections by source address and action
+
+Using security-focused rules, you can get a better understanding about which source IPs are generating the largest number of accepted or rejected requests on a given port. This allows security teams to quickly identify and react to a potential security incident.
+
+The following example shows how you can create a custom rule that counts the number of requests over port 22 by source IP address and action. But you can edit the rule to show denied actions for any port number.
+
+To create a custom rule, follow these steps:
+
+1. Open the CloudWatch console.
+2. In the navigation pane, choose **Contributor Insights**.
+3. Choose **Create rule**.
+
+You can either use the wizard or syntax to create the custom rule. The following syntax is used for this example.
+
+```json
+{
+    "Schema": {
+        "Name": "CloudWatchLogRule",
+        "Version": 1
+    },
+    "AggregateOn": "Count",
+    "Contribution": {
+        "Filters": [
+            {
+                "Match": "dstport",
+                "EqualTo": 22
+            }
+        ],
+        "Keys": [
+            "srcaddr",
+            "dstaddr",
+            "action"
+        ]
+    },
+    "LogFormat": "CLF",
+    "LogGroupNames": [
+        "/vpc/flowlogs/*"
+    ],
+    "Fields": {
+        "4": "srcaddr",
+        "5": "dstaddr",
+        "7": "dstport",
+        "10": "bytes",
+        "13": "action"
+    }
+}
+```
+
+For the rule name, let's assume that this example is named **SSH-by-source-ip-and-action**.
+
+#### Viewing the rule report
+
+Now you’re ready to view the reports from the **SSH-by-source-ip-and-action** rule. Depending on the aggregation interval of your VPC flow logs (1 minute or 10 minutes), it might take some time before the results appear on the graph.
+
+To view your rule report, you can go back to the CloudWatch console and choose **Contributor Insights**. You can then choose the rule that you want to review. The following example demonstrates the custom rule that counts the number of requests over port 22 by source IP address and action with the following filters:
+
+* **Contributors**: Top 10
+* **Period**: 1 minute
+* **Order by**: Sum
+* **Widget type**: Line
+* **Time range**: 3h
+
+The following Contributor Insights custom rule graph shows Top 10 contributors with a 1 minute period, ordered by Sum with time range 3h enabled.
+
+![Screenshot of Contributor Insights custom rule graph](./images/W06Img064LoggingCloudWatchContributorInsights.png)
+
+The **srcaddr** field displays the private IP address of the NAT gateway network interface and the action displays **REJECT**.
+
+#### Using rule metrics to track accepted or rejected traffic
+
+You can use the **INSIGHT_RULE_METRIC** metric match expression to display metrics from the Contributor Insights rule, and you can use it to track accepted and rejected traffic across VPCs by applying the following built-in rules:
+
+* Traffic by Source Address and Rejected Action
+* Traffic by Source Address and Action
+
+To use these built-in rules, you can open the CloudWatch console. In the navigation pane, choose **All metrics**, and then use the following JSON on the **Source** tab.
+
+![Screenshot of CloudWatch console with All metrics page displayed and Source tab chosen.](./images/W06Img066LoggingCloudWatchAllMetricsSource.png)
+
+```json
+{
+          "metrics": [
+                  [
+                        {
+                               "expression": "INSIGHT_RULE_METRIC('Traffic-by-Source Address-and-Rejected-Action’, 'Sum')",
+                               "label": "Rejects",
+                               "id": "e1",
+                               "period": 60,
+                               "color": "#ff7f0e"
+                         }
+                  ],
+                 [
+                        {
+                                "expression": "INSIGHT_RULE_METRIC('Traffic-by-Source-Address-and-Action', 'Sum')",
+                                "label": "Requests",
+                                "id": "e2",
+                                "period": 60,
+                                "visible": false
+                         }
+                  ],
+                  [
+                        {
+                                 "expression": "e2-e1",
+                                 "label": "Accepts ",
+                                 "id": "e3",
+                                 "color": "#1f77b4"
+                        }
+                  ]
+           ],
+           "region": "us-east-2",
+           "view": "timeSeries",
+           "stacked": true,
+           "stat": "Average",
+           "period": 60
+}
+```
+
+You would replace the rule names of **Traffic-by-Source Address-and-Rejected-Action** and **Traffic-by-Source-Address-and-Action** with the names that you defined when you created the rule.
+
+Then, you would see a result graph similar to the following.
+
+![Example screenshot of Metric math expression showing accepted and rejected VPC connections.](./images/W06Img068LoggingCloudWatchContrubutionRuleDashboard.png)
+
+CloudWatch Contributor Insights report views can be a valuable addition to a new or existing operational or security dashboard. The CloudWatch dashboard views are powerful because you can scope these rules to a workload or track contributors for all VPC flow logs across an organization.
+
+Remember that charges for CloudWatch Contributor Insights are based on the number of rules and the number of events that match a given rule. A higher volume of VPC flow log data will result in higher charges. Disabling a rule will prevent service charges due to matched events, and deleting a rule will prevent both service charges from **matched events** and for **the existence of a rule**.
+
+### Amazon CloudWatch Evidently
+
+Let's think about this scenario. You are part of a dynamic development team striving to roll out new features for a web application. As the team prepares for a major update, the challenges arise. How can you seamlessly introduce and test these features without disrupting the user experience or risking unforeseen issues?
+
+#### Performing launches and A/B experiments
+
+You can use Amazon CloudWatch Evidently to safely validate new features by serving them to a specified percentage of your users while you roll out the features. You can monitor the performance of a new feature to help you decide when to ramp up traffic to your users. This helps you reduce risk and identify unintended consequences before you fully launch the feature.
+
+You can also conduct A/B experiments to make feature design decisions based on evidence and data. An experiment can test as many as five variations at once. CloudWatch Evidently collects experiment data and analyzes it using statistical methods. It also provides clear recommendations about which variations perform better. You can test both user-facing features and backend features.
+
+Evidently charges your account based on Evidently events and Evidently analysis units. Evidently events include data events such as clicks and page views, and assignment events that determine the feature variation to serve to a user. Evidently analysis units are generated from Evidently events, based on rules that you have created in Evidently. Analysis units are the number of rule matches on events.
+
+For example, a user click event might produce a single Evidently analysis unit, a click count. Another example is a user checkout event that might produce two Evidently analysis units: checkout value and the number of items in a cart.
+
+![Checkout page screenshot](./images/W06Img070LoggingCloudWatchEvidentlyCheckoutPageExample.png)
+
+#### How Evidently calculates results
+
+In an A/B test, users are randomly assigned to either the control group (also called the default variation), or one of the treatment groups (also called the tested variations). For example, users in the control group might experience the website, service, or application in the same way that they did before the experiment started. Meanwhile, users in the treatment group might experience the change.
+
+Evidently supports up to five different variations in an experiment, and it randomly assigns traffic to these variations. This way, you can track business metrics (such as revenue) and performance metrics (such as latency) for each group. Evidently does the following:
+
+* Compares the treatment with the control (for example, compares whether revenue increases or decreases with a new checkout process).
+* Indicates whether the observed difference between the treatment and the control is significant. For this, Evidently offers two approaches: *frequentist significance levels* and *Bayesian probabilities*.
+
+So why should you use frequentist and Bayesian approaches? Consider a case where the treatment has no effect compared to the control, or a case where the treatment is identical to the control (an A/A test). You would still observe a small difference between the treatment and the control in the data. This is because the test participants consist of a finite sample of users, representing a small percentage of all users of the website, service, or application. Frequentist significance levels and Bayesian probabilities provide insights into whether the observed difference is significant or due to chance. Evidently considers the following to determine whether the observed difference is significant:
+
+* How big the difference is
+* How many samples are part of the test
+* How the data is distributed
+
+#### Frequentist analysis in Evidently
+
+Evidently uses sequential testing, which avoids the usual problems of *peeking*, a common pitfall of frequentist statistics. Peeking is the practice of checking the results of an ongoing A/B test to stop it and make a decision based on the observed results.
+
+Because the results from Evidently are valid at any time (anytime-valid results), you can peek at results during the experiment and still draw sound conclusions. This can reduce some of the costs of experimentation, because you can stop an experiment before the scheduled time if the results already have significance.
+
+Evidently generates anytime-valid significance levels and anytime-valid 95-percent confidence intervals of the difference between the tested variation and the default variation in the target metric. The **Result** column in the experiment results indicates the tested variation performance.
+
+##### Inconclusive
+
+The significance level is less than 95 percent.
+
+##### Better
+
+The significance level is 95 percent or higher and one of the following is true:
+
+* The lower bound of the 95 percent confidence interval is higher than zero and the metric should increase.
+* The upper bound of the 95 percent confidence interval is lower than zero and the metric should decrease.
+
+##### Worse
+
+The significance level is 95 percent or higher and one of the following is true:
+
+* The upper bound of the 95 percent confidence interval is higher than zero and the metric should increase.
+* The lower bound of the 95 percent confidence interval is lower than zero and the metric should decrease.
+
+##### Best
+
+The experiment has two or more tested variations in addition to the default variation, and the following conditions are met:
+
+* The variation qualifies for the Better designation.
+* One of the following is true:
+  * The lower bound of the 95 percent confidence interval is higher than the upper bound of the 95 percent confidence intervals of all the other variations and the metric should increase.
+  * The upper bound of the 95 percent confidence interval is lower than the lower bound of the 95 percent confidence intervals of all the other variations and the metric should decrease.
+
+#### Bayesian analysis in Evidently
+
+With Bayesian analysis, you can calculate the probability that the mean in the tested variation is larger or smaller than the mean in the default variation. Evidently performs Bayesian inference for the mean of the target metric by using conjugate priors. With conjugate priors, Evidently can more efficiently infer the posterior distribution needed for the Bayesian analysis.
+
+Evidently waits until the end date of the experiment to compute the results of the Bayesian analysis. The results page displays the following:
+
+* **Probability of increase**: The probability that the mean of the metric in the tested variation is at least 3 percent larger than the mean in the default variation
+* **Probability of decrease**: The probability that the mean of the metric in the tested variation is at least 3 percent smaller than the mean in the default variation
+* **Probability of no change**: The probability that the mean of the metric in the tested variation lies within ±3 percent of the mean in the default variation
+
+The **Result** column indicates the performance of the variation.
+
+##### Better
+
+The probability of increase is at least 90 percent and the metric should increase, or the probability of decrease is at least 90 percent and the metric should decrease.
+
+##### Worse
+
+The probability of decrease is at least 90 percent and the metric should increase, or the probability of increase is at least 90 percent and the metric should decrease.
+
+#### How Evidently collects and stores data
+
+Evidently collects and stores data related to project configurations so that customers can run experiments and launches. The data includes the following:
+
+* Metadata about projects, features, launches, and experiments
+* Metric events
+* Evaluation data
+
+Resource metadata is stored in Amazon DynamoDB. The data is encrypted at rest by default, using AWS owned keys. These keys are a collection of AWS Key Management Service (AWS KMS) keys that an AWS service owns and manages for use in multiple AWS accounts. Customers can’t view, manage, or audit the use of these keys. Customers are also not required to take action or change programs to protect the keys that encrypt their data.
+
+Evidently metric events, and evaluation events are delivered directly to customer-owned locations. Data in transit is automatically encrypted with HTTPS. This data will be delivered to customer-owned locations. You can also choose to store evaluation events in Amazon S3 or CloudWatch Logs.
+
+#### Retrieving data using Evidently APIs
+
+##### Project data
+
+To retrieve project data, you can use the following APIs:
+
+* [GetProject](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_GetProject.html)
+* [ListProjects](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_ListProjects.html)
+
+##### Feature data
+
+To retrieve feature data, you can use the following APIs:
+
+* [GetFeature](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_GetFeature.html)
+* [ListFeatures](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_ListFeatures.html)
+
+##### Launch data
+
+To retrieve launch data, you can use the following APIs:
+
+* [GetLaunch](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_GetLaunch.html)
+* [ListLaunches](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_ListLaunches.html)
+
+##### Experiment data
+
+To retrieve experiment data, you can use the following APIs:
+
+* [GetExperiment](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_GetExperiment.html)
+* [ListExperiments](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_ListExperiments.html)
+* [GetExperimentResults](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_GetExperimentResults.html)
+
+#### Modifying and deleting data using Evidently APIs
+
+##### Project data
+
+To modify and delete project data, you can use the following APIs:
+
+* [UpdateProject](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_UpdateProject.html)
+* [DeleteProject](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_DeleteProject.html)
+
+##### Feature data
+
+To modify and delete feature data, you can use the following APIs:
+
+* [UpdateFeature](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_UpdateFeature.html)
+* [DeleteFeature](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_DeleteFeature.html)
+
+##### Launch data
+
+To modify and delete launch data, you can use the following APIs:
+
+* [UpdateLaunch](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_UpdateLaunch.html)
+* [DeleteLaunch](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_DeleteLaunch.html)
+
+##### Experiment data
+
+To modify and delete experiment data, you can use the following APIs:
+
+* [UpdateExperiment](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_UpdateExperiment.html)
+* [DeleteExperiment](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_DeleteExperiment.html)
+
+### Evidently use cases
+
+Evidently can be used for two similar but distinct use cases: implementing dark launches, also known as feature flags, and A/B testing.
+
+#### Feature flags
+
+Features flags is a software development technique that lets you enable or disable features without needing to deploy your code. It decouples the feature deployment from the release. Features in your code are deployed in advance of the actual release. They stay hidden behind **if-then-else** statements. At runtime, your application code queries a remote service. The service decides the percentage of users who are exposed to the new feature. You can also configure the application behavior for some specific customers, your beta testers for example.
+
+When you use feature flags, you can deploy new code in advance of your launch. Then you can progressively introduce a new feature to a fraction of your customers. During the launch, you monitor your technical and business metrics. If all goes well, you can increase traffic to expose the new feature to additional users. If something goes wrong, you can modify the server-side routing with just one click or API call to present only the old (and working) experience to your customers. This lets you revert back user experience without requiring rollback deployments.
+
+![Feature flags example](./images/W06Img072LoggingCloudWatchEvidentlyFeatureFlags.png)
+
+#### A/B testing
+
+A/B testing shares many similarities with feature flags while still serving a different purpose. A/B tests consist of a randomized experiment with multiple variations. A/B testing lets you compare multiple versions of a single feature, typically by testing the response of a subject to variation A against variation B and determining which of the two is more effective.
+
+For example, let’s imagine an ecommerce website. You might want to experiment with different shapes, sizes, or colors for the checkout button, and then measure which variation has the most impact on revenue.
+
+![A/B Testing example](./images/W06Img074LoggingCloudWatchEvidentlyABTesting.png)
+
+The infrastructure required to conduct A/B testing is similar to the one required by feature flags. You deploy multiple scenarios in your application, and you control how to route part of the customer traffic to one scenario or the other. Then you perform deep-dive statistical analysis to compare the impacts of variations.
+
+Evidently assists in interpreting and acting on experimental results without the need for advanced statistical knowledge. You can use the insights provided by the Evidently statistical engine, such as anytime p-value and confidence intervals, for decision-making while an experiment is in progress.
+
+### [Lab: Monitoring Security with Amazon CloudWatch](./labs/W062Lab2LoggingCloudWatchSecurityMonitoring.md)
+
+As a security engineer at AnyCompany, you are responsible for monitoring the company network and Amazon Elastic Compute Cloud (Amazon EC2) instances for abnormal activity.
+
+In this lab, you will monitor security on the database server with Amazon CloudWatch. You configure the database server to send log files to Amazon CloudWatch. You then create CloudWatch alarms and notifications to alert you to a specified number of login failures on your database server. Finally, you create a CloudWatch alarm and notification to monitor outgoing traffic through a NAT gateway.
+
+In this lab, you perform the following tasks:
+
+* Configure an Amazon Linux 2 instance to send log files to CloudWatch.
+* Create CloudWatch alarms and notifications to monitor for failed login attempts.
+* Create CloudWatch alarms to monitor network traffic through a NAT gateway.
+
+### High-Resolution Metrics and Alarms and Composite Alarms
+
+#### Metric resolution
+
+In Amazon CloudWatch, each metric is one of the following:
+
+* Standard resolution, with data having a 1-minute granularity
+* High resolution, with data at a granularity of 1 second
+
+Metrics produced by AWS services are standard resolution by default. When you publish a custom metric, you can define it as either standard resolution or high resolution. When you publish a high-resolution metric, CloudWatch stores it with a resolution of 1 second, and you can read and retrieve it with a period of 1 second, 5 seconds, 10 seconds, 30 seconds, or any multiple of 60 seconds.
+
+High-resolution metrics give you more immediate visibility and greater granularity into the state and performance of your custom applications, such as observing short-lived spikes and functions. 
+
+If you set an alarm on a high-resolution metric, you can specify a high-resolution alarm with a period of 10 seconds or 30 seconds. Or you can set a regular alarm with a period of any multiple of 60 seconds. There is a higher charge for high-resolution alarms with a period of 10 or 30 seconds. With high-resolution alarms, you can react and take actions faster, and they support the same actions available with standard 1-minute alarms.
+
+Imagine the scenario of invoking alarms when your application's available memory gets low. This is often a transient condition that can be hard to catch with infrequent samples. With high-resolution metrics, you can see, detect (through an alarm), and act on it within seconds.
+
+![Screenshot of low-memory alarm in both standard resolution and high resolution. See image caption for details.]()
+
+This example shows that when you use a high-resolution alarm that is evaluated every 10 seconds, you can see that the alarm gets invoked when available memory gets low. You would not be able to observe this issue when the alarm is evaluated every 1 minute.
+
+You can add these high-resolution metrics and alarm widgets to your CloudWatch dashboards so that you can readily observe the critical components.
+
+#### Publishing high-resolution metrics
+
+You can publish high-resolution metrics in the following ways:
+
+* **API**: The **PutMetricData** function accepts an optional StorageResolution parameter. Set this parameter to 1 to publish high-resolution metrics; omit it (or set it to 60) to publish at standard 1-minute resolution. Note that every **PutMetricData** call for a custom metric is charged, so calling **PutMetricData** more often on a high-resolution metric can lead to higher charges.
+* **collectd plugin**: The CloudWatch plugin for **collectd** supports collection and publication of high-resolution metrics. You will need to set the **enable_high_resolution_metrics** parameter in the config file for the plugin.
+
+#### Combining alarms
+
+With CloudWatch, you can combine several alarms into one *composite alarm* to create a summarized, aggregated health indicator over a whole application or group of resources. Composite alarms are alarms that determine their state by monitoring the states of other alarms. You define rules to combine the status of those monitored alarms using Boolean logic.
+
+You can use composite alarms to reduce alarm noise by taking actions only at an aggregated level. For example, you can create a composite alarm to send a notification to your web server team if any alarm related to your web server activates. When any of those alarms goes into the *ALARM* state, the composite alarm goes into the *ALARM* state and sends a notification to your team. If other alarms related to your web server also go into the *ALARM* state, your team does not get overloaded with new notifications because the composite alarm has already notified them about the situation.
+
+You can also use composite alarms to create complex alarming conditions and take actions only when many different conditions are met. For example, you can create a composite alarm that combines a CPU alarm and a memory alarm, and would only notify your team if both the CPU and the memory alarms have activated.
+
+#### Using composite alarms
+
+When you use composite alarms, you have the following two options:
+
+* Configure the actions that you want to take only at the composite alarm level, and create the underlying monitored alarms without actions.
+* Configure a different set of actions at the composite alarm level. For example, the composite alarm actions could engage a different team in case of a widespread issue.
+
+Composite alarms can take only the following actions:
+
+* Notify Amazon Simple Notification Service (Amazon SNS) topics
+* Create OpsItems in OpsCenter, a capability of AWS Systems Manager
+* Create incidents in Incident Manager, a capability of AWS Systems Manager
+
+All the underlying alarms in your composite alarm must be in the same account and the same Region as your composite alarm. However, if you set up a composite alarm in a CloudWatch cross-account observability monitoring account, the underlying alarms can watch metrics in different source accounts and in the monitoring account itself.
+
+A single composite alarm can monitor 100 underlying alarms, and 150 composite alarms can monitor a single underlying alarm.
+
+#### Rule expressions
+
+All composite alarms contain rule expressions. Rule expressions tell composite alarms which other alarms to monitor and determine their states from. Rule expressions can refer to metric alarms and composite alarms. When you reference an alarm in a rule expression, you designate a function to the alarm that determines the three states for the alarm.
+
+1. **ALARM**. ALARM ("alarm-name or alarm-ARN") is TRUE if the alarm is in ALARM state.
+2. **OK**. OK ("alarm-name or alarm-ARN") is TRUE if the alarm is in OK state.
+3. **INSUFFICIENT_DATA**. INSUFFICIENT_DATA (“alarm-name or alarm-ARN") is TRUE if the alarm is in INSUFFICIENT_DATA state.
+
+#### Example expressions
+
+The request parameter **AlarmRule** supports the use of the logical operators **AND**, **OR**, and **NOT**, so you can combine multiple functions into a single expression. The following example expressions show how you can configure the underlying alarms in your composite alarm.
+
+##### ALARM(CPUUtilizationTooHigh) AND ALARM(DiskReadOpsTooHigh)
+
+The expression specifies that the composite alarm goes into *ALARM* only if **CPUUtilizationTooHigh** and **DiskReadOpsTooHigh** are in *ALARM*.
+
+##### ALARM(CPUUtilizationTooHigh) AND NOT ALARM(DeploymentInProgress)
+
+The expression specifies that the composite alarm goes into *ALARM* if **CPUUtilizationTooHigh** is in *ALARM* and **DeploymentInProgress** is not in *ALARM*. This is an example of a composite alarm that reduces alarm noise during a deployment window.
+
+##### (ALARM(CPUUtilizationTooHigh) OR ALARM(DiskReadOpsTooHigh)) AND OK(NetworkOutTooHigh)
+
+The expression specifies that the composite alarm goes into *ALARM* if **(ALARM(CPUUtilizationTooHigh) OR (DiskReadOpsTooHigh))** is in *ALARM* and **(NetworkOutTooHigh)** is in *OK*. This is an example of a composite alarm that reduces alarm noise by not sending you notifications when either of the underlying alarms aren’t in *ALARM* while a network issue is occurring.
+
+### Scaling with CloudWatch Alarms
+
+#### Using CloudWatch Alarms to Invoke Scaling
+
+You can use the CloudWatch console to create two alarms, one for scaling out and the other for scaling in. When the threshold of an alarm is breached, for example, because the traffic has increased, the alarm goes into the *ALARM* state. This state change invokes the scaling policy associated with the alarm. The policy then instructs Amazon EC2 Auto Scaling about how to respond to the alarm breach, such as by adding or removing a specified number of instances.
+
+##### Creating a CloudWatch alarm for the metric high threshold
+
+1. Open the CloudWatch console.
+2. If necessary, change the AWS Region. On the navigation bar, select the Region where your EC2 Auto Scaling group is located.
+3. In the navigation pane, choose **Alarms**, and then choose **All alarms**.
+4. Choose **Create alarm**. Choose **Select metric**. On the **All metrics** tab, choose **EC2**, and then choose **By Auto Scaling Group**. Enter the name of the Auto Scaling group in the search field.
+    For this demonstration, an Auto Scaling group named **example-auto-scaling-group** was already created.
+5. Select **CPUUtilization**, and choose **Select metric**.
+6. The **Specify metric and conditions** page appears, showing a graph and other information about the metric. For **Period**, choose the evaluation period for the alarm, for example, *1 minute*. When evaluating the alarm, each period is aggregated into one data point. A shorter period creates a more sensitive alarm. This is something you might need to adjust later to create the alarm to behave the way you want it to.
+7. Under **Conditions**, for **Threshold type**, choose **Static**. For the alarm condition related to **Whenever CPUUtilization is...**, specify whether you want the value of the metric to be **greater than**, **greater than or equal to**, **less than**, or **less than or equal** to the threshold to breach the alarm. Then, under **than...**, enter the threshold value that you want to breach the alarm. For this example, an alarm to scale out the instances when the CPU utilization is **greater than or equal to 80 percent** is being created.
+8. A second alarm to scale in the instances needs to be created. For that alarm, the metric can be set up to **less than or equal to 40 percent**, for example. Under **Additional configuration**, for **Data points to alarm**, enter the number of data points during which the metric value must exceed the threshold conditions for the alarm. These are the evaluation periods. For example, two consecutive periods of 5 minutes would take 10 minutes to invoke the alarm state. For this example, set the value to **1 minute**.
+9. With the **Missing data treatment setting**, you can choose what the alarm does if it doesn't receive the expected data point, in this case CPU utilization. For example, the alarm might not receive the expected data point for CPU utilization if connection to the EC2 instance is lost. For this example, use the default setting, **Treat missing data as missing**. Then choose **Next**.
+10. On the **Configure actions page**, under **Notification**, select an **Amazon Simple Notification Service**, or **Amazon SNS**, topic to notify the alarm is in *alarm state*, *OK state*, or *insufficient data state*. You can use Amazon SNS to automatically send texts, push notifications, or emails to subscribers when an event happens. In this case, an Amazon EC2 Auto Scaling event. It can also send messages to other applications, like AWS Lambda. For this demonstration, choose **Remove** not to receive notifications for scaling events. The other sections of the **Configure actions page** van be left empty. Leaving the other sections empty creates an alarm without associating it to a scaling policy. You can then associate the alarm with a scaling policy from the Amazon EC2 Auto Scaling console. Choose **Next**.
+11. Enter a name of your CloudWatch alarm. For this example, call it **StepScalingAlarmHigh**. You can also add a description for the alarm. Then choose **Next**.
+12. Choose Create alarm.
+
+As mentioned previously, you will need to create a second alarm to scale instances in when the CPU utilization is less than a particular threshold. The steps are the same. Except for the scale in alarm, you will need to choose a CPU utilization metric that is **less than** or **less than or equal to** a particular value. For this demo, a second alarm will scale in instances when CPU utilization is **less than or equal to 40 percent**.
+
+##### Connecting a CloudWatch alarm to an Auto Scaling group
+
+1. Navigate to the Amazon EC2 Auto Scaling console.
+2. Create a step scaling policy to scale the instances out. In the Amazon EC2 console, in the navigation pane, choose **Auto Scaling Groups**.
+3. Create a dynamic scaling policy to connect it to the CloudWatch alarms you just set up. Select the check box next to the Auto Scaling group. Verify that the minimum and maximum size limits are appropriately set. For example, if the group is already at its maximum size, specify a new maximum to scale out. Amazon EC2 Auto Scaling does not scale the group below the minimum capacity or above the maximum capacity.
+ 3.1. To update the group, on the **Details** tab, you can choose **Edit** to change the current settings for minimum and maximum capacity.
+ 3.2. For Dynamic scaling policies, choose **Create dynamic scaling policy**. For **Policy type**, choose **Step scaling**. Specify a name for the policy. For CloudWatch alarm, choose the alarm that was created to scale out. If you haven't already created a CloudWatch alarm, you can create it here and follow the steps you went through previously in the CloudWatch console.
+ 3.3. Specify the change in the current group size that this policy will make when invoked using **Take the action**. You can add a specific number of instances or a percentage of the existing group size, or you can set the group to an exact size. For this example, choose **Add**, enter *30* in the next field, and then choose **Percent of group**. By default, the lower bound for this step adjustment is the alarm threshold, and the upper bound is the positive infinity.
+ 3.4. To add another step, you can choose **Add step**. You can then define the amount by which to scale and the lower and upper bounds of the step relative to the alarm threshold. To set a minimum number of instances to scale, update the number field to *1*.
+ 3.5. For instances need, update the instance warm-up value as needed. Your instances might take about 5 minutes to spin up before you can start directing traffic to them, so set this value to 300 seconds. Choose **Create**.
+4. To define a policy for scale in, go through the same steps. However, you will select the second CloudWatch alarm you created to scale in instances when CPU utilization is **less than or equal to 40 percent**. You can set the policy to remove 30 percent of the group, or at least one instance, when the alarm is breached.
+
+### Knowledge Check
+
+#### An organization wants to proactively monitor the health of its critical APIs and set up automated tests to simulate user interactions. Which Amazon CloudWatch feature can help achieve this?
+
+* Amazon CloudWatch Synthetics
+
+Wrong answers:
+
+* Amazon CloudWatch Logs Insights
+* Amazon CloudWatch Metrics Insights
+* Amazon CloudWatch Evidently
+
+##### Explanation
+
+CloudWatch Synthetics allows for the creation of canary tests to monitor APIs and other endpoints proactively. Canaries follow the same routes and perform the same actions as a customer to simulate user interaction.
+
+The other options are incorrect for the following reasons:
+
+* CloudWatch Logs Insights helps identify patterns, interactively search, and analyze your log data with bar charts, line charts, and stacked area charts.  It doesn't simulate user interaction.
+* CloudWatch Metrics Insights is a fast, flexible, SQL-based query engine that you can use to identify trends and patterns within millions of operational metrics in near real time. It doesn't simulate user interaction.
+* With Amazon CloudWatch Evidently, application developers can conduct experiments and identify unintended consequences of new features before rolling them out for general use. It doesn't simulate user interaction.
+
+#### What is a key advantage of using composite alarms in Amazon CloudWatch?
+
+* To reduce alarm noise by combining multiple alarms
+
+Wrong answers:
+
+* To reduce the overall number of alarms in the system
+* To simplify the visualization of metric data in the CloudWatch dashboard
+* To create hierarchical alarm structures for better organization
+
+##### Explanation
+
+Users can use composite alarms to reduce alarm noise by taking actions only at an aggregated level. If an issue affects several resources in an application, users will receive a single alarm notification for the entire application instead of one for each affected resource. This helps them focus on finding the root cause of operational issues to reduce application downtime.
+
+The other options are incorrect because they are not the advantages of using composite alarms.
+
+#### An application developer wants to conduct experiments and identify unintended consequences of new features before rolling them out for general use. Which Amazon CloudWatch feature can they use? 
+
+* Amazon CloudWatch Evidently
+
+Wrong answers:
+
+* CloudWatch high-resolution alarms
+* Amazon CloudWatch Contributor Insights
+* Amazon CloudWatch Logs Insights
+
+##### Explanation
+
+Developers can use Evidently to safely validate new features by serving them to a specified percentage of their users while they roll out the features. They can monitor the performance of a new feature to help them decide when to ramp up traffic to the users. This helps reduce risk and identify unintended consequences before they fully launch the feature.
+
+The other options are incorrect for the following reasons:
+
+* If developers set an alarm on a high-resolution metric, they can specify a high-resolution alarm with a period of 10 seconds or 30 seconds. With high-resolution alarms, they can react and take actions faster. High-resolution alarms don't help with identifying unintended consequences of new features.
+* CloudWatch Contributor Insights analyzes time-series data to provide a view of the top contributors influencing system performance. It doesn't help with identifying unintended consequences of new features0
+* CloudWatch Logs Insights helps developers efficiently identify patterns, interactively search, and analyze their log data with bar charts, line charts, and stacked area charts. CloudWatch Logs Insights doesn't help with identifying unintended consequences of new features.
+
+### Summary
+
+#### Amazon CloudWatch dashboards
+
+Amazon CloudWatch dashboards are customizable home pages in the CloudWatch console that you can use to monitor your resources in a single view, even those resources that are spread across different Regions. You can also create cross-account observability dashboards and cross-account cross-Region dashboards.
+
+#### CloudWatch Synthetics
+
+You can use CloudWatch Synthetics to monitor application endpoints more easily. It runs tests on your endpoints continuously and alerts you if they don’t behave as expected. These tests can be customized to check your applications for a number of issues. Tests include availability, latency, transactions, broken links, step-by-step task completions, page load errors, load latencies for UI assets, complex wizard flows, and checkout flows.
+
+#### CloudWatch RUM
+
+CloudWatch RUM gives you visibility into your applications’ client-side performance. It helps you collect client-side data on web application performance in near real time to identify and debug issues. CloudWatch RUM complements the CloudWatch Synthetics data to give you more visibility into your end-user experience. You can visualize anomalies in performance and use the relevant debugging data (such as error messages, stack traces, and user sessions) to fix performance issues (such as JavaScript errors, crashes, and latencies). You can gain insight into the range of end-user impacts, including number of users, geolocations, and browsers. CloudWatch RUM aggregates data on your users' journey through your application, which can help you determine which features to launch and bug fixes to prioritize.
+
+#### CloudWatch Logs Insights
+
+CloudWatch Logs Insights helps you efficiently identify patterns, interactively search, and analyze your log data with bar charts, line charts, and stacked area charts. You can perform queries to efficiently and effectively respond to operational or network issues. If an issue occurs, you can use CloudWatch Logs Insights to identify potential causes and validate deployed fixes.
+
+#### CloudWatch Metrics Insights
+
+CloudWatch Metrics Insights is a fast, flexible, SQL-based query engine that you can use to identify trends and patterns within millions of operational metrics in near real time. You can use CloudWatch Metrics Insights to gain better visibility on your infrastructure and large-scale application performance with flexible querying and on-the-fly metric aggregations. CloudWatch Metrics Insights queries can be used to create powerful visualizations and help you proactively monitor and pinpoint issues quickly.
+
+#### CloudWatch Contributor Insights
+
+CloudWatch Contributor Insights analyzes time-series data to provide a view of the top contributors influencing system performance. After it is set up, CloudWatch Contributor Insights runs continuously without additional user intervention. This helps developers and operators more quickly isolate, diagnose, and remediate issues during an operational event. CloudWatch Contributor Insights helps you understand who or what is impacting your system and application performance, such as a specific resource, customer account, or API call.
+
+A contributor is an aggregate metric based on dimensions contained as log fields in CloudWatch Logs, such as account-id or interface-id in VPC Flow Logs, or any other custom set of dimensions. You can sort and filter contributor data based on your own custom criteria. CloudWatch Contributor Insights report data can be displayed on CloudWatch dashboards, graphed alongside CloudWatch metrics, and added to CloudWatch alarms.
+
+#### Evidently
+
+With Amazon CloudWatch Evidently, application developers can conduct experiments and identify unintended consequences of new features before rolling them out for general use, thereby reducing risk related to new feature roll-out.
+
+You can use Evidently to validate new features across the full application stack before release, which makes for a safer release. When launching new features, you can expose them to a small user base, monitor key metrics, such as page load times or conversions, and then dial up traffic. With Evidently, you can also try different designs, collect user data, and release the most effective design into production.
+
+#### High-resolution metrics and alarms and composite alarms
+
+Metrics produced by AWS services are standard resolution by default. When you publish a custom metric, you can define it as either standard resolution or high resolution. When you publish a high-resolution metric, CloudWatch stores it with a resolution of 1 second, and you can read and retrieve it with a period of 1 second, 5 seconds, 10 seconds, 30 seconds, or any multiple of 60 seconds.
+
+If you set an alarm on a high-resolution metric, you can specify a high-resolution alarm with a period of 10 seconds or 30 seconds. With high-resolution alarms, you can react and take actions faster.
+
+With CloudWatch composite alarms, you can combine multiple alarms and reduce alarm noise. If an issue affects several resources in an application, you will receive a single alarm notification for the entire application instead of one for each affected resource. This helps you focus on finding the root cause of operational issues to reduce application downtime. You can provide an overall state for a grouping of resources, such as an application, AWS Region, or Availability Zone.
+
+#### Using CloudWatch alarms to invoke scaling
+
+When a CloudWatch alarm transitions to a new alarm state (*OK*, *ALARM*, or *INSUFFICIENT_DATA*), the alarm invokes any configured actions for that state. Amazon EC2 Auto Scaling only uses the period configured on the alarm to determine if the state should change. For scaling actions, the alarm continues to invoke the configured action for every minute that the alarm remains in the new state, regardless of the configured period. For a CloudWatch alarm to invoke an Amazon EC2 Auto Scaling policy, the **ActionsEnabled** parameter must be enabled in the alarm's configuration. Be sure that the **ActionsEnabled parameter** is true in your alarm's configuration.
+
+### Additional Resources
+
+* [Suppressing Composite Alarm Actions](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Create_Composite_Alarm_Suppression.html)
+* [Using Synthetic Monitoring](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries.html)
+* [Setting Up an Application to Use CloudWatch RUM](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-get-started.html)
