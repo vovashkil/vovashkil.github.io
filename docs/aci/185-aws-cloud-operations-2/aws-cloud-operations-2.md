@@ -38,5 +38,7 @@
   * [IaC: Examining AWS Cloud Development Kit (AWS CDK)](./W054IaCExaminingAwsCdk.md)
 * Week 6:
   * [Logging and Scaling: Monitoring and Amazon CloudWatch](./W060LoggingScalingMonitoringCloudWatch.md)
+* Week 7:
   * [Logging and Scaling: Auto Scaling and Elastic Load Balancing](./W070LoggingScalingAutoScalingLoadBalancing.md)
-  
+* Week 8:
+  * [Monitoring and Troubleshooting: Troubleshooting with AWS CloudTrail and IAM](./W080MonitoringTroubleshootingCloudTrailIam.md)
