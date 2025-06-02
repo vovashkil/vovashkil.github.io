@@ -808,3 +808,673 @@ Wrong answers:
 This activity is most likely an Insights event. Insights events help identify unusual activity in your account. Foe example, they can detect an unusually high number of API calls are made, which might indicate a potential security issue.
 
 ### Analyzing CloudTrail Log Files for Potential Security Incidents
+
+#### Glossary
+
+* **Brute force attacks**
+
+  A brute force attack is a hacking method that uses trial and error to crack passwords, login credentials, and encryption keys. It is a simple yet reliable tactic for gaining unauthorized access to individual accounts and organizations' systems and networks.
+
+#### Example 1: Unauthorized access attempt
+
+```json
+{
+    "eventVersion": "1.05",
+    "userIdentity": {
+        "type": "IAMUser",
+        "principalId": "AIDAJDPLRKLG7UEXAMPLE",
+        "arn": "arn:aws:iam::123456789012:user/Alice",
+        "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+        "userName": "Jane"
+    },
+    "eventTime": "2024-05-06T20:45:04Z",
+    "eventSource": "ec2.amazonaws.com",
+    "eventName": "StartInstances",
+    "awsRegion": "us-west-2",
+    "sourceIPAddress": "205.251.233.182",
+    "userAgent": "ec2-api-tools 1.6.12.2",
+    "errorCode": "UnauthorizedOperation",
+    "errorMessage": "You are not authorized to perform this operation.",
+    "requestParameters": {"instancesSet": {"items": [{"instanceId": "i-abc12345"}]}},
+    "responseElements": null
+}
+```
+
+##### What's happening?
+
+This log file shows an unauthorized attempt by the user **Jane** to start an Amazon EC2 instance (**i-abc12345**). The **errorCode** and **errorMessage** fields indicate that the operation was not successful because of a lack of proper permissions.
+
+This could be a sign of a compromised account or an insider threat. The security team should investigate the incident and verify if Jane's credentials were compromised. Then, they should take necessary actions such as resetting the credentials and reviewing IAM policies.
+
+#### Example 2: Security group modification
+
+```json
+{
+    "eventVersion": "1.05",
+    "userIdentity": {
+        "type": "Root",
+        "principalId": "123456789012",
+        "arn": "arn:aws:iam::123456789012:root",
+        "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+        "userName": "Root"
+    },
+    "eventTime": "2024-05-16T23:50:04Z",
+    "eventSource": "ec2.amazonaws.com",
+    "eventName": "AuthorizeSecurityGroupIngress",
+    "awsRegion": "us-west-2",
+    "sourceIPAddress": "198.51.100.1",
+    "userAgent": "signin.amazonaws.com",
+    "requestParameters": {
+        "groupId": "sg-12341234",
+        "ipPermissions": {
+            "items": [
+                {
+                    "ipProtocol": "tcp",
+                    "fromPort": 22,
+                    "toPort": 22,
+                    "ipRanges": {"items": [{"cidrIp": "0.0.0.0/0"}]}
+                }
+            ]
+        }
+    },
+    "responseElements": null
+}
+```
+
+##### What is happening?
+
+This log file shows that the root user has modified a security group (sg-12341234) to allow ingress traffic on TCP port 22 (SSH) from all IP addresses (0.0.0.0/0).
+
+This could potentially expose the resources associated with this security group to SSH brute force attacks. The security team should review this change, and if it's not in line with the security policies, they should revert the change and restrict the ingress rules to trusted IP ranges.
+
+This log file also indicates a compromised root user. Remember, you do not use the root user for day-to-day activities.
+
+#### Example 3: Deletion of CloudTrail log
+
+```json
+{
+    "eventVersion": "1.05",
+    "userIdentity": {
+        "type": "IAMUser",
+        "principalId": "AIDAJDPLRKLG7UEXAMPLE",
+        "arn": "arn:aws:iam::123456789012:user/Bob",
+        "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+        "userName": "John"
+    },
+    "eventTime": "2024-06-10T21:00:04Z",
+    "eventSource": "cloudtrail.amazonaws.com",
+    "eventName": "DeleteTrail",
+    "awsRegion": "us-west-2",
+    "sourceIPAddress": "198.51.100.2",
+    "userAgent": "aws-cli/1.16.266 Python/3.7.4 Darwin/18.7.0 botocore/1.13.2",
+    "requestParameters": {"name": "MyTrail"},
+    "responseElements": null
+}
+```
+
+##### What is happening?
+
+This log file shows that the user **John** has deleted a CloudTrail trail named **MyTrail**.
+
+This could be an attempt to hide malicious activities. The security team should investigate why the trail was deleted and why John could delete the trail in the first place. If it was not an authorized action, they should recreate the trail, review IAM policies, and consider enabling MFA for sensitive operations.
+
+#### Example 4: Brute force attack
+
+```json
+{
+    "eventVersion": "1.05",
+    "userIdentity": {
+        "type": "IAMUser",
+        "principalId": "AIDAJDPLRKLG7UEXAMPLE",
+        "arn": "arn:aws:iam::123456789012:user/Charlie",
+        "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+        "userName": "Pat"
+    },
+    "eventTime": "2024-06-26T21:15:04Z",
+    "eventSource": "signin.amazonaws.com",
+    "eventName": "ConsoleLogin",
+    "awsRegion": "us-west-2",
+    "sourceIPAddress": "198.51.100.3",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+    "errorCode": "FailedAuthentication",
+    "errorMessage": "Failed authentication",
+    "additionalEventData": {
+        "LoginTo": "https://console.aws.amazon.com/console/home",
+        "MobileVersion": "No",
+        "MFAUsed": "No"
+    },
+    "responseElements": {
+        "ConsoleLogin": "Failure"
+    }
+}
+```
+
+##### What is happening?
+
+The log file shows a failed console login attempt by the user **Pat**. If you see a high number of such failed login attempts in a short period from the same IP address or for the same user, it could indicate a brute force attack.
+
+The security team should investigate the incident. They should verify if Pat's credentials were compromised and take necessary actions. These actions could include resetting the credentials, enabling MFA, and blocking the suspicious IP address if necessary. It's also recommended to review IAM policies and ensure that they follow the principle of least privilege.
+
+### CloudTrail Integration
+
+CloudTrail, Amazon S3, CloudWatch, and AWS Lambda can be integrated to provide a comprehensive logging and alerting system.
+
+#### Enabling CloudTrail
+
+CloudTrail is enabled on your AWS account when you create it. For an ongoing record of activity and events in your account, you create a trail. You can create trails for a single AWS Region or for all Regions. Trails record the log file in each Region, and CloudTrail can deliver the log files to a single, consolidated S3 bucket. 
+
+#### Configuring Amazon S3
+
+After creating the trail, all your management events will now be logged to an Amazon S3 bucket and can be further analyzed. By default, S3 buckets and objects are private. To deliver log files to an S3 bucket, CloudTrail must have the required permissions. For more information, see [Amazon S3 Bucket Policy for CloudTrail](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/create-s3-bucket-policy-for-cloudtrail.html).
+
+Remember that data events are not logged by default when you create a trail or event data store. To record CloudTrail data events, you must explicitly add each resource type for which you want to collect activity. For more information, see [Creating a Trail](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-create-a-trail-using-the-console-first-time.html) and [Create an event data store for CloudTrail events with the console](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/query-event-data-store-cloudtrail.html).
+
+#### Using Lambda
+
+You can detect data exfiltration by collecting activity data on Amazon S3 objects through object-level API events recorded in CloudTrail.
+
+You can use the bucket notification feature and direct Amazon S3 to publish object-created events to Lambda. Whenever CloudTrail writes logs to your S3 bucket, Amazon S3 can then invoke your Lambda function by passing the Amazon S3 object-created event as a parameter. The Amazon S3 event provides information, including the bucket name and key name of the log object that CloudTrail created. Your Lambda function code can read the log object and process the access records logged by CloudTrail.
+
+For example, you might write Lambda function code to notify you if a specific API call was made in your account.
+
+#### Integrating with CloudWatch
+
+CloudTrail integrates with the CloudWatch service to publish the API calls being made to resources or services in AWS accounts. The published event has invaluable information that can be used for compliance, auditing, and governance of your AWS accounts.
+
+You can configure CloudTrail with CloudWatch Logs to monitor your trail logs and be notified when specific activity occurs.
+
+1. Configure your trail to send log events to CloudWatch Logs.
+2. Define CloudWatch Logs metric filters to evaluate log events for matches in terms, phrases, or values. For example, you can monitor for **ConsoleLogin** events.
+3. Assign CloudWatch metrics to the metric filters.
+4. Create CloudWatch alarms that are invoked according to thresholds and time periods that you specify. You can configure alarms to send notifications when alarms are invoked so that you can take action.
+5. You can also configure CloudWatch to automatically perform an action in response to an alarm.
+
+When you configure your trail to send events to CloudWatch Logs, CloudTrail sends only the events that match your trail settings. For example, if you configure your trail to log data events only, your trail sends data events only to your CloudWatch Logs log group. CloudTrail supports sending data, Insights, and management events to CloudWatch Logs.
+
+#### Scenario
+
+What the processes might be for you to integrate CloudTrail with these AWS services to automate log management and analysis processes.
+
+AnyCompany is a tech startup and has recently migrated its infrastructure to AWS. They are keen on maintaining high security standards. They want to monitor and alert on unauthorized access attempts to their AWS resources. Here is how they can use CloudTrail, Amazon S3, CloudWatch, and Lambda for their use case.
+
+1. **Set up CloudTrail**
+
+    AnyCompany first sets up CloudTrail and creates a trail in their AWS account. This service records all the API calls made in their account and delivers the log files to an S3 bucket. This is an important step because it provides visibility into user activity and actions taken within their AWS environment.
+
+    The logs include details like the identity of the caller, the time of the API call, the source IP address of the caller, the request parameters, and the response elements returned by the AWS service.
+
+2. **Configure Amazon S3**
+
+    After setting up CloudTrail, AnyCompany configures an Amazon S3 bucket to receive the log files from CloudTrail. They enable event notifications on this bucket. These notifications are in the form of messages sent to a target whenever certain events occur.
+
+    In this case, the target is a Lambda function and the event is the delivery of a new log file.
+
+3. **Create a Lambda function**
+
+    AnyCompany then writes a Lambda function that gets invoked through receiving the event notification from the S3 bucket. This function reads the CloudTrail log file, parses it, and looks for any unauthorized access attempts.
+
+    For example, they might look for events where the **errorCode** field is **AccessDeined** or **UnathorizedOperation**.
+
+4. **Set up Amazon SNS**
+
+    If the Lambda function identifies a specific event such as an error or unauthorized access attempt, it can publish a message to an Amazon Simple Notification Service (Amazon SNS) topic. Amazon SNS is a web service that coordinates and manages the delivery or sending of messages to subscribing endpoints or clients. In this case, the endpoint could be an email or a mobile device.
+
+5. **Set up CloudWatch Logs and alarms**
+
+    AnyCompany configures CloudTrail to send logs to CloudWatch Logs. Then, they can create metric filters to extract values from the log events, which are data points for CloudWatch metrics.
+
+    For example, they might create a metric filter to search for and count the occurrence of the term **UnauthorizedOperation** in the log events. After the metric filters are set up, they can create a CloudWatch alarm that gets invoked when the metric reaches a certain threshold.
+
+    When the alarm condition is met, it changes state from **OK** to **ALARM**, and sends a message to an Amazon SNS topic. AnyCompany can use this setup to monitor their AWS environment for specific events and react accordingly.
+
+6. Summary
+
+    With all these setups, AnyCompany can maintain a high level of security in their AWS environment. They can monitor their log, receive alerts for unauthorized access attempts, and take immediate actions to mitigate any potential threats. The process can be customized based on specific needs and use cases.
+
+### Best Practices for Securing and Managing CloudTrail
+
+Securing and managing CloudTrail trails involves several best practices. Two of best practice categories:
+
+* detective security best practices
+* preventative security best practices
+
+#### Detective security best practices
+
+Detective security best practices means that you implement the measures to identify and detect security threats in your AWS environments. These practices are crucial for identifying vulnerabilities, anomalies, and potential threats that could compromise the system. Here are some key points.
+
+##### Creating a trail and applying trails to all AWS Regions
+
+Although CloudTrail provides 90 days of event history information for management events in the CloudTrail console without creating a trail, it is not a permanent record, and it does not provide information about all possible types of events. For an ongoing record, and for a record that contains all the event types you specify, you must create a trail. These log files are delivered to an S3 bucket that you specify.
+
+To help manage your CloudTrail data, consider creating one trail that logs management events in all AWS Regions, and then creating additional trails that log specific event types for resources, such as an S3 bucket activity or Lambda functions.
+
+By logging events in all AWS Regions, you ensure that all events that occur in your AWS account are logged, regardless of which AWS Region they occurred in. This includes logging global service events, which are logged to an AWS Region specific to that service. If an AWS Region is added after you create a trail that applies to all Regions, that new Region is automatically included, and events in that Region are logged. This is the default option when you create a trail in the CloudTrail console.
+
+##### Validating CloudTrail log file integrity
+
+Validated log files are invaluable in security and forensic investigations. A validated log file helps you assert positively that the log file itself has not changed, or that particular user credentials performed specific API activity.
+
+The CloudTrail log file integrity validation process uses industry standard algorithms: SHA-256 for hashing and SHA-256 with RSA for digital signing.
+
+When you enable log file integrity validation, CloudTrail creates a hash for every log file that it delivers. Every hour, CloudTrail also creates and delivers a file that references the log files for the last hour and contains a hash of each. This file is called a digest file. CloudTrail signs each digest file using the private key of a public and private key pair. After delivery, you can use the public key to validate the digest file. CloudTrail uses different key pairs for each AWS Region.
+
+![Partial screenshot (Additional settings section) of AWS CloudTrail console.](./images/W08Img010TroubleshootingCloudTrailTrail.png)
+
+Log file validation setting is enabled in the CloudTrail console when you create a trail.
+
+The digest files are delivered to the same Amazon S3 bucket associated with your trail as your CloudTrail log files. If your log files are delivered from all Regions or from multiple accounts into a single S3 bucket, CloudTrail will deliver the digest files from those Regions and accounts into the same bucket.
+
+The digest files are put into a folder separate from the log files. With this separation of digest files and log files, you can enforce granular security policies. It also permits existing log processing solutions to continue to operate without modification. Each digest file also contains the digital signature of the previous digest file if one exists. The signature for the current digest file is in the metadata properties of the digest file S3 object.
+
+Digest files are delivered to an S3 bucket location that uses the following syntax.
+
+```config
+s3://s3-bucket-name/optional-prefix/AWSLogs/aws-account-id/CloudTrail-Digest/
+region/digest-end-year/digest-end-month/digest-end-date/
+aws-account-id_CloudTrail-Digest_region_trail-name_region_digest_end_timestamp.json.gz
+```
+
+Imagine a scenario where a company suspects unauthorized access to their AWS resources. During the investigation, the security team relies on validated CloudTrail log files to determine if any unauthorized API activity occurred. They use the log file integrity validation feature to confirm that the log files have not been tampered with, ensuring that the recorded activities are accurate. CloudTrail's process of creating hash values for each log file and generating hourly digest files helps the team verify the authenticity of the logs. By checking these digest files, the team can also ascertain whether any log files were deleted or if no logs were generated during specific periods. This comprehensive validation process is crucial for their forensic analysis and compliance auditing, providing confidence in the integrity of their security investigation. 
+
+##### Integrating with CloudWatch Logs
+
+You can use CloudWatch Logs to monitor and receive alerts for specific events captured by CloudTrail. The events sent to CloudWatch Logs are those configured to be logged by your trail, so make sure you have configured your trail or trails to log the event types (management events or data events) that you are interested in monitoring.
+
+For example, you can monitor key security and network-related management events, such as failed AWS Management Console sign-in events.
+
+##### Using Amazon GuardDuty
+
+Amazon GuardDuty is a threat detection service that helps you protect your accounts, containers, workloads, and the data within your AWS environment. By using machine learning (ML) models, and anomaly and threat detection capabilities, GuardDuty continuously monitors different log sources. This helps identify and prioritize potential security risks and malicious activities in your environment.
+
+For example, say that there are some credentials created exclusively for an EC2 instance through an instance launch role. GuardDuty will detect potential credential theft if those credentials are used from another AWS account.
+
+##### Using AWS Security Hub
+
+Monitor your usage of CloudTrail as it relates to security best practices by using AWS Security Hub. Security Hub uses detective security controls to evaluate resource configurations and security standards to help you comply with various compliance frameworks.
+
+* [AWS CloudTrail controls](https://docs.aws.amazon.com/securityhub/latest/userguide/cloudtrail-controls.html)
+
+#### Preventative security best practices
+
+Preventative security best practices are proactive measures taken to prevent security breaches and attacks. These practices aim to strengthen the system against potential threats before they occur. Here are some key points.
+
+##### Logging to a dedicated and centralized Amazon S3 bucket
+
+CloudTrail log files are an audit log of actions taken by an IAM identity or an AWS service. The integrity, completeness, and availability of these logs are crucial for forensic and auditing purposes. By logging to a dedicated and centralized S3 bucket, you can enforce strict security controls, access, and segregation of duties. This centralized bucket is often in an isolated logging account to help prevent tampering. 
+
+##### Encrypting CloudTrail log files with AWS KMS keys
+
+By default, the log files delivered by CloudTrail to your bucket are encrypted by using server-side encryption with AWS Key Management Service (AWS KMS) keys (SSE-KMS). If you don't enable SSE-KMS encryption, your logs are encrypted using SSE-S3 encryption.
+
+To use SSE-KMS with CloudTrail, you create and manage an AWS KMS key. You attach a policy to the key that determines which users can use the key for encrypting and decrypting CloudTrail log files. The decryption is seamless through Amazon S3. When authorized users of the key read CloudTrail log files, Amazon S3 manages the decryption, and the authorized users can read log files in an unencrypted form.
+
+This approach has the following advantages:
+
+* You can create and manage the AWS KMS key encryption keys yourself.
+* You can use a single AWS KMS key to encrypt and decrypt log files for multiple accounts across all Regions.
+* You have control over who can use your key for encrypting and decrypting CloudTrail log files. You can assign permissions for the key to the users in your organization according to your requirements.
+* Amazon S3 automatically decrypts the log files for requests from users authorized to use the AWS KMS key. Because of this, SSE-KMS encryption for CloudTrail log files is backward-compatible with applications that read CloudTrail log data.
+* You have enhanced security.
+
+**The AWS KMS key that you choose must be created in the same AWS Region as the S3 bucket that receives your log files. For example, if the log files will be stored in a bucket in the US East (Ohio) Region, you must create or choose an AWS KMS key that was created in that Region. To verify the Region for an S3 bucket, inspect its properties in the Amazon S3 console.**
+
+With this feature, to read log files, the following permissions are required:
+
+* A user must have Amazon S3 read permissions for the bucket that contains the log files.
+* A user must also have a policy or role applied that allows decrypt permissions by the AWS KMS key policy.
+
+Enabling server-side encryption encrypts the log files but not the digest files with SSE-KMS. Digest files are encrypted with Amazon S3 managed encryption keys (SSE-S3).
+
+**If you are using an existing S3 bucket with an S3 Bucket Key, CloudTrail must be allowed permission in the key policy to use the AWS KMS actions GenerateDataKey and DescribeKey. If cloudtrail.amazonaws.com is not granted those permissions in the key policy, you cannot create or update a trail.**
+
+##### Adding a condition key to the default Amazon SNS topic policy
+
+When you configure a trail to send notifications to Amazon SNS, CloudTrail adds a policy statement to your SNS topic access policy that allows CloudTrail to send content to an SNS topic. As a security best practice, it's recommended to add an **aws:SourceArn** (or optionally **aws:SourceAccount**) condition key to the CloudTrail policy statement. This helps prevent unauthorized account access to your SNS topic.
+
+##### Implementing least privilege access to Amazon S3 buckets where you store log files
+
+CloudTrail sends log events to an S3 bucket that you specify. These log files contain an audit log of actions taken by IAM identities and AWS services. The integrity and completeness of these log files are crucial for auditing and forensic purposes. To help ensure that integrity, you should adhere to the principle of least privilege when creating or modifying access to any S3 bucket used for storing CloudTrail log files.
+
+You can take the following steps:
+
+1. Review the [Amazon S3 bucket policy](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/create-s3-bucket-policy-for-cloudtrail.html) for any buckets where you store log files and adjust it if necessary to remove any unnecessary access. This bucket policy will be generated for you if you create a trail using the CloudTrail console but can also be created and managed manually.
+2. As a security best practice, be sure to manually add an **aws:SourceArn** condition key to the bucket policy.
+3. If you are using the same S3 bucket to store log files for multiple AWS accounts, follow the guidance for [receiving log files for multiple accounts](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-receive-logs-from-multiple-accounts.html).
+4. If you are using an organization trail, make sure you follow the guidance for [organization trails](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/creating-trail-organization.html), and review the example policy for an S3 bucket for an organization trail in [Creating a trail for an organization with the AWS CLI](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-create-and-update-an-organizational-trail-by-using-the-aws-cli.html).
+
+##### Enabling MFA delete on the Amazon S3 bucket where you store log files
+
+When you configure MFA, attempts to change the versioning state of a bucket or delete an object version in a bucket require additional authentication. This way, even if a user acquires the password of an IAM user with permission to permanently delete S3 objects, you can still prevent operations that could compromise your log files.
+
+##### Configuring object lifecycle management on the Amazon S3 bucket where you store log files
+
+The CloudTrail trail default is to store log files indefinitely in the S3 bucket configured for the trail. You can use the Amazon S3 object lifecycle management rules to define your own retention policy to better meet your business and auditing needs. For example, you might want to archive or delete log files after a certain amount of time has passed. Doing so can help save costs.
+
+##### Limiting access to the AWSCloudTrail_FullAccess policy
+
+Users with the **AWSCloudTrail_FullAccess** policy can disable or reconfigure the most sensitive and important auditing functions in their AWS accounts. This policy is not intended to be shared or applied broadly to IAM identities in your AWS account. Limit the application of this policy to as few individuals as possible, those you expect to act as AWS account administrators.
+
+* [IAM for CloudTrail](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/security-iam.html)
+
+### CloudTrail Lake
+
+Imagine you are responsible for monitoring and auditing AWS activity across multiple accounts and Regions. AWS CloudTrail Lake becomes invaluable because it provides a centralized, long-term repository for all CloudTrail logs. This provides detailed analysis and querying of historical data. By using CloudTrail Lake, you can efficiently investigate security incidents, track user activity, and ensure compliance with regulatory requirements. You can use the advanced query capabilities to sift through vast amounts of log data to pinpoint specific actions and events quickly. This powerful tool streamlines complex forensic investigations and enhances your ability to maintain a secure and compliant AWS environment.
+
+CloudTrail Lake aggregates, immutably stores, and queries ingested events, offering a managed data lake for your organization. A data lake is a centralized repository that you can use to store all your structured and unstructured data at any scale. You can store your data as-is, without having to first structure the data, and run different types of analytics.
+
+You can choose AWS activities such as actions logged by CloudTrail or historical configuration items recorded by AWS Config. You also have the option of activities such as AWS Audit Manager evidence or events from non-AWS sources. Your organization can use these events for auditing, security investigations, and operational investigations. CloudTrail Lake also offers support for CloudTrail Insights that helps you identify unusual operational activity in your AWS accounts such as spikes in resource provisioning or bursts of AWS Identity and Access Management (IAM) actions.
+
+In addition, CloudTrail Lake dashboards provide out-of-the-box visibility and top insights from your audit and security data directly within the CloudTrail Lake console.
+
+CloudTrail Lake integrates data collection, storage, preparation, and analysis within one platform, which streamlines workflows. With immutable event data storage and flexible retention periods, CloudTrail Lake helps you meet your compliance requirements.
+
+![Example of CloudTrail Lake dashboard. For more information, see the image captions.](./images/W08Img012TroubleshootingCloudTrailLakeDashboard.png)
+
+This CloudTrail Lake dashboard example shows the data that was being queried. The following sections are displayed in the example: **Account activity**, **Top errors**, **Most active regions**, **Top services**, **Most throttled events**, and **Top users**.
+
+#### What problems does CloudTrail Lake solve?
+
+CloudTrail Lake provides a mechanism that assists during auditing. It also identifies and helps during the investigation of security incidents and operational issues. With CloudTrail Lake, you can monitor, store, and validate activity events for authenticity and accordance with internal policies. Furthermore, you can analyze CloudTrail Lake with Amazon Athena. You can then visualize the data with Amazon QuickSight or Amazon Managed Grafana by using Lake query federation for compliance, cost, and usage reporting. CloudTrail Lake helps perform retrospective investigations by answering who made what configuration changes to resources. This information is helpful when investigating security incidents such as data exfiltration or unauthorized access to your AWS environment.
+
+You can also use the curated CloudTrail Lake dashboards to get an overview of anomalous behavior in your account including the type of Insights generated on your accounts or the source of these Insights.
+
+With CloudTrail Lake, you can do the following:
+
+* Store events for up to 10 years to perform retrospective investigations.
+* Modernize audit log management and meet audit requirements.
+* Verify that user activity is in accordance with internal and external policies.
+* Streamline security and operations.
+* Investigate noncompliant changes.
+* Perform historical asset inventory analysis on configuration items.
+* Investigate operational issues in near real time.
+
+#### Benefits of CloudTrail Lake
+
+##### Storage and monitoring
+
+CloudTrail Lake is a data Lake for auditing, security, and operational investigations. It automatically stores your events, including management events, data events, and configuration items from AWS Config, within the lake. You must first enable an AWS Config recording to ingest configuration items in CloudTrail Lake.
+
+##### Immutable and encrypted activity logs
+
+By default, CloudTrail encrypts all events in an event data store. When configuring an event store, you can choose to use your own AWS KMS key. Doing so will incur AWS KMS costs for encryption and decryption.
+
+After you associate an event data store with an AWS KMS key, the AWS KMS key cannot be removed or changed. CloudTrail Lake grants read-only access to prevent changes to log files. Read-only access means that events are automatically immutable. You can verify the integrity of data in exported query results using CloudTrail query results integrity validation.
+
+This feature uses industry standard algorithms—SHA-256 for hashing and SHA-256 with RSA for digital signing—to make it computationally infeasible to modify, delete, or forge CloudTrail query result files without detection.
+
+##### Insights and analytics
+
+You can run SQL-based queries on activity logs for auditing within the lake. CloudTrail Lake supports CloudWatch metrics. CloudWatch provides information about the amount of data ingested into your event data store during the last hour and throughout its retention period.
+
+With the Lake query federation feature, you can use Athena to query your activity logs in CloudTrail Lake and visualize them by using QuickSight and Amazon Managed Grafana.
+
+##### Multi-source
+
+You can consolidate activity events from AWS and non-AWS sources, such as internal applications and SaaS applications running in the cloud or on premises. You don’t need to maintain multiple log aggregators and reporting tools. You can find and add partner integrations to start receiving activity events from these applications in a few steps using the CloudTrail console.
+
+For sources other than the available partner integrations, customers can use CloudTrail Lake APIs to set up their own integrations and push events to CloudTrail Lake.
+
+##### Multi-Region
+
+CloudTrail Lake helps capture and store events from multiple AWS Regions.
+
+
+##### Multi-account
+
+You can also use CloudTrail Lake to store events from an organization in AWS Organizations in an event data store, including events from multiple Regions and accounts. Additionally, you can designate up to three delegated administrator accounts to create, update, query, or delete CloudTrail Lake event data stores at the organization level.
+
+#### How CloudTrail Lake works
+
+CloudTrail Lake helps you aggregate, immutably store, and query your activity logs for auditing, security investigation, and operational troubleshooting. Here is a summary of how it works:
+
+* **Aggregation**: CloudTrail Lake supports the collection of events from multiple AWS Regions and AWS accounts. You can have a centralized view of all the events happening across your AWS environment.
+* **Immutable storage**: The events are stored in an immutable manner, meaning they can't be modified or deleted. This ensures the integrity of your audit logs and helps meet compliance requirements.
+* **Querying**: You can run SQL queries across multiple event data stores. This helps you analyze the events and identify patterns or anomalies. The platform also includes sample queries that are designed to help users get started with writing queries for common scenarios. For example, you can identify records of all activities completed by a user to help accelerate security investigations.
+* **Dashboards and troubleshooting**: CloudTrail Lake dashboards provide visibility and top insights from data. Auditing and compliance engineers can use the CloudTrail Lake dashboards to track the progress of compliance mandates. Security engineers can closely track sensitive user activities such as deletion of trails or repeated access denied errors. Cloud operation engineers can get visibility to issues such as top service throttling errors from the curated dashboard.
+
+#### Use cases for CloudTrail Lake
+
+##### Performing audit
+
+CloudTrail Lake helps monitor, store, and validate activity events for authenticity and enhanced security posture. You can analyze CloudTrail Lake with Athena and visualize using QuickSight or Amazon Managed Grafana using Lake query federation for compliance, cost, and usage reporting.
+
+##### Investigating security incidents
+
+CloudTrail Lake helps analyze unauthorized access or compromised user credentials by answering who made what configuration changes to the resources associated with security incidents.
+
+##### Operational investigation
+
+CloudTrail Lake helps investigate operational issues such as an unresponsive Amazon EC2 instance or a resource with denied access.
+
+#### Notes about CloudTrail Lake
+
+##### CloudTrail Lake event data stores
+
+CloudTrail Lake aggregates events into event data stores, which are immutable collections of events based on criteria that you select by applying advanced event selectors. CloudTrail Lake converts existing events in row-based JSON format to Apache ORC format for fast retrieval of data. With integrations, you can log events to your event data stores from over a dozen AWS Partners.
+
+##### CloudTrail Lake queries
+
+You can save CloudTrail Lake queries for future use and view the results of queries for up to 7 days. When you run queries, you can save the query results to an S3 bucket. CloudTrail Lake also provides a feature to delegate admin privileges to one of the linked accounts that teams use to query data from the organizational event data store.
+
+### [Lab: Monitoring and Troubleshooting Amazon EC2 Workloads with Detective Controls](./labs/W080Lab1TroubleshootingEc2DetectiveControl.md)
+
+In this lab, you have an opportunity to explore monitoring tools for your Amazon EC2 workloads, as well as apply troubleshooting steps to correct issues affecting your current workloads.
+
+In this lab, you will perform the following tasks:
+
+* Describe the methodology for troubleshooting Amazon EC2 issues.
+* Describe the monitoring tools available and their functionality.
+* Implement AWS monitoring tools for a given workload.
+* Troubleshoot scenarios and issues affecting Amazon EC2 workloads.
+
+### Knowledge Check
+
+#### Which type of event in AWS CloudTrail logs could directly indicate a potential security incident? 
+
+* A high number of failed login attempts
+
+Wrong answers:
+
+* Creation of a new Amazon S3 bucket
+* An API call to list all AWS Identity and Access Management (IAM) users
+* An increase in data transfer rates
+
+##### Explanation
+
+A high number of failed login attempts indicates a brute force attack, which is a potential security incident. Brute force attacks are attempts to gain access to a system by systematically trying all possible combinations of passwords or encryption keys until the correct one is found.
+
+The other options are incorrect because of the following:
+
+* Creating a new bucket is a common and normal activity that happens frequently. It does not directly indicate a potential security incident.
+* An API call to list all IAM users is a common administrative task and does not directly indicate a security incident. However, if this call is made frequently or by unauthorized users, it might require further investigation.
+* An increase in data transfer rates could be because of a variety of reasons, including increased usage of the applications or services. It does not directly indicate a security incident.
+
+#### Which AWS service can be used in conjunction with AWS CloudTrail to monitor API activity and send alerts based on defined metrics?
+
+* Amazon CloudWatch
+
+Wrong answers:
+
+* Amazon S3
+* Amazon Simple Notification Service (Amazon SNS)
+* Amazon Simple Queue Service (Amazon SQS)
+
+##### Explanation
+
+CloudTrail uses CloudTrail integration with Amazon CloudWatch Logs to send events containing API activity in an AWS account to a log group. CloudTrail events that are sent to CloudWatch Logs can activate alarms according to the defined metric filters.
+
+The other options are incorrect because of the following:
+
+* Amazon S3 can store CloudTrail logs, but it does not provide monitoring and alerting capabilities.
+* Amazon SNS coordinates and manages the delivery or sending of messages to subscribing endpoints or clients. It does not provide monitoring capabilities.
+* Amazon SQS is a fully managed queuing service that can be used to decouple and scale microservices. It does not provide monitoring and alerting capabilities.
+
+#### What is the purpose of log file validation in AWS CloudTrail?
+
+* To ensure the integrity of the log files
+
+Wrong answers:
+
+* To encrypt the log files
+* To compress the log files
+* To delete the log files
+
+##### Explanation
+
+To determine whether a log file was modified, deleted, or unchanged after CloudTrail delivered it, users can use CloudTrail log file integrity validation. This makes it computationally infeasible to modify, delete, or forge CloudTrail log files without detection.
+
+The other options are incorrect because of the following:
+
+* Encryption is handled by AWS KMS.
+* Compression is handled by the service generating the logs.
+* Deletion is handled by the user or by lifecycle policies.
+
+### Summary
+
+#### Reviewing what CloudTrail is
+
+There are three types of CloudTrail events: management events, data events, and Insights events.
+
+##### Management events
+
+Management events provide information about management operations that are performed on resources in your AWS account, also known as control plane operations.
+
+##### Data events
+
+Data events provide information about the resource operations performed on or in a resource, also known as data plane operations.
+
+##### Insights events
+
+Insights events provide relevant information, such as the associated API, error code, incident time, and statistics, that help you understand and act on unusual activity.
+
+#### Analyzing CloudTrail log files for security incidents
+
+Knowing how to read CloudTrail log files helps identify possible security issues. This ensures actions against threat can be taken quickly, and further keep the cloud resources safe. There are a couple of potential security incidents that can be identified:
+
+* Unauthorized access attempt
+* Security group modification
+* Deletion of CloudTrail log
+* Brute force attack (where you notice a high volume of failed login attempts in a short period)
+
+#### CloudTrail integration with other AWS services
+
+You can integrate other services such as Amazon S3, CloudWatch, and Lambda with CloudTrail to automate log management and analysis processes.
+
+##### CloudTrail
+
+CloudTrail is enabled on your AWS account when you create it. For an ongoing record of activity and events in your account, you create a trail.
+
+##### Amazon S3
+
+After creating the trail, all your management events will be logged to an S3 bucket. Data events are not logged by default when you create a trail or event data store. To record CloudTrail data events, you must explicitly add each resource type for which you want to collect activity.
+
+##### Lambda
+
+You can use the bucket notification feature and direct Amazon S3 to publish object-created events to Lambda. Whenever CloudTrail writes logs to your S3 bucket, Amazon S3 can then invoke your Lambda function by passing the Amazon S3 object-created event as a parameter. The Amazon S3 event provides information, including the bucket name and key name of the log object that CloudTrail created. Your Lambda function code can read the log object and process the access records logged by CloudTrail.
+
+##### CloudWatch
+
+CloudTrail integrates with the CloudWatch service to publish the API calls being made to resources or services in AWS accounts. The published event has invaluable information that can be used for compliance, auditing, and governance of your AWS accounts.
+
+You can configure CloudTrail with CloudWatch Logs to monitor your trail logs and be notified when specific activity occurs.
+
+#### Best practices for securing and managing CloudTrail
+
+There are two best practice categories: detective security best practices and preventative security best practices.
+
+##### Detective security best practices
+
+The following are some keys points of detective security best practices:
+
+* Create a trail and apply trails to all AWS Regions.
+* Validate CloudTrail log file integrity.
+* Integrate with CloudWatch Logs.
+* Use GuardDuty.
+* Use Security Hub.
+
+##### Preventative security best practices
+
+The following are some keys points of preventative security best practices:
+
+* Log to a dedicated and centralized S3 bucket.
+* Encrypt CloudTrail log files with AWS KMS keys.
+* Add a condition key to the default Amazon SNS topic policy.
+* Implement least privilege access to S3 buckets where you store log files.
+* Enable MFA delete on the S3 bucket where you store log files.
+* Configure object lifecycle management on the S3 bucket where you store log files.
+* Limit access to the **AWSCloudTrail_FullAccess** policy.
+
+#### CloudTrail Lake
+
+CloudTrail Lake is a managed data lake for storing and analyzing log data from AWS and non-AWS sources. It offers long-term immutable storage, queries with Athena, and out-of-the-box dashboards. Key functionalities and benefits include the following:
+
+* Store logs for up to 10 years for auditing and investigations.
+* Get visibility into user activity across AWS services.
+* Identify unusual activity with CloudTrail Insights.
+* Meet audit and compliance requirements.
+* Perform security investigations and troubleshoot issues.
+* Analyze logs with Athena and visualize with QuickSight or Amazon Managed Grafana.
+* Modernize log management with a centralized data lake.
+* Inventory analysis and asset tracking using configuration data.
+
+## Troubleshooting in IAM
+
+### Pre-assessment
+
+#### What does the **Effect** element in an AWS Identity and Access Management (IAM) policy statement specify?
+
+* It specifies whether the policy allows or denies access.
+
+Wrong answers:
+
+* It specifies the AWS service to which the policy applies.
+* It specifies whether the resources that the policy covers.
+* It specifies the conditions under which the policy is in effect.
+
+##### Explanation
+
+It specifies whether the policy allows or denies access.
+
+The other options are incorrect because of the following:
+
+* The AWS service to which the policy applies is typically specified in the **Action** element.
+* The resources that the policy covers are typically specified in the **Resource** element.
+* The conditions under which the policy is in effect are typically specified in the **Condition** element.
+
+#### Which action should a developer take if an IAM user receives an Access Denied error?
+
+* Update the IAM policy.
+
+Wrong answers:
+
+* Modify the user’s password.
+* Review the user’s recent activity.
+* Reboot the Amazon EC2 instance.
+
+##### Explanation
+
+When an IAM user encounters an *Access Denied error*, it often indicates that the user’s permissions are insufficient for the requested action. To resolve this, review the associated IAM policy such as policy permission, resource ARNs, and conditions.
+
+The other options are incorrect because of the following:
+
+* Password modifications are unrelated to access errors. Passwords control authentication, not authorization.
+* Although reviewing activity logs is essential for security, it doesn’t directly resolve the “Access Denied” error. The issue lies in the policy.
+* Rebooting the Amazon EC2 instance won’t address IAM policy-related errors. It’s not the right solution.
+
+#### There are two policies attached to an AWS Identity and Access Management (IAM) user. Policy A allows Amazon S3 read access, and Policy B denies Amazon S3 write access. What will be the effective permissions for the user?
+
+* The user will have read access to Amazon S3.
+
+Wrong answers:
+
+* The user will have both read and write access to Amazon S3.
+* The user will have write access to Amazon S3.
+* The user will have no access to Amazon S3.
+
+##### Explanation
+
+Deny always takes precedence over allow in IAM policies. Because Policy B explicitly denies Amazon S3 write access, the user will have read access that is allowed by Policy A, but not write access.
+
+The other options are incorrect because Policy B prevents write access.
+
+### IAM Policies
