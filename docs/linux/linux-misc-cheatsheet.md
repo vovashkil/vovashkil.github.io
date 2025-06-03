@@ -30,6 +30,15 @@ Retain only the past 500 MB:
 journalctl --vacuum-size=500M
 ```
 
+### Re-scan SCSI bus when a hot swap drive is inserted (tested on debian & SuperMicro)
+
+```shell
+lsblk # check available block devices in the system
+cd /sys/class/scsi_host
+for i in *; do echo '- - -' > $i/scan; done # send re-scan command to the bus
+lsblk # re-check available block devices in the system after the re-scan
+```
+
 ### nfs performance measuring
 
 ```bash
