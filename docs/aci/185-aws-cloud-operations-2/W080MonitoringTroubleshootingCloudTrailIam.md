@@ -1792,7 +1792,7 @@ Similarly, an S3 bucket without a bucket policy can be accessed by an IAM user i
 
 However, IAM role trust policies and AWS KMS key policies are exceptions to this logic, because they must explicitly allow access for principals.
 
-**Remember, an explicit deny in any of these policies overrides the allow.***
+**Remember, an explicit deny in any of these policies overrides the allow.**
 
 ##### The difference between explicit and implicit denies
 
@@ -2443,54 +2443,23 @@ The following table shows some important fields that you need to be aware of.
 | Field | Description |
 | ----- | ----------- |
 | eventTime | The date and time of the event reported in UTC |
-| eventType | There can be three types of events:\* **AwsConsoleSignin**: A user in your account (root, IAM, federated, SAML, or SwitchRole) signed in to the AWS Management Console.\* **AwsServiceEvent**: The called service generated an event related to your trail. For example, this can occur when another account makes a call with a resource that you own.\* **AwsApiCall**: A public API for an AWS resource was called. |
+| eventType | There can be three types of events:<br>* **AwsConsoleSignin**: A user in your account (root, IAM, federated, SAML, or SwitchRole) signed in to the AWS Management Console.<br>* **AwsServiceEvent**: The called service generated an event related to your trail. For example, this can occur when another account makes a call with a resource that you own.<br>* **AwsApiCall**: A public API for an AWS resource was called. |
 | eventSource  | The service that the request was made to. This name is typically a short form of the service name without spaces plus **.amazonaws.com.** For example:\* AWS CloudFormation is **cloudformation.amazonaws.com**.\* Amazon EC2 is **ec2.amazonaws.com**.\* Amazon Simple Workflow Service is **swf.amazonaws.com**.\This convention has some exceptions. For example, the **eventSource** for Amazon CloudWatch is **monitoring.amazonaws.com**. |
 | eventName | The requested action, which is one of the actions in the API for that service. |
+| sourceIPAddress | The IP address where the request came from. If one AWS service calls another service, the DNS name of the calling service is used. |
+| userAgent | The tool or application through which the request was made, such as the AWS Management Console, the AWS SDKs, or the AWS CLI. The following are example values:<br>* **signin.amazonaws.com**: The request was made by an IAM user with the AWS Management Console.<br>* **console.amazonaws.com**: The request was made by a root user with the AWS Management Console.<br>* **lambda.amazonaws.com**: The request was made with AWS Lambda.<br>* **aws-sdk-java**: The request was made with the AWS SDK for Java.<br>* **aws-sdk-ruby**: The request was made with the AWS SDK for Ruby.<br>* **aws-cli/1.3.23 Python/2.7.6 Linux/2.6.18-164.el5**: The request was made with the AWS CLI installed on Linux. |
+| errorMessage | Any error message returned by the requested service. |
+| requestParameters | The parameters that were sent with the API call, which can vary depending on the type of resource or service called.
 
+For example, in an Amazon S3 API call, you could have the bucketName and location sent as parameters. |
+| resources | List of AWS resources accessed in the event. This can be the resource's ARN, an AWS account number, or the resource type. |
+| userIdentity | A collection of fields that describe the user or service that made the call. These fields can vary based on the type of user or service.<br>The following values are possible types of identity:<br>* **Root**: The request was made with your AWS account credentials. If the userIdentity type is Root and you set an alias for your account, the userName field contains your account alias.<br>* **IAMUser**: The request was made with the credentials of an IAM user.<br>* **AssumedRole**: The request was made with temporary security credentials that were obtained with a role through a call to the AWS STS AssumeRole API call. This can include roles for Amazon EC2 and cross-account API access.<br>* **FederatedUser**: The request was made with temporary security credentials that were obtained through a call to the AWS STS **GetFederationToken** API. The **sessionIssuer** element indicates if the API was called with root or IAM user credentials.<br>* **AWSAccount**: The request was made by another AWS account.<br>* **AWSService**: The request was made by an AWS account that belongs to an AWS service. For example, AWS Elastic Beanstalk assumes an IAM role in your account to call other AWS services on your behalf. |
 
+#### CloudTrail logs examples
 
-sourceIPAddress 	The IP address where the request came from. If one AWS service calls another service, the DNS name of the calling service is used.
-userAgent 	The tool or application through which the request was made, such as the AWS Management Console, the AWS SDKs, or the AWS CLI. The following are example values:
-signin.amazonaws.com: The request was made by an IAM user with the AWS Management Console.
+##### Example 1: IAM API event in CloudTrail log file
 
-console.amazonaws.com: The request was made by a root user with the AWS Management Console.
-
-lambda.amazonaws.com: The request was made with AWS Lambda.
-
-aws-sdk-java: The request was made with the AWS SDK for Java.
-
-aws-sdk-ruby: The request was made with the AWS SDK for Ruby.
-
-aws-cli/1.3.23 Python/2.7.6 Linux/2.6.18-164.el5: The request was made with the AWS CLI installed on Linux.
-
-errorMessage 	Any error message returned by the requested service.
-requestParameters 	The parameters that were sent with the API call, which can vary depending on the type of resource or service called.
-
-For example, in an Amazon S3 API call, you could have the bucketName and location sent as parameters.
-resources 	List of AWS resources accessed in the event. This can be the resource's ARN, an AWS account number, or the resource type.
-userIdentity	A collection of fields that describe the user or service that made the call. These fields can vary based on the type of user or service.
-
-The following values are possible types of identity:
-
-Root: The request was made with your AWS account credentials. If the userIdentity type is Root and you set an alias for your account, the userName field contains your account alias.
-IAMUser: The request was made with the credentials of an IAM user.
-
-AssumedRole: The request was made with temporary security credentials that were obtained with a role through a call to the AWS STS AssumeRole API call. This can include roles for Amazon EC2 and cross-account API access.
-
-FederatedUser: The request was made with temporary security credentials that were obtained through a call to the AWS STS GetFederationToken API. The sessionIssuer element indicates if the API was called with root or IAM user credentials.
-
-AWSAccount: The request was made by another AWS account.
-
-AWSService: The request was made by an AWS account that belongs to an AWS service. For example, AWS Elastic Beanstalk assumes an IAM role in your account to call other AWS services on your behalf.
-
-
-Try it on your own
-
-Now, let's review two CloudTrail logs and answer some questions.
-
-Example 1: IAM API event in CloudTrail log file
-
-Policy begins
+```json
 {
   "eventVersion": "1.05",
   "userIdentity": {
@@ -2522,28 +2491,13 @@ Policy begins
   "requestID": "9EXAMPLE-0c68-11e4-a24e-d5e16EXAMPLE",
   "eventID": "cEXAMPLE-127e-4632-980d-505a4EXAMPLE"
 } 
+```
 
-End of policy
-What can you interpret based on this log? Enter your response in the following note box. If you want to download your response as plaintext and keep it as your own record, choose the Download your response button.
+From this event information, you can determine that the request was made to get a user policy named **ReadOnlyAccess-JaneDoe-202407151307** for user **JaneDoe**, as specified in the **requestParameters** element. You can also see that the request was made by an IAM user named **JaneDoe** on July 15, 2024 at 9:40 PM (UTC). In this case, the request originated in the AWS Management Console, as you can tell from the **userAgent** element.
 
-When you are ready, choose the CONTINUE button to review the example response.
+##### Example 2: Cross-account AWS STS API events in CloudTrail log entry
 
-To learn about keyboard controls for this activity, expand the following category.
-
-
-Keyboard instructions for activity
-
-Continued
-
-Example 1 response: 
-
-From this event information, you can determine that the request was made to get a user policy named ReadOnlyAccess-JaneDoe-202407151307 for user JaneDoe, as specified in the requestParameters element. You can also see that the request was made by an IAM user named JaneDoe on July 15, 2024 at 9:40 PM (UTC). In this case, the request originated in the AWS Management Console, as you can tell from the userAgent element.
-
-
-
-Example 2: Cross-account AWS STS API events in CloudTrail log entry
-
-Policy begins
+```json
 {
   "eventVersion": "1.05",
   "userIdentity": {
@@ -2591,19 +2545,207 @@ Policy begins
   "eventType": "AwsApiCall", 
   "recipientAccountId": "111122223333"
 }
+```
 
-End of policy
-What can you interpret based on this log? Enter your response in the following note box. If you want to download your response as plaintext and keep it as your own record, choose the Download your response button.
+The IAM user named **JohnDoe** in account 777788889999 calls the AWS STS **AssumeRole** action to assume the role **EC2-dev** in account 111122223333. The account administrator requires users to set a source identity equal to their username when assuming the role. The user passes in the source identity value of **JohnDoe**.
 
-When you are ready, choose the CONTINUE button to review the example response.
+### Best Practices for IAM Policy Management
 
-To learn about keyboard controls for this activity, expand the following category.
+IAM policies control permissions for entities like users, groups, and roles in AWS. Proper management of these policies is crucial for security, compliance, and avoiding accidental over-permissions.
 
+#### Policy versioning
 
-Keyboard instructions for activity
+When you make changes to an IAM customer managed policy, and when AWS makes changes to an AWS managed policy, the changed policy doesn't overwrite the existing policy. Instead, IAM creates a new version of the managed policy. IAM stores up to five versions of your customer managed policies. 
 
-Continued
+Version your IAM policies so you can conveniently roll back unwanted changes. This provides an audit trail and facilitates restoring previous permissions. For example, you update an IAM policy to allow additional Amazon S3 bucket access. With versioning, you can roll back and restore the previous permissions if issues arise.
 
-Example response:
+#### Separation of duties
 
-The IAM user named JohnDoe in account 777788889999 calls the AWS STS AssumeRole action to assume the role EC2-dev in account 111122223333. The account administrator requires users to set a source identity equal to their username when assuming the role. The user passes in the source identity value of JohnDoe.
+Separation of duties is a design principle where more than one person's approval is required to conclude a critical task. It's important to clearly separate roles by their duties and assign permissions based on the specific tasks that users or services need to perform. This can involve creating roles for specific applications, tasks, or teams, and assigning permissions accordingly.
+
+For example, you can have separate groups for Developers, Testers, and Operations. Developers can't access production, Testers can't modify code, and Ops can't modify testing environments.
+
+#### IAM policy variables
+
+With IAM policy variables, you can define dynamic values inside policies. Variables are marked using a $ prefix followed by a pair of curly braces (**{ }**) that include the variable name of the value from the request. When the policy is evaluated, the policy variables are replaced with values that come from the conditional context keys passed in the request.
+
+You can replace hard-coded values with variables to make reusable, dynamic policies that can adapt as needed.
+
+For example, you can use the **${aws:username}** variable to dynamically replace itself with the IAM username of the entity invoking the request. This can be useful when you are managing a project with several developers needing access to specific AWS resources.
+
+#### Regular policy reviews
+
+Regularly reviewing and updating your IAM policies is important to maintain a good security measure. An audit gives you an opportunity to remove unnecessary permissions, validate that policies match business needs, and adjust for changes.
+
+For example, you can review all user policies quarterly to remove unused permissions. You can also remove access to unused AWS services.
+
+#### Additional best practices
+
+The following are other best practices to keep in mind:
+
+* Avoid using root user credentials for daily tasks.
+* Attach permissions to groups instead of individual users.
+* Aim for least privilege permissions.
+* Use IAM roles for applications and services that need access to AWS resources.
+* Use IAM Access Analyzer to generate least-privilege policies based on access activity and to validate your IAM policies to ensure secure and functional permissions.
+* Use conditions in IAM policies to further restrict access.
+
+### [Lab: Performing a Basic Audit of Your AWS Environment](./labs/W082Lab2TroubleshootingBasicAudit.md)
+
+In this lab, you perform basic audits of core AWS resources. You use the AWS Management Console to understand how to audit the use of multiple AWS services, such as Amazon EC2, Amazon VPC, IAM Identity Center, Amazon Security Groups, CloudTrail, and CloudWatch. This lab teaches you how to extend your existing auditing objectives related to organizational governance, asset configuration, logical access controls, operating systems, databases, and application security configurations within AWS.
+
+In this lab, you will perform the following tasks:
+
+* Review user permissions in IAM.
+* Capture audit evidence using the IAM policy simulator.
+* Review Inbound and Outbound networking rules for Amazon EC2 Security Groups.
+* Review Amazon VPC configurations, subnets, and Network ACLs.
+* Review CloudWatch performance metrics.
+* Review raw CloudTrail logs within Amazon S3.
+
+### Knowledge Check
+
+#### A company uses an Amazon S3 bucket to store sensitive financial data. The bucket contains confidential reports accessible by authorized employees. A developer configures both identity-based and resource-based policies to control access. The bucket policy allows the getObject action for all authenticated AWS users. However, User A’s identity-based policy explicitly denies the getObject action on the S3 bucket. What will happen if User A tries to perform the getObject action on the S3 bucket?
+
+* The action is denied.
+
+Wrong answers:
+
+* The action is allowed.
+* The action is conditionally allowed based on additional factors.
+* The action is randomly chosen.
+
+##### Explanation
+
+In this scenario, the **getObject** action is denied because the identity-based policy takes precedence. The principle of least privilege ensures that permissions are not inadvertently granted.
+
+The other options are incorrect because the explicit denial in the identity-based policy prevails. There are no additional conditions because the denial is straightforward. AWS follows deterministic evaluation; it doesn’t randomly choose between policies.
+
+#### What is the benefit of using the AWS Identity and Access Management (IAM) policy simulator?
+
+* It helps troubleshoot and verify IAM policy effects without making actual changes.
+
+Wrong answers:
+
+* It helps developers to create IAM users and groups.
+* It generates AWS CloudTrail logs automatically for IAM activities.
+* It provides recommendations for IAM best practices. 
+
+##### Explanation
+
+The IAM policy simulator is primarily used for simulating the effects of IAM policies on resources and actions without actually making changes. This helps in troubleshooting and verifying the impact of policy changes before applying them.
+
+The other options are incorrect because they are not the main functions of the IAM policy simulator.
+
+#### A developer is troubleshooting an issue where an Amazon EC2 instance is unable to access an Amazon S3 bucket. The instance has an AWS Identity and Access Management (IAM) role attached. What could be the problem? 
+
+* The IAM role lacks proper permission.
+
+Wrong answers:
+
+* The trust relationship of the IAM role is misconfigured.
+* The Amazon EC2 instance profile is missing.
+* The Amazon EC2 instance and Amazon S3 bucket are in different Regions.
+
+##### Explanation
+
+The IAM role attached to the EC2 instance needs to have the proper Amazon S3 permissions (for example, **s3:GetObject**) to allow access to the S3 bucket. If the permissions are missing or too restrictive, the EC2 instance will not be able to access the S3 bucket even if the role is attached.
+
+The other options are incorrect because of the following:
+
+* A misconfigured trust relationship would prevent the EC2 instance from even assuming the IAM role.
+* When an EC2 instance profile is missing, it might prevent the EC2 instance from assuming the IAM role. It would not directly cause an inability to access the S3 bucket if the role has been successfully attached.
+* S3 buckets are Region-specific, but cross-Region access is possible if proper IAM permissions are set on the role. So different Regions alone would not cause the access failure.
+
+### Summary
+
+#### The purpose and structure of IAM policies
+
+Using IAM policies enforces security best practices, adheres to compliance requirements, and restricts access to sensitive resources. Therefore, you can mitigate risks associated with unauthorized access.
+
+The main components of an IAM policy statement include the following:
+
+* **Effect**: It specifies whether the statement allows or denies access.
+* **Principal**: It's required in only some circumstances. If you create a resource-based policy, you must indicate the account, user, role, or federated user to which you want to allow or deny access.
+* **Action**: This defines the action (or API operations) that the policy allows or denies.
+* **Resource**: This specifies the AWS resources to which the actions apply.
+* **Condition**: This element is optional. This element further refines when the policy statement is applied based on specified conditions.
+
+##### Best practices for IAM policies include the following
+
+* Follow the principle of least privilege.
+* Conduct regular review.
+* Use IAM roles.
+* Test policies.
+
+#### Troubleshooting common errors in IAM policies
+
+There are several indicators that can help you determine whether you should investigate the IAM policies further. These indicators include access denied errors, resources not being created, and malformed policy documents.
+
+##### Incorrect resource ARNs
+
+One of the most common mistakes when working with ARNs is providing an incorrect ARN syntax. This could be because of a missing section, incorrect order of sections, or incorrect values in the sections. Tips to troubleshoot incorrect ARNs include the following:
+
+* Double check the resource ARN in the policy matches the actual resource name.
+* Make sure to update the account ID and resource names to match your actual resources if you use the example policy from AWS.
+* Check for special characters in resource names. Best practice is to avoid special characters.
+* Start with least privilege permissions and gradually increase until the policy works to narrow down issues.
+* Check CloudTrail logs for the API calls made and error messages.
+
+##### Conflicting policies
+
+Conflicting IAM policies can allow or deny access to the same resource. Explicit deny policies take precedence over allows. AWS Organizations SCPs are checked next, then resource-based policies, identity-based policies, permission boundaries, and session policies. The most restrictive policy applied determines access. Understanding this evaluation order is crucial to managing access when policies conflict.
+
+#### Troubleshooting role assumptions and service-linked roles
+
+The most common symptom that indicates an issue with IAM role assumptions is that you can't assume a role. Make sure you have the trust policy and permission policy set up correctly. When setting up cross-account access and role assumptions, make sure you use the following logics:
+
+1. Create an IAM role in the account that owns the resources you want to access.
+2. Define permission for the role. The role should have a permissions policy that grants access to the necessary resources in the destination account.
+3. Assume the role from the source account by calling the **sts:AssumeRole** API operation, which returns a set of temporary security credentials.
+4. The entity (source account) can then use these temporary credentials to make requests to AWS to access the resources in the destination account.
+
+The linked service defines how you create, modify, and delete a service-linked role. A service might automatically create or delete the role, so you can create, modify, or delete the role as part of a process in the service. Before you can delete the roles, you must first delete their related resources. This protects your resources because you can't inadvertently remove permission to access the resources.
+
+Service-linked roles need to have unique role names, otherwise you will encounter errors.
+
+#### Tools and services used to troubleshoot and audit IAM
+
+##### IAM access analyzer
+
+IAM Access Analyzer is a service that you can use to identify the resources in your organization and accounts that are shared with an external entity. IAM Access Analyzer continuously analyzes policies to help you identify unintended access to your resources and data.
+
+##### IAM policy simulator
+
+You can use the IAM policy simulator to test and validate the effects of your IAM policies before deploying them. This helps identify any unintended consequences. You can test IAM policies by specifying identities, actions, resources, and conditions to simulate how the policies work.
+
+##### AWS CloudTrail
+
+CloudTrail is a service that tracks user activity and API usage to provide an audit trail of all the AWS API calls made within your account. This helps identify issues and monitor changes. CloudTrail records important information about each API call including the identity of the API caller, the time of the API call, and the source IP address of the API caller.
+
+#### Best practices for managing IAM policies
+
+##### Policy versioning
+
+Version your IAM policies so you can conveniently roll back unwanted changes. This provides an audit trail and facilitates restoring previous permissions.
+
+##### Separation of duties
+
+It's important to clearly separate roles by their duties and assign permissions based on the specific tasks that users or services need to perform. This can involve creating roles for specific applications, tasks, or teams, and assigning permissions accordingly.
+
+##### IAM policy variables
+
+With IAM policy variables, you can define dynamic values inside policies. You can replace hard-coded values with variables to make reusable, dynamic policies that can adapt as needed.
+
+##### Regular policy reviews
+
+Regularly reviewing and updating your IAM policies is important to maintain a good security measure. An audit gives you an opportunity to remove unnecessary permissions, validate that policies match business needs, and adjust for changes.
+
+##### Additional best practices
+
+* Avoid using root user credentials for daily tasks.
+* Attach permissions to groups instead of individual users.
+* Aim for least privilege permissions.
+* Use IAM roles for applications and services that need access to AWS resources.
+* Use IAM Access Analyzer to generate least-privilege policies based on access activity and to validate your IAM policies to ensure secure and functional permissions.
+* Use conditions in IAM policies to further restrict access.

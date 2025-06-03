@@ -42,3 +42,5 @@
   * [Logging and Scaling: Auto Scaling and Elastic Load Balancing](./W070LoggingScalingAutoScalingLoadBalancing.md)
 * Week 8:
   * [Monitoring and Troubleshooting: Troubleshooting with AWS CloudTrail and IAM](./W080MonitoringTroubleshootingCloudTrailIam.md)
+* Week 9:
+  * [Monitoring and Troubleshooting: Metrics and Network Monitoring and Troubleshooting](./W090MonitoringTroubleshootingMetricsNetworkMonitoring.md)
