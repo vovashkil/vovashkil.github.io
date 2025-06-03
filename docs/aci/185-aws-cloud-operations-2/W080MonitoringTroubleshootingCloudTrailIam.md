@@ -1478,3 +1478,1132 @@ Deny always takes precedence over allow in IAM policies. Because Policy B explic
 The other options are incorrect because Policy B prevents write access.
 
 ### IAM Policies
+
+#### Purpose of IAM policies
+
+IAM policies are documents that define permissions for an IAM identity, such as IAM users, IAM groups, or IAM roles. You can use IAM policies to specify who can access which resources, and what actions they can perform on those resources. By using IAM policies, you can enforce security best practices, adhere to compliance requirements, and restrict access to sensitive resources. Therefore, you can mitigate risks associated with unauthorized access.
+
+#### Structure of IAM policies
+
+IAM policies are written in JavaScript Object Notation (JSON) format. Each policy document contains one or more policy statements, which define the permissions. Let's review these main components of a statement.
+
+##### Effect
+
+The "Effect" element specifies whether the statement allows or denies access.
+
+The effect can be Allow or Deny. By default, users don't have permission to use resources and API actions, so all requests are denied. An explicit allow overrides the default. An explicit deny overrides any allows.
+
+##### Principal
+
+The **"Principal"** element specifies the entity (user, role, account, service, or federated user) that is allowed or denied access to a resource. The principal is a key component in defining who the policy applies to and is used primarily in resource-based policies.
+
+The **"Principal"** element is required in only some circumstances. If you create a resource-based policy, you must indicate the principal to which you would like to allow or deny access. If you are creating an IAM permissions policy to attach to a user or role, you cannot include this element.
+
+##### Action
+
+The **"Action"** element defines the action (or API operations) that the policy allows or denies. Actions are specified with AWS service namespaces and action names, such as **"s3:GetObject"** or **"ec2:DescribeInstances"**.
+
+##### Resource
+
+The **"Resource"** element specifies the AWS resources to which the actions apply. A resource is identified by its ARN, such as **"arn:aws:s3:::example-bucket/*"** for an Amazon S3 bucket.
+
+Note that the wildcard (*) is used after the bucket name. This is to match all objects in the specified S3 bucket.
+
+##### Condition
+
+The **"Condition"** element is optional. This element further refines when the policy statement is applied based on specified conditions, such as time of day, IP address, or user agent.
+
+#### Best practices for IAM policies
+
+When using IAM policies, it's important to follow best practices to ensure effective access control and security. The following are some recommendations:
+
+* **Follow the principle of least privilege**: Grant only the permissions necessary for users to perform their tasks.
+* **Conduct regular review**: Periodically review and audit IAM policies to ensure they align with current access requirements and security standards.
+* **Use IAM roles**: Assign permissions to IAM roles and then assume those roles. This is better than using long-term credentials, such as access keys.
+* **Test policies**: Use the IAM policy simulator to validate the effectiveness of policies before applying them in a production environment. You will learn more about the IAM policy simulator in the later sections.
+
+#### Evaluating IAM policies and access permissions
+
+Imagine a company has multiple development teams. Each team requires access to specific Amazon EC2 instances for their projects. Additionally, they want to restrict access based on specific conditions, such as instance tags or IP addresses.
+
+You should analyze IAM policies attached to IAM users to determine which EC2 instances they can access and under what conditions. Evaluate the impact of different policy elements, including conditions, on access permissions for each development team.
+
+##### The Developer Team A uses the following policy
+
+```json
+{
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+                "Effect": "Allow",
+                "Action": [
+                      "ec2:DescribeInstances",
+                      "ec2:StartInstances",
+                      "ec2:StopInstances"
+            ],
+                "Resource": "*",
+                "Condition": {
+                      "StringEquals": {
+                            "ec2:ResourceTag/Team": "A"
+                       }
+                  }
+           }
+      ]
+}     
+```
+
+##### The Developer Team B uses the following policy
+
+```json
+{
+          "Version": "2012-10-17",
+          "Statement": [
+              {
+                    "Effect": "Allow",
+                    "Action": [
+                          "ec2:DescribeInstances",
+                          "ec2:StartInstances"
+                      ],
+                    "Resource": "*",
+                    "Condition": {
+                           "StringEquals": {
+                                  "ec2:ResourceTag/Team": "B"
+                            }
+                       }
+              }
+          ]
+}     
+```
+
+##### The Operations Team uses the following policy
+
+```json
+{
+              "Version": "2012-10-17",
+              "Statement": [
+                    {
+                          "Effect": "Allow",
+                          "Action": [
+                                "ec2:DescribeInstances"
+                           ],
+                          "Resource": "*"
+                    },
+                   {
+                          "Effect": "Allow",
+                          "Action": [
+                                "ec2:StartInstances",
+                                "ec2:StopInstances"
+                           ],
+                          "Resource": "*",
+                          "Condition": {
+                                "IpAddress": {
+                                     "aws:SourceIp": "192.0.2.0/24"
+                                  }
+                            }
+                    },
+                    {
+                          "Effect": "Deny",
+                           "Action": [
+                                "ec2:StartInstances",
+                                "ec2:StopInstances" 
+                            ],
+                          "Resource": "*",
+                          "Condition": {
+                                "NotIpAddress": {
+                                      "aws:SourceIp": "192.0.2.0/24"
+                                 }
+                           }
+                   }
+            ]
+}                    
+```
+
+##### Policies explanation
+
+In these policies, Developer Teams A and B are granted access to EC2 instances with specific conditions based on the Team tag.
+
+The Operations Team has unrestricted access to describe, start, and stop instances, but they are denied these actions if the source IP address is not within the specified range (192.0.2.0/24).
+
+###### Policy for Developer Team A
+
+The policy includes the following:
+
+* **Effect: "Allow"** indicates that the actions specified are permitted.
+* **Action**: It specifies the Amazon EC2 actions allowed: **DescribeInstances**, **StartInstances**, and **StopInstances**.
+* **Resource**: Wildcard **(*)** indicates that the actions are allowed on all Amazon EC2 resources.
+* **Condition**: **"StringEquals"** specifies that the condition is met when the value of the specified tag key (Team) on the EC2 instance matches the specified value (A). This condition ensures that only instances tagged with *Team: A* are accessible.
+
+###### Policy for Developer Team B
+
+The policy includes the following:
+
+* **Effect: "Allow"** indicates that the actions specified are permitted.
+* **Action**: It specifies the Amazon EC2 actions allowed: **DescribeInstances** and **StartInstances**.
+* **Resource**: **"*"** indicates that the actions are allowed on all Amazon EC2 resources.
+* **Condition**: **"StringEquals"** specifies that the condition is met when the value of the specified tag key (Team) on the EC2 instance matches the specified value (B). This condition ensures that only instances tagged with *Team: B* are accessible.
+
+###### Policy for Operations Team
+
+The policy includes the following:
+
+* **Effect: "Allow"** indicates that the actions specified are permitted.
+* **Action**: It specifies the Amazon EC2 actions allowed: **DescribeInstances**, **StartInstances**, and **StopInstances**.
+* **Resource**: **"*"** indicates that the actions are allowed on all Amazon EC2 resources.
+* **Condition**: **"IpAddress"** indicates that actions are allowed when the requests originate from within the IP range (192.0.2.0/24).
+
+This policy also includes a Deny statement.
+
+* The **Deny** statement specifies that the actions **StartInstances** and **StopInstances** are denied.
+* **Resource: "*"** indicates that the actions are denied on all Amazon EC2 resources.
+* **Condition: "NotIpAddress"** specifies that the condition is met when the source IP address from which the request originates is not within the specified range (192.0.2.0/24). This condition restricts the ability to start and stop instances of requests originating from within the specified IP range (192.0.2.0/24).
+
+These IAM policies are designed to grant specific access to EC2 instances based on tags and conditions, ensuring that only authorized users from specific teams or IP addresses can perform certain actions on Amazon EC2 resources.
+
+### Troubleshooting Common Errors in IAM Policies
+
+Generally, there are several indicators that can help you determine whether you should investigate the IAM policies further.
+
+#### Access denied errors
+
+If you or your users are getting *Access denied* errors for resources or APIs they should have access to, it likely indicates a problem with the IAM policies. The errors also occur when the required permissions are explicitly denied by one or more applicable policies. The error messages will specifically mention not being authorized or permission denied.
+
+Most access denied error messages appear in the following format:
+
+* User ***ARNuser*** is not authorized to perform ***action*** on ***resource*** because ***context***.
+
+In this example:
+
+* **ARNuser** is the ARN that doesn't receive access
+* **action** is the service action that the policy denies
+* **resource** is the ARN of the resource on which the policy acts
+
+The **context** field represents additional context about the policy type that explains why the policy denied access.
+
+#### Resources not being created
+
+If you can't create resources like Amazon EC2 instances or Amazon S3 buckets that your IAM policies should allow, it points to a policy misconfiguration. The error messages will indicate the action is not authorized.
+
+For example, you want to launch an EC2 instance, but you get the following error message:
+
+"An error occurred (UnauthorizedOperation) when calling the **RunInstance**s operation: You are not authorized to perform this operation. Encoded authorization failure message encoded-message."
+
+The **UnauthorizedOperatio**n error indicates that permissions (that defined IAM policies) that are attached to the IAM role aren't correct. Alternatively, the user that is performing the operation doesn't have the required IAM permissions to launch EC2 instances.
+
+#### Malformed policy documents
+
+Policies not properly formatted or invalid JSON will lead to unexpected errors. The IAM service will point out any JSON formatting errors while creating or updating the policies.
+
+### Understanding and correcting incorrect resource ARNs
+
+One of the most common mistakes when working with ARNs is providing an incorrect ARN syntax. This could be because of a missing section, incorrect order of sections, or incorrect values in the sections.
+
+The general syntax of an ARN is:
+
+```yaml
+arn : partition : service : region : account-id : resource-id
+```
+
+Suppose you have an IAM policy that grants permissions to a specific Amazon S3 bucket. The policy includes the following ARN for the bucket:
+
+```yaml
+arn : aws : s3 ::: examplebucket 
+```
+
+However, when users attempt to access objects in the bucket, they receive an error message that might look something like the following:
+
+```yaml
+User: arn:aws:iam::123456789012:user/johndoe is not authorized to perform: s3:GetObject on resource: arn:aws:s3:::examplebucket/example-object.txt
+```
+
+The error message indicates the user does not have permission to access the specified resource. In this case, the problem lies in the ARN. The bucket ARN **(arn:aws:s3:::examplebucket**) only grants permissions at the bucket level, not for individual objects in the bucket. To fix this, you adjust the ARN to include the object path: 
+
+```
+arn : aws : s3 ::: examplebucket / *
+```
+
+Now that the policy will allow access to all objects in the bucket, users should be able to retrieve objects without encountering *Access denied* errors.
+
+#### Tips for troubleshooting incorrect resource ARN errors in IAM policies
+
+Some tips to troubleshoot incorrect ARNs include the following:
+
+* Double check the resource ARN in the policy matches the actual resource name. Common mistakes are typos, wrong Region, wrong account ID, or wrong service name.
+* If copying an example policy, make sure to update the account ID and resource names to match your actual resources. The ARNs are specific to each account and environment.
+* Check for special characters in resource names. ARNs use slashes so resource names with slashes can cause issues. Best practice is to avoid special characters.
+* Start with least privilege permissions and gradually increase until the policy works to narrow down issues.
+* Use the IAM policy simulator to test policies before deploying. The AWS CLI has a **simulate-custom-policy** command and the AWS Management Console has a policy simulator.
+* Check CloudTrail logs for the API calls made and error messages to help identify where the issue is occurring.
+
+### Conflicting policies
+
+Conflicting policies in IAM refers to situations where multiple policies apply to a request, and those policies have conflicting permissions.
+
+For example, if one policy allows access to an Amazon S3 bucket and another policy explicitly denies access to the same bucket, these policies conflict. Understanding the evaluation order and the interaction between identity-based and resource-based policies is crucial for managing access control effectively.
+
+#### Evaluation logics
+
+How AWS evaluates policies depends on the types of policies that apply to the request context. Let's break this process down. The following flow chart is the basic version of the [policy evaluation logic flow chart](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html#policy-eval-denyallow).
+
+![Simplified version of AWS IAM policy evaluation logic flow chart.](./images/W08Img020TroubleshootingIamPolicyEvaluation.png)
+
+1. **Default deny**
+
+    By default, all requests are denied. This is called an implicit deny.
+
+    This means that if your IAM user has no policies attached and you attempt to read an Amazon S3 object, your request is implicitly denied.
+
+2. **Explicit deny**
+
+    If there is an explicit deny in any of the policies involved in the request, IAM denies the request.
+
+3. **Organizations SCPs**
+
+    When a request is made in an AWS account with Organizations service control policies (SCPs) in place, IAM first examines the SCPs to determine if the action is allowed. If the SCPs don’t allow the action, IAM denies the request.
+
+    If there is no SCP, or if the SCP allows the requested action, the enforcement code evaluation continues.  
+
+4. **Resource-based policy evaluation**
+
+    Within the same account, resource-based policies impact policy evaluation differently depending on the type of principal accessing the resource, and the principal that is allowed in the resource-based policy. Depending on the type of principal, an **Allow** in a resource-based policy can result in a final decision of **Allow**, even if an implicit deny in an identity-based policy, permissions boundary, or session policy is present.
+
+5. **Identity-based policy evaluation**
+
+    AM then checks the policies attached to the IAM user or role that makes the request. If no policy matches the requested actions, the request is denied.
+
+    IAM also implicitly denies the request if no identity-based policies are present.
+
+6. **Permission boundary**
+
+    IAM checks whether any statements in the permissions boundary would prevent the requested action. If there is, the request is denied. Otherwise, the evaluation process continues.
+
+7. **Session policy evaluation**
+
+    Finally, IAM checks if the request includes a session policy. A session policy is an inline permission assigned to a session principal. Session principals are users who obtain temporary access through AWS Security Token Service (STS), such as federated users, role session users, and web identity users. 
+
+    If the session policy permits the action, then IAM grants the request. On the other hand, when no session policies are involved, IAM determines whether the principal is a role session. If it's a role session, it will allow the request.
+
+##### A note about same-account access and cross-account access
+
+It’s important to understand that the policy evaluation for same-account access differs from cross-account access. 
+
+In the same-account access setting, permissions can be granted either through the resource-based policy or the identity-based policy. For example, even if an IAM user has no policies assigned, they can still be granted access to an Amazon S3 bucket if they are authorized in the bucket policy.
+
+Similarly, an S3 bucket without a bucket policy can be accessed by an IAM user if the identity-based policy of the IAM user permits such access.
+
+However, IAM role trust policies and AWS KMS key policies are exceptions to this logic, because they must explicitly allow access for principals.
+
+**Remember, an explicit deny in any of these policies overrides the allow.***
+
+##### The difference between explicit and implicit denies
+
+A request results in an explicit deny if an applicable policy includes a **Deny** statement. If policies that apply to a request include an **Allow** statement and a **Deny** statement, the Deny statement trumps the **Allow** statement. The request is explicitly denied.
+
+An implicit denial occurs when there is no applicable **Deny** statement but also no applicable **Allow** statement. Because an IAM principal is denied access by default, they must be explicitly allowed to perform an action. Otherwise, they are implicitly denied access.
+
+When you design your authorization strategy, you must create policies with **Allow** statements so that your principals can successfully make requests. However, you can choose any combination of explicit and implicit denies.
+
+##### Example of conflicting policies
+
+The most common types of policies are identity-based policies and resource-based policies. When access to a resource is requested, AWS evaluates all the permissions granted by the policies for at least one **Allow** within the same account. An explicit deny in any of the policies overrides the allow. Let's take a look at the following example.
+
+Assume that Carlos has the username **carlossalazar** and he tries to save a file to the **carlossalazar-logs** Amazon S3 bucket.
+
+Also assume that the following policy is attached to the **carlossalazar** IAM user.
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowS3ListRead",
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetBucketLocation",
+                "s3:GetAccountPublicAccessBlock",
+                "s3:ListAccessPoints",
+                "s3:ListAllMyBuckets"
+            ],
+            "Resource": "arn:aws:s3:::*"
+        },
+        {
+            "Sid": "AllowS3Self",
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::carlossalazar/*",
+                "arn:aws:s3:::carlossalazar"
+            ]
+        },
+        {
+            "Sid": "DenyS3Logs",
+            "Effect": "Deny",
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::*log*"
+        }
+    ]
+}
+```
+
+The **AllowS3ListRead** statement in this policy allows Carlos to view a list of all of the buckets in the account. The **AllowS3Self** statement allows Carlos full access to the bucket with the same name as his username. The **DenyS3Logs** statement denies Carlos access to any S3 bucket with log in its name.
+
+Additionally, the following resource-based policy (this is called a bucket policy) is attached to the **carlossalazar** bucket.
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::123456789012:user/carlossalazar"
+            },
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::carlossalazar/*",
+                "arn:aws:s3:::carlossalazar"
+            ]
+        }
+    ]
+}
+```
+
+This policy specifies that only the **carlossalazar** user can access the **carlossalazar** bucket.
+
+When Carlos makes their request to save a file to the **carlossalazar-logs** bucket, AWS determines what policies apply to the request. In this case, only the identity-based policy and the resource-based policy apply. These are both permissions policies. Because no permissions boundaries apply, the evaluation logic is reduced to the following logic.
+
+![policy evaluation flow chart for IAM user carlos.](./images/W08Img022TroubleshootingIamPolicyEvaluationExample.png)
+
+AWS first checks for a **Deny** statement that applies to the context of the request. It finds one because the identity-based policy explicitly denies Carlos access to any S3 buckets used for logging. Carlos is denied access.
+
+Assume that Carlos then realizes their mistake, so Carlos will now try to save the file to the **carlossalazar** bucket. AWS checks for a **Deny** statement and does not find one. It then checks the permissions policies. Both the identity-based policy and the resource-based policy allow the request. Therefore, AWS allows the request. If either of them explicitly denied the statement, the request would have been denied. If one of the policy types allows the request and the other doesn't, the request is still allowed.
+
+**This logic applies only when the request is made within a single AWS account. For requests made from one account to another, the requester in Account A must have an identity-based policy that allows them to make a request to the resource in Account B. Also, the resource-based policy in Account B must allow the requester in Account A to access the resource. There must be policies in both accounts that allow the operation, otherwise the request fails. For more information about using resource-based policies for cross-account access, see [Cross account resource access in IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies-cross-account-resource-access.html).**
+
+#### What are some common error messages you might find?
+
+Usually, the error message pinpoints the source of the issue.
+
+##### Access denied when calling an IAM action
+
+* **Error message**
+
+    "An error occurred (AccessDenied) when calling the ListUsers operation: User: arn:aws:iam::123456789012:user/test is not authorized to perform: iam:ListUsers on resource: arn:aws:iam::123456789012:user/ because **no identity-based policy allows the iam:ListUsers action**"
+
+* **Explanation**
+
+    This type of error message indicates the IAM permission policies attached to the IAM user or role do not allow the required action, that is, iam:ListUsers.
+
+* **Resolution**
+
+    You can verify the IAM policies attached to the user or role and ensure that the required permission is allowed on the supported resource.
+
+##### Action explicitly denied in an identity-based policy
+
+* **Error message**
+
+    "An error occurred (AccessDenied) when calling the ListUsers operation: User: arn:aws:iam::123456789012:user/test is not authorized to perform: iam:ListUsers on resource: arn:aws:iam::123456789012:user/ **with an explicit deny in an identity-based policy**"
+
+* **Explanation**
+
+    This type of error message indicates there is a managed or inline policy attached to the user or role that is explicitly denying the required permission, that is, **iam:ListUsers**.
+
+* **Resolution**
+
+    You should verify the IAM policies attached to the user or role and identify which policy has a matching Deny statement.
+
+##### No resource-based policy allows the action
+
+* **Error message**
+
+    "User: arn:aws:iam::123456789012:user/test is not authorized to perform: kms:Decrypt on resource: arn:aws:kms:us-east-1:987654321098:key/abc3456-xyz98765-123abcdefgh because **no resource-based policy allows the kms:Decrypt action**"
+
+* **Explanation**
+
+    This error occurs when the resource-based policy does not provide the required permission for the user or role. Some AWS services, such as Amazon S3, AWS KMS, and Amazon SNS, support resource-based policies.
+
+* **Resolution**
+
+    You should verify the resource policy on the resource to ensure that it grants the required permissions. Especially in cross-account scenarios, both the identity-based policy for the IAM user or role and the resource-based policy for the cross-account resource must provide the required permission.
+
+##### No attached permissions boundary allows the action
+
+* **Error message**
+
+    "An error occurred (AccessDenied) when calling the ListUsers operation: User: arn:aws:iam::123456789012:user/test is not authorized to perform: iam:ListUsers on resource: arn:aws:iam::123456789012:user/ because **no permissions boundary allows the iam:ListUsers action**"
+
+* **Explanation**
+
+    This type of error message indicates the permissions boundary attached to the user or role does not allow the required permission. A permissions boundary is used to set the maximum permissions an identity-based policy can grant to an IAM entity. An entity's permissions boundary permits it to perform only the actions that are allowed by both its identity-based policies and its permissions boundaries.
+
+* **Resolution**
+
+    You can review the permissions boundary attached to the user or role and ensure that it allows the required permission.
+
+##### Explicit deny in an SCP
+
+* **Error message**
+
+"An error occurred (AccessDenied) when calling the ListUsers operation: User: arn:aws:iam::123456789012:user/test is not authorized to perform: iam:ListUsers on resource: arn:aws:iam::123456789012:user/ with an **explicit deny in a service control policy**"
+
+* **Explanation**
+
+    This type of error message occurs only in member accounts of AWS Organizations. It indicates that the permission is explicitly denied by a service control policy (SCP) that is associated with the member account from the management account of the organization. The SCP can also be associated with an OU to which the member account belongs.
+
+* **Resolution**
+
+    Contact the management account administrator to review the SCPs applied to the account and make the required changes.
+
+##### Encoded error message
+
+* **Error message**
+
+    "An error occurred (UnauthorizedOperation) when calling the DescribeInstances operation: You are not authorized to perform this operation."
+
+* **Explanation**
+
+    Some operations on certain services, such as Amazon EC2, provide an encoded error message.
+
+* **Resolution**
+
+    The error message can only be decoded by authorized users or roles belonging to the same AWS account using the following AWS CLI command:
+
+    ```shell
+    aws sts decode-authorization-message --encoded-message <encoded-error-message>
+    ```
+
+    The decoded error message can help identify the source of the error. It can help determine whether it is because of an explicit deny in any of the policies or because of missing permissions.
+
+### Troubleshooting Issues in IAM Role Assumptions, Trust Relationships, and Service-linked Roles
+
+Role assumption is used when you want to delegate access to users, applications, or services that don't normally have access to your AWS services. For example, you might want to grant users in your AWS account access to resources they don't usually have. Or, you might want to grant users in one AWS account access to resources in another account. Role assumption is also useful when you want to allow a mobile app to use AWS resources, but you don't want to embed AWS keys within the app. Embedding AWS keys in the app can be difficult to update and there is also a potential risk where users can extract these keys.
+
+Role assumption is a powerful tool to ensure you're adhering to the principle of least privilege, that is, you grant only the permissions necessary to perform a task.
+
+#### Key terms and components of role assumptions
+
+##### Trust policy and permission policy
+
+* When an IAM user assumes an IAM role, the following two sets of permissions are involved:
+A trust policy is a JSON policy document in which you define the principals that you trust to assume the role. A role trust policy is a required resource-based policy that is attached to a role in IAM. The principals that you can specify in the trust policy include users, roles, accounts, and services.
+* A permission policy (managed or inline) is a policy on the IAM user that allows the user to assume the role.
+
+##### Assume a role
+
+Assuming an IAM role involves a temporary transfer of permissions. By assuming a role, the entity (which could be an AWS service, an application, or an IAM user) can carry out tasks and use resources with the authorized permission. This means that you don't need to make any permanent alterations to these entities' permissions.
+
+After the session token for the assumed role has expired, the entity's additional permissions will be revoked.
+
+When an IAM user assumes an IAM role, consider the following:
+
+* **Same account**: If the IAM user and role are in the same account, a trust policy that explicitly trusts that specific IAM user is sufficient. The trust policy does not have to trust the root user account as a whole.
+* **Separate accounts**: If the IAM user and role are in separate AWS accounts, permissions are required from both ends. The user’s permission policy must allow the user to assume the role and the role’s trust policy must also trust the user.
+
+##### Trust relationship
+
+A trust relationship is the state that is defined by the trust policy. When you say a role has a *trust relationship* with a service or a user, it means that the trust policy of the role allows that service or user to assume the role.
+
+#### Troubleshooting role assumptions
+
+Understanding how to troubleshoot role assumptions is important because you can effectively manage and secure access to your AWS resources. This ensures that the right entities have the appropriate permissions, thereby maintaining the integrity and security of your cloud environment.
+
+The most common symptom that indicates an issue with IAM role assumptions is that you can't assume a role and receive an error message that is similar to the following:
+
+```shell
+An error occurred (AccessDenied) when calling the AssumeRole operation: Access denied
+```
+
+##### Tip 1
+
+To allow users to assume the current role again within a role session, specify the role ARN or AWS account ARN as a principal in the role trust policy.
+
+AWS services that provide compute resources such as Amazon EC2, Amazon Elastic Container Service (Amazon ECS), Amazon Elastic Kubernetes Service (Amazon EKS), and Lambda provide temporary credentials and automatically update these credentials.
+
+This ensures that you always have a valid set of credentials. For these services, it's not necessary to assume the current role again to obtain temporary credentials. However, if you intend to pass session tags or a session policy, you need to assume the current role again.
+
+##### Tip 2
+
+When you assume a role using the AWS Management Console, AWS Security Token Service (AWS STS) API, or AWS CLI, verify the exact name of your role. Role names are case sensitive when you assume a role.
+
+##### Tip 3
+
+Verify that your IAM policy grants you permission to call **sts:AssumeRole** for the role that you want to assume. The **Action** element of your IAM policy must be able to call the **AssumeRole** action. In addition, the **Resource** element of your IAM policy must specify the role that you want to assume.
+
+The **Resource** element can specify a role by its ARN or by a wildcard (*). For example, at least one policy applicable to you must grant permissions similar to the following:
+
+```json
+{
+"Effect": "Allow",
+"Action": "sts:AssumeRole",
+"Resource": "arn:aws:iam::account_id_number:role/role-name-you-want-to-assume"
+}
+```
+
+##### Tip 4
+
+Verify that your IAM identity is tagged with any tags that the IAM policy requires. For example, in the following policy permissions, the **Condition** element requires that you, as the principal requesting to assume the role, must have a specific tag. You must be tagged with **department = HR** or **department = CS**. Otherwise, you cannot assume the role.
+
+```json
+{
+"Effect": "Allow",
+"Action": "sts:AssumeRole",
+"Resource": "*",
+"Condition": {"StringEquals": {"aws:PrincipalTag/department": [
+            "HR",
+            "CS"
+        ]}}
+```
+
+##### Tip 5
+
+Verify that you meet all the conditions that are specified in the role's trust policy. A **Condition** can specify an expiration date, an external ID, or that a request must come only from specific IP addresses. Consider the following example: If the current date is any time after the specified date, then the policy never matches and cannot grant you the permission to assume the role.
+
+```json
+{
+"Effect": "Allow",
+"Action": "sts:AssumeRole",
+"Resource": "arn:aws:iam::account_id_number:role/role-name-you-want-to-assume"
+"Condition": {
+        "DateLessThan" : {
+            "aws:CurrentTime" : "2024-05-01T12:00:00Z"
+        }
+    }
+}
+```
+
+##### Tip 6
+
+Verify that the AWS account from which you are calling **AssumeRole** is a trusted entity for the role that you are assuming. Trusted entities are defined as a **Principal** in a role's trust policy.
+
+The following example is a trust policy that is attached to the role that you want to assume. In this example, the account ID with the IAM user that you signed in with must be 123456789012. If your account number is not listed in the **Principal** element of the role's trust policy, then you can't assume the role. It doesn't matter what permissions are granted to you in access policies.
+
+Note that the example policy limits permissions to actions that occur between July 1, 2023 and July 31, 2024 (UTC), inclusive. If you log in before or after those dates, then the policy does not match, and you cannot assume the role.
+
+```json
+{
+"Effect": "Allow",
+"Principal": { "AWS": "arn:aws:iam::123456789012:root" },
+"Action": "sts:AssumeRole",
+"Condition": {
+      "DateGreaterThan": {"aws:CurrentTime": "2023-07-01T00:00:00Z"},
+      "DateLessThan": {"aws:CurrentTime": "2024-07-31T23:59:59Z"}
+    }
+```
+
+#### Cross-account access and role assumptions
+
+Cross-account access allows an entity in one AWS account to access resources in another AWS account. This is achieved by creating an IAM role in the account that owns the resource (or, the destination account), and allowing an entity in the other account (that is, the source account) to assume this role.
+
+Let's do a quick review of how cross-account access works:
+
+1. **Create an IAM role in the destination account**. The first step is to create an IAM role in the account that owns the resources you want to access. This role should have a trust policy that allows the source account (the account that needs access to the resource) to assume the role.
+2. **Define permission for the role**. The role should have a permissions policy that grants access to the necessary resources in the destination account.
+3. **Assume the role from the source account**. An entity in the source account can then assume the role in the destination account. This is done by calling the **sts:AssumeRole** API operation, which returns a set of temporary security credentials.
+4. **Access the resources**. The entity can use these temporary credentials to make requests to AWS to access the resources in the destination account.
+
+This setup is beneficial because you can manage permissions centrally in the destination account, instead of requiring you to distribute long-term AWS security credentials across multiple accounts. It also provides an extra extra layer of security because the credentials are temporary.
+
+##### Troubleshooting cross-account access errors example
+
+Let's consider a scenario where a developer named **DevUser** in a Development AWS account (account ID: **111111111111**) is trying to assume a role named **UpdateApp** in a production AWS account (account ID: **222222222222**). The **UpdateApp** role has permissions to update an Amazon S3 bucket named **EXAMPLE-PRODUCTION-APP-12345**.
+
+However, the developer is encountering an error when trying to assume the role. How can you help the developer troubleshoot the AssumeRole error?
+
+###### Check the trust policy
+
+The trust policy of the **UpdateApp** role should include the Development account as a trusted entity. The policy should look like the following:
+
+```json
+{
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": {
+                          "AWS": "arn:aws:iam::111111111111:user/DevUser"
+                    },
+                    "Action": "sts:AssumeRole"
+                }
+            ]
+}
+```
+
+###### Check the permissions policy of the role
+
+The permission policy of the **UpdateApp** role should allow actions on the **EXAMPLE-PRODUCTION-APP-12345** bucket. If the policy doesn't allow these actions, **DevUser** won't be able to perform the necessary tasks even after assuming the role. The permission policy might look something like the following:
+
+```json
+{
+              "Version": "2012-10-17",
+              "Statement": [
+                     {
+                               "Effect": "Allow",
+                               "Action": [
+                                       "s3:PutObject",
+                                       "s3:GetObject",
+                                       "s3:AbortMultipartUpload",
+                                       "s3:ListBucket",
+                                       "s3:DeleteObject",
+                                       "s3:GetObjectVersion",
+                                       "s3:ListMultipartUploadParts"
+                                ],
+                                "Resource": 
+                                        "arn:aws:s3:::EXAMPLE-PRODUCTION-APP-12345/*"
+                       }
+                ]
+}
+```
+
+###### Check the permission of the developer
+
+The **DevUser** must have the **sts:AssumeRole** permissions for the **UpdateApp** role. The policy should include the following statement:
+
+```json
+{
+            "Version": "2012-10-17",
+            "Statement": [
+               {
+                    "Sid": "PermissionToAssumeUpdateApp",
+                    "Effect": "Allow",
+                    "Action": "sts:AssumeRole",
+                    "Resource": "arn:aws:iam::222222222222:role/UpdateApp"
+                }
+            ]
+}
+```
+
+By following these steps, you should be able to identify and resolve the issue preventing **DevUser** from assuming the **UpdateApp** role.
+
+#### Service-linked role
+
+Service-linked roles are a unique type of IAM role that is linked directly to an AWS service. The following are some key points about service-linked roles.
+
+##### Service-linked role categories
+
+###### Predefined by the service
+
+Service-linked roles are predefined by the service and include all the permissions that the service requires to call other AWS services on your behalf.
+
+###### Creation, modification, and deletion
+
+The linked service defines how you create, modify, and delete a service-linked role. A service might automatically create or delete the role, so you can create, modify, or delete the role as part of a process in the service. Or it might also require that you use IAM to create or delete the role.
+
+Before you can delete the roles, you must first delete their related resources. This protects your resources because you can't inadvertently remove permission to access the resources.
+
+For example, when you create an Amazon Relational Database Service (Amazon RDS) DB instance, Amazon RDS automatically creates a new service-linked role, if it doesn't already exist. The role is named **AWSServiceRoleForRDS** and it grants Amazon RDS the necessary permissions to call AWS service on your behalf. You can't modify this role. If you no longer need to use Amazon RDS, you can delete the service-linked role, but you must first delete all your DB instances.
+
+###### Streamlined setup
+
+Service-linked roles streamline the process of setting up a service because you don't have to manually add permissions for the service to complete actions on your behalf.
+
+For example, AWS IAM Identity Center uses a service-linked role named **AWSServiceRoleForSSO**. This role grants IAM Identity Center permissions to manage AWS resources, including IAM roles, policies, and SAML IdP on your behalf.
+
+###### Permissions
+
+Service-linked roles appear in your AWS account and are owned by the service. An IAM administrator can view, but not edit the permissions for service-linked roles. The linked service defines the permissions of its service-linked roles, and unless defined otherwise, only that service can assume the roles.
+
+##### Usage of service-linked roles and IAM roles
+
+Service-linked roles and IAM roles serve different purposes and are used in different scenarios. The following guidelines help you decide when to use each.
+
+###### Service-linked roles
+
+You can use service-linked roles in the following scenarios:
+
+* **Delegating permission to AWS services**: Service-linked roles are ideal when you need to delegate permissions to an AWS service to create and manage AWS resources on your behalf. They provide a secure way to delegate permissions because only the linked service can assume a service-linked role.
+* **Streamlining setup**: If you want to streamline the process of setting up a service, service-linked roles are a good choice. They automatically include all the permissions that the service requires, so you don't have to manually add permissions.
+* **Preventing unintentional resource deletion**: Service-linked roles protect your resources because you can't unintentionally remove permission to access the resources.
+
+###### IAM roles
+
+You can use IAM roles in the following scenarios:
+
+* **Delegating permissions to users or applications**: If you need to delegate permissions to a user or an application, an IAM role is a better choice. IAM roles can be assumed by anyone who has the necessary permissions. 
+* **Managing permissions yourself**: If you want to manage the permissions yourself, you should use IAM roles. Unlike service-linked roles, you can edit the permissions of IAM roles.
+
+##### Troubleshooting service-linked roles
+
+When there are issues with a service-linked role, you might encounter the following type of errors.
+
+###### Duplicate role name error
+
+If you make multiple requests for the same service with the same custom suffix, the request fails with a duplicate role name error. This is because service-linked roles must have unique names within an AWS account.
+
+To resolve this issue, use a different custom suffix for each request.
+
+###### Unable to assume role error
+
+If a service is unable to assume a service-linked role, it could be because of insufficient permissions or the role not being properly set up. For example, you want to use the **ecs cli** command to deploy your containers. If the service-linked role for Amazon ECS is not properly created by an admin on the AWS account, you might encounter an error with the following message:
+
+```shell
+InvalidParameterException: Unable to assume the service-linked role. Please verify that the ECS service-linked role exists. 
+```
+
+To resolve this issue, make sure you create a service-linked role for Amazon ECS as a whole. This will need to be done by an admin on the AWS account. For more information about using service-linked roles for Amazon ECS, refer to [Using Service-linked Roles for Amazon ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using-service-linked-roles.html).
+
+##### Duplicate role name error example
+
+Let's take a look at how you can troubleshoot and avoid duplicate role name errors. Let's say you are creating a service-linked role for Amazon EC2 Auto Scaling with a custom suffix: **myCustomSuffix**. You want to create this service-linked role manually with AWS CLI, and you use the following command:
+
+```shell
+aws iam create-service-linked-role --aws-service-name autoscaling.amazonaws.com --custom-suffix myCustomSuffix 
+```
+
+If you run the same command again, you will get a duplicate name error because a service-linked role with the same name (**AWSServiceRoleForAutoScaling_myCustomSuffix**) already exists in your account.
+
+To resolve this, you can use a different custom suffix when creating the service-linked role:
+
+```shell
+aws iam create-service-linked-role --aws-service-name autoscaling.amazonaws.com --custom-suffix myNewCustomSuffix 
+```
+
+This will create a new service-linked role with a unique name (**AWSServiceRoleForAutoScaling_myNewCustomSuffix**), and you can avoid the duplicate role name error.
+
+```text
+Remember to have the necessary permissions to create service-linked roles in your IAM policy. The iam:CreateServiceLinkedRole action allows service-linked role creation.
+
+Not all AWS services support the --custom-suffix parameter.
+```
+
+### Tools and Services for Troubleshooting and Auditing IAM
+
+#### IAM Access Analyzer
+
+Imagine the following scenario. At AnyCompany, the security team was concerned about potential overexposure of sensitive financial data. Using AWS Identity and Access Management Access Analyzer, they discovered that several Amazon S3 buckets containing customer information were accessible from external accounts due to misconfigured policies. The team quickly identified and resolved these vulnerabilities, ensuring that only authorized internal services could access the data. IAM Access Analyzer also provided continuous monitoring, alerting the team of any future policy changes that might inadvertently expose resources. This proactive approach not only tightened security but also ensured compliance with financial regulations, saving the company from potential data breaches and costly penalties. The ability to visualize and understand resource policies in a single view greatly enhanced the team's efficiency in maintaining a secure AWS environment.
+
+IAM Access Analyzer helps you identify the resources in your organization and accounts, such as S3 buckets or IAM roles, shared with an external entity. This lets you identify unintended access to your resources and data, which is a security risk. IAM Access Analyzer identifies resources shared with external principals by using logic-based reasoning to analyze the resource-based policies in your AWS environment.
+
+For each instance of a resource shared outside of your account, IAM Access Analyzer generates a finding. Findings include information about the access and the external principal granted to it. You can review findings to determine if the access is intended and safe or if the access is unintended and a security risk. In addition to helping you identify resources shared with an external entity, you can use IAM Access Analyzer findings to preview how your policy affects public and cross-account access to your resource before deploying resource permissions. The findings are organized in a visual summary dashboard. The dashboard highlights the split between public and cross-account access findings, and provides a breakdown of findings by resource type.
+
+![IAM Access Analyzer dashboard example](./images/W08Img030TroubleshootingIamAccessAnalyzerDashboard.png)
+
+1. **Active findings**
+
+    The **Active findings** section includes the number of active findings for public access and the number of active findings that provide access outside of the account or organization.
+
+    You can choose a number to list all of the active findings of each type, such as public access or access outside of the organization.
+
+2. **Findings overview**
+
+    The **Findings overview** section includes a breakdown of the type of active findings. 
+
+    If you choose the **View all active findings** link, you can get a complete list of active findings for the analyzer's account or organization.
+
+3. **Primary resource types with active findings**
+
+    The **Primary resource types with active findings** section includes a breakdown of the primary resource types with active findings.
+
+    This information helps you prioritize findings for the primary resources first, for example, Amazon S3, Amazon DynamoDB, and AWS KMS.
+
+    This is not an exhaustive list of every resource type. Your analyzer might have active findings for resource types not listed in this section.
+
+##### Identifying unused access granted to IAM users and roles
+
+IAM Access Analyzer helps you identify and review unused access in your AWS organization and accounts. IAM Access Analyzer continuously monitors all IAM roles and users in your AWS organization and accounts and generates findings for unused access. The findings highlight unused roles, unused access keys for IAM users, and unused passwords for IAM users. For active IAM roles and users, the findings provide visibility into unused services and actions.
+
+###### Unused roles
+
+These are roles with no access activity within the specified usage window.
+
+###### Unused IAM user access keys and passwords
+
+These are credentials belonging to IAM users that make it possible for them to access your AWS account.
+
+###### Unused permissions
+
+Service-level and action-level permissions that weren't used by a role within the specified usage window. IAM Access Analyzer uses identity-based policies attached to roles to determine the services and actions that those roles can access.
+
+IAM Access Analyzer supports the review of unused permissions for all service-level permissions.
+
+The findings for both external access and unused access analyzers are organized into a visual summary dashboard. The dashboard highlights your AWS accounts that have the most findings and provides a breakdown of findings by type.
+
+IAM Access Analyzer reviews the last accessed information for all roles in your AWS organization and accounts to help you identify unused access. IAM action last accessed information helps you identify unused actions for roles in your AWS accounts.
+
+##### Validating policies against AWS best practices
+
+You can validate your policies against IAM policy grammar and AWS best practices using the basic policy checks provided by IAM Access Analyzer policy validation. You can create or edit a policy using the AWS CLI, AWS API, or JSON policy editor in the IAM console. You can view policy validation check findings that include security warnings, errors, general warnings, and suggestions for your policy. These findings provide actionable recommendations that help you author policies that are functional and conform to AWS best practices.
+
+##### Validating policies against your specified security standards
+
+You can validate your policies against your specified security standards using the IAM Access Analyzer custom policy checks. You can create or edit a policy using the AWS CLI, AWS API, or JSON policy editor in the IAM console. Through the console, you can check whether your updated policy grants new access compared to the existing version. Through AWS CLI and AWS API, you can also check specific IAM actions that you consider critical are not allowed by a policy. These checks highlight a policy statement that grants new access. You can update the policy statement and re-run the checks until the policy conforms to your security standard.
+
+##### Generating policies
+
+IAM Access Analyzer also analyzes your CloudTrail logs to identify actions and services that have been used by an IAM entity (user or role) within your specified date range. It then generates an IAM policy that is based on that access activity. You can use the generated policy to refine an entity's permissions by attaching it to an IAM user or role.
+
+#### IAM policy simulator
+
+You might find that your IAM policies will need to be tested to better understand what is being applied, what levels of access users have, and how to troubleshoot when things go wrong.
+
+With the IAM policy simulator, you can test and troubleshoot identity-based policies, IAM permissions boundaries, AWS Organizations SCPs, and resource-based policies. The policy simulator does not make an actual AWS service request, so you can safely test requests that might make unwanted changes to your live AWS environment. The only result returned is whether the requested action would be allowed or denied.
+
+![Example of IAM policy simulator.](./images/W08Img032TroubleshootingIamPolicySimulator.png)
+
+The IAM policy simulator shows there are two actions being tested. One is for AWS Amplify UI Builder: **DeleteForm** action. The other one is for Amazon S3: **CreateBucket action**. Both actions are implicitly denied.
+
+Here are some common use cases for the IAM policy simulator:
+
+* Test identity-based policies that are attached to IAM users, user groups, or roles in your AWS account. If more than one policy is attached to the user, user group, or role, you can test all the policies, or select individual policies to test. You can test which actions are allowed or denied by the selected policies for specific resources.
+* Test and troubleshoot the effect of permissions boundaries on IAM entities. You can only simulate one permissions boundary at a time.
+* Test the effects of resource-based policies on IAM users that are attached to AWS resources, such as S3 buckets, SQS queues, SNS topics, or S3 Glacier vaults. To use a resource-based policy in the policy simulator for IAM users, you must include the resource in the simulation. You must also select the check box to include that resource's policy in the simulation.
+* If your AWS account is a member of an organization in AWS Organizations, then you can test the impact of SCPs on your identity-based policies.
+* Test new identity-based policies that are not yet attached to a user, user group, or role by typing or copying them into the policy simulator. These are used only in the simulation and are not saved. You can't type or copy a resource-based policy in the policy simulator.
+* Test identity-based policies with selected services, actions, and resources. For example, you can test to ensure that your policy allows an entity to perform the **ListAllMyBuckets**, **CreateBucket**, and **DeleteBucket** actions in the Amazon S3 service on a specific bucket.
+* Simulate real-world scenarios by providing context keys, such as an IP address or date, that are included in **Condition** elements in the policies being tested.
+* Identify which specific statement in identity-based policy results in allowing or denying access to a particular resource or action.
+
+```text
+By default, console users can test policies that are not yet attached to a user, user group, or role by typing or copying those policies into the policy simulator. These policies are used only in the simulation and do not disclose sensitive information. API users must have permissions to test unattached policies. You can allow console or API users to test policies that are attached to IAM users, user groups, or roles in your AWS account.
+```
+
+##### Permissions required for using the IAM policy simulator console
+
+You can allow users to test policies that are attached to IAM users, user groups, or roles in your AWS account. To do so, you must provide your users with permissions to retrieve those policies. To test resource-based policies, users must have permission to retrieve the resource's policy.
+
+###### Allowing console users to simulate policies for users
+
+You will include the following actions in your policy:
+
+* **iam:GetGroupPolicy**
+* **iam:GetPolicy**
+* **iam:GetPolicyVersion**
+* **iam:GetUser**
+* **iam:GetUserPolicy**
+* **iam:ListAttachedUserPolicies**
+* **iam:ListGroupsForUser**
+* **iam:ListGroupPolicies**
+* **iam:ListUserPolicies**
+* **iam:ListUsers**
+
+###### Allowing console users to simulate policies for user groups
+
+You will include the following actions in your policy:
+
+* **iam:GetGroup**
+* **iam:GetGroupPolicy**
+* **iam:GetPolicy**
+* **iam:GetPolicyVersion**
+* **iam:ListAttachedGroupPolicies**
+* **iam:ListGroupPolicies**
+* **iam:ListGroups**
+
+###### Allowing console users to simulate policies for roles
+
+You will include the following actions in your policy:
+
+* **iam:GetPolicy**
+* **iam:GetPolicyVersion**
+* **iam:GetRole**
+* **iam:GetRolePolicy**
+* **iam:ListAttachedRolePolicies**
+* **iam:ListRolePolicies**
+* **iam:ListRoles**
+
+To test resource-based policies, users must have permission to retrieve the resource's policy.
+
+###### Allowing console users to test resource-based policies in an Amazon S3 bucket
+
+You will include the following actions in your policy:
+
+* **s3:GetBucketPolicy**
+
+For example, the following policy uses this action to allow console users to simulate a resource-based policy in a specific Amazon S3 bucket.
+
+```json
+{
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": "s3:GetBucketPolicy",
+            "Resource":"arn:aws:s3:::bucket-name/*"
+          }
+        ]
+}
+```
+
+#### CloudTrail
+
+IAM and AWS STS are integrated with CloudTrail, a service that provides a record of actions taken by an IAM user or role. CloudTrail captures all AWS service API calls as events, including calls from the console, AWS CLI, and API tools. CloudTrail is enabled on your AWS account when you create the account. If you create a trail, you can facilitate continuous delivery of CloudTrail events to an Amazon S3 bucket. AWS services like Athena can then be used to query the logs directly from the S3 bucket. If you don't configure a trail, you can still view the most recent events in the CloudTrail console in **Event history**.
+
+CloudTrail can be used to answer the following common questions:
+
+* What actions did a user take over a given period?
+* For a given resource, which AWS user has taken actions on it over a given time period?
+* What is the source IP address of a given activity?
+* Which user activities failed because of inadequate permissions?
+
+**CloudTrail logs sign-in events to the AWS Management Console, the AWS discussion forums, and AWS Marketplace. CloudTrail also logs successful and failed sign-in attempts for IAM users and federated users. For AWS account root users, only successful sign-in events are logged. CloudTrail does not log unsuccessful sign-in events by the root user.**
+
+##### CloudTrail log contents
+
+There can be dozens or even hundreds of events like the one covered in the previous example in one CloudTrail log file. The body of a CloudTrail log file contains multiple fields that help you determine the requested action and when and where the request was made.
+
+The following table shows some important fields that you need to be aware of.
+
+| Field | Description |
+| ----- | ----------- |
+| eventTime | The date and time of the event reported in UTC |
+| eventType | There can be three types of events:\* **AwsConsoleSignin**: A user in your account (root, IAM, federated, SAML, or SwitchRole) signed in to the AWS Management Console.\* **AwsServiceEvent**: The called service generated an event related to your trail. For example, this can occur when another account makes a call with a resource that you own.\* **AwsApiCall**: A public API for an AWS resource was called. |
+| eventSource  | The service that the request was made to. This name is typically a short form of the service name without spaces plus **.amazonaws.com.** For example:\* AWS CloudFormation is **cloudformation.amazonaws.com**.\* Amazon EC2 is **ec2.amazonaws.com**.\* Amazon Simple Workflow Service is **swf.amazonaws.com**.\This convention has some exceptions. For example, the **eventSource** for Amazon CloudWatch is **monitoring.amazonaws.com**. |
+| eventName | The requested action, which is one of the actions in the API for that service. |
+
+
+
+sourceIPAddress 	The IP address where the request came from. If one AWS service calls another service, the DNS name of the calling service is used.
+userAgent 	The tool or application through which the request was made, such as the AWS Management Console, the AWS SDKs, or the AWS CLI. The following are example values:
+signin.amazonaws.com: The request was made by an IAM user with the AWS Management Console.
+
+console.amazonaws.com: The request was made by a root user with the AWS Management Console.
+
+lambda.amazonaws.com: The request was made with AWS Lambda.
+
+aws-sdk-java: The request was made with the AWS SDK for Java.
+
+aws-sdk-ruby: The request was made with the AWS SDK for Ruby.
+
+aws-cli/1.3.23 Python/2.7.6 Linux/2.6.18-164.el5: The request was made with the AWS CLI installed on Linux.
+
+errorMessage 	Any error message returned by the requested service.
+requestParameters 	The parameters that were sent with the API call, which can vary depending on the type of resource or service called.
+
+For example, in an Amazon S3 API call, you could have the bucketName and location sent as parameters.
+resources 	List of AWS resources accessed in the event. This can be the resource's ARN, an AWS account number, or the resource type.
+userIdentity	A collection of fields that describe the user or service that made the call. These fields can vary based on the type of user or service.
+
+The following values are possible types of identity:
+
+Root: The request was made with your AWS account credentials. If the userIdentity type is Root and you set an alias for your account, the userName field contains your account alias.
+IAMUser: The request was made with the credentials of an IAM user.
+
+AssumedRole: The request was made with temporary security credentials that were obtained with a role through a call to the AWS STS AssumeRole API call. This can include roles for Amazon EC2 and cross-account API access.
+
+FederatedUser: The request was made with temporary security credentials that were obtained through a call to the AWS STS GetFederationToken API. The sessionIssuer element indicates if the API was called with root or IAM user credentials.
+
+AWSAccount: The request was made by another AWS account.
+
+AWSService: The request was made by an AWS account that belongs to an AWS service. For example, AWS Elastic Beanstalk assumes an IAM role in your account to call other AWS services on your behalf.
+
+
+Try it on your own
+
+Now, let's review two CloudTrail logs and answer some questions.
+
+Example 1: IAM API event in CloudTrail log file
+
+Policy begins
+{
+  "eventVersion": "1.05",
+  "userIdentity": {
+  "type": "IAMUser",
+    "principalId": "AIDACKCEVSQ6C2EXAMPLE",
+    "arn": "arn:aws:iam::444455556666:user/JaneDoe",
+    "accountId": "444455556666",
+    "accessKeyId": "AKIAI44QH8DHBEXAMPLE",
+    "userName": "JaneDoe",
+    "sessionContext": {
+      "attributes": {
+        "mfaAuthenticated": "false",
+        "creationDate": "2024-07-15T21:39:40Z"
+      }
+    },
+    "invokedBy": "signin.amazonaws.com"
+  },
+  "eventTime": "2024-07-15T21:40:14Z",
+  "eventSource": "iam.amazonaws.com",
+  "eventName": "GetUserPolicy",
+  "awsRegion": "us-east-2",
+  "sourceIPAddress": "signin.amazonaws.com",
+  "userAgent": "signin.amazonaws.com",
+  "requestParameters": {
+    "userName": "JaneDoe",
+    "policyName": "ReadOnlyAccess-JaneDoe-202407151307"
+  },
+  "responseElements": null,
+  "requestID": "9EXAMPLE-0c68-11e4-a24e-d5e16EXAMPLE",
+  "eventID": "cEXAMPLE-127e-4632-980d-505a4EXAMPLE"
+} 
+
+End of policy
+What can you interpret based on this log? Enter your response in the following note box. If you want to download your response as plaintext and keep it as your own record, choose the Download your response button.
+
+When you are ready, choose the CONTINUE button to review the example response.
+
+To learn about keyboard controls for this activity, expand the following category.
+
+
+Keyboard instructions for activity
+
+Continued
+
+Example 1 response: 
+
+From this event information, you can determine that the request was made to get a user policy named ReadOnlyAccess-JaneDoe-202407151307 for user JaneDoe, as specified in the requestParameters element. You can also see that the request was made by an IAM user named JaneDoe on July 15, 2024 at 9:40 PM (UTC). In this case, the request originated in the AWS Management Console, as you can tell from the userAgent element.
+
+
+
+Example 2: Cross-account AWS STS API events in CloudTrail log entry
+
+Policy begins
+{
+  "eventVersion": "1.05",
+  "userIdentity": {
+    "type": "IAMUser",
+    "principalId": "AIDAQRSTUVWXYZEXAMPLE",
+    "arn": "arn:aws:iam::777788889999:user/JohnDoe",
+    "accountId": "777788889999",
+    "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+    "userName": "JohnDoe"
+  },
+  "eventTime": "2024-07-18T15:07:39Z",
+  "eventSource": "sts.amazonaws.com",
+  "eventName": "AssumeRole",
+  "awsRegion": "us-east-2",
+  "sourceIPAddress": "192.0.2.101",
+  "userAgent": "aws-cli/1.11.10 Python/2.7.8 Linux/3.2.45-0.6.wd.865.49.315.metal1.x86_64 botocore/1.4.67",
+  "requestParameters": {
+    "roleArn": "arn:aws:iam::111122223333:role/EC2-dev",
+    "roleSessionName": "JohnDoe-EC2-dev",
+    "sourceIdentity": "JohnDoe",
+    "serialNumber": "arn:aws:iam::777788889999:mfa"
+  },
+  "responseElements": {
+    "credentials": {
+      "sessionToken": "<encoded session token blob>",
+      "accessKeyId": "ASIAI44QH8DHBEXAMPLE",
+      "expiration": "Jul 18, 2024, 4:07:39 PM"
+      },
+    "assumedRoleUser": {
+      "assumedRoleId": "AIDAQRSTUVWXYZEXAMPLE:JohnDoe-EC2-dev",
+      "arn": "arn:aws:sts::111122223333:assumed-role/EC2-dev/JohnDoe-EC2-dev"
+    },
+  "sourceIdentity": "JohnDoe"
+  },
+  "resources": [
+    {
+      "ARN": "arn:aws:iam::111122223333:role/EC2-dev",
+      "accountId": "111122223333",
+      "type": "AWS::IAM::Role"
+    }
+  ],
+  "requestID": "4EXAMPLE-0e8d-11e4-96e4-e55c0EXAMPLE",
+  "sharedEventID": "bEXAMPLE-efea-4a70-b951-19a88EXAMPLE",
+  "eventID": "dEXAMPLE-ac7f-466c-a608-4ac8dEXAMPLE",
+  "eventType": "AwsApiCall", 
+  "recipientAccountId": "111122223333"
+}
+
+End of policy
+What can you interpret based on this log? Enter your response in the following note box. If you want to download your response as plaintext and keep it as your own record, choose the Download your response button.
+
+When you are ready, choose the CONTINUE button to review the example response.
+
+To learn about keyboard controls for this activity, expand the following category.
+
+
+Keyboard instructions for activity
+
+Continued
+
+Example response:
+
+The IAM user named JohnDoe in account 777788889999 calls the AWS STS AssumeRole action to assume the role EC2-dev in account 111122223333. The account administrator requires users to set a source identity equal to their username when assuming the role. The user passes in the source identity value of JohnDoe.
