@@ -299,3 +299,117 @@ Finally, you can use the CloudWatch console to monitor and analyze the memory ut
 You can set alarms, visualize metrics using graphs and charts, and perform various operations on the metrics. This helps you to gain insights into the performance and usage of your applications.
 
 ### Data Aggregation
+
+The purpose of data aggregation is to condense large amounts of raw data into more manageable and meaningful summaries. This aggregated data might provide different insights into trends, patterns, and anomalies. This makes it convenient for users to analyze and understand complex datasets. Data aggregation is commonly used for monitoring and managing AWS resources.
+
+#### Statistics
+
+Statistics are metric data aggregations over specified periods of time. When you graph or retrieve the statistics for a metric, you specify the period of time, such as 5 minutes, to use to calculate each statistical value. For example, if the **Period** is 5 minutes, the **Sum** is the sum of all sample values collected during the 5-minute period, and the **Minimum** is the lowest value collected during the 5-minute period.
+
+CloudWatch supports the following statistics for metrics.
+
+* **Sample Count** is the number of data points during the period.
+* **Sum** is the sum of the values of the all data points collected during the period.
+* **Average** is the value of **Sum** divided by **SampleCount** during the specified period.
+* **Minimum** is the lowest value observed during the specified period.
+* **Maximum** is the highest value observed during the specified period.
+* **Percentile (p)** indicates the relative standing of a value in a dataset.
+    For example, **p95** is the 95th percentile and means that 95 percent of the data within the period is lower than the value and 5 percent of the data is higher than this value. Percentiles help you get a better understanding of the distribution of your metric data.
+* **Trimmed mean (TM)** is the mean of all values that are between two specified boundaries. Values outside of the boundaries are ignored when the mean is calculated. You define the boundaries as one or two numbers between 0 and 100, up to 10 decimal places. The numbers can be absolute values or percentages.
+    For example, **tm98** calculates the average after removing the 10% of data points with the highest values. **TM(2%:98%)** calculates the average after removing the 2% lowest data points and the 2% highest data points. **TM(150:1000)** calculates the average after removing all data points that are lower than or equal to 150, or higher than 1000.
+* **Interquartile mean (IQM)** is the trimmed mean of the interquartile range, or the middle 50% of values. It is equivalent to **TM(25%:75%)**.
+* **Winsorized mean (VM)** is similar to trimmed mean. However, with winsorized mean, the values that are outside the boundary are not ignored. They are considered to be equal to the value at the edge of the appropriate boundary. After this normalization, the average is calculated. You define the boundaries as one or two numbers between 0 and 100, up to 10 decimal places.
+    For example, **wm98** calculates the average while treating the 2% of the highest values to be equal to the value at the 98th percentile. WM is important because it reduces the impact of outliers on the calculated mean, providing a more robust measure of central tendency in datasets with extreme values.
+* **Percentile rank (PR)** is the percentage of values that meet a fixed threshold.
+    For example, **PR(:300)** returns the percentage of data points that have a value of 300 or less. **PR(100:2000)** returns the percentage of data points that have a value between 100 and 2000. **Percentile tank** is exclusive on the lower bound and inclusive on the upper bound.
+* **Trimmed count (TC)** is the number of data points in the chosen range for a trimmed mean statistic.
+    For example, **tc90** returns the number of data points not including any data points that fall in the highest 10% of the values. **TC(0.005:0.030)** returns the number of data points with values between 0.005 (exclusive) and 0.030 (inclusive).
+* **Trimmed sum (TS)** is the sum of the values of data points in a chosen range for a trimmed mean statistic. It is equivalent to (Trimmed mean) * (Trimmed count).
+    For example, **ts90** returns the sum of the data points not including any data points that fall in the highest 10% of the values. **TS(80%)** returns the sum of the data point values, not including any data points with values in the lowest 80% of the range of values.
+
+#### Statistics use cases
+
+##### Trimmed mean (TM)
+
+**Trimmed mean (TM)** is most useful for metrics with a large sample size, such as webpage latency. For example, **tm99** disregards extreme high outliers that could result from network problems or human errors, to give a more accurate number for the average latency of typical requests.
+
+Similarly, **TM(10%:)** disregards the lowest 10% of latency values, such as those resulting from cache hits. And **TM(10%:99%)** excludes both of these types of outliers. It's recommended to use trimmed mean for monitoring latency.
+
+##### Trimmed count (TC)
+
+t's a good idea to keep watch on trimmed count (TC) whenever you are using trimmed mean. This is to ensure that the number of values being used in your trimmed mean calculations are enough to be statistically significant.
+
+##### Percentile rank (PR)
+
+You can use **percentile rank (PR)** to put values into *bins* of ranges, and you can use this to manually create a histogram. To do this, break your values down into various bins, such as **PR(:1)**, **PR(1:5)**, **PR(5:10)**, and **PR(10:)**. Put each of these bins into a visualization as bar charts, and you have a histogram.
+
+Percentile rank is exclusive on the lower bound and inclusive on the upper bound.
+
+#### Getting statistics for a specific resource
+
+In the following example, let's take a look how you can determine the minimum CPU utilization of a specific EC2 instance.
+
+##### Step 1
+
+![CloudWatch console.](./images/W09Img010MetricsMonitoringCloudWatchConsole.png)
+
+Open the **CloudWatch** console.
+
+##### Step 2
+
+![All metrics link in the navigation pane is highlighted in the CloudWatch console.](./images/W09Img012MetricsMonitoringCloudWatchAllMetrics.png)
+
+In the navigation pane, choose **All metrics**.
+
+##### Step 3
+
+![EC2 namespace is highlighted.](./images/W09Img014MetricsMonitoringCloudWatchMetricsEc2Namespace.png)
+
+On the **Browse** tab, choose the **EC2 namespace**.
+
+##### Step 4
+
+![Pre-Instance Metrics dimension is highlighted.](./images/W09Img016MetricsMonitoringCloudWatchPreInstanceMetrics.png)
+
+Then choose the dimension named **Pre-Instance Metrics**.
+
+##### Step 5
+
+![CPUUtilization is used as the search keyword.](./images/W09Img018MetricsMonitoringCloudWatchCpuUtilization.png)
+
+In the search field, you can use **CPUUtilization** as the keyword, and press Enter.
+
+##### Step 6
+
+![Graph for the CPUUtilization metric is displayed with 1 hour time range.](./images/W09Img020MetricsMonitoringCloudWatchCpuUtilizationGraph.png)
+
+Then select the row for the specific instance, which displays a graph for the **CPUUtilization** metric for the instance.
+
+If you want to change the name of the graph, choose the pencil icon.
+
+You can also change the time range that is used for the graph.
+
+##### Step 7
+
+![On the Graphed metrics tab, an arrow points to the Statistic column, and another arrow points to the Period column.](./images/W09Img022MetricsMonitoringCloudWatchGraphedMetric.png)
+
+To change the statistic, choose the **Graphed metrics** tab.
+
+In the **Statistic** column, choose the dropdown menu and then choose one of the statistics or predefined percentiles.
+
+To change the period, in the **Period** column, choose the dropdown menu and then choose a different value.
+
+#### Publishing statistic sets
+
+You can aggregate your data before you publish to CloudWatch. When you have multiple data points per minute, aggregating data minimizes the number of calls to **put-metric-data**. For example, instead of calling **put-metric-data** multiple times for three data points that are within 3 seconds of each other, you can aggregate the data into a statistic set that you publish with one call, using the **--statistic-values** parameter. You would use the following command.
+
+```shell
+aws cloudwatch put-metric-data --metric-name PageViewCount --namespace MyService --statistic-values Sum=11,Minimum=2,Maximum=5,SampleCount=3 --timestamp 2024-04-14T12:00:00.000Z
+```
+
+CloudWatch requires raw data points to calculate percentiles. If you publish data using a statistic set instead, you can't retrieve percentile statistics for this data unless one of the following conditions is true:
+
+* The **SampleCount** of the statistic set is 1.
+* The **Minimum** and the **Maximum** of the statistic set are equal.
+
+Minimizing the number of API calls can help in managing costs, improving performance, and simplifying the process of sending data to CloudWatch, especially when dealing with large volumes of data.
