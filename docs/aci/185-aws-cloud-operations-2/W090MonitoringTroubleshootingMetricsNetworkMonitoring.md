@@ -1053,3 +1053,791 @@ In this AWS SimuLearn assignment, you will review a real-world scenario helping 
 For this assignment, you will help aerospace engineers who want to monitor and analyze network traffic to detect misuse of a space station's data and systems. The engineers want to capture information about IP traffic going to and from the network interfaces of each system, and then analyze the information to detect unusual network activity.
 
 ### Using Amazon CloudWatch Container Insights
+
+#### Container Insights
+
+CloudWatch Container Insights collects, aggregates, and summarizes metrics and logs from your containerized applications and microservices. You can gain deep insights into your containers, identify and troubleshoot performance issues, and optimize resource utilization based on real-time container metrics. CloudWatch Container Insights helps you with the following:
+
+* **Microservices monitoring**: CloudWatch Container Insights streamlines the monitoring of microservices. It provides visibility and analytics into each affected service and its corresponding containers. 
+* **A holistic view of container cluster**: You can get aggregated views across all containers within the cluster, as opposed to individually monitoring each container. This makes it convenient to analyze resource usage, network traffic, and performance metrics on a broader scale.
+* **Monitoring multi-cluster environment**: Whether your container clusters are running on Amazon ECS or Amazon Elastic Kubernetes Service (Amazon EKS), Container Insights supports them all. This helps you to have unified monitoring for all of your container clusters, and it makes managing multi-cluster environments more efficient. 
+
+#### Supported platforms
+
+Container Insights is available for Amazon ECS, Amazon EKS and Kubernetes platforms on Amazon Elastic Compute Cloud (Amazon EC2) instances.
+
+* For Amazon EKS and Kubernetes platforms on Amazon EC2 instances, Container Insights is supported only on Linux instances.
+* For Amazon ECS, Container Insights collects metrics at the cluster, task, and service levels on both Linux and Windows Server instances. It can collect metrics at the instance level only on Linux instances.
+* For Amazon ECS, network metrics are available only for containers in **bridge** network mode and **awsvpc** network mode. They are not available for containers in **host** network mode. For more information, refer to the Amazon ECS network metrics section.
+
+#### Amazon ECS network metrics
+
+When you run containers on Amazon ECS, you have the following three options for how those containers connect to the network:
+
+* **bridge** network mode
+* **host** network mode
+* **awsvpc** network mode
+
+In the **bridge** network mode and **awsvpc** network mode, each container gets its own separate network connection, similar to having its own virtual network card. This means that AWS can monitor and collect information about how much network data (like bytes sent and received) each container is using.
+
+However, in the **host** network mode, the containers share the same network connection as the host machine (the computer they're running on). This makes it difficult for AWS to separate and monitor the network usage of each individual container.
+
+This means that AWS can provide you with network usage metrics for containers running in **bridge** network mode or **awsvpc** network mode. It cannot provide those metrics for containers running in **host** network mode.
+
+Having network usage metrics is helpful because you can understand how much network resources each of your containers is using. It can also help you identify if any of your containers are using too much network bandwidth or experiencing network issues.
+
+#### Setting up Container Insights on Amazon ECS
+
+You can either turn on Container Insights on all new clusters by default, or you can turn it on when you create a new cluster.
+
+##### Turn on Container Insights on all new clusters by default
+
+You can use the following steps to turn on Container Insights on all new clusters by default:
+
+1. Open the console at [https://console.aws.amazon.com/ecs/v2](https://console.aws.amazon.com/ecs/v2).
+2. In the navigation page, choose **Account settings**.
+3. Choose **Update**.
+4. Under **CloudWatch Container Insights**, select **CloudWatch Container Insights**.
+5. Choose **Save changes**.
+
+![Screenshot of Update account settings in Amazon ECS console.](./images/W09Img080CloudWatchContainerInsightsAccountSettings.png)
+
+##### Turn on Container Insights when creating a single cluster
+
+You can also use the following steps to create a cluster with Container Insights turned on:
+
+1. In the navigation pane, choose **Clusters**.
+2. On the **Clusters** page, choose **Create cluster**.
+3. Under **Cluster configuration**, for Cluster name, enter a unique name.
+4. To turn on Container Insights, expand **Monitoring**, and then turn on **Use Container Insights**.
+
+![Screenshot of Create cluster page in Amazon ECS console.](./images/W09Img082CloudWatchContainerInsightsCreateCluster.png)
+
+##### Turning on Container Insights for an existing Amazon ECS cluster
+
+Use AWS Command Line Interface (AWS CLI) with the following command.
+
+```shell
+aws ecs update-cluster-settings --cluster YOUR_CLUSTER_NAME --settings name=containerInsights,value=enabled
+```
+
+**You must be running version 1.16.200 or later of the AWS CLI for this command to work.**
+
+#### Setting up Container Insights on Amazon EKS
+
+The recommended way to install Container Insights on an Amazon EKS cluster is to use the CloudWatch Observability EKS add-on. Additionally, if you want to retrieve accelerated computing networks, you must use the CloudWatch Observability EKS add-on.
+
+The CloudWatch Observability EKS add-on installs the CloudWatch agent and the Fluent Bit agent on an Amazon EKS cluster. With this add-on, Container Insights enhanced observability for Amazon EKS and CloudWatch Application Signals are turned on by default.
+
+Using the add-on, you can collect detailed infrastructure metrics, application performance telemetry, and container logs for your Amazon EKS clusters. You can then use curated, immediately usable dashboards to drill down into application and infrastructure telemetry. Container Insights with enhanced observability for Amazon EKS collects granular health, performance, and status metrics up to the container level, and also control plane metrics.
+
+With the enhanced observability add-on, Container Insights metrics are charged for each observation instead of being charged for each metric stored or log ingested.
+
+When you install the add-on, you must also grant AWS Identity and Access Management (IAM) permissions so that the CloudWatch agent can send metrics, logs, and traces to CloudWatch. You can attach a policy to the IAM role of your worker nodes. This option grants permissions to worker nodes to send telemetry to CloudWatch.
+
+##### EKS observability add-on installation example
+
+Attach the **CloudWatchAgentServerPolicy** IAM policy to your worker nodes by entering the following command. In this command, you can replace my-worker-node-role with the IAM role used by your Kubernetes worker nodes.
+
+```shell
+aws iam attach-role-policy \
+--role-name my-worker-node-role \
+--policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+```
+
+##### Installing the add-on with the Amazon EKS console
+
+###### Step 1
+
+![Screenshot of EKS console with Clusters link highlighted. The cluster name: eks-lab-cluster is also highlighted.](./images/W09Img091CloudWatchObservabilityEksAddonClusters.png)
+
+Open the Amazon EKS console at [https://console.aws.amazon.com/eks/home#/clusters](https://console.aws.amazon.com/eks/home#/clusters).
+
+In the left navigation pane, choose **Clusters**.
+
+Choose the name of the cluster that you want to configure the CloudWatch Observability EKS add-on for.
+
+###### Step 2
+
+![Screenshot of eks-lab-cluster page with Get more add-ons button highlighted.](./images/W09Img092CloudCloudWatchObservabilityEksAddonClustersAddOns.png)
+
+Choose the **Add-ons** tab.
+
+Then, choose **Get more add-ons**.
+
+###### Step 3
+
+![Amazon CloudWatch Observability add-on is selected.](./images/W09Img093CloudWatchObservabilityEksAddonSelected.png)
+
+On the **Select add-ons** page, do the following:
+
+* In the **Amazon EKS add-ons** section, select the **Amazon CloudWatch Observability** check box.
+* Choose **Next**.
+
+###### Step 4
+
+![Screenshot of Configure selected add-ons settings page.](./images/W09Img094CloudWatchObservabilityEksAddonConfig.png)
+
+On the **Configure selected add-ons settings** page, do the following:
+
+* Select the **Version** you'd like to use. The default selection is usually the latest version.
+* For **Select IAM role**, select **Not set**. This option means that the add-on will use the IAM role of the node where it runs.
+
+Then, choose **Next**.
+
+###### Step 5
+
+![Screenshot of review and add page.](./images/W09Img095CloudWatchObservabilityEksAddonReview.png)
+
+On the **Review and add** page, choose **Create**.
+
+After the add-on installation is complete, you see your installed add-on.
+
+### Troubleshooting with CloudWatch Container Insights
+
+#### Using the console
+
+You can use the console to show information in different views to analyze the performance of your containerized workloads. When you first open up the Container Insights, you will see a summary view of the clusters state, the performance and status, and the control plane. You can also view the Top 10 resources based on different metrics such as CPU utilization and memory utilization. You can also see a list of clusters in the Clusters overview section. If you choose the name of the cluster, you will be redirected to the performance monitoring page of that specific cluster.
+
+![Screenshot of CloudWatch Container Insights summary with Service: EKS selected.](./images/W09Img110CloudWatchContainerInsightsEks.png)
+
+#### Viewing cluster resources
+
+On the performance monitoring page, there are multiple views you can use to analyze the performance. You can drill down into more detailed views to gain additional insights. By diving into different views, you can more readily identify the root cause of issues.
+
+##### Example 1. Cluster-wide performance view
+
+![Screenshot of cluster performance monitoring](./images/W09Img112CloudWatchContainerInsightsPerformanceCluster.png)
+
+This view provides an overview of resource utilization across the entire cluster.
+
+##### Example 2. Nodes performance view
+
+![Screenshot of Nodes performance view](./images/W09Img114CloudWatchContainerInsightsPerformanceNodes.png)
+
+This view shows metrics at the individual node level.
+
+##### Example 3. Containers performance view
+
+![Screenshot of containers level view in Container Insights](./images/W09Img116CloudWatchContainerInsightsPerformanceContainer.png)
+
+When you drill into details at the container level, the filters automatically populate with related components for that container. This gives visibility into containerized workloads from high-level monitoring to pod and container metrics. This visibility helps troubleshoot and optimize container performance.
+
+#### Map view
+
+Imagine you have a containerized application, consisting of multiple microservices or components. Each component is running in one or more containers. You've noticed that one of the components is experiencing performance issues or failures, causing delays or errors.
+
+With CloudWatch Container Insights, you can also analyze your resources with the map view. The map view provides a visual representation of your containerized application and the relationships between its components. 
+
+If you choose **View in maps** on the performance monitoring page, you can see the cluster resources in a tree format. If you choose one of the nodes on the map, the critical metrics about the resource will then appear after the tree map.
+
+![Screenshot of Container Insights map view for the node named aws-load-balancer-controller](./images/W09Img120CloudWatchContainerInsightsMap.png)
+
+The map shows a topology view of the relationships between services, helping you understand how different services interact. You can use the map view for the following tasks:
+
+* **Topology visualization**: It provides a graphical representation of the container infrastructure, showing the connections and dependencies between different containers, pods, services, and other resources. This helps you understand the overall architecture and identify potential slowdowns or single points of failure.
+* **Troubleshooting and root cause analysis**: The map view can help you trace the flow of traffic and dependencies between containers and services. This can be valuable when investigating performance issues or failures.
+* **Performance monitoring**: The map view displays performance metrics, such as CPU and memory utilization, for each container and service. This helps you to identify resources that are experiencing high or low utilization, which can help you optimize resource allocation and scaling.
+
+#### Using metrics
+
+Metrics are data about the performance of your systems. You can also use metrics from Container Insights to troubleshoot your containerized applications.
+
+For example, if you observe a sudden increase in memory utilization or a surge of traffic to your application, you can immediately investigate the issue and use CloudWatch metrics to drill down and identify the root cause of the problem. AWS also provides pre-built dashboards, alarms, and views in CloudWatch that you can use to identify issues, analyze patterns and trends, and take proactive actions to mitigate these issues.
+
+If you have Container Insights enabled, you can find the **ContainerInsights** namespace under the CloudWatch metrics section. This is a custom AWS namespace where all of the metrics from all of the EKS clusters collected by CloudWatch Container Insights are grouped together.
+
+![Screenshot of CloudWatch metrics > All metrics page. ContainerInsights is displayed under the custom namespaces.](./images/W09Img122CloudWatchMetricsNamespaceContainerInsights.png)
+
+After you choose the **ContainerInsights** namespace, you see different metric types. For example, you can choose the **ClusterName**, **Namespace**, **PodName** metric category to further investigate different metrics over time and identify trends and patterns with the graphs.
+
+![Screenshot of memory utilization metric graph for the aws-load-balancer-controller pod.](./images/W09Img124CloudWatchContainerInsightsMetrics.png)
+
+#### Logs from EKS cluster
+
+When you configure Container Insights for your EKS cluster, it automatically deploys the Fluent Bit DaemonSet on all the nodes in your EKS cluster. This Fluent Bit DaemonSet is responsible for collecting log data from all the containers running on each node. As Fluent Bit collects the log data, it sends (or forwards) this data to CloudWatch log groups. However, you don't need to manually create these log groups. Container Insights automatically creates the necessary log groups in CloudWatch when it is configured for your EKS cluster.
+
+These log groups appear in the console with the following syntax:
+
+```shell
+/aws/containerinsights/*cluster-name*/performance
+```
+
+When you use the Container Insights console to analyze the performance of your applications, you can also view the performance logs. You can access the performance logs option at the bottom of the page. 
+
+If you choose **Actions > View performance logs**, you will be redirected to the **CloudWatch > Logs Insights** page.
+
+![Screenshot of container performance section.](./images/W09Img126CloudWatchContainerInsightsPerformanceLogs.png)
+
+The log group and timeline will be selected for you, and a sample query will be present. You can then choose **Run query** and view the logs listed. You can discover patterns and trends, and then diagnose issues by analyzing logs. These logs can be related to application behavior, security events, performance, and errors. You will learn more about logs and CloudWatch Logs Insights in the later sections.
+
+![Screenshot of CloudWatch Logs Insights with the containerinsights/eks-lab-cluster log group selected.](./images/W09Img128CloudWatchContainerInsightsPerformanceLogsRunQuery.png)
+
+### Using Amazon CloudWatch Lambda Insights
+
+#### Lambda Insights
+
+Lambda Insights is a feature provided by CloudWatch that offers detailed observability into the performance and behavior of serverless applications running on AWS Lambda.
+
+Lambda Insights uses a CloudWatch Lambda extension, which is provided as a Lambda layer. When you install this extension on a Lambda function, it collects system-level metrics including CPU time, memory, disk, and network. It also collects, aggregates, and summarizes diagnostic information such as cold starts and Lambda worker shutdowns to help you isolate issues with your Lambda functions and resolve them quickly.
+
+##### Extensions
+
+Extensions are built with the Lambda Extensions API. This API provides a way for tools to get greater control during function initialization, invocation, and shutdown.
+
+Lambda Extensions API builds on the existing Lambda Runtime API, which you can use to bring custom runtimes to Lambda.
+
+##### Lambda runtime and function
+
+You can use Lambda Insights with any Lambda function that uses a Lambda runtime that supports Lambda extensions.
+
+Lambda Insights collects several metrics from the Lambda functions where it is installed.
+
+#### Setting up Lambda Insights
+
+To use Lambda Insights on a Lambda function, you can use a one-click toggle in the Lambda console. Alternatively, you can use the AWS CLI, AWS CloudFormation, the AWS Serverless Application Model (AWS SAM) CLI, or the AWS Cloud Development Kit (AWS CDK).
+
+The following examples use the Lambda console and AWS CLI methods.
+
+##### Lambda console
+
+###### Step 1
+
+![AWS Lambda console with an arrow points to the Functions link.](./images/W09Img130CloudWatchLambda.png)
+
+Open the AWS Lambda console at [https://console.aws.amazon.com/lambda/](https://console.aws.amazon.com/lambda/).
+
+###### Step 2
+
+![Hello_world_function is highlighted.](./images/W09Img132CloudWatchLambdaFunction.png)
+
+Choose the name of a function. In this example, the name of the function is **Hello_world_function**.
+
+###### Step 3
+
+![An arrow points to the Hello_world_function with zero layer. Configuration tab is also highlighted.](./images/W09Img134CloudWatchLambdaConfiguration.png)
+
+The **Hello_world_function** page is displayed. In the **Function overview** section, note that the value of **Layers** is currently zero. Lambda layers are packages of code or data that can be used across multiple Lambda functions. You can use Lambda layers to centrally manage and share dependencies. If the **Layers** value is zero, it means the Lambda function does not have any external code packages or dependencies attached from Lambda layers. Instead, it relies only on the resources bundled with the function itself or provided by the Lambda runtime environment.
+
+Choose the **Configuration** tab.
+
+###### Step 4
+
+![Monitoring and operation tools tab is highlighted. Edit is also highlighted in the Additional monitoring tools section.](./images/W09Img136CloudWatchLambdaMonitoring.png)
+
+Under the **Configuration** tab, choose **Monitoring and operations** tools in the left navigation menu.
+
+Then, in the **Additional monitoring tool** section, choose **Edit**.
+
+You are then directed to a screen where you can edit monitoring tools.
+
+###### Step 5
+
+![CloudWatch Lambda Insights is highlighted with enhanced monitoring selected. Save button is also highlighted.](./images/W09Img138CloudWatchLambdaEnhancedMonitoring.png)
+
+On the Edit monitoring tools page, under the **CloudWatch Lambda Insights** section, enable **Enhanced monitoring**.
+
+Then, choose **Save**.
+
+###### Step 6
+
+![In the Function overview section, the value of Layers is 1.](./images/W09Img140CloudWatchLambdaLayersUpdated.png)
+
+You are directed back to the **Function overview** page. After enabling the Lambda Insights, the value of **Layers** becomes **1**.
+
+This means that the **LambdaInsightsExtension** is added to the layer.
+
+##### AWS CLI
+
+If you want to use AWS CLI to enable Lambda Insights on your existing Lambda function, you can use the following steps.
+
+###### Step 1: Update function permission
+
+You will need to attach the **CloudWatchLambdaInsightsExecutionRolePolicy** managed IAM policy to the function's execution role by using the following command.
+
+```shell
+aws iam attach-role-policy \
+--role-name function-execution-role \
+--policy-arn "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy"
+```
+
+###### Step 2: Install the Lambda extension
+
+You can install the Lambda extension by using the following command. You replace the ARN value for the layers parameter with the ARN matching your Region and the extension version that you want to use.
+
+```shell
+aws lambda update-function-configuration \
+ --function-name function-name \
+ --layers "arn:aws:lambda:us-west-1:580247275435:layer:LambdaInsightsExtension:14"
+```
+
+###### Step 3: Enable the CloudWatch Logs VPC endpoint
+
+This step is necessary only for functions running in a private subnet with no internet access, and if you have not already configured a CloudWatch Logs virtual private cloud (VPC) endpoint.
+
+If you need to do this step, you can use the following command by replacing the placeholders with information for your VPC. These placeholder values are: **vpcId**, **region**, **subnetId**, and **securitygroupId**.
+
+```shell
+aws ec2 create-vpc-endpoint \
+--vpc-id vpcId \
+--vpc-endpoint-type Interface \
+--service-name com.amazonaws.region.logs \
+--subnet-id subnetId 
+--security-group-id securitygroupId
+```
+
+#### Viewing Lambda Insight metrics
+
+After you have installed the Lambda Insights extension on a Lambda function that has been invoked, you can use the CloudWatch console to see your metrics.
+
+You can use the Lambda Insights dashboard multi-function overview in the CloudWatch console to identify over- and under-utilized Lambda functions. You can use the Lambda Insights dashboard single-function view in the CloudWatch console to troubleshoot individual requests.
+
+If you want to view the multi-function overview for your Lambda Insights metrics, go to the CloudWatch console at [https://console.aws.amazon.com/cloudwatch/](https://console.aws.amazon.com/cloudwatch/).
+
+Then, in the left navigation pane, choose **Lambda Insights**. On the **Performance monitoring** page, select **Multi-function**. In the following example, you will see the metrics from many Lambda functions. In this multi-function dashboard, you can see metrics and alarms for function cost, duration, invocations, errors, memory usage, network usage, concurrent executions maximum, and throttles.
+
+![Example of Lambda Insights multi-function performance monitoring dashboard.](./images/W09Img150CloudWatchLambdaInsightsMultiFunction.png)
+
+If you want to focus on a single function, select **Single function** from the dropdown list. The following example shows a Lambda Insights single-function performance monitoring dashboard. It includes metrics and alarms for invocations and errors, duration, throttles, memory usage, CPU usage, and network usage over a 1-hour period.
+
+![Example of Lambda Insights single-function performance monitoring dashboard.](./images/W09Img152CloudWatchLambdaInsightsSingleFunction.png)
+
+### Troubleshooting with CloudWatch Lambda Insights
+
+#### Rightsizing the Lambda functions
+
+Let's reuse the previous example of the single-function performance monitoring dashboard. In the memory usage metric for the **statusupdaterservice** Lambda function, you can see that the memory utilization of the Lambda function is very high (at 94 percent). This is a clear indication that higher memory needs to be allocated.
+
+![Memory utilization is high at 90 percent.](./images/W09Img160CloudWatchLambdaInsightsMemoryUsage.png)
+
+**The amount of memory determines the amount of virtual CPU available to a function. Adding more memory proportionally increases the amount of CPU, which increases the overall computational power available. If a function is CPU-, network-, or memory-bound, changing the memory setting can dramatically improve its performance.**
+
+**You can't directly change the CPU allocation for a Lambda function.**
+
+But how much more memory do you need to allocate to this Lambda function? Increasing memory allocation without knowing the current allocation might lead to over-provisioning, and this results in wasted resources and higher costs.
+
+You can use the **get-function-configuration** command to retrieve the settings of a Lambda function. The following **get-function-configuration** example displays the settings for the Lambda function that contains the name of **statusupdaterservice**.
+
+```shell
+LAMBDA_FUNCTION_NAME=$(aws lambda list-functions | jq -r '.Functions[].FunctionName | select(contains("statusupdaterservice"))')
+
+aws lambda get-function-configuration --function-name $LAMBDA_FUNCTION_NAME
+```
+
+The example output for this Lambda function shows that the current memory allocation is 128 MB, which is the default size that the Lambda console assigns to new functions.
+
+```json
+{
+    "FunctionName": "Services-statusupdaterservicelambdafn37232E00-1CTXYK88E604J",
+    "FunctionArn": "arn:aws:lambda:us-east-2:************:function:Services-statusupdaterservicelambdafn37232E00-1CTXYK88E604J",
+    "Runtime": "nodejs12.x",
+    "Role": "arn:aws:iam::************:role/Services-statusupdaterservicelambdaexecutionroleF9-1RM3D41Q7QJZN",
+    "Handler": "index.handler",
+    "CodeSize": 7845628,
+    "Description": " ",
+    "Timeout": 3,
+    "MemorySize": 128,
+    "LastModified": "2021-04-01T00:53:31.026+0000",
+    "CodeSha256": "WlwdIXpkkx8AV4wkyFdxnfgu7lHJ48aUFd0L9a/XNr4=",
+    "Version": "$LATEST"
+}
+```
+
+You can then use the following command to increase the memory allocation to 256 MB.
+
+```shell
+aws lambda  update-function-configuration --function-name $LAMBDA_FUNCTION_NAME --memory-size 256
+```
+
+After waiting for a few minutes, the memory utilization will drop in the **Performance monitoring** dashboard.
+
+![Memory utilization starts to drop after memory allocation is adjusted.](./images/W09Img162CloudWatchLambdaInsightsMemoryUsageDropped.png)
+
+#### Using queries to troubleshoot a function
+
+You can use the single-function view on the Lambda Insights dashboard to identify the root cause of a spike in function duration.
+
+For example, let's say the multi-function overview indicates a large increase in function duration, and you want to find out what happen. You can pause on or choose each function in the **Duration** pane to determine which function is causing the increase. You can then go to the single-function view and review the **Application logs** to determine the root cause.
+
+You can also choose the **Invocations** tab to show the **Most recent 1000 invocations**. Then, you can select the **Timestamp** or **Message** for the invocation request that you want to troubleshoot.
+
+![Screenshot of most recent 1000 Lambda function invocations](./images/W09Img164CloudWatchLambdaInsightsInvocations.png)
+
+When you choose **View performance logs**, an autogenerated query for your function opens in the **Logs Insights** dashboard. You can choose **Run query** to generate a **Logs** message for the invocation request. You can then discover patterns and trends to diagnose issues. You will dive deeper into Logs Insights in the later sections.
+
+![Screenshot of CloudWatch Logs Insights with lambda-insights log group selected.]()
+
+### Amazon CloudWatch Internet Monitor
+
+CloudWatch Internet Monitor provides visibility into how internet issues impact the performance and availability between your applications hosted on AWS and your end users. It can reduce the time it takes for you to diagnose internet issues from days to minutes.
+
+Imagine that you manage a popular social media site that has users across the globe. Some of your users in Europe have complained of slow load times and intermittent outages when accessing the site. How can you find out if these issues are specific to only the Europe region or if it's indicative of a larger problem?
+
+You can use Internet Monitor to get more visibility. Internet Monitor provides you with a global view of internet traffic patterns and health by using the global network footprint of AWS.
+
+You found out that there are no major internet issues except for some degradation of performance across Europe. With these insights, you can now take targeted action. For example, you can configure Amazon CloudFront to cache your social media site content closer to users in Europe. This improves performance because the content is served from local edge locations instead of halfway across the world.
+
+#### Features
+
+* You can monitor the performance and availability of internet-facing traffic, and quickly identify what's impacting your application's performance and availability. This helps you track down and address issues.
+* Internet Monitor publishes internet measurements to CloudWatch Logs and CloudWatch Metrics. This is to support using CloudWatch tools with health information for locations and Autonomous System Numbers (ASNs) specific to your application.
+* You can receive alerts for internet health events that affect application clients. Internet Monitor sends health events to Amazon EventBridge so that you can set up notifications. If an issue is caused by the AWS network, you also automatically receive an AWS Health Dashboard notification with the steps that AWS is taking to mitigate the problem.
+* Internet Monitor suggests insights and recommendations that can help you improve your end users' experience. You can explore potential improvements to the client experience by using CloudFront or routing through different AWS Regions.
+
+#### Using Internet Monitor
+
+You can create a monitor and associate your application's resources with it—VPCs, Network Load Balancers, CloudFront distributions, or WorkSpaces directories—to enable Internet Monitor to know where your application's internet-facing traffic is. Internet Monitor then publishes internet measurements from AWS that are specific to the city-networks where clients access your application. That is, the client locations and ASNs, typically internet service providers (ISPs).
+
+#### Internet Monitor components
+
+##### Monitor
+
+A monitor includes the resources for a single application that you want to view internet performance and availability measurements for, and that you want to get health event alerts about. When you create a monitor for an application, you add resources for the application to define the cities (locations) for Internet Monitor to monitor.
+
+##### Monitored resource
+
+A resource that you add to a monitor is a monitored resource in Internet Monitor. That is:
+
+* Each VPC that you add in a Region is a monitored resource. When you add a VPC, Internet Monitor monitors the traffic for any internet-facing application in the VPC. For example, an application hosted on an EC2 instance, behind a Network Load Balancer, or an AWS Fargate container.
+* Each Network Load Balancer that you add in a Region is a monitored resource.
+* Each WorkSpaces directory that you add in a Region is a monitored resource.
+* Each CloudFront distribution that you add is a monitored resource.
+
+##### Autonomous System Number (ASN)
+
+In Internet Monitor, an ASN typically refers to an ISP.
+
+An ASN is a network provider that an end user uses to access your internet application. An Autonomous System (AS) is a set of internet routable IP prefixes that belong to a network or a collection of networks that are all managed, controlled, and supervised by one organization.
+
+Including ASN information in Internet Monitor provides visibility into the ISPs or network providers that your end users are using to access your internet applications.
+
+##### City-network (location and ASN)
+
+A city-network is the location (such as a city) where clients access your application resources from and the ASN, typically an ISP, that clients access the resources through. To help control your bill, you set a limit for the maximum number of city-networks for Internet Monitor to monitor for each monitor. You pay only for the actual number of city-networks that you monitor, up to the maximum number.
+
+##### Internet measurements
+
+Internet Monitor publishes internet measurements into log files in CloudWatch Logs every 5 minutes for the top 500 city-networks in your account. These measurements quantify the performance score, availability score, bytes transferred (bytes in and bytes out), and round-trip time for your application's city-networks.
+
+These are measurements for the city-networks specific to your VPCs, Network Load Balancers, CloudFront distributions, or WorkSpaces directories.
+
+##### Metrics
+
+Internet Monitor generates aggregated metrics for CloudWatch metrics, for global traffic to your application and global traffic to each AWS Region.
+
+##### Health event
+
+Internet Monitor uses a health event to notify you when your application is affected by a particular problem. It detects internet issues, such as increased network latency, throughout the world. It then uses its historical internet measurements from across the AWS global infrastructure footprint to calculate the impact of current issues on your application and create health events.
+
+By default, Internet Monitor creates health events based on both overall impact and local impact thresholds.
+
+##### Thresholds
+
+Internet Monitor creates health events based on both overall thresholds and local thresholds. You can change the default thresholds and configure other options, such as turning off local thresholds.
+
+For example, you might want to adjust the overall thresholds to more stringent values if your application has strict performance requirements. Alternatively, you might want to adjust it to more relaxed values if you want to reduce the number of alerts for minor fluctuations.
+
+Similarly, turning off local thresholds might be suitable if you're primarily interested in monitoring the overall performance of your internet resources, rather than location-specific deviations.
+
+By understanding and configuring thresholds in Internet Monitor, you can tailor the monitoring and alerting capabilities to better suit your application's needs. You can also prioritize the most critical performance issues and optimize the monitoring experience for your specific use case.
+
+##### Performance and availability scores
+
+Internet Monitor detects drops in your application's performance and availability compared to estimated baselines by analyzing data that AWS collects.
+
+To make those drops clearer to see, Internet Monitor reports the information to you as scores. A performance score represents the estimated percentage of traffic that is not seeing a performance drop. Similarly, an availability score represents the estimated percentage of traffic that is not seeing an availability drop.
+
+##### Bytes transferred and monitored bytes transferred
+
+Bytes transferred is the total number of bytes of ingress and egress traffic between an application in AWS and the city-network where clients access an application. Monitored bytes transferred is a similar metric, but includes only bytes for monitored traffic.
+
+##### Round-trip time
+
+Round-trip time (RTT) is how long it takes for a request from a client user to return a response to the user. When RTT is aggregated across client locations (cities or other geographies), the value is weighted by how much of your application traffic is driven by each client location.
+
+Measuring and aggregating RTT based on client location and traffic volume is crucial because it provides an accurate representation of the actual end-user experience for your application. You can identify and prioritize performance optimizations for Regions or locations with the highest traffic and potential impact.
+
+#### Internet Monitor use case
+
+Multiplayer online games require fast, stable internet connections to ensure smooth, seamless gameplay. Internet speed and connectivity are a significant priority for gamers. Latency is one of the single highest priorities for a game developer to ensure a smooth experience for players.
+
+You can use Internet Monitor to help you quickly identify where game players in global cloud gaming apps are experiencing latency issues globally and provide insights into improving performance. By identifying where the most players currently have the slowest time to first byte (TTFB), you know how to improve latency to make your biggest player base happier.
+
+For more details on how to set up and use Internet Monitor for this use case, see the following blog post.
+
+* [Using CloudWatch Internet Monitor for a Better Gaming Experience](https://aws.amazon.com/blogs/gametech/using-cloudwatch-internet-monitor-for-a-better-gaming-experience/)
+* [Getting started with CloudWatch Internet Monitor using the console](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-IM-get-started.html)
+
+#### Monitoring and optimizing with the Internet Monitor dashboard
+
+After you create a monitor, Internet Monitor publishes CloudWatch logs. The logs contain measurements for client location-network (city-network) pairs. It also publishes aggregated CloudWatch metrics. These metrics are for traffic to your application, AWS Regions, and edge locations. You can then filter, explore, and get suggestions from the information.
+
+There are three tabs that you might use more to filter and view Internet Monitor metrics: overview, historical explorer, and traffic insights.
+
+![CloudWatch Internet Monitor Dashboard](./images/W09Img170CloudWatchInternetMonitor.png)
+
+1. **Overview**. On the **Overview** tab, you can see current and historical performance and availability information about your application, and health events impacting your client locations.
+2. **Historical explorer**. On the **Historical explorer** tab, you can filter by location, ASN, date, and so on, and visualize metrics for your internet traffic over time, using the graphs.
+3. **Traffic insights**. On the **Traffic insights** tab, in addition to viewing information about top monitored traffic summarized in several customizable ways, you can get suggestions for optimized setups to improve performance for different location and ASN pairs.
+    Internet Monitor predicts your application's performance improvement, based on your traffic patterns and past performance, when you change how you route your traffic or the AWS resources you use.
+
+##### Overview
+
+You can use the **Overview** tab to get a high-level view of performance and availability for the traffic that your monitor tracks. The tab also displays an internet traffic overview map, with traffic clusters that can help you visualize your application's global traffic, and the location and impact of health events.
+
+###### Health scores
+
+The **Health scores** graph shows performance and availability information for your global traffic. AWS has substantial historical data about internet performance and availability for network traffic between geographic locations for different ASNs and AWS services. Internet Monitor uses the connectivity data that AWS has captured from its global networking footprint to calculate a baseline of performance and availability for internet traffic. This is the same data that we use at AWS to monitor our own internet uptime and availability.
+
+With those measurements as a baseline, Internet Monitor can detect when the performance and availability of your application has dropped, compared to the baseline. To make those drops clearer to see, we report that information to you as a performance score and an availability score.
+
+The **Health scores** graph includes health events that occurred during a time period that you choose. When there's a health event, you see a drop in the performance or availability line on the graph. If you select the event, you see more details and bands appear on the graph, with date and time information showing how long the event lasted.
+
+![Health score widget example](./images/W09Img172CloudWatchInternetMonitorHealthScores.png)
+
+###### Internet traffic overview
+
+The **Internet traffic overview** map shows you the internet traffic and health events that are specific to the locations and ASNs where your users access your application from.
+
+Each circle on the map indicates a health event in an area, for a time period that you select.
+
+Internet Monitor creates health events when it finds a connectivity problem, at a set threshold, between a resource hosted on AWS and a city-network used by an application's user.
+
+Choosing a circle on the map displays more details about the health event for that location. In addition, for clusters that have health events, you can see detailed information in the **Health events** table.
+
+![Internet traffic overview map with 4 health events.](./images/W09Img174CloudWatchInternetMonitorInternetTrafficOverview.png)
+
+##### Historical explorer
+
+You can use the **Historical explorer** tab to filter and view data for your application that's in CloudWatch Logs. Internet Monitor publishes measurements to CloudWatch Logs specific to your application for the following:
+
+* Availability
+* Performance
+* Monitored bytes transferred (or client connection count, for WorkSpaces directories only)
+* Round-trip time for your monitored city-networks in AWS Regions
+
+![Example view of Historical explorer tab in CloudWatch Internet Monitor.](./images/W09Img176CloudWatchInternetMonitorHistoricalExplorer.png)
+
+##### Traffic insights
+
+You can use the **Traffic insights** tab to look at summary information for top traffic (by volume) for your application. You can filter and sort your application traffic in multiple ways. You can select different setup combinations for your application to see what Internet Monitor suggests for the best alternatives to obtain the fastest time to first byte (TTFB) performance. Internet Monitor publishes to CloudWatch Logs internet measurements every 5 minutes for the top 500 (by traffic volume) city-networks that send traffic to each monitor.
+
+To learn more about the information displayed on the **Traffic insights** tab, choose each of the numbered markers.
+
+![Example of Traffic insights shows overall traffic and graph view in the Top client locations section.](./images/W09Img178CloudWatchInternetMonitorTrafficInsights.png)
+
+1. **Overall traffic and top client locations**
+
+    You can start by viewing high-level summaries of your application's overall traffic and performance, over a specific time period, filtered by client location.
+
+    You can also look at the performance of your application for the top (or bottom) client locations by traffic volume, filtered and sorted in multiple ways.
+
+    For example, you can sort by granularity (that is, city, subdivision, country, or metro area), by total traffic, average time to first byte (TTFB), and other factors.
+
+2. **Traffic optimization suggestions**
+
+    This section displays a filtered set of monitored city-networks (locations and ASNs, internet service providers) for your traffic, along with the total client traffic for each one. You can get setup recommendations for your top locations.
+
+    The entries in the table are based on the filters that you chose for your application traffic for Traffic insights at the top of the page. The default is the top 10 cities by traffic volume.
+
+Internet Monitor gives you insights into the internet so that you can make better-informed decisions when optimizing the performance of your services. This can help you adjust your workload deployment strategy and improve your end users' experiences.
+
+### Amazon CloudWatch Network Monitor
+
+Imagine that You run a hybrid application that has components hosted on AWS and on premises. You want to ensure that your network connections between these resources are stable and performing well. CloudWatch Network Monitor provides you with the ability to track latency and packet loss for your hybrid network connections. 
+
+You can create probes that are sent from your AWS resources to on-premises destination IP addresses. These probes collect measurements and send them to Network Monitor. Network Monitor uses these measurements to create health event alerts for your application. You can set alerts and thresholds based on specific metrics, such as latency or packet loss. When an alert is activated, Network Monitor notifies you with an email or SMS. You can then use the information provided in the alert to troubleshoot issues and improve the end user experience of your application.
+
+Network Monitor is fully managed by AWS. Therefore, you won't need to install additional agents to monitor your network performance.
+
+#### Network Monitor Features
+
+* With Network Monitor, you can assess your changing hybrid network environment through ongoing real-time tracking of packet loss and latency metrics.
+* When using AWS Direct Connect, Network Monitor rapidly pinpoints network degradation by logging the AWS Network Health Indicator into your CloudWatch account. This metric gives a probability score to determine if the network issues were within AWS.
+* Network Monitor enables seamless monitoring with a fully-managed agent method, meaning no agent installation is required on either VPCs or on-premises. You only need to specify a VPC subnet and an on-premises IP address to start.
+* Network Monitor publishes metrics to CloudWatch Metrics. You can make dashboards to view your metrics and generate actionable thresholds and alarms on the application-specific metrics.
+
+#### Difference between Internet Monitor and Network Monitor
+
+##### Monitoring target
+
+* **Internet Monitor** focuses on monitoring internet-facing traffic and connectivity to your application clients over the internet.
+* **Network Monitor** is designed to monitor hybrid network connections between your resources hosted on AWS and on-premises destinations.
+
+##### Data sourcing
+
+* **Internet Monitor** uses the connectivity data captured from AWS global networking footprint to calculate performance baselines.
+* **Network Monitor** uses a fully-managed agent approach, where you create probes sent from your AWS resources to on-premises IP addresses to gather measurements.
+
+##### Monitoring scope
+
+* **Internet Monitor** provides a global view of traffic patterns and health events for internet-facing traffic.
+* **Network Monitor** helps you track and visualize latency and packet loss specifically for hybrid network connections.
+
+##### Use cases
+
+* **Internet Monitor** helps you monitor the overall health of your application's internet connectivity and explore potential improvements using Amazon CloudFront or routing through different AWS Regions.
+* **Network Monitor** helps you monitor the performance of your hybrid network connections between AWS and on-premises resources, so you can troubleshoot issues and improve the end-user experience.
+
+#### Network MonitorComponents
+
+##### Monitor
+
+A monitor shows the resources that you want to view network performance and availability measurements for, and that you want to get health event alerts about.
+
+When you create a monitor for an application, you add a resources hosted by AWS as the network source. Network Monitor then creates a list of all possible probes between the AWS resources and your destination IP addresses.
+
+##### Probes
+
+A probe is the traffic that's sent from the resource hosted on AWS to your on-premises destination IP address. Network Monitor metrics are written into your CloudWatch account for every probe that's configured in a monitor.
+
+##### AWS network source
+
+This is a network monitor probe's originating AWS source, which will be a subnet in any of your VPCs.
+
+##### Destination
+
+This is the target in your on-premises network for the AWS network source. The destination is a combination of your on-premises IP addresses, network protocols, ports, and network packet size. Both IPv4 and IPv6 addresses are supported.
+
+#### How CloudWatch Network Monitor works
+
+Network Monitor streamlines monitoring by offering a fully managed, agentless solution. When you set up a monitor in your AWS environment, AWS handles all the infrastructure in the background to conduct round-trip time and packet loss measurements. You can scale your monitoring rapidly without installing or removing agents in your AWS infrastructure.
+
+Instead of broadly monitoring all traffic from your AWS Region, Network Monitor focuses on the paths taken by flows from your AWS resources. If your workloads are distributed across multiple Availability Zones, Network Monitor can track routes from each of your private subnets.
+
+##### Availability and performance measurements
+
+Network Monitor sends periodic active probes from your AWS resource to your on-premises destinations. 
+
+###### Aggregation interval
+
+The aggregation interval is the time, in seconds, that CloudWatch receives the measured results. This will be either every 30 or 60 seconds. The aggregation period you choose for the monitor applies to all probes in that monitor.
+
+###### Probe protocol
+
+Each probe added to a monitor must use either the Internet Control Message Protocol (ICMP) or the Transmission Control Protocol (TCP) protocols.
+
+###### Packet size
+
+The packet size is the size, in bytes, of each packet transmitted between your AWS resource and your destination on a single probe. Each probe in a monitor can have its own packet size.
+
+Network Monitor sends the following two metrics to your CloudWatch account based on the aggregation interval you specify when creating a monitor:
+
+* The round-trip time metric measures the time it takes for a probe to be transmitted to its destination IP address and receive a response. It is measured in milliseconds, providing valuable insights into network performance and troubleshooting.
+* The packet loss metric measures the percentage of total packets sent. It records the number of transmitted probes that didn't receive an associated response, which implies that those packets were effectively lost along the network path.
+
+For example, you might create an alarm to notify you if your packet loss average is higher than a static 0.1 percent threshold for a packet loss sensitive workload. You can also use CloudWatch anomaly detection to alarm on packet loss or latency metrics outside your desired ranges.
+
+##### AWS Network Health Indicator
+
+Network Monitor publishes a Network Health Indicator (NHI) metric, which provides information on network performance and availability for destinations connected through Direct Connect. The metric is a statistical measure of the health of the network path controlled by AWS from the resources hosted on AWS.
+
+Network Monitor employs anomaly detection to calculate availability drops or performance degradation along your network paths.
+
+To provide the NHI health metric, Network Monitor applies statistical correlation across AWS datasets. It also applies statistical correlation to the packet loss and round-trip latency metrics for traffic simulating your network path.
+
+The metric can be one of two variables: 1 or 0. A value of 1 indicates that Network Monitor observed a network degradation in the network path controlled by AWS. A value of 0 indicates that Network Monitor did not observe any network degradation along the path. This then helps you to troubleshoot network issues more quickly. You can set alerts on the NHI metric to be informed about ongoing issues along your network paths.
+
+* [Creating a Network Monitor](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/getting-started-nw.html)
+
+#### Network Monitor dashboards
+
+You can use the CloudWatch Network Monitor dashboards to view AWS network health, and probe round-trip time and packet loss. You can view these metrics for both monitors and for individual probes.
+
+##### Monitor dashboard
+
+You can access the monitor dashboard under the Network Monitor in the CloudWatch console. In the **Network monitors** section, choose the **Name** link to open the monitor dashboard.
+
+On the **Overview** tab, the data is represented by an interactive graph. By default, data is displayed for a 2-hour time frame, calculated from the current date and time. However, you can change the range to fit your requirements.
+
+![Monitor dashboard with Overview tab activated.](./images/W09Img180CloudWatchNetworkMonitorOverview.png)
+
+1. **AWS Network**
+
+    The AWS Network section displays the overall health of only the AWS network.
+
+    A **Healthy** status indicates Network Monitor did not observe any issue with the AWS network.
+
+    A **Degraded** status indicates that Network Monitor observed an issue with the AWS network.
+
+2. **Probe traffic summary**
+
+    This section displays the current state of the traffic between the source AWS subnets in the monitor and the destination IP.
+
+    **Probes in alarm** is the number of probes that are in a degraded state.
+
+    **Packet loss** is the number of packets lost from the source subnet to the destination IP address.
+
+    **Round-trip time** is the time it takes for a packet from the source subnet to reach the destination IP address and then come back again.
+
+3. **AWS Network Health Indicator**
+
+    The status bar in this section shows the status of the network over a default time of 1 hour.
+
+4. **Packet loss**
+
+    This graph displays a unique line showing the percentage of packet loss for each probe in the monitor. The legend at the bottom of the page displays each of the probes in the monitor, color-coded for uniqueness. Hovering over a probe in this chart displays the source subnet, the destination IP, and the percentage of packet loss.
+
+5. **Round-trip time (RTT)**
+
+    This graph displays a line for each probe, showing the round-trip time for each probe. The legend at the bottom of the page displays each of the probes in the monitor, color-coded for uniqueness. Hovering over a probe in this chart displays the source subnet, the destination IP address, and the round-trip time.
+
+##### Monitor details tab
+
+When you choose the **Monitor details** tab, you can see the details about your monitor, including probes. On this page, you can manage tags or add a probe. This page is divided into the following three sections: monitor details, probes, and tags.
+
+1. **Monitor details**
+
+    This section provides details about your monitor. Information in this section can't be edited. However, you can choose the **Role name** link to view details of the Network Monitor service-linked role.
+
+    ![Example of Monitor details section.](./images/W09Img182CloudWatchNetworkMonitorMonitorDetails.png)
+
+2. **Probes**
+
+    This section displays a list of all probes associated with the monitor. You can choose a **VPC ID** or **Subnet ID** link to open the VPC or subnet details in the Amazon VPC Console. You can modify a probe as well, including activating or deactivating it.
+
+    The **Probes** section displays information about each probe set up for that monitor. This information includes the probe **ID**, **VPC ID**, **Subnet ID**, **IP address**, **Protocol**, and whether the probe **State** is **Active** or **Inactive**.
+
+    If you've set up an alarm for a probe, the current **Status** of that alarm displays. OK indicates that there are no metrics events that have activated any alarms. **In alarm** indicates that a metric you set up in CloudWatch invoked an alarm. If no status is displayed for a probe, no CloudWatch alarm was set up.
+
+    ![Example of Probes section.](./images/W09Img184CloudWatchNetworkMonitorProbes.png)
+
+3. **Tags**
+
+    In this section, you can view the current tags for a monitor. If you want to add or remove tags, you can choose **Manage tags**. This opens the **Edit** probe page.
+
+    ![Example of Tags section.](./images/W09Img186CloudWatchNetworkMonitorOverviewTags.png)
+
+##### Probe dashboard
+
+If you want to get more details about the probes, you can use a probe dashboard. To access a probe dashboard, in a monitor dashboard, choose the **Monitor details** tab. Then, in the **Probes** section, choose the **ID** link to view the dashboard for this probe. 
+
+You will see the **Overview** tab and **Probe details** tab in the probe dashboard.
+
+1. **Overview**
+
+    The Overview page displays the following information for your probe:
+
+    * **AWS Network Health Indicator details**: This provides the overall health of only the AWS network. The status will be either **Healthy** or **Degraded**. A **Degraded** status indicates that there's an issue with the AWS network and does not indicate whether there's an issue with your probe.
+    * **Packet loss**: The number of packets that were lost from the source subnet to the destination IP address for this probe.
+    * **Round-trip time**: The time it took, in milliseconds, for a packet from the source subnet to reach the destination IP address and then come back again.
+
+    ![Screenshot of Probe overview page.](./images/W09Img190CloudWatchNetworkMonitorProbeDashboardOverview.png)
+
+2. **Probe details**
+
+    The **Probe details** page displays the details about a probe. On this page, you can edit the probe.
+
+    * **Probe details**: This section provides general information about the probe. Information in this section can't be edited.
+    * **Probe source and destination**: This section displays details about the probe. Choose a **VPC ID** or **Subnet ID** link to open the VPC or subnet details in the Amazon VPC Console. You can modify a probe as well, including activating or deactivating it.
+    * **Tags**: You can view the current tags for a monitor. You can add or remove tags by choosing **Manage tags**.
+
+    ![Screenshot of probe details page.](./images/W09Img192CloudWatchNetworkMonitorProbeDashboardDetails.png)
+
+### [AWS SimuLearn: Traffic Mirroring](./labs/W092SimuLearn2TrafficMirroring.md)
+
+In this AWS SimuLearn assignment, you will review a real-world scenario helping a fictional customer design a solution on AWS. After the design is complete, you will build the proposed solution in a guided lab within a live AWS Console environment. You will gain hands-on experience working with AWS services, using the same tools technology professionals use to construct AWS solutions.
+
+For this assignment, the general of a galactic security fleet needs your help to ensure that their spaceships and planetary bases are secure from any potential threats. The general wants a solution to monitor the fleet's network traffic from their spaceships and bases, and test the network's effectiveness.
+
+### Knowledge Check
