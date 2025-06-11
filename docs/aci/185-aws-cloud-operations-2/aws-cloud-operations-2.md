@@ -44,3 +44,5 @@
   * [Monitoring and Troubleshooting: Troubleshooting with AWS CloudTrail and IAM](./W080MonitoringTroubleshootingCloudTrailIam.md)
 * Week 9:
   * [Monitoring and Troubleshooting: Metrics and Network Monitoring and Troubleshooting](./W090MonitoringTroubleshootingMetricsNetworkMonitoring.md)
+* Week 10:
+  * [Monitoring and Troubleshooting: Logs and Application Monitoring](./W100MonitoringTroubleshootingLogsAppMonitoring.md)

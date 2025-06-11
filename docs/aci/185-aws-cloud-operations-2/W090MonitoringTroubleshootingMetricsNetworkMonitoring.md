@@ -1841,3 +1841,103 @@ In this AWS SimuLearn assignment, you will review a real-world scenario helping 
 For this assignment, the general of a galactic security fleet needs your help to ensure that their spaceships and planetary bases are secure from any potential threats. The general wants a solution to monitor the fleet's network traffic from their spaceships and bases, and test the network's effectiveness.
 
 ### Knowledge Check
+
+#### What does Amazon CloudWatch Network Monitor focus on when monitoring flows from resources hosted on AWS?
+
+* Monitoring the routes taken by flows from resources hosted on AWS
+
+Wrong answers:
+
+* Monitoring all flows in the AWS Region
+* Monitoring only inbound flows to AWS resources
+* Monitoring external traffic to AWS resources
+
+##### Explanation
+
+Network Monitor focuses monitoring on the routes taken by flows from the resources hosted on AWS resources instead of broadly monitoring all flows from the AWS Region. If workloads spread across multiple Availability Zones, Network Monitor can monitor routes from each of the private subnets.
+
+#### How does Amazon CloudWatch Lambda Insights help in troubleshooting performance issues?
+
+* By correlating performance metrics with application behavior
+
+Wrong answers:
+
+* By providing real-time debugging capabilities
+* By analyzing code quality and suggesting improvements
+* By automatically scaling Lambda functions to handle increased traffic
+
+##### Explanation
+
+Lambda Insights helps in troubleshooting performance issues by correlating performance metrics, such as invocations, errors, and memory usage with the behaviors of the Lambda functions. This correlation helps identify the root cause of performance problems.
+
+The other options are incorrect because of the following:
+
+* Lambda Insights focuses on providing operational visibility into the performance of Lambda functions. It doesn’t offer real-time debugging.
+* Lambda Insights doesn’t directly analyze code quality or suggest improvements. 
+* Lambda Insights focuses on providing operational visibility into the performance of Lambda functions. It doesn’t manage auto scaling actions.
+
+#### A developer has been asked to configure their Amazon Elastic Container Service (Amazon ECS) environment. They want to make sure that CPU and memory utilization metrics are available at the task level for tasks running on Amazon EC2 instances. Which step is the MOST efficient way to accomplish this?
+
+* Enable Amazon CloudWatch Container Insights for their Amazon ECS cluster.
+
+Wrong answers:
+
+* Modify the ECS task definition to include custom monitoring scripts.
+* Set up custom Amazon CloudWatch alarms to monitor CPU and memory utilization.
+* No action is required. Task-level metrics are available by default for tasks running on EC2 instances.
+
+##### Explanation
+
+The Amazon ECS agent on the container instance will send performance data at the task-level to CloudWatch if Container Insights is enabled.
+
+The other options are incorrect because of the following:
+
+* Using custom monitoring scripts would require manual implementation and maintenance of monitoring scripts, which can be complex and less efficient compared to using build-in monitoring solutions.
+* Although custom CloudWatch alarms can be useful for invoking notifications based on predefined thresholds, they don’t provide the granular visibility into task-level metrics that CloudWatch Container Insights offers.
+* Amazon ECS provides free metrics for clusters and services. For an additional cost, developers can turn on Amazon ECS CloudWatch Container Insights for their cluster for per-task metrics, including CPU, memory, and EBS filesystem utilization.
+
+### Summary
+
+#### CloudWatch Container Insights
+
+You can use the AWS Management Console to activate Container Insights on new Amazon ECS clusters. You can either turn on Container Insights on all new clusters by default, or you can turn it on when you create a new cluster. For an existing Amazon ECS cluster, you need to use the ```aws ecs update-cluster-settings --cluster myCICluster --settings name=containerInsights,value=enabled``` command to activate.
+
+To install Container Insights on Amazon EKS clusters, it's recommended to use the CloudWatch Observability EKS add-on. Before you install the add-on, you must grant IAM permissions to enable the CloudWatch agent to send metrics, logs, and traces to CloudWatch. You first attach the **CloudWatchAgentServerPolicy** IAM policy. Then, you can install the add-on with the Amazon EKS console.
+
+##### Troubleshooting with Container Insights
+
+There are multiple ways that you can use to troubleshoot your containerized workloads with Container Insights.
+
+* **Using Container Insights console**: You can view the data in the Container Insights console, which provides dashboards, graphs, and tables to visualize the performance and health of your applications.
+* **Using metrics**: Container Insights offers a variety of metrics that can help you monitor your applications. These include CPU utilization, memory utilization, network traffic, and application log data. You can use these metrics to identify performance slowdowns and throttling issues.
+* **Using logs**: Container Insights includes a logging feature that can capture and analyze log data from your containers. You can use this log data to troubleshoot issues such as applications crashing or failing to start. You can also use log data to monitor application behavior and identify patterns of usage.
+
+#### CloudWatch Lambda Insights
+
+Lambda Insights is a feature offered by CloudWatch that provides detailed observability into the performance and behavior of serverless applications running on AWS Lambda. It collects system-level metrics, aggregates and summarizes diagnostic information, and helps isolate issues and resolve them quickly.
+
+The performance monitoring dashboard provides two different views: multi-function and single-function.
+
+* **Multi-function view**: You can analyze metrics and traces across all of your Lambda functions in an AWS Region or account. It provides an aggregated view of metrics like invocations, errors, durations, and estimated costs across functions.
+* **Single-function view**: You can dive deeper into metrics, logs, and traces for a specific Lambda function. It shows granular metrics for a single function such as durations, memory usage, CPU usage, and network usage. You can also analyze the function's execution logs and traces to troubleshoot issues.
+
+##### Troubleshooting with Lambda Insights
+
+The following are some general steps to use CloudWatch Lambda Insights to troubleshoot Lambda functions.
+
+1. Enable Lambda Insights when creating or updating your Lambda function in the AWS Lambda console. With Lambda Insights turned on, CloudWatch can collect runtime metrics and logs from your function executions.
+2. Check the CloudWatch Lambda Insights dashboard for different performance metrics such as function duration, invocations, errors, and throttles.
+3. Implement performance optimization techniques, such as rightsizing function resources, to improve function performance. 
+4. Use the query editor in CloudWatch Logs Insights to filter the log streams and analyze the logs for errors or performance issues. You can filter by error messages, response times, or memory usage.
+
+#### CloudWatch Internet Monitor
+
+Internet Monitor uses the connectivity data that AWS captures from its global networking footprint to calculate a baseline of performance and availability for internet-facing traffic. You can see a global view of traffic patterns and health events. You can easily drill down into information about events. You can also get alerts for internet health events that affect your application clients. In addition, you can use insights that Internet Monitor provides to explore potential improvements to your client experience. For example, you can use CloudFront or route through different AWS Regions to improve client experience.
+
+#### CloudWatch Network Monitor
+
+Network Monitor uses a fully-managed agent approach so that you can track and visualize latency and packet loss for hybrid network connections.
+
+You can create probes that are sent from your resources hosted on AWS to on-premises destination IP addresses. This gathers measurements and enables Network Monitor to create health event alerts for your application.
+
+You don't need to install additional agents to monitor your network performance. As with Internet Monitor, you can set alerts and thresholds to get information that can help you quickly troubleshoot issues. You can then take action to improve your end user experience.
