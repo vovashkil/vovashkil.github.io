@@ -679,3 +679,439 @@ To see the full comparison of the two time periods, you can choose the magnifyin
 Imagine that you have designed and configured your network to maintain operational excellence using proactive monitoring of specific metrics with visibility and alerts. You have also been tasked to stay current and implement services and tools to help troubleshoot your network when issues arise.
 
 There are many services and tools that you can use to add visibility to troubleshoot, diagnose, and fix network problems. In this section, let's look at how you can troubleshoot with VPC Flow Logs.
+
+#### VPC Flow Logs
+
+VPC Flow Logs is a feature that you can use to capture information about the IP traffic going to and from network interfaces in your virtual private cloud (VPC). You can use VPC Flow Logs as a centralized source to monitor different network aspects. You can create a flow log for a VPC, a subnet, or a network interface. If you create a flow log for a subnet or VPC, each network interface in that subnet or VPC is monitored.
+
+Flow log data for a monitored network interface is recorded as flow log records, which are log events consisting of fields that describe the traffic flow.
+
+VPC Flow Logs collects metadata for all Amazon Virtual Private Cloud (Amazon VPC) networks that are used by your workload. Flow log data can be published to CloudWatch Logs, Amazon Simple Storage Service (Amazon S3), or Amazon Data Firehose. After you create a flow log, you can retrieve and view the flow log records in the log group, bucket, or delivery stream that you configured.
+
+Flow logs can help you with several tasks, such as the following:
+
+* Diagnosing overly restrictive security group rules
+* Monitoring the traffic that is reaching your instance
+* Determining the direction of the traffic to and from the network interfaces
+
+**Flow log data is collected outside of the path of your network traffic, and therefore does not affect network throughput or latency. You can create or delete flow logs without any risk of impact to network performance.**
+
+#### Flow log records
+
+A flow log record represents a network flow in your VPC. By default, each record captures a network internet protocol (IP) traffic flow that occurs within an aggregation interval, also referred to as a capture window.
+
+Each record is a string with fields separated by spaces. A record includes values for the different components of the IP flow, for example, the source, destination, and protocol.
+
+When you create a flow log, you can use the default format for the flow log record, or you can specify a custom format.
+
+##### Aggregation interval
+
+The aggregation interval is the period of time during which a particular flow is captured and aggregated into a flow log record. By default, the maximum aggregation interval is 10 minutes. When you create a flow log, you can optionally specify a maximum aggregation interval of 1 minute. Flow logs with a maximum aggregation interval of 1 minute produce a higher volume of flow log records than flow logs with a maximum aggregation interval of 10 minutes.
+
+For example, if you want to get a near real-time view of the network traffic and events happening in your VPC, you can use the aggregation interval of 1 minute. This can be beneficial for security monitoring, where you might want to quickly detect and respond to potential threats or suspicious activities.
+
+##### Default format
+
+With the default format, the flow log records include the version 2 fields, such as protocol, source address, and destination address. For the full list of the available version 2 fields, you can find them in the order shown in the [available fields](https://docs.aws.amazon.com/vpc/latest/userguide/flow-log-records.html#flow-logs-fields) table. Remember, you can't customize or change the default format.
+
+If you want to capture additional fields or a different subset of fields, you should specify a custom format instead.
+
+##### Custom format
+
+With a custom format, you can specify which fields are included in the flow log records and in which order. This helps you create flow logs that are specific to your needs and omit fields that are not relevant.
+
+For example, let's say that your security solution must analyze the source and destination IP addresses. You also need to know about the Region that contains the network interface for which traffic is recorded.
+
+The default VPC flow log format includes the source and destination IP addresses, but it doesn't include the Region. By using a custom format, you can add this additional field to the VPC flow logs. This makes it easier for your security solution to process and analyze the data.
+
+Using a custom format can reduce the need for separate processes to extract specific information from the published flow logs. You can specify any number of the available flow log fields, but you must specify at least one.
+
+#### Creating a flow log that publishes to CloudWatch Logs
+
+You can use the AWS Management Console or AWS Command Line Interface (AWS CLI) to create flow logs. The following example uses the console to create a flow log. For example, if you want to create a flow log for your VPCs, you first open the VPC console at [https://console.aws.amazon.com/vpc/](https://console.aws.amazon.com/vpc/). Then, in the navigation pane, choose **Your VPCs**. Select the checkbox for the VPC. Then choose **Actions > Create flow log**.
+
+![Screenshot of VPC console dashboard. Your VPCs page is displayed.](./images/W10Img070VpcFlowLogsConsole.png)
+
+![Screenshot of Flow log settings page.](./images/W10Img072VpcFlowLogsSettings.png)
+
+1. **Filter**
+
+    You can specify the type of traffic to log. Select **All** to log accepted and rejected traffic, **Reject** to log only rejected traffic, or **Accept** to log only accepted traffic.
+
+    In this example, **All** is selected.
+
+2. **Maximum aggregation interval**
+
+    Select the maximum period of time during which a flow is captured and aggregated into one flow log record.
+
+    In this example, **10 minutes** is selected.
+
+3. **Destination**
+
+    You then specify the destination to which to publish the flow log data. You can publish flow log data to CloudWatch Logs, an Amazon S3 bucket, or Amazon Data Firehose.
+
+    In this example, **Send to CloudWatch Logs** is selected.
+
+4. **Destination log group**
+
+    Choose the name of an existing log group or enter the name of a new log group that will be created when you create this flow log.
+
+    In this example, **MyApp/access.log** is used.
+
+5. **IAM role**
+
+    You specify the name of the role that has permissions to publish logs to CloudWatch Logs.
+
+    In this example, the IAM role **Admin** is used.
+
+6. **Log record format**
+
+    You can select the format for the flow log record.
+
+    * To use the default format, select **AWS default format**.
+    * To use a custom format, select **Custom format** and then select fields from **Log format**.
+
+    In this example, **AWS default format** is selected.
+
+#### Creating a flow log with CLI
+
+You can also use AWS CLI to create a flow log. The following example creates a flow log that captures all accepted traffic for the specified subnet. The flow logs are delivered to the specified log group. The **--deliver-logs-permission-arn parameter** specifies the AWS Identity and Access Management (IAM) role required to publish to CloudWatch Logs.
+
+```shell
+aws ec2 create-flow-logs --resource-type Subnet --resource-ids subnet-1a2b3c4d --traffic-type ACCEPT --log-group-name my-flow-logs --deliver-logs-permission-arn arn:aws:iam::123456789101:role/publishFlowLogs
+```
+
+**By default, users don't have permission to work with flow logs. You can create an IAM role with a policy attached that grants users the permissions to create, describe, and delete flow logs.**
+
+#### Flow log record examples
+
+The following are examples of flow log records that capture specific traffic flows.
+
+##### Example 1: Accepted and rejected traffic
+
+The following are examples of default flow log records. In this example, Secure Shell (SSH) traffic (destination port 22, TCP protocol 6) from IP address 172.31.16.139 to network interface with private IP address is 172.31.16.21. ID eni-1235b8ca123456789 in account 123456789010 was allowed.
+
+```log
+2 123456789010 eni-1235b8ca123456789 172.31.16.139 172.31.16.21 20641 22 6 20 4249 1418530010 1418530070 ACCEPT OK 
+```
+
+In the following example, Remote Desktop Protocol (RDP) traffic (destination port 3389, TCP protocol 6) to network interface eni-1235b8ca123456789 in account 123456789010 was rejected.
+
+```log
+2 123456789010 eni-1235b8ca123456789 172.31.9.69 172.31.9.12 49761 3389 6 20 4249 1418530010 1418530070 REJECT OK 
+```
+
+##### Example 2: Security group and network ACL rules
+
+If you're using flow logs to diagnose overly restrictive or permissive security group rules or network access control list (network ACL) rules, be aware of the statefulness of these resources. Security groups are stateful. This means that responses to allowed traffic are also allowed, even if the rules in your security group do not permit it. Conversely, network ACLs are stateless. Therefore, responses to allowed traffic are subject to network ACL rules.
+
+For example, you use the **ping** command from your home computer (IP address is 203.0.113.12) to your instance (the network interface's private IP address is 172.31.16.139). Your security group's inbound rules allow Internet Control Message Protocol (ICMP) traffic, but the outbound rules do not allow ICMP traffic. Because security groups are stateful, the response ping from your instance is allowed. Your network ACL permits inbound ICMP traffic but does not permit outbound ICMP traffic. Because network ACLs are stateless, the response ping is dropped and does not reach your home computer. In a default flow log, this is displayed as the two following flow log records.
+
+An ACCEPT record for the originating ping was allowed by both the network ACL and the security group. Therefore, the ping was allowed to reach your instance.
+
+```log
+2 123456789010 eni-1235b8ca123456789 203.0.113.12 172.31.16.139 0 0 1 4 336 1432917027 1432917142 ACCEPT OK 
+```
+
+A REJECT record for the response ping was denied by the network ACL.
+
+```log
+2 123456789010 eni-1235b8ca123456789 172.31.16.139 203.0.113.12 0 0 1 4 336 1432917094 1432917142 REJECT OK 
+```
+
+If your network ACL permits outbound ICMP traffic, the flow log displays two ACCEPT records (one for the originating ping and one for the response ping). If your security group denies inbound ICMP traffic, the flow log displays a single REJECT record, because the traffic was not permitted to reach your instance.
+
+### [Lab: Monitoring Applications and Infrastructure](./labs/W100Lab1MonitoringAppAndInfra.md)
+
+You will practice setting up and monitoring metrics for business application events. You will also practice defining relevant event thresholds for metrics, creating an automated notification and remediation when metric thresholds are exceeded.
+
+In this lab, you will perform the following tasks:
+
+* Configure telemetry on Amazon EC2 instances with the Amazon CloudWatch agent, AWS Sessions Manager, command documents, and Parameter Store.
+* Create a CloudWatch dashboard to display CloudWatch agent metrics.
+* Subscribe to Amazon Simple Notification Service (Amazon SNS) topics for automatic notifications.
+* Configure CloudWatch alarms for monitoring and notification when specific metric thresholds are crossed.
+* Manually test any CloudWatch alarm in your AWS environment using the AWS Command Line Interface (AWS CLI).
+* Create an AWS Lambda based Canary alarm for a web server.
+
+### Knowledge Check
+
+#### A developer is troubleshooting an issue with their application and wants to view their application logs in near real time to detect errors quickly. Which Amazon CloudWatch feature can they use?
+
+* CloudWatch Logs Live Tail
+
+Wrong answers:
+
+* CloudWatch Logs Insights
+* CloudWatch metrics
+* CloudWatch Logs subscription filters
+
+##### Explanation
+
+The developer can use the Live Tail feature to view their logs in near real time to quickly detect and troubleshoot issues.
+
+The other options are incorrect because of the following:
+
+* CloudWatch Insights runs queries on log data, but it does not provide near real-time streaming of logs.
+* CloudWatch metrics allows the viewing of metrics and alarms, but it does not provide access to log data.
+* Subscription filters allow routing log data to other services, but they do not provide near real-time streaming of logs.
+
+#### A developer is troubleshooting connectivity issues between two Amazon EC2 instances in different subnets in their virtual private cloud (VPC). They have enabled VPC Flow Logs for their VPC. How can they use VPC Flow Logs to troubleshoot the connectivity problem?
+
+* Check VPC Flow Logs for allowed traffic between the two instances' private IP addresses to see if there are any rejections. This would indicate a network access control list (network ACL) or security group issue.
+
+Wrong answers:
+
+* Check VPC Flow Logs for allowed traffic between the two instances' public IP addresses to see if there are any rejections. This would indicate an internet gateway issue.
+* Check VPC Flow Logs for allowed traffic between the two instances' private IP addresses to identify the ports and protocols in use. This can help identify any mismatches.
+* Check VPC Flow Logs for allowed traffic between the two instances' Elastic IP addresses to see if there are any rejections. This would indicate a route table issue.
+
+##### Explanation
+
+VPC Flow Logs can be checked for allowed traffic between the private IP addresses to see if there are rejections. This would indicate a network ACL or security group configuration issue.
+
+The other options are incorrect because of the following:
+
+* For connectivity between instances in the same VPC, only the private IP addresses would be used. Public IP traffic would not indicate an issue.
+* Although checking ports and protocols can provide useful information, it does not directly help identify a connectivity issue.
+* Elastic IP addresses are public IP addresses, so these would not be used for communication between instances in the same VPC.
+
+#### A developer is setting up an anomaly detector in Amazon CloudWatch Logs. What is the default visibility period if they don’t adjust the visibility time?
+
+* 21 days
+
+Wrong answers:
+
+* 7 days
+* 14 days
+* 60 days
+
+##### Explanation
+
+If the developer does not adjust the visibility time when they create an anomaly detector, 21 days is used as the default. After this time period has elapsed for an anomaly, if it continues to happen, it is automatically accepted as regular behavior. The anomaly detector model will stop flagging it as an anomaly.
+
+The other options are incorrect because they are not the default visibility time period.
+
+### Summary
+
+#### Metric filters
+
+You can search and filter the log data coming into CloudWatch Logs by creating one or more metric filters. Metric filters define the terms and patterns to look for in log data as it is sent to CloudWatch Logs. CloudWatch Logs uses these metric filters to turn log data into numerical CloudWatch metrics that you can graph or set an alarm on.
+
+#### Live Tail with CloudWatch Logs
+
+CloudWatch Logs Live Tail helps you quickly fix problems by showing you a live list of new log events as they are received. You can view, filter, and highlight the received logs almost instantly, which helps you detect and solve issues fast. You can filter the logs based on the terms that you choose, and also highlight logs that contain specific terms to help you find what you need quickly.
+
+#### Querying with CloudWatch Logs
+
+CloudWatch Logs Insights helps you interactively search, analyze, and visualize your log data in CloudWatch Logs. It provides a SQL-like query language to do the following:
+
+* Filter logs by specific fields or terms
+* Aggregate and transform log data
+* Join log data from multiple sources
+* Visualize the query results
+
+The main difference between CloudWatch Logs Insights and metric filters is that metric filters add a specified numerical value to a metric each time a matching log is found. In contrast, CloudWatch Logs Insights permits more complex querying, aggregation, and visualization of the raw log data itself.
+
+#### Log anomaly detection and pattern analysis
+
+CloudWatch Logs offers an anomaly detection feature that uses machine learning to automatically detect unusual patterns in log data. This can help identify issues like spikes in traffic, increases in error rates, or other unusual behavior that might indicate a security breach, system failure, or other problems.
+
+The anomaly detection feature establishes a baseline of normal log patterns, and then flags any deviations from that baseline as anomalies. You can quickly identify the time period where the anomaly occurred, so that you can then analyze the anomalous log entries in more detail to identify the root cause.
+
+You can create a log anomaly detector for each log group in CloudWatch Logs. The detector uses the past 2 weeks of log events to train and establish the baseline, and then begins analyzing new incoming logs to identify anomalies.
+
+In addition to anomaly detection, CloudWatch Logs also provides pattern recognition capabilities that can compress large log sets into a few recurring patterns. This makes it easier to analyze and find insights in large volumes of log data.
+
+#### Troubleshooting with VPC Flow Logs
+
+VPC Flow Logs helps you to capture information about the IP traffic going to and from network interfaces in your VPC. These logs can be used for a variety of purposes, including network troubleshooting and security analysis.
+
+To use VPC Flow Logs for troubleshooting, you first need to enable the feature and configure it to capture the necessary information. After you have enabled the feature, the logs will record details about the traffic flowing through your VPC. These details include the source and destination IP addresses, ports, protocols, and the number of bytes and packets transferred. You can then use these logs to identify network issues, such as connectivity problems, unauthorized access attempts, or unusual traffic patterns. By analyzing the flow logs, you can pinpoint the root cause of the issue and take appropriate action to resolve it.
+
+## Application Monitoring
+
+### Pre-assessment
+
+#### What is a component in Amazon CloudWatch Application Insights?
+
+* An auto-grouped, standalone, or custom grouping of similar resources that make up an application
+
+Wrong answers:
+
+* An individual AWS resource such as an Amazon EC2 instance or an AWS Lambda function
+* A monitoring tool used to track the performance of individual resources
+* A tag applied to resources to help with filtering and searching
+
+##### Explanation
+
+For example, a web application can be a group of an Application Load Balancer and Amazon EC2 instances running the web application. This entire group of resources is called a component.
+
+The other options are incorrect because of the following:
+
+* A component in CloudWatch Application Insights refers to a logical grouping of related resources, not an individual resource.
+* A component in CloudWatch Application Insights is not a monitoring tool itself. It is a way to group resources for monitoring and analysis purposes.
+* Although tags can be used to group resources, a component specifically refers to an auto-grouped, standalone, or custom grouping of resources that make up an application.
+
+#### What is an Amazon CloudWatch Synthetics canary?
+
+* A canary is a scheduled script that monitors the availability and performance of the web applications or APIs.
+
+Wrong answers:
+
+* A canary is a feature that permits automatic scaling of cloud resources based on demand.
+* A canary is a type of machine learning model used for anomaly detection in cloud infrastructure.
+* A canary is a security tool that helps detect and prevent distributed denial-of-service (DDoS) attacks on the application.
+
+##### Explanation
+
+It can simulate user actions, check for specific responses, and report any issues or performance degradation.
+
+The other options are incorrect because of the following:
+
+* Auto scaling is a separate feature in AWS, and it is not the same as a canary in CloudWatch Synthetics.
+* Canaries are scripts that actively monitor the availability and performance of web applications or APIs. They are not machine learning models.
+* AWS Shield is a security service that helps protect applications against DDoS attacks. It is not related to canaries.
+
+#### Which Amazon CloudWatch metrics does Amazon CloudWatch RUM provide?
+
+* Page view counts
+
+Wrong answers:
+
+* Client connections
+* Backend API latency
+* Database queries
+
+##### Explanation
+
+CloudWatch RUM provides metrics on page view counts and user-centric performance data.
+
+The other options are incorrect because of the following:
+
+* Although CloudWatch RUM analyzes user sessions, it does not provide metrics specifically on client connections.
+* CloudWatch RUM focuses on frontend performance and does not provide backend API latency metrics.
+* CloudWatch RUM does not monitor or provide metrics on database queries. It focuses on frontend performance from the user's perspective.
+
+### Using CloudWatch Application Insights
+
+#### CloudWatch Application Insights recap
+
+Imagine a company that runs a large ecommerce website on Amazon Elastic Compute Cloud (Amazon EC2) instances. To handle high volumes of traffic and transactions, the website relies on a Microsoft SQL Server database running in high availability mode across multiple AWS Regions. The development team wants to easily monitor the performance and health of the SQL Server database. They also want to monitor other application components like the web and application servers.
+
+Amazon CloudWatch Application Insights would be extremely useful for this company. It identifies and sets up key metrics, logs, and alarms across your application resources and technology stack. These resources could include your Microsoft SQL Server database, web (Microsoft Internet Information Services) and application servers, OS, load balancers, and queues.
+
+This helps them detect any anomalies or errors. CloudWatch Application Insights also generates automated dashboards with correlated insights to troubleshoot issues, and creates events to streamline incident response and resolution. The automated dashboards help you to take remedial actions to keep your applications healthy and to prevent impact to the end users of your application.
+
+CloudWatch Application Insights also integrates with OpsCenter, a capability of AWS Systems Manager, by automatically creating operational work items (OpsItems) for detected issues. OpsItems are detailed records of operational issues, providing relevant information such as the affected resources, potential causes, and recommended actions.
+
+#### Enabling CloudWatch Application Insights
+
+You can set up, configure, and manage your CloudWatch Application Insights application with the AWS Management Console, the AWS CLI, and AWS Tools for Windows PowerShell. In the following example, let's look at how you can set up CloudWatch Application Insights with the console.
+
+##### Step 1
+
+![The navigation pane has Application Insights highlighted. On the page, the Add an application button is also highlighted.](./images/W10Img081CloudWatchAppInsightsAddApp.png)
+
+Open the CloudWatch console landing page at: [http://console.aws.amazon.com/cloudwatch](http://console.aws.amazon.com/cloudwatch).
+
+From the navigation pane, under **Insights**, choose **Application Insights**.
+
+The page that opens shows the list of applications that are monitored with CloudWatch Application Insights, along with their monitoring status.
+
+To set up monitoring for your application, choose **Add an application**. When you choose **Add an application**, you are prompted to **Choose Application Type**.
+
+* **Resource group-based application** – When you select this option, you can choose which resource groups in this account to monitor. This groups together AWS resources—such as EC2 instances or Amazon Relational Database Service (Amazon RDS) databases—into a single logical application. Use this when you want to monitor and manage specific sets of resources as a cohesive unit. To use multiple applications on a component, you must use resource group-based monitoring. In this example, this option is used.
+* **Account-based application** – When you select this option, you can monitor all of the resources in this account. If you want to monitor all of the resources in an account, it's recommended to use this option over the resource group-based option. It's because the application onboarding process is faster for the account-based application option.
+
+##### Step 2
+
+![Screenshot of Select an application or resource group. The Applications resource group is highlighted.](./images/W10Img082CloudWatchAppInsightsAddAppDetails.png)
+
+On the **Step 1 - Specify application details** page, choose a resource group. In this example, the **Application**s** resource group is used.
+
+##### Step 3
+
+![Checkboxes for both Automatic monitoring of new resources and Monitor EventBridge events are selected.](./images/W10Img083CloudWatchAppInsightsAddAppNewResources.png)
+
+You can select **Automatically monitor resources added to this application after onboarding** to automatically allow onboarding of new components in the future.
+
+You can also select **Monitor EventBridge events** to get insights from services that support Amazon EventBridge events.
+
+##### Step 4
+
+![Generate Systems Manager OpsCenter OpsItems for remedial actions is selected. Next button is also highlighted.](./images/W10Img084CloudWatchAppInsightsAddAppOpsCenter.png)
+
+You can optionally select **Generate Systems Manager OpsCenter OpsItems for remedial action**s to integrate CloudWatch Application Insights with OpsCenter.
+
+OpsCenter is a capability of AWS Systems Manager. It provides a central location where operations engineers and IT professionals can view, investigate, and resolve operational work items (called OpsItems).
+
+You can also optionally add tags to your CloudWatch Application Insights application.
+
+Choose **Next**.
+
+##### Step 5
+
+![Review detected components page. One Lambda function is selected and Edit component pane is displayed.](./images/W10Img085CloudWatchAppInsightsAddAppReview.png)
+
+On the **Step 2 - Review detected components** page, application components supported by CloudWatch Application Insights for monitoring are listed.
+
+This example application contains three AWS Lambda functions. CloudWatch Application Insights will monitor metrics and logs on each Lambda function.
+
+You can also select any component, then choose **Edit component** to modify monitoring configurations of the corresponding component.
+
+After you are finished with modifying, choose **Save changes**, and then choose **Next**.
+
+##### Step 6
+
+![Screenshot of Specify component details page with No component details to specify message displayed.](./images/W10Img086CloudWatchAppInsightsAddAppComponentDetails.png)
+
+On the **Step 3 - Specify component details** page, you can specify more monitoring details such as application log paths for monitored components.
+
+For this example application, no more details are needed. CloudWatch Application Insights will automatically monitor the Lambda logs from default Lambda log groups.
+
+Choose **Next**.
+
+##### Step 7
+
+![Screenshot of Review and submit page with details from step 1, step 2, and step 3.](./images/W10Img087CloudWatchAppInsightsAddAppSubmit.png)
+
+On the **Step 4 - Review and submit page**, you can review the monitoring settings configured in previous steps.
+
+When you are ready, choose **Submit**. A CloudWatch Application Insights application will be generated.
+
+#### Enabling CloudWatch Application Insights with AWS CLI
+
+If you want to use AWS CLI to enable CloudWatch Application Insights, you can use the **create-application** command. In the following example, you add an application for your resource group called **Applications**. You also enable OpsCenter to deliver the created OpsItem to the Amazon Simple Notification Service (Amazon SNS) topic Amazon Resource Name (ARN) **arn:aws:sns:us-east-1:123456789012:MyTopic**.
+
+```shell
+aws application-insights create-application --resource-group-name Applications --ops-center-enabled --ops-item-sns-topic-arn arn:aws:sns:us-east-1:123456789012:MyTopic
+```
+
+**CloudWatch Application Insights retains problems for 55 days and observations for 60 days.**
+
+#### Troubleshooting with console overview
+
+Now that you have enabled CloudWatch Application Insights, let's look at how you can use the overview and the problem summary sections to troubleshoot. On the **Application Insights page**, on the **Overview** tab, you can see the summary of monitored applications and components.
+
+![Screenshot of Application Insights page Overview tab.](./images/W10Img090CloudWatchAppInsightsOverview.png)
+
+1. **Detected problems summary**
+
+     The detected problems summary displays the number of resolved and unresolved detected application problems for the past 30 days. It also shows the top recurrent problems in the past 30 days and the full list of detected problems.
+
+2. **Problems detected**
+
+    If you want to view more details about a detected problem, you can choose the name of the problem in the **Problem summary** column.
+
+    You can view details such as the problem ID, the complete problem insight, and related events.
+
+3. **Monitored assets**
+
+    You can see the summary of monitored applications and components. An application is a group of components being monitored. For example, an application can have a database, a web application, and a message queue as three different components. A component is an auto-grouped, standalone, or custom grouping of similar resources that make up an application. For example, a web application can be a group consisting of an Application Load Balancer and EC2 instances running the web application.
+
+4. **Telemetry**
+
+    Telemetry is the total number of metrics, logs, and alarms configured for monitoring by CloudWatch Application Insights.
+
+### Using CloudWatch Synthetics
