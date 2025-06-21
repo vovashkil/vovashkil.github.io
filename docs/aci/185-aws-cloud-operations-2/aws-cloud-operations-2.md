@@ -46,3 +46,6 @@
   * [Monitoring and Troubleshooting: Metrics and Network Monitoring and Troubleshooting](./W090MonitoringTroubleshootingMetricsNetworkMonitoring.md)
 * Week 10:
   * [Monitoring and Troubleshooting: Logs and Application Monitoring](./W100MonitoringTroubleshootingLogsAppMonitoring.md)
+* Week 11:
+  * [Monitoring and Troubleshooting: Tracing](./W110MonitoringTroubleshootingTracing.md)
+  
