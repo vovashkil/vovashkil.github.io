@@ -1623,3 +1623,637 @@ ___
 In this section, you learned about how latency histograms can help you analyze and understand the performance characteristics of your applications and services. Latency histograms are visual representations of the distribution of response times for your services or applications. They provide a graphical view of how long it takes for requests to be processed, broken down into different time intervals or buckets.
 
 ### Activity: X-Ray Insights and Analytics
+
+#### Insights
+
+X-Ray continuously analyzes trace data in your account to identify emergent issues in your applications. When fault rates exceed the expected range, it creates an insight that records the issue and tracks its impact until it's resolved. With insights, you can:
+
+* Identify where in your application issues are occurring, the root cause of the issue, and the associated impact. The impact analysis provided by insights makes it possible for you to derive the severity and priority of an issue.
+* Receive notifications as the issue changes over time. Insights notifications can be integrated with your monitoring and alerting solution using EventBridge. With this integration, you can send automated emails or alerts based on the severity of the issue.
+
+The X-Ray console identifies nodes with ongoing incidents in the trace map. To see a summary of the insight, you can choose the affected nodes, which are labeled with **Insight** in blue highlight.
+
+![Screenshot of the X-Ray console, showing a trace map node with insight summary.](./images/W11Img080XRayInsightsSummary.png)
+
+This is a screenshot of the X-Ray Insights console. The selected insight identifies an incident that impacts a DynamoDB table called products. It provides information on the duration of the incident (10 minutes) and the percentage of client requests impacted (47 percent).
+
+X-Ray creates an insight when it detects an anomaly in one or more nodes of the service map. The service uses statistical modeling to predict the expected fault rates of services in your application. In the preceding example, the anomaly is an increase in faults from Elastic Beanstalk. The Elastic Beanstalk server experienced multiple API call timeouts, causing an anomaly in the downstream nodes.
+
+#### Enabling insights
+
+Insights must be enabled for each group you want to use the insights feature with. You can enable insights from the Groups page. In the X-Ray console, you can either select an existing group or create a new one by choosing **Create group**. Then you can select **Enable insights**.
+
+![A screenshot of the AWS X-Ray console that shows checkboxes for enabling insights and insights notifications.](./images/W11Img082XRayEnablingInsights.png)
+
+You can also select **Enable notifications** if you want to create a notification for each insight event. This results in notifications through EventBridge events when an insight is created, changes significantly, or is closed.
+
+#### Insights overview
+
+The overview page for an insight attempts to answer three key questions:
+
+* What is the underlying issue?
+* What is the root cause?
+* What is the impact?
+
+##### Anomalous services
+
+The **Anomalous services** section of the overview shows a timeline for each service. This timeline illustrates the change in fault rates during the incident. You can see the number of traces with faults overlaid on a solid band. This indicates the expected number of faults based on the amount of traffic recorded. The duration of the insight is visualized by the Incident window. The incident window begins when X-Ray observes the metric becoming anomalous and persists while the insight is active.
+
+The following screenshot shows an increase in faults that caused an incident.
+
+![X-Ray console shows an overview page of an X-Ray insight.](./images/W11Img084XRayInsightsOverviewAnomalousServices.png)
+
+##### Root cause
+
+The **Root cause** section shows a trace map focused on the root cause service and the impacted path. You can hide the unaffected nodes by selecting the eye icon in the top right of the Root cause map. The root cause service is the farthest downstream node where X-Ray identified an anomaly. It can represent a service that you instrumented or an external service that your service called with an instrumented client. For example, if you call DynamoDB with an instrumented AWS SDK client, an increase in faults from DynamoDB results in an insight with DynamoDB as the root cause.
+
+To further investigate the root cause, select View root cause details on the root cause graph. The following screenshot shows an example of the Root cause view in the Insights console.
+
+![The root cause section on the overview page of an X-Ray insight.](./images/W11Img086XRayInsightsOverviewRootCause.png)
+
+##### Impact graph
+
+Faults that continue upstream in the map can impact multiple nodes and cause multiple anomalies. If a fault is passed all the way back to the user who made the request, the result is a client fault. This is a fault in the root node of the trace map. The **Impact graph** provides a timeline of the client experience for the entire group. This experience is calculated based on percentages of the following states: **Fault**, **Error**, **Throttle**, and **Okay**.
+
+The example in the following image shows an increase in traces with a fault at the root node during the time of an incident. Incidents in downstream services don't always correspond to an increase in client errors.
+
+![A screenshot of the impact graph for an incident, with time on the x-axis and number of traces on the y-axis.](./images/W11Img088XRayInsightsOverviewImpactGraph.png)
+
+___
+
+#### X-Ray measures impact in two ways
+
+* Impact to the X-Ray group
+* Impact on the root cause service
+
+This impact is determined by the percentage of requests that are failing or causing an error within a given time period. With this impact analysis, you can derive the severity and priority of the issue based on your particular scenario. This impact is available as part of the console experience in addition to insights notifications.
+
+#### Review an insight's progress
+
+X-Ray reevaluates insights periodically until they are resolved, and records each notable intermediate change as a notification, which can be sent as an EventBridge event. This helps you to build processes and workflows to determine how the issue has changed over time. You can then take appropriate actions such as sending an email or integrating with an alerting system using EventBridge.
+
+You can review incident events in the Impact Timeline on the **Inspect** page. By default, the timeline displays the most impacted service until you choose a different service.
+
+![A screenshot of the Inspect page with the impact timeline in the AWS X-Ray Insights console.](./images/W11Img090XRayInsightsInspectPage.png)
+
+To take a deeper look at the traces involved in an incident, choose Analyze event on the **Inspect** page. You can also use the Analytics console to refine the list of traces and identify affected users. You will learn about X-Ray Analytics next.
+
+#### Analytics
+
+The X-Ray Analytics console is an interactive tool for interpreting trace data. You can use it to understand how your application and its underlying services are performing.
+
+With the console, you can explore, analyze, and visualize traces through interactive response time and time-series graphs.
+
+When making selections in the Analytics console, the console constructs filters to reflect the selected subset of all traces.
+
+You can refine the active dataset with increasingly granular filters. You can do this by choosing the graphs and panels of metrics and fields associated with the current trace set.
+
+![A screenshot of the AWS X-Ray Analytics console.](./images/W11Img092XRayInsightsAnalyticsConsole.png)
+
+This is an example of the X-Ray Analytics console. In this example, the user is investigating API requests that take more than a few seconds. You can filter for traces belonging to different groups, or use filter expressions to narrow down your results further.
+
+You can make a copy of a result set and apply further filters to compare the two result sets. Here, the user has applied a responsetime filter expression to view data for outliers in request duration.
+
+Using the X-Ray Analytics console, you can see information such as the following:
+
+* Root cause
+* Response time distribution
+* Time series activity
+* User agent
+* HTTP method
+* Entry point
+
+You can get all this information from the traces you are comparing against. The console also displays a list of traces to explore individual requests in more detail.
+
+The following timeline explains how the X-Ray Analytics console can help troubleshoot an application issue. It follows a basic troubleshooting workflow, in which you first spot unhealthy nodes, then interact with the Analytics console to automatically generate comparative queries. After you have narrowed the scope through queries, you will finally look at trace details to determine what is damaging the health of the service.
+
+##### Step 1: Observe faults on the service graph
+
+The trace map indicates the health of each node by coloring it based on the ratio of successful calls to errors and faults. When you see a percentage of red on your node, it signals a fault. Use the X-Ray Analytics console to investigate it.
+
+![An X-Ray service map with an unhealthy Amazon Elastic Beanstalk node.](./images/W11Img094XRayAnalyticsServiceGraphUnhealthyService.png)
+
+##### Step 2: Identify response time peaks
+
+Using the response time distribution, you can observe peaks in response time. By selecting the peak in response time, the tables below the graphs will update to expose all associated metrics, such as status codes.
+
+When you click and drag, X-Ray selects and creates a filter. It's shown in a gray shadow on top of the graphed lines. You can now drag that shadow left and right along the distribution to update your selection and filter.
+
+![Applying a filter to the Response time distribution graph in the Analytics console.](./images/W11Img096XRayAnalyticsResponseTimeDistributionFilter.png)
+
+##### Step 3: View all traces marked with a status code
+
+You can drill into traces within the selected peak by using the metrics tables below the graphs. By choosing a row in the **HTTP STATUS CODE** table, you automatically create a filter on the working dataset. For example, you could view all traces of status code 500. This creates a filter tag in the trace set tile named http.status.
+
+##### Step 4: View all items in a subgroup and associated with a user
+
+Drill into the error set based on user, URL, response time root cause, or other predefined attributes. For example, to additionally filter the set of traces with a 500 status code, select a row from the **USERS** table. This results in two filter tags in the trace set tile: http.status, as designated previously, and user.
+
+##### Step 5: Compare two sets of traces with different criteria
+
+Compare across various users and their **POST** requests to find other discrepancies and correlations. Apply your first set of filters. They are defined by a blue line in the response time distribution. Then select **Compare**. Initially, this creates a copy of the filters on **trace set A**.
+
+To proceed, define a new set of filters to apply to **trace set B**. This second set is represented by a green line. The following example shows different lines according to the blue and green color scheme.
+
+![A screenshot of the Analytics console with 2 filtered trace sets: one with responsetime and the other with timerange.](./images/W11Img098XRayAnalyticsCompareTwoSets.png)
+
+##### Step 6: Identify a trace of interest and view its details
+
+As you narrow your scope using the console filters, the trace list below the metrics tables becomes more meaningful. The trace list table combines information about **URL**, **USER**, and **STATUS CODE** into one view. For more insights, select a row from this table to open the trace's detail page and view its timeline and raw data.
+
+#### Analytics console features
+
+The X-Ray Analytics console uses the following key features for grouping, filtering, comparing, and quantifying trace data.
+
+##### Groups
+
+The initial selected group is Default. To change the retrieved group, select a different group from the menu to the right of the main filter expression search bar.
+
+![A screenshot of the Analytics console showing the ability to select groups.](./images/W11Img102XRayAnalyticsConsoleGroups.png)
+
+##### Retrieved traces
+
+By default, the Analytics console generates graphs based on all traces in the selected group. Retrieved traces represent all traces in your working set. You can find the trace count in this tile. Filter expressions you apply to the main search bar refine and update the retrieved traces.
+
+![A screenshot of the Analytics console showing the retrieved traces.](./images/W11Img104XRayAnalyticsConsoleRetrievedTraces.png)
+
+##### Show in charts/Hide from charts
+
+A toggle to compare the active group against the retrieved traces. To compare the data related to the group against any active filters, choose **Show in charts**. To remove this view from the charts, choose **Hide from charts**.
+
+In this example, a filter expression of !ok has been applied to the retrieved traces. **Show in charts** has been toggled on to compare the data against the active filter.
+
+![A screenshot of the Analytics console showing the effects of toggling on Show in charts.](./images/W11Img106XRayAnalyticsConsoleShowHideInCharts.png)
+
+##### Filtered trace set A
+
+Through interactions with the graphs and tables, apply filters to create the criteria for Filtered trace set A. As the filters are applied, the number of applicable traces and the percentage of traces from the total that are retrieved are calculated within this tile. Filters populate as tags within the Filtered trace set A tile and can also be removed from the tile.
+
+Here, the response time distribution has been selected to filter for traces with response times of 50ms or greater. Notice how this creates a Filtered trace set A that consists of 22 traces (12.36 percent of retrieved traces).
+
+![A screenshot of the Analytics console showing the effect of creating Filtered trace set A.](./images/W11Img108XRayAnalyticsConsoleFilteredTraceSetA.png)
+
+##### Refine
+
+This function updates the set of retrieved traces based on the filters applied to trace set A. Refining the retrieved trace set refreshes the working set of all traces retrieved based on the filters for trace set A. The working set of retrieved traces is a sampled subset of all traces in the group.
+
+In the previous graphic, the Refine option became available after creating Filtered trace set A. Choosing Refine results in the entire retrieved set being updated to the previous filtered set.
+
+![The Analytics console shows the effects of applying Refine.](./images/W11Img110XRayAnalyticsConsoleAfterRefine.png)
+
+##### Filtered trace set B
+
+When created, Filtered trace set B is a copy of Filtered trace set A. To compare the two trace sets, make new filter selections that will apply to trace set B, while trace set A remains fixed. As the filters are applied, the number of applicable traces and the percentage of traces from the total retrieved are calculated within this tile. Filters populate as tags within the Filtered trace set B tile and can also be removed from the tile.
+
+Here, Filtered trace set B was created as a copy of Filtered trace set A. A filter was applied to Filtered trace set B to narrow down results to traces with an HTTP method of PUT.
+
+![The Analytics console shows Filtered trace set B.](./images/W11Img112XRayAnalyticsConsoleFilteredTraceSetB.png)
+
+##### Response time root cause entity paths
+
+A table of recorded entity paths. X-Ray determines which path in your trace is the most likely cause for the response time. The format indicates a hierarchy of entities that are encountered, ending in a response time root cause. Use these rows to filter for recurring response time faults.
+
+![The Analytics console shows the Response time root cause entity paths. In this case, the identified entity is the ECS container.](./images/W11Img114XRayAnalyticsConsoleResponseTimeRootCauseEntityPaths.png)
+
+##### Delta (Δ)
+
+This is a column that is added to the metrics tables when both trace set A and trace set B are active. The Delta column calculates the difference in the percentage of traces between trace set A and trace set B.
+
+![The Analytics console shows the extra delta column added to the results tables when comparing trace set A and B.](./images/W11Img116XRayAnalyticsConsoleDelta.png)
+
+___
+
+#### Comparing X-Ray Insights and Analytics
+
+1. You are a DevOps engineer responsible for monitoring the performance of a mission-critical ecommerce application. Recently, you've notices an increase in customer complaints about slow response times and intermittent errors. You want to quickly identify the root cause of these issues and understand their impact on your application's performance. Which AWS X-Ray feature would be most suitable for this scenario?
+
+    **X-Ray Insights** is designed to help you quickly identify the root cause of performance issues and intermittent errors. It continuously analyzes trace data and creates notifications when it detects anomalies. This can help you quickly find information on root causes and their impact on your application components.
+
+2. You are a software developer investigating a performance issue in your company's web application. A specific user group or API endpoint might be causing the issue. However, you need to analyze the trace data to confirm your hypothesis. You want an interactive tool that allows you to explore, filter, and visualize the trace data to identify patterns and correlations. Which AWS X-Ray feature would be most appropriate for this scenario?
+
+    By using **X-Ray Analytics**, you can investigate the performance issue by filtering and analyzing the trace data based on the suspected user group or API endpoint. The interactive visualizations and filtering capabilities of the Analytics console can help ypu identify patterns and correlations that might reveal the root cause of the performance issue.
+
+#### Summary
+
+In this section, you learned about the X-Ray Insights and Analytics features, which each serve a distinct purpose. You can use X-Ray Insights to automatically detect and analyze performance issues or anomalies in your application's behavior. Insights continuously analyzes the trace data collected by X-Ray and uses machine learning models to identify patterns and deviations from normal behavior. However, you can use X-Ray Analytics when you must quickly understand how your application and its underlying services are performing. You can use the console to explore, analyze, and visualize traces through interactive response times and time-series graphs.
+
+### X-Ray SDK for Python
+
+#### Instrumenting your Python application
+
+There are two ways to instrument your Python application to send traces to X-Ray:
+
+* **AWS Distro for OpenTelemetry Python** is an AWS distribution that provides a set of open-source libraries for sending correlated metrics and traces to multiple AWS monitoring solutions. These include CloudWatch, X-Ray, and Amazon OpenSearch Service, through the AWS Distro for OpenTelemetry Collector.
+* **X-Ray SDK for Python** is a set of libraries for generating and sending traces to X-Ray through the X-Ray daemon.
+
+The SDKs included with X-Ray are part of a tightly integrated instrumentation solution offered by AWS. The Distro for OpenTelemetry is part of a broader industry solution in which X-Ray is only one of many tracing solutions. You can implement end-to-end tracing in X-Ray using either approach.
+
+#### When to chose what
+
+##### Distro for OpenTelemetry
+
+AWS recommends instrumenting your application with the Distro for OpenTelemetry if you require the following:
+
+* The ability to send traces to multiple different tracing back ends without having to re-instrument your code
+* Support for a large number of library instrumentations for each language, maintained by the OpenTelemetry community
+* Fully managed Lambda layers that package everything you need to collect telemetry data, without requiring code changes when using Java, Python, or Node.js
+
+##### X-Ray SDKs
+
+AWS recommends choosing an X-Ray SDK for instrumenting your application if you require the following:
+
+* A tightly integrated single-vendor solution
+* Integration with X-Ray centralized sampling rules, including the ability to configure them from the X-Ray console and automatically use them across multiple hosts
+
+#### X-Ray SDK for Python
+
+X-Ray SDK for Python is a library for Python web applications that provides classes and methods for generating and sending trace data to the X-Ray daemon. The daemon is installed or runs alongside the Python code that you instrument with the SDK.
+
+Trace data contains information about incoming HTTP requests served by the application. It also includes calls that the application makes to downstream services using the AWS SDK, HTTP clients, or an SQL database connector. You can also create segments manually and add debug information in annotations and metadata.
+
+You can download the SDK to your environment with pip, the package installer for Python.
+
+```shell
+​$ pip install aws-xray-sdk
+```
+
+___
+
+The X-Ray SDK for Python is an open-source project. You can follow the project and submit issues and pull requests on GitHub: [https://github.com/aws/aws-xray-sdk-python](https://github.com/aws/aws-xray-sdk-python)
+
+___
+
+##### Django and Flask
+
+Django and Flask are two Python frameworks that developers use to build web applications. If you use Django or Flask in your Python application, start by adding the SDK middleware to your application to trace incoming requests. The middleware creates a segment for each traced request and completes the segment when the response is sent. While the segment is open, you can use the SDK client's methods to add information to the segment and create subsegments to trace downstream calls. The SDK also automatically records exceptions that your application throws while the segment is open.
+
+The following code provides an example of how you can instrument your Flask application. The X-Ray SDK for Python has a class named xray_recorder that provides the global recorder. You first configure a service name on the xray_recorder. Then, use the XRayMiddleware function to patch your Flask application. 
+
+```python
+from aws_xray_sdk.core import xray_recorder
+from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
+
+app = Flask(__name__)
+xray_recorder.configure(service='My application')
+XRayMiddleware(app, xray_recorder)
+```
+
+This code tells the X-Ray recorder to trace requests served by your Flask application with the default sampling rate. 
+
+##### Other applications
+
+For scripts or if your application does not use Django or Flask, you can still instrument your code and create segments manually. You can either create segments for each incoming request or around patched HTTP or AWS SDK clients to provide context for the recorder to add subsegments.
+
+The following code provides an example of how you can create a segment and subsegment, add metadata and annotations, and close the segment and subsegment.
+
+```python
+from aws_xray_sdk.core import xray_recorder
+
+# Start a segment
+segment = xray_recorder.begin_segment('segment_name')
+# Start a subsegment
+subsegment = xray_recorder.begin_subsegment('subsegment_name')
+
+# Add metadata and annotations
+segment.put_metadata('key', dict, 'namespace')
+subsegment.put_annotation('key', 'value')
+
+# Close the subsegment and segment
+xray_recorder.end_subsegment()
+xray_recorder.end_segment()
+```
+
+##### Lambda
+
+You might have Lambda functions written in Python that you want to instrument. For Lambda functions called by an instrumented application or service, Lambda reads the tracing header and traces sampled requests automatically. For other functions, you can configure Lambda to sample and trace incoming requests. In either case, Lambda creates the segment and provides it to the X-Ray SDK. On Lambda, the X-Ray SDK is optional. If you don't use it in your function, your service map will still include a node for the Lambda service and one for each Lambda function. By adding the SDK, you can instrument your function code to add subsegments to the function segment recorded by Lambda and trace downstream calls.
+
+The following code provides an example of a Lambda function that is *not* called by an instrumented application. As a result, Lambda does not receive a tracing header by default. This is a worker function that is part of the Scorekeep application. It is called every 5 minutes by a bundled CloudWatch Events event. Its role is to collect information about completed games and store the data in an Amazon S3 bucket. The function has active tracing enabled in its configuration in Lambda. With active tracing, Lambda creates the trace ID and makes sampling decisions. Adding the X-Ray SDK for Python consists of a few lines of code at the top of the function. This enables Lambda to sample and trace incoming requests. 
+
+```python
+import os
+import boto3
+import json
+import requests
+import time
+from aws_xray_sdk.core import xray_recorder
+from aws_xray_sdk.core import patch_all
+
+patch_all()
+queue_url = os.environ['WORKER_QUEUE']
+
+def lambda_handler(event, context):
+# Create SQS client
+sqs = boto3.client('sqs')
+s3client = boto3.client('s3')
+# Receive message from SQS queue
+response = sqs.receive_message(
+    QueueUrl=queue_url,
+    AttributeNames=[ 'SentTimestamp' ],
+    MaxNumberOfMessages=1,
+    MessageAttributeNames=['All' ],
+    VisibilityTimeout=0,
+    WaitTimeSeconds=0
+)
+...
+```
+
+This code imports the SDK and runs its **patch_all** function. This function patches the AWS SDK for Python (Boto3) and HTTP clients that it uses to call Amazon SQS and Amazon S3. When the worker calls the Scorekeep API, the SDK adds the tracing header to the request to trace calls through the API. You will learn more about patching and tracing downstream calls next.
+
+___
+
+#### Patching downstream libraries
+
+After adding the X-Ray SDK for Python to your application, you can instrument downstream calls by patching your application's libraries. Whenever your application makes downstream calls to AWS, a database, or other HTTP services, the SDK records information about the call in a subsegment. AWS services and the resources that you access within the services appear as downstream nodes on the trace map. This helps you identify errors and throttling issues on individual connections. The SDK supports the following libraries for patching:
+
+* **botocore**, **boto3** – Instrument SDK for Python clients
+* **pynamodb** – Instrument the PynamoDB version of the DynamoDB client
+* **aiobotocore**, **aioboto3** – Instrument asyncio-integrated versions of SDK for Python clients
+* **requests**, **aiohttp** – Instrument high-level HTTP clients
+* **httplib**, **http.client** – Instrument low-level HTTP clients and the higher-level libraries that use them
+* **sqlite3** – Instrument SQLite clients
+* **mysql-connector-python** – Instrument MySQL clients
+* **pg8000** – Instrument Pure-Python PostgreSQL interface
+* **psycopg2** – Instrument PostgreSQL database adapter
+* **pymongo** – Instrument MongoDB clients
+* **pymysql** – Instrument PyMySQL based clients for MySQL and MariaDB
+
+##### Patch all supported libraries
+
+To patch all available libraries, use the **patch_all** function in **aws_xray_sdk.core**. Some libraries, such as httplib and urllib, might require enabling double patching by calling **patch_all(double_patch=True)**.
+
+The following code shows how to do this in an example main.py file.
+
+```python
+import boto3
+import botocore
+import requests
+import sqlite3 from aws_xray_sdk.core
+import xray_recorder from aws_xray_sdk.core
+import patch_all
+
+patch_all()
+```
+
+##### Patch specific libraries
+
+To patch a single library, call the patch function with a tuple of the library name. To achieve this, you must provide a single-element list.
+
+The following code shows how to do this in an example main.py file.
+
+```python
+import boto3
+import botocore
+import requests
+import mysql-connector-python
+from aws_xray_sdk.core import xray_recorder
+from aws_xray_sdk.core import patch
+
+libraries = (['botocore'])
+patch(libraries)
+```
+
+#### Customizing behavior
+
+After you start using the SDK, you can customize its behavior by configuring the recorder and middleware. You can add plugins to record data about the compute resources running your application and customize sampling behavior by defining sampling rules. You can also set the log level to see more or less information from the SDK in your application logs.
+
+You can also record additional information about requests and the work that your application does in annotations and metadata. Annotations are basic key-value pairs that are indexed for use with filter expressions so that you can search for traces that contain specific data. Metadata entries are less restrictive and can record entire objects and arrays—anything that can be serialized into JSON.
+
+When you have a lot of instrumented clients in your code, a single request segment can contain many subsegments, one for each call made with an instrumented client. You can organize and group subsegments by wrapping client calls in custom subsegments. You can create a custom subsegment for an entire function or any section of code. You can then record metadata and annotations on the subsegment instead of writing everything on the parent segment.
+
+#### Tracing calls
+
+Your application might make downstream calls to AWS services to perform actions such as storing data, writing to a queue, or sending notifications. When your application makes these downstream calls, the X-Ray SDK for Python tracks the calls downstream in subsegments. Traced AWS services and resources that you access within those services appear as downstream nodes on the trace map in the X-Ray console. These could be resources such as an Amazon S3 bucket or an Amazon SQS queue.
+
+The X-Ray SDK for Python automatically instruments all AWS SDK clients when you patch the **botocore** library. You cannot instrument individual clients. For all services, you can see the name of the API called in the X-Ray console. For a subset of services, the X-Ray SDK adds information to the segment to provide more granularity in the service map.
+
+For example, when you make a call with an instrumented DynamoDB client, the SDK adds the table name to the segment for calls that target a table. In the console, each table appears as a separate node in the service map, with a generic DynamoDB node for calls that don't target a table.
+
+##### Subsegment generated from downstream AWS call
+
+```json
+{
+  "id": "24756640c0d0978a",
+  "start_time": 1.480305974194E9,
+  "end_time": 1.4803059742E9,
+  "name": "DynamoDB",
+  "namespace": "aws",
+  "http": {
+    "response": {
+      "content_length": 60,
+      "status": 200
+    }
+  },
+  "aws": {
+    "table_name": "scorekeep-user",
+    "operation": "UpdateItem",
+    "request_id": "UBQNSO5AEM8T4FDA4RQDEB94OVTDRVV4K4HIRGVJF66Q9ASUAAJG",
+  }
+}
+```
+
+When you access named resources, calls that don't target specific resources create a generic node for the service. Calls to the following services create additional nodes in the service map:
+
+* **DynamoDB** – Table name
+* **Amazon S3** – Bucket and key name
+* **Amazon SQS** – Queue name
+
+When your application makes calls to microservices or public HTTP APIs, you can use the X-Ray SDK for Python to instrument those calls also. This adds the API to the service graph as a downstream service.
+
+When you instrument a call to a web API, the X-Ray SDK records a subsegment that contains information about the HTTP request and response. X-Ray uses the subsegment to generate an inferred segment for the remote API. The following is an example subsegment for a downstream HTTP call.
+
+##### Subsegment generated from downstream web API call
+
+```json
+{
+    "id": "004f72be19cddc2a",
+    "start_time": 1484786387.131,
+    "end_time": 1484786387.501,
+    "name": "names.example.com",
+    "namespace": "remote",
+    "http": {
+        "request": {
+            "method": "GET",
+            "url": "https://names.example.com/"
+        },
+        "response": {
+            "content_length": -1,
+            "status": 200
+        }
+    }
+}
+```
+
+##### Inferred subsegment from downstream web API call
+
+```json
+{
+    "id": "168416dc2ea97781",
+    "name": "names.example.com",
+    "trace_id": "1-62be1272-1b71c4274f39f122afa64eab",
+    "start_time": 1484786387.131,
+    "end_time": 1484786387.501,
+    "parent_id": "004f72be19cddc2a",
+    "http": {
+        "request": {
+            "method": "GET",
+            "url": "https://names.example.com/"
+        },
+        "response": {
+            "content_length": -1,
+            "status": 200
+        }
+    },
+    "inferred": true
+}
+```
+
+#### Creating custom subsegments
+
+Subsegments extend a trace's segment with details about work done to serve a request. Each time you make a call with an instrumented client, the X-Ray SDK records the information generated in a subsegment. You can create additional subsegments to group other subsegments, to measure the performance of a section of code, or to record annotations and metadata.
+
+To manage subsegments, use the **begin_subsegment** and **end_subsegment methods**. The following code shows how you can do so in an example **main.py** file.
+
+```python
+from aws_xray_sdk.core import xray_recorder
+
+subsegment = xray_recorder.begin_subsegment('annotations')
+
+subsegment.put_annotation('id', 12345)
+
+xray_recorder.end_subsegment()
+```
+
+#### Summary
+
+In this section, you learned about how to instrument a Python application. You learned about the X-Ray SDK for Python, which provides classes and methods for generating and sending trace data to the X-Ray daemon. You saw examples of how to integrate the SDK into different types of Python applications. You learned about how to patch libraries, which allows X-Ray to instrument requests that your application makes to downstream services. You learned about tracing calls to other AWS services and HTTP requests, including the data that can be generated for each of those subsegments.
+
+* [AWS X-Ray SDK for Python API Reference](https://docs.aws.amazon.com/xray-sdk-for-python/latest/reference/)
+* [Instrumenting web frameworks deployed to serverless environments](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-python-serverless.html)
+
+### [AWS SimuLearn: Core Security Concepts](./labs/W112SimuLearn1CoreSecurityConcepts.md)
+
+In this AWS SimuLearn assignment, you will review a real-world scenario helping a fictional customer design a solution on AWS. After the design is complete, you will build the proposed solution in a guided lab within a live AWS Console environment. You will gain hands-on experience working with AWS services, using the same tools technology professionals use to construct AWS solutions.
+
+For this assignment, you will improve security at the city's stock exchange by ensuring that support engineers can perform only authorized actions.
+
+### Knowledge Check
+
+#### What is the difference between a service histogram and an edge histogram in AWS X-Ray?
+
+* A service histogram shows the latency distribution for requests served by a service, and an edge histogram shows the latency distribution from the requester's viewpoint.
+
+Wrong answers:
+
+* A service histogram displays the network latency between services, and an edge histogram shows the processing latency within a service.
+* A service histogram is used for monitoring performance, and an edge histogram is used for troubleshooting and root cause analysis.
+* A service histogram is available for all AWS services, and an edge histogram is only available for specific AWS services.
+
+##### Explanation
+
+A service histogram provides the latency distribution for requests handled by a specific service, excluding any network latency between the service and the requester. An edge histogram, however, shows the latency distribution from the perspective of the requester, including any network latency.
+
+The other options are incorrect because of the following:
+
+* A service histogram shows the processing latency within a service.
+* Both service and edge histograms can be used to monitor performance and troubleshoot.
+* Service and edge histograms are both available for AWS services that are compatible with X-Ray.
+
+#### How can an application developer identify potential performance issues or bottlenecks in their application using the AWS X-Ray Analytics console?
+
+* Observing faults on the service graph and using the Analytics console to investigate unhealthy nodes
+
+Wrong answers:
+
+* Configuring the X-Ray sampling rules to trace all requests
+* Enabling AWS X-Ray Insights and analyzing the generated insights
+* Instrumenting application code with the X-Ray SDK to send more detailed trace data
+
+##### Explanation
+
+The trace map in the X-Ray console indicates the health of each node by coloring it based on the ratio of successful calls to errors and faults. When there is a percentage of red on a node, it signals a fault. The X-Ray Analytics console can be used to investigate the unhealthy node and identify potential performance issues or bottlenecks.
+
+The other options are incorrect because of the following:
+
+* X-Ray applies sampling rules to determine which requests get traced. Sampling is a prerequisite to being able to analyze the application in the Analytics console.
+* X-Ray Insights is a separate service that is designed to monitor for anomalies in application performance and health.
+* Instrumenting application code is also a prerequisite to being able to analyze the application with X-Ray Analytics.
+
+#### What is the purpose of patching downstream libraries when using the AWS X-Ray SDK for Python?
+
+* To instrument downstream calls made by an application to other services, databases, or web APIs
+
+Wrong answers:
+
+* To instrument application code to send trace data to X-Ray
+* To configure the X-Ray sampling rules for tracing requests
+* To narrow down trace result sets when viewing data in the X-Ray Analytics console
+
+##### Explanation
+
+After adding the X-Ray SDK for Python to an application, downstream calls can be instrumented by patching the application's libraries. Whenever the application makes downstream calls to AWS, a database, or other web services, the SDK records information about the call in a subsegment.
+
+The other options are incorrect because of the following:
+
+* Instrumenting application code is achieved by integrating the X-Ray SDK, not by patching downstream libraries.
+* X-Ray sampling rules are not related to patching downstream libraries.
+* Narrowing down trace result sets is achieved through filter expressions in the Analytics console, not through patching downstream libraries.
+
+#### A cloud application developer is integrating AWS X-Ray into their Python code. They are creating segments and subsegments manually in their code using the classes and methods from the X-Ray SDK for Python. Which use cases support the requirement to manually create segments and subsegments for this Python code? (Select THREE.)
+
+* They do not use web frameworks like Django or Flask in their code.
+* They are writing code for a Python script, not an application.
+* They must record annotations and metadata.
+
+Wrong answers:
+
+* They are running their code in an AWS Lambda function.
+* They must be able to instrument downstream calls.
+* They must be able to patch specific application libraries.
+
+##### Explanation
+
+A developer might need to add custom logic to their instrumented code because they do not use common web frameworks. Their code might also be for a script and not part of an application. To record annotations and metadata, they would have to add custom logic to capture that data.
+
+The other options are incorrect because of the following:
+
+* Running the Python code in a Lambda function does not mean they would need to manually create segments and subsegments.
+* Instrumenting downstream calls can be done through patching application libraries, not by manually creating segments and subsegments.
+* Patching downstream libraries is not directly related to manually creating segments and subsegments.
+
+### Summary
+
+X-Ray can be used for distributed application monitoring and troubleshooting. The X-Ray features discussed in this topic included latency histograms, the X-Ray Insights console, the X-Ray Analytics console, and the X-Ray SDK for Python.
+
+#### Latency histograms
+
+X-Ray provides latency histograms as a visualization tool to analyze the performance of your distributed applications. A latency histogram displays the distribution of response times for requests processed by a service or component. In a latency histogram, the x-axis represents duration, and the y-axis shows the percentage of requests that match each duration.
+
+![An example latency histogram, with latency on the x-axis and the percentage of requests with that latency on the y-axis.](./images/W11Img120XRayLatencyHistogram.png)
+
+X-Ray provides two types of latency histograms. **Service histograms** show the latency from the viewpoint of a service. **Edge histograms** show the latency from the perspective of the requester, which can include network latency.
+
+These histograms can be useful for use cases such as performance monitoring, capacity planning, and troubleshooting. You can also use histograms to optimize your applications by identifying performance bottlenecks, outliers, or areas for improvement.
+
+#### X-Ray Insights
+
+X-Ray Insights is a feature that can be enabled to continuously analyze trace data. It will automatically detect and record performance anomalies or issues in your applications, such as increased fault rates or response times.
+
+When an anomaly is detected, X-Ray creates an insight that identifies the anomalous services, the root cause, and an impact graph. These insights provide detailed information, including timelines and visualizations, to help you understand the underlying issue, its severity, and its progression over time.
+
+X-Ray Insights also integrates with EventBridge, so that you can receive notifications as the insight changes. With notifications, you can take appropriate actions or integrate the alerts into your existing monitoring and alerting solutions. With Insights, you can proactively identify and troubleshoot performance issues in your distributed applications without manually analyzing trace data.
+
+#### X-Ray Analytics
+
+The X-Ray Analytics console is an interactive tool that you can use to explore, analyze, and visualize trace data through interactive response time and time-series graphs. It provides powerful filtering and comparison capabilities. In the X-Ray Analytics console, you can refine the dataset with increasingly granular filters based on various fields associated with the traces.
+
+With X-Ray Analytics, you can create filtered trace sets, apply different filter criteria, and compare them side by side to identify patterns, correlations, or discrepancies. The Analytics console also displays information such as response time distributions, time-series activity, HTTP methods, and entry points. This aggregated data can help you understand the root cause of any performance issues.
+
+Additionally, you can use it to follow a troubleshooting workflow. Analytics helps you to spot unhealthy nodes, identify response time peaks, and drill down into specific traces. As a result, you can view detailed trace information to pinpoint the source of any issues in your distributed applications.
+
+#### X-Ray SDK for Python
+
+The X-Ray SDK for Python is a library that provides classes and methods for generating and sending trace data to the X-Ray daemon. It can be installed in Python applications and scripts using pip. With X-Ray SDK for Python, you can trace incoming HTTP requests. You can also trace calls made by your Python application to downstream services like AWS services, databases, and HTTP APIs.
+
+You can integrate the SDK into different types of Python applications, such as those built with Django or Flask frameworks. You can patch libraries used by your application to enable downstream tracing. The SDK also supports creating custom subsegments, recording annotations and metadata, and customizing behavior through configuration options.
+
+The X-Ray SDK for Python provides a solution for instrumenting and tracing Python code within X-Ray.
