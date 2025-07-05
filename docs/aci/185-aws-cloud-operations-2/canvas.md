@@ -17,6 +17,7 @@
 
 * Slack: Jason [AWS Instructor]
 * email: birdaws@amazon.com
+
 ___
 
 ## Office Hours Support
@@ -27,17 +28,11 @@ ___
 
 ## Resources
 
-### [Syllabus](./canvas_files/Cloud%20Operations%202%20Syllabus.pdf)
-
-[Linux](./canvas_files/Linux%20%20Reference%20Summary.pdf)
-
+* [Syllabus](./canvas_files/Cloud%20Operations%202%20Syllabus.pdf)
+* [Linux](./canvas_files/Linux%20%20Reference%20Summary.pdf)
 * [Week 1 Notes DevOps2 part 1](./canvas_files/Notes%20Week%201%20DevOps%202%20part%201.pdf)
-
-### Week 2 Notes
-
-[Notes Week 2 DevOps 2 part 2](./canvas_files/Notes%20Week%202%20DevOps%202%20part%202.pdf)
-
-### [Notes Week 3 DevOps 2 part 3](./canvas_files/Notes%20Week%203%20DevOps%202%20part%203.pdf)
+* [Notes Week 2 DevOps 2 part 2](./canvas_files/Notes%20Week%202%20DevOps%202%20part%202.pdf)
+* [Notes Week 3 DevOps 2 part 3](./canvas_files/Notes%20Week%203%20DevOps%202%20part%203.pdf)
 
 ### [Notes Week 4 IaC part 1](./canvas_files/Notes%20Week%204%20IaC%20part%201.pdf)
 
