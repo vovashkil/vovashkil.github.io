@@ -5,6 +5,8 @@
 
 ## Syllabus
 
+## [Slack Canvas Information - Cloud Operations 2](./canvas.md)
+
 ## Course structure
 
 ### Instructor-Led Training (ILT) Sessions
