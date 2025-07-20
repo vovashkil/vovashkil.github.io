@@ -22,6 +22,8 @@
 
 ## [AWS Cloud Operations 2](./185-aws-cloud-operations-2/aws-cloud-operations-2.md)
 
+## [AI for Developers](./210-ai-for-developers/ai-for-developers.md)
+
 ## [Career Services 2](./320-career-services-2/career-services-2.md)
 
 ## [Career Services 3](./340-career-services-3/career-services-3.md)
