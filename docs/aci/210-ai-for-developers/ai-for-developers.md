@@ -24,9 +24,9 @@
 * Week 3:
   * [Basic Prompt Engineering](./W030BasicPromptingEngineering.md)
 * Week 4:
-  * [Implementing an AI-Powered Assistant for Business]()
+  * [Implementing an AI-Powered Assistant for Business](./W040ImplementingAiAssistantForBusiness.md)
 * Week 5:
-  * [Developing AI Apps with Amazon Bedrock APIs]()
+  * [Developing AI Apps with Amazon Bedrock APIs](./W050DevelopingAiAppsAmazonBedrockApi.md)
 * Week 6:
   * [Developing GenAI Applications on AWS]()
 * Week 7:
