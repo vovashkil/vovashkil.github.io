@@ -28,7 +28,7 @@
 * Week 5:
   * [Developing AI Apps with Amazon Bedrock APIs](./W050DevelopingAiAppsAmazonBedrockApi.md)
 * Week 6:
-  * [Developing GenAI Applications on AWS]()
+  * [Developing GenAI Applications on AWS](./W060DevelopingGenAiAppsOnAws.md)
 * Week 7:
   * [Using Amazon Bedrock for Data Visualization and Analysis]()
 * Week 8:
