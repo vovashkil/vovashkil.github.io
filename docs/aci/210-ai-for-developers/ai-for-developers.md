@@ -30,7 +30,7 @@
 * Week 6:
   * [Developing GenAI Applications on AWS](./W060DevelopingGenAiAppsOnAws.md)
 * Week 7:
-  * [Using Amazon Bedrock for Data Visualization and Analysis]()
+  * [Using Amazon Bedrock for Data Visualization and Analysis](./W070AmazonBedrockForDataVisualization.md)
 * Week 8:
   * [Building LLM Apps with RAG]()
 * Week 9:
