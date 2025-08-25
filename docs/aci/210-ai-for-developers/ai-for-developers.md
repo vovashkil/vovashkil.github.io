@@ -32,7 +32,7 @@
 * Week 7:
   * [Using Amazon Bedrock for Data Visualization and Analysis](./W070AmazonBedrockForDataVisualization.md)
 * Week 8:
-  * [Building LLM Apps with RAG]()
+  * [Building LLM Apps with RAG](./W080BuildingLlmAppsWithRag.md)
 * Week 9:
   * [Getting Started with Langchain]()
 * Week 10:
