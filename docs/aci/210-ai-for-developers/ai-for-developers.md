@@ -34,7 +34,7 @@
 * Week 8:
   * [Building LLM Apps with RAG](./W080BuildingLlmAppsWithRag.md)
 * Week 9:
-  * [Getting Started with Langchain]()
+  * [Getting Started with LangChain](./W090GettingStartedWithLangchain.md)
 * Week 10:
   * [Applying Responsible]()
 * Week 11:
