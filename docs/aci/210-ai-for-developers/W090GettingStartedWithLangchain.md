@@ -1569,3 +1569,351 @@ The judge chain in this case is simply comparing the two given answers for this 
 ---
 
 ## Storing and Retrieving Data with Memory
+
+Large language models (LLMs) generate text, but they don't have built-in memory to remember conversations. For that reason, memory plays a crucial role in building conversational interfaces, like chat-based AI assistants. In order for a chat-based assistant to provide a chat-like experience, the LLM needs to remember the previous conversation, or context, to produce relevant answers. For instance, if you told an LLM-powered AI assistant that your name is Mateo and then asked it to write a song using your name, you'd expect it to remember that your name is Mateo. If it can't remember your name, it's not going to provide a successful or useful experience.
+
+LangChain memory provides the mechanism to store and summarize, if needed, prior conversational elements that are included in the context for subsequent invocations. LangChain provides components in the form of helper utilities for managing and manipulating previous chat messages. These utilities are modular. You can chain them with other components and interact with different types of abstractions to build powerful chat-based AI assistants.
+
+### Memory management
+
+By default, LLMs do not retain state between invocations. Because they don't retain any information from previous conversations, it's necessary to include the required context from prior conversations for them. This context is added to the prompt to enable the LLM to reply based on historical context.
+
+To save the content of a conversation, memory must be added to the chain. Choose each of the following tabs to learn how memory works in a chain. The examples in this section use an LLMChain.
+
+#### Start with empty memory
+
+During the initial interaction, the memory is empty, as there was no previous conversation to save. The interaction looks like the following image. In this interaction, a user starts a conversation or adds input into the application. The user input is then placed in the PromptTemplate, where additional information for the prompt is combined with the user input. This is sent to the LLM. The LLM generates a response, and the response is sent to the OutputParser. The OutputParser formats the answer into its final form before returning it to the user. A copy of the response is stored in memory for future use.
+
+![The memory module shows prompt-1 and response-1 stored](./images/W09Img060LangChainInMemory.png)
+
+#### Last conversation held in memory
+
+When the user requests additional information, the user sends the user input into the application. The user input is again placed in the PromptTemplate. The PromptTemplate adds the user input and then adds the context held in memory. This modified prompt and the context information is sent to the LLM. The LLM now has both the second user input and the conversation from the original user input. Using this additional information, the LLM generates a response. The response is sent to the OutputParser, which formats the answer into its final form before returning it to the user. A copy of the response is stored in memory for future use.
+
+![The memory module shows prompt1 and response1 stored and prompt2 and response2 being added.](./images/W09Img060LangChainLastConversationInMemory.png)
+
+---
+
+In LangChain, there are different ways to implement conversational memory. You can store the entire conversation, word-for-word; you can store only the last few messages; or you can store a summary of the conversation.
+
+---
+
+### BaseChatMessageHistory
+
+**BaseChatMessageHistory** is a way to record both sides of a conversation regarding who said what and when did they say it. It's like a notebook or journal where the conversation is recorded so that it can be referred back to if needed.
+
+* **BaseChatMessageHistory**
+
+The code sets up a way to store chat history in memory using a class called *BaseChatMessageHistory*. The LangChain message histories might have a *session_id* or a  *namespace* allowing it to remember and track different conversations.
+
+```python
+from langchain_aws import ChatBedrockConverse
+from langchain_core.chat_history import BaseChatMessageHistory
+from langchain_core.messages import BaseMessage, SystemMessage
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.runnables.history import RunnableWithMessageHistory
+
+# Using BaseChatMessageHistory as a template, add additional functionality for our use case
+class InMemoryHistory(BaseChatMessageHistory):
+  """Simple in-memory chat history"""
+  def init(self):
+      self.messages = []
+
+  def add_message(self, message: BaseMessage) -> None:
+      self.messages.append(message)
+
+  def get_messages(self) -> list[BaseMessage]:
+      return self.messages
+
+  def clear(self) -> None:
+      self.messages = []
+
+# Here we use a global variable to store the chat message history.
+store = {}
+
+def get_history_by_session_id(session_id: str) -> BaseChatMessageHistory:
+  if session_id not in store:
+      store[session_id] = InMemoryHistory()
+  return store[session_id]
+
+# Initialize model
+bedrock_model = ChatBedrockConverse(
+  model_id="anthropic.claude-v2",
+  temperature=0.7,
+  max_tokens=500
+)
+
+# Create prompt template
+prompt = ChatPromptTemplate.from_messages([
+  SystemMessage(content="You are a helpful AI assistant."),
+  MessagesPlaceholder(variable_name="chat_history"),
+  ("human", "{input}")
+])
+
+# Create conversation chain
+chain = prompt | bedrock_model
+
+chain_with_history = RunnableWithMessageHistory(
+  chain,
+  get_history_by_session_id, # This is passing the function as an argument. I.e. "Use this function get the correct chat history"
+  input_messages_key="input",
+  history_messages_key="chat_history",
+)
+
+# Simple chat function
+def chat(user_input):
+  response = chain_with_history.invoke(
+      {"input": user_input},
+      config={"configurable": {"session_id": "1"}} # Required by RunnableWithMessageHistory(). This is where the session id is passed
+  )
+
+  return response.content if hasattr(response, 'content') else str(response)
+
+# Interactive chat loop
+if name == "__main__":
+  print("AI: Hello! How can I help you today?")
+
+  while True:
+      user_input = input("You: ")
+
+      if user_input.lower() in ["exit", "quit", "bye"]:
+          print("AI: Goodbye!")
+          break
+
+      try:
+          response = chat(user_input)
+          print(f"AI: {response}")
+      except Exception as e:
+          print(f"Error: {e}")
+```
+
+---
+
+## Storing Data with Amazon DynamoDB
+
+Amazon DynamoDB is a fully managed NoSQL database service that's designed to store and retrieve large amounts of data. Amazon DynamoDB allows you to create a database to store and retrieve large volumes of data while maintaining the service level. It dynamically scales to meet demand. It automatically distributes both data and traffic across servers to allow the database to handle any capacity you specify.
+
+You can use Amazon DynamoDB to store chat-based AI conversations' message history for your LangChain workflows.
+
+### Reasons to use Amazon DynamoDB
+
+There are many reasons to use a NoSQL database, like DynamoDB, to store historical conversations and interactions between large language models (LLMs). Complex LangChain applications use, process, and generate enormous amounts of data. If you build a chat-based AI assistant, you might have hundreds or thousands of people talking and interacting with it in a single day. These user interactions, session data, and content creations might not be within the limits of your current server's memory capacity.
+
+Perhaps, you've experienced a chat-based assistant that couldn't remember a question you asked previously. How frustrating was it for you to remind the assistant of your previous question? To avoid this situation, you can store and retrieve the historical data in your chains for a better user experience. Additionally, due to the high volume of data for users' interactions with an LLM, DynamoDB can serve users in real time, with very low latency, with no performance degradation.
+
+The following image illustrates a basic workflow using DynamoDB as a way to store chat-based conversations' history, context, metadata, and so forth.
+
+![Using DynamoDB as memory storage in LangChain](./images/W09Img062LangChainUsingDynamoDb.png)
+
+#### 1. Input
+
+A user enters input into the chat-based AI assistant or LangChain chain.
+
+#### 2. LangChain
+
+This represents the LangChain chains. These could be very complex application chains or a simple LLMChain.
+
+#### 3. DynamoDB
+
+DynamoDB can store context, conversations, and chat history.
+
+---
+
+### Requirements
+
+To configure DynamoDB in your Python environment, you must first complete the following tasks:
+
+* Install the AWS SDK for Python (Boto3) package
+* Configure your AWS credentials
+
+The following code creates a table in DynamoDB called ***SessionTable***. The primary key of the table is a simple hash key named **SessionId**. A *hash key* is a unique identifier for each item in the table. The **SessionId** data type is **S**, which stands for a *string* data type, meaning that the **SessionId** attribute will store string values.
+
+The billing mode is **"PAY_PER_REQUEST"**. In this billing mode, you pay for the read and write capacity units consumed by your application on a per-request basis, rather than provisioning capacity in advance.
+
+* **Example configuration code**
+
+The following code creates a DynamoDB table and attributes.
+
+```python
+import boto3
+
+# Get the service resource.
+dynamodb = boto3.resource("dynamodb")
+
+# Create the DynamoDB table.
+table = dynamodb.create_table(
+ TableName="SessionTable",
+ KeySchema=[{"AttributeName": "SessionId", "KeyType": "HASH"}],
+ AttributeDefinitions=[{"AttributeName": "SessionId", "AttributeType": "S"}],
+ BillingMode="PAY_PER_REQUEST",
+)
+# Wait until the table exists.
+table.meta.client.get_waiter("table_exists").wait(TableName="SessionTable")
+
+# Print out some data about the table.
+print(table.item_count)
+```
+
+---
+
+### Conversation context in DynamoDB
+
+Storing context comes down to cost and function. You must determine how much context you need to retain for your application to function easily and give your customers a good experience.
+
+* **DynamoDB example**
+
+In this example, the first line in the following code imports **DynamoDBChatMessageHistory**.
+
+This class allows LangChain to store the conversation history in DynamoDB.
+
+```python
+import boto3
+from langchain_community.chat_message_histories import DynamoDBChatMessageHistory
+from langchain_aws import ChatBedrock
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_core.output_parsers import StrOutputParser
+```
+
+* **Storing context for multiple interactions**
+
+In the first interaction, you specify the the name of the table, (in this case **SessionTable**), and **the session_id**.
+
+Code:
+
+* First interaction with chat-based AI assistant.
+* After importing the DynamoDBChatMessageHistory class, you configure it to use the previously created table.
+
+    ```python
+    DynamoDBChatMessageHistory(table_name="SessionTable", session_id="2")
+    ```
+
+* Each **session_id** represents one user session to identify that session's interaction.
+* The **message_history** object holds that session interaction.
+* The second line of code assigns that object name (message_history) to the chat_memory variable in the **ConversationBufferMemory** configuration.  The result is saved in the **memory** variable.
+* Later, the **memory** variable becomes part of the LLMChain.
+
+```python
+# 1. Set up DynamoDB Table (do this once)
+def create_dynamodb_table(table_name="ChatSessions"):
+  """Create a DynamoDB table for storing chat histories."""
+  dynamodb = boto3.resource("dynamodb")
+
+  try:
+      table = dynamodb.create_table(
+          TableName=table_name,
+          KeySchema=[
+              {"AttributeName": "SessionId", "KeyType": "HASH"}
+          ],
+          AttributeDefinitions=[
+              {"AttributeName": "SessionId", "AttributeType": "S"}
+          ],
+          BillingMode="PAY_PER_REQUEST"
+      )
+      # Wait for the table to be created
+      table.meta.client.get_waiter("table_exists").wait(TableName=table_name)
+      print(f"Table {table_name} created successfully!")
+
+  except dynamodb.meta.client.exceptions.ResourceInUseException:
+      print(f"Table {table_name} already exists.")
+```
+
+* **Output:**
+
+```text
+First input is "Hi, my name is Jane."
+
+Because this is the first input, there is no historical conversation. As a result, the (Current conversation) list is empty ( [] ).
+
+The Finished chain shows the input and the generated response.
+```
+
+```console
+> Entering new LLMChain chain...
+Prompt after formatting:
+The following is a friendly conversation between a human and an AI.
+The AI is talkative and provides lots of specific details from its context.
+If the AI does not know the answer to a question, it truthfully says it does not know.
+Current conversation:
+[]
+Human: Hi, my name is Jane
+Assistant:
+> Finished chain.
+Hello Jane, it's nice to meet you! I'm an AI assistant created by Anthropic. I'm always eager to chat and learn new things. Please feel free to ask me anything you'd like - I'll do my best to provide helpful and detailed responses. And if there's something I don't know, I'll let you know that as well. I look forward to our conversation!
+```
+
+* **Code:**
+
+In the next interaction, you ask a simple math question (2+2). .
+
+```python
+output = chain.run(opens in a new tab)(input="2 + 2 = ?")
+output
+```
+
+* **Output:**
+
+In this output, in the Current conversation list, you have the first HumanMessage and the first AIMessage.
+
+```console
+> Entering new LLMChain chain...
+Prompt after formatting:
+The following is a friendly conversation between a human and an AI.
+The AI is talkative and provides lots of specific details from its context.
+If the AI does not know the answer to a question, it truthfully says it does not know.
+
+Current conversation:
+[HumanMessage(content='Hi, my name is Jane'),
+AIMessage(content="Hello Jane, it's nice to meet you! I'm an AI assistant created by Anthropic. I'm always eager to chat and learn new things. Please feel free to ask me anything you'd like - I'll do my best to provide helpful and detailed responses. And if there's something I don't know, I'll let you know that as well. I look forward to our conversation!"),
+
+Human: 2 + 2 = ?
+Assistant:
+
+> Finished chain.
+'2 + 2 = 4'
+```
+
+* **Code:**
+
+Final user interaction asks AI to remember the context from the initial interaction.
+
+```python
+output = chain.run(input="What's my name?")
+output
+```
+
+* **Final output:**
+
+After asking about the first round of interaction, you receive the following output.
+
+```console
+> Entering new LLMChain chain...
+Prompt after formatting:
+The following is a friendly conversation between a human and an AI.
+The AI is talkative and provides lots of specific details from its context.
+If the AI does not know the answer to a question, it truthfully says it does not know.
+
+Current conversation:
+[HumanMessage(content='Hi, my name is Jane'),
+
+AIMessage(content="Hello Jane, it's nice to meet you! I'm an AI assistant created by Anthropic. I'm always eager to chat and learn new things. Please feel free to ask me anything you'd like - I'll do my best to provide helpful and detailed responses. And if there's something I don't know, I'll let you know that as well. I look forward to our conversation!"),
+
+HumanMessage(content='2 + 2 = ?'),
+
+AIMessage(content='2 + 2 = 4'),
+
+HumanMessage(content="What's my name?"), AIMessage(content='Based on the conversation so far, your name is Jane. You introduced yourself by saying "Hi, my name is Jane" at the beginning.')
+]
+
+Human: What's my name?
+
+Assistant:
+> Finished chain.
+'Based on the conversation so far, your name is Jane. You introduced yourself by saying "Hi, my name is Jane." at the beginning of our chat.'
+```
+
+---
+
+## [Lab: Simplifying AI Development with LangChain](./labs/W090Lab01AiDevelopmentWithLangChain.md)
+
+---
