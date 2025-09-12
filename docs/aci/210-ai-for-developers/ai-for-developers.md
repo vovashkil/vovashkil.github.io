@@ -36,7 +36,7 @@
 * Week 9:
   * [Getting Started with LangChain](./W090GettingStartedWithLangchain.md)
 * Week 10:
-  * [Applying Responsible]()
+  * [Applying Responsible](./W100ApplyingResponsibleAi.md)
 * Week 11:
-  * [Governance, Compliance, and Security for Responsible AI]()
+  * [Governance, Compliance, and Security for Responsible AI](./W110GovernanceResponsibleAI.md)
   

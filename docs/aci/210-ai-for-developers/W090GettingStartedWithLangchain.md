@@ -1917,3 +1917,143 @@ Assistant:
 ## [Lab: Simplifying AI Development with LangChain](./labs/W090Lab01AiDevelopmentWithLangChain.md)
 
 ---
+
+## [Optional Lab: Creating AI Assistants with LangChain](./labs/W092Lab02AiAssistantsWithLangChain.md)
+
+---
+
+### Knowledge Check
+
+#### Which LangChain components are necessary for creating a simple few-shot prompt? (Select TWO.) 
+
+* FewShotPromptTemplate
+* PromptTemplate
+
+Wrong answers:
+
+* AutoGPTPrompt
+* PipelinePromptTemplate
+* ChatMessagePromptTemplate
+
+##### Explanation
+
+The *FewShotPromptTemplate* provides a way to define a set of examples (few-shots) and a prefix/suffix to create a prompt that uses few-shot learning. *PromptTemplate* is used in conjunction with *FewShotPromptTemplate* to define the overall structure of the few-shot prompt.
+
+The other options are incorrect for the following reasons:
+
+* *PipelinePromptTemplate* is used for chaining multiple prompt templates together, not specifically for few-shot prompts. It is not necessary for a simple few-shot prompt.
+* *ChatMessagePromptTemplate* is designed for creating prompts in a chat format. Although it can be used in some conversational few-shot situations, it's not a core component for creating a simple few-shot prompt.
+* *AutoGPTPrompt* is designed to work with AutoGPT agents. It is not necessary for creating simple few-shot prompts.
+
+#### A developer is building a generative AI writing assistant using LangChain. The application needs to generate an outline, expand each section, and polish the full draft. Which chaining approach would be most effective?
+
+* SequentialChain
+
+Wrong answers:
+
+* LLMChain
+* SimpleSequentialChain
+* Passthrough runnable
+
+##### Explanation
+
+A *SequentialChain* allows the creation of a multistep process where each step can have multiple inputs and outputs. The chain passes the outline to the expansion step, and then the expanded sections pass to the polishing step.
+
+The other options are incorrect for the following reasons:
+
+* While LLMChain is useful, it's too basic for this multistep process. It wouldn't allow the flexibility to chain the outline, expansion, and polishing steps.
+* The SimpleSequentialChain is close, but it only allows a single input and output between steps.
+* A passthrough runnable allows a developer to pass inputs to other chains, unchanged.
+
+#### Which challenges does LangChain help address when working with large language models (LLMs)? (Select TWO.)
+
+* Maintaining conversational context
+* Performing multistep reasoning tasks
+
+Wrong answers:
+
+* Simplifying the deployment and scaling of LLMs
+* Data preprocessing for training language models
+* Fine-tuning foundational models
+
+##### Explanation
+
+LangChain provides tools and abstractions for managing conversation state. LangChain offers components for complex chaining sequences and task-specific agents.
+
+The other options are incorrect for the following reasons:
+
+* LangChain is not primarily focused on fine-tuning the performance of language models themselves. Instead, it provides an abstraction layer and tools for building applications that use existing pre-trained language models effectively.
+* LangChain does not focus on deployment or scaling of LLMs.
+* LangChain is not designed for data preprocessing for training language models.
+
+#### A developer working on a LangChain application intends to evaluate the initial responses from a large language model (LLM) before sending them back to a user. Which LangChain component could the developer use to accomplish this task?
+
+* Output parser
+
+Wrong answers:
+
+* Chat prompt template
+* Response schema
+* Document loader
+
+##### Explanation
+
+Output parsers are designed to process and structure the raw output from language models. They can be used to validate, format, or extract specific information from an LLM's response. In this case, the developer can implement custom logic with an output parser to evaluate the initial responses, based on certain criteria, before they are sent to the user.
+
+The other options are incorrect for the following reasons:
+
+* A chat prompt template is used to structure input for an LLM, not to evaluate its output.
+* Document loaders are used to import and process various types of documents or data sources for use in LLM applications. They are not designed to evaluate or modify LLM responses.
+* Although a response schema is used to define response structure, it doesn't provide the functionality to process output.
+
+#### A developer is building a large-scale chat-based AI assistant that needs to handle thousands of concurrent users. They need to store conversation history to provide context for each user's interactions. Which storage solution would be most appropriate?
+
+* Amazon DynamoDB
+
+Wrong answers:
+
+* In-memory storage
+* Local file system
+* Amazon Elastic Block Store (Amazon EBS)
+
+##### Explanation
+
+DynamoDB is a fully managed NoSQL database that can handle large amounts of data and high concurrency. It's scalable, has low latency, and is well-suited for storing chat history in a production environment.
+
+The other options are incorrect for the following reasons:
+
+* In-memory storage wouldn't persist between sessions and would be limited by the application's available memory. It's not suitable for a large-scale application with thousands of users.
+* A local file system isn't appropriate for a large-scale, distributed application. It doesn't handle concurrent access well or scale across multiple servers.
+* Amazon EBS is a block-based storage solution, which isn't suitable for this solution.
+
+---
+
+### Summary
+
+* LangChain helps developers build repetitive, complex, and useful applications that use the power of large language models (LLMs).
+* Chains allow you to build sophisticated workflows using multiple smaller components. These components are declarative in nature and allow you to identify and troubleshoot problems when they arise. Using smaller pieces means that you can use simpler code and chunks to build large, complex workflows.
+* There are various types of chains with different purposes and functions.
+* LangChain Expression Language (LCEL) runnables are small, reusable pieces of code. Each runnable completes a specific task, such as processing text, retrieving data, or querying an LLM. Runnables allow you to chain together different tasks to build a pipeline.
+* Memory plays a crucial role in building conversational interfaces, like chat-based AI assistants. For an assistant to provide a chat-like experience, the LLM must remember the previous conversation, or context, in order to produce correct or meaningful answers. Memory must be managed and invoked in a chat-base assistant or runnable workflow.
+* For scalable chat history management, an application must manage conversation context, handle outputs, and integrate with storage solutions, like Amazon DynamoDB.
+
+---
+
+### Additional Resources
+
+* [Amazon DynamoDB](https://aws.amazon.com/dynamodb/)
+* [LangChain Chains](https://python.langchain.com/api_reference/langchain/chains.html)
+* [Runnables](https://python.langchain.com/api_reference/core/runnables/langchain_core.runnables.base.Runnable.html)
+* [LCEL](https://python.langchain.com/docs/how_to/lcel_cheatsheet/)
+
+---
+
+## [AWS SimuLearn Challenge Restore Proper Functionality to the Storyteller Chatbot](./labs/W094SimuLearn1LangChainStorytellingChatbot.md)
+
+In this lab, your task is to repair a chatbot application that generates children's stories in both text and audio formats. The application components are set up, but they do not function correctly. Your goal is to complete all challenge tests to restore the chatbot to full working order. You can access the Storyteller Chatbot application after the resources have been successfully provisioned in your AWS environment.
+
+Throughout the lab, you will work through the problem after being provided the context needed.
+
+This challenge is a timed challenge. It begins with Step 1 where you encounter a scripted dialog to give you context. Step 2 you are provided details on the task and you must solve the challenge. The timer starts at this moment. Step 3, work through the problem and complete all challenges before the timer expires. You may retry this challenge unlimited times.
+
+---
