@@ -10,6 +10,8 @@
 
 ## [AWS Cloud Fundamentals 1](./140-aws-cloud-fundamentals-1/aws-cloud-fundamentals-1.md)
 
+## [AWS Cloud Fundamentals 2](./150-aws-cloud-fundamentals-2/aws-cloud-fundamentals-2.md)
+
 ## [Developer Fundamentals 1](./160-developer-fundamentals-1/developer-fundamentals-1.md)
 
 ## [Developer Fundamentals 2: Python 2](./165-developer-fundamentals-2/developer-fundamentals-2.md)

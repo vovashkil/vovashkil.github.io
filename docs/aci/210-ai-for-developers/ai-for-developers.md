@@ -5,7 +5,7 @@
 
 ## Syllabus
 
-## [Slack Canvas Information - AI for Developers](./canvas.md)
+## [Slack Information - AI for Developers](./canvas.md)
 
 ## Course structure
 
