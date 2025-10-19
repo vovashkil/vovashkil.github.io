@@ -38,6 +38,8 @@ In this 11-week course, you can expect to spend approximately 5 hours and 44 min
   * [Security 3 Part 1: Security with AWS Lambda](./W012Security3Part1SecurityWithAAwsLambda%20)
 * Week 2:
   * [Security 3 Part 2: Data Perimeters on AWS](./W020Security3Part2DataPerimetersOnAws)
+  * [Security 3 Part 2: Data Encryption at Rest And In Transit](./W022Security3Part2DataEncryptionAtRestAndInTransit)
+  * [Security 3 Part 2: Incident Response](./W024Security3Part2IncidentResponse)
 * Week 3:
   * [Networking 3 Part 1]()
 * Week 4:
