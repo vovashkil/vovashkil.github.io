@@ -35,15 +35,23 @@ In this 11-week course, you can expect to spend approximately 5 hours and 44 min
 
 * Week 1:
   * [Security 3 Part 1: AWS STS](./W010Security3Part1AwsSts.md)
-  * [Security 3 Part 1: Security with AWS Lambda](./W012Security3Part1SecurityWithAAwsLambda%20)
+  * [Security 3 Part 1: Security with AWS Lambda](./W012Security3Part1SecurityWithAAwsLambda%20.md)
 * Week 2:
-  * [Security 3 Part 2: Data Perimeters on AWS](./W020Security3Part2DataPerimetersOnAws)
-  * [Security 3 Part 2: Data Encryption at Rest And In Transit](./W022Security3Part2DataEncryptionAtRestAndInTransit)
-  * [Security 3 Part 2: Incident Response](./W024Security3Part2IncidentResponse)
+  * [Security 3 Part 2: Data Perimeters on AWS](./W020Security3Part2DataPerimetersOnAws.md)
+  * [Security 3 Part 2: Data Encryption at Rest And In Transit](./W022Security3Part2DataEncryptionAtRestAndInTransit.md)
+  * [Security 3 Part 2: Incident Response](./W024Security3Part2IncidentResponse.md)
 * Week 3:
-  * [Networking 3 Part 1]()
+  * [Networking 3 Part 1: Hybrid Networking Overview](./W030Networking3Part1HybridNetworking.md)
+  * [Networking 3 Part 1: Using AWS Site-to-Site VPN to Connect Your Data Center to AWS](./W032Networking3Part1SiteToSiteVpn.md)
+  * [Networking 3 Part 1: Using AWS Client VPN to Connect Remote Users to the Cloud](./W034Networking3Part1AwsClientVpn.md)
+  * [Networking 3 Part 1: Using AWS Direct Connect to Create a Dedicated Network Connection to AWS](./W036Networking3Part1AwsDirectConnect.md)
+  * [Networking 3 Part 1: Using AWS Cloud WAN to Create a Global Network](./W038Networking3Part1AwsCloudWanForGlobalNetwork.md)
 * Week 4:
-  * [Networking 3 Part 2]()
+  * [Networking 3 Part 2: Exploring Security Fundamentals](./W040Networking3Part2SecurityFundamentals.md)
+  * [Networking 3 Part 2: Filtering Network Traffic with AWS Network Firewall](./W042Networking3Part2FilteringTrafficAwsNetworkFirewall.md)
+  * [Networking 3 Part 2: Protecting Your Network Against DDoS Attacks with AWS Shield](./W044Networking3Part2AwsShieldDdosAttacks.md)
+  * [Networking 3 Part 2: Protecting Web Applications from Common Exploits with AWS WAF](./W046Networking3Part2AwsWafProtectingWebApps.md)
+  * [Networking 3 Part 2: Filtering DNS Traffic Using Amazon Route 53 Resolver DNS Firewall](./W048Networking3Part2Route53ResolverDnsFirewall.md)
 * Week 5:
   * [Databases and Caching Part 1]()
 * Week 6:
