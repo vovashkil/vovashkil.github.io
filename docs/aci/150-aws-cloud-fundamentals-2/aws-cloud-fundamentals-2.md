@@ -53,7 +53,7 @@ In this 11-week course, you can expect to spend approximately 5 hours and 44 min
   * [Networking 3 Part 2: Protecting Web Applications from Common Exploits with AWS WAF](./W046Networking3Part2AwsWafProtectingWebApps.md)
   * [Networking 3 Part 2: Filtering DNS Traffic Using Amazon Route 53 Resolver DNS Firewall](./W048Networking3Part2Route53ResolverDnsFirewall.md)
 * Week 5:
-  * [Databases and Caching Part 1]()
+  * [Databases and Caching Part 1: Developing Modern Applications Using DynamoDB](./W050DatabasesAndCachingPart1DynamoDb.md)
 * Week 6:
   * [Databases and Caching Part 2]()
 * Week 7:
