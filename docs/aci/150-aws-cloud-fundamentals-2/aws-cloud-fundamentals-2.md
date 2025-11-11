@@ -55,7 +55,7 @@ In this 11-week course, you can expect to spend approximately 5 hours and 44 min
 * Week 5:
   * [Databases and Caching Part 1: Developing Modern Applications Using DynamoDB](./W050DatabasesAndCachingPart1DynamoDb.md)
 * Week 6:
-  * [Databases and Caching Part 2]()
+  * [Databases and Caching Part 2: Exploring DynamoDB Advanced Concepts](./W060DatabasesAndCachingPart2DynamoDbAdvancedConcept.md)
 * Week 7:
   * [Databases and Caching Part 3]()
 * Week 8:
