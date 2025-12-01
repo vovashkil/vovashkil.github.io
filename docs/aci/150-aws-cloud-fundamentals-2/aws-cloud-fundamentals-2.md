@@ -57,9 +57,9 @@ In this 11-week course, you can expect to spend approximately 5 hours and 44 min
 * Week 6:
   * [Databases and Caching Part 2: Exploring DynamoDB Advanced Concepts](./W060DatabasesAndCachingPart2DynamoDbAdvancedConcept.md)
 * Week 7:
-  * [Databases and Caching Part 3]()
+  * [Databases and Caching Part 3: Caching on AWS](./W070DatabasesAndCachingPart3CachingOnAws.md)
 * Week 8:
-  * [Compute 3 Part 1]()
+  * [Compute 3 Part 1: Using Amazon EC2 and Lambda for Applications](./W080Compute3Part1Ec2AndLambdaForApplications.md)
 * Week 9:
   * [Compute 3 Part 2]()
 * Week 10:
