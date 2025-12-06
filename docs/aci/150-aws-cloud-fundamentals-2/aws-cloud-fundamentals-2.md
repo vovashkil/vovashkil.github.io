@@ -61,9 +61,9 @@ In this 11-week course, you can expect to spend approximately 5 hours and 44 min
 * Week 8:
   * [Compute 3 Part 1: Using Amazon EC2 and Lambda for Applications](./W080Compute3Part1Ec2AndLambdaForApplications.md)
 * Week 9:
-  * [Compute 3 Part 2]()
+  * [Compute 3 Part 2: Practice with Container Computing](./W090Compute3Part2ContainerComputing.md)
 * Week 10:
-  * [Architecting on AWS 2 Part 1]()
+  * [Architecting on AWS 2 Part 1: Building Modern, Event-Driven Applications](./W100ArchitectingOnAws2Part1EventDrivenApps.md)
 * Week 11:
-  * [Architecting on AWS 2 Part 2]()
+  * [Architecting on AWS 2 Part 2: Batch and Real-Time Processing Architectures](./W110ArchitectingOnAws2Part2BatchAndRealTimeProcessing.md)
   
