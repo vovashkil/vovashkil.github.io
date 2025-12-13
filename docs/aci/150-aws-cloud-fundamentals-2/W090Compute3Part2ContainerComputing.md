@@ -975,7 +975,7 @@ Moving on, select the Authentication sub-tab to view how user access is managed.
 
 ![Elastic Kubernetes Service Cluster Confoguration Authentication.](./images/W09Img172AmazonEksClusterConfigurationAuthetication.png)
 
-OIDC sits on top of OAuth 2.0 and provides login and profile information about a cluster's users. With OIDC, you can manage access to your cluster using the same set of rules and procedures your organization already follows for creating, activating, and deactivating employee accounts. For more information about OIDC, select the Info button at the top of the card. 
+OIDC sits on top of OAuth 2.0 and provides login and profile information about a cluster's users. With OIDC, you can manage access to your cluster using the same set of rules and procedures your organization already follows for creating, activating, and deactivating employee accounts. For more information about OIDC, select the Info button at the top of the card.
 
 Lastly, select the Logging sub-tab to view the monitoring for the cluster. By default, Control Plane Logging is deactivated. You could activate logging by selecting the Manage Logging button and then selecting the specific logs you want sent to Amazon CloudWatch.
 
@@ -1004,7 +1004,7 @@ Amazon EKS supports automatic scaling of worker nodes and pods to match workload
 
 * **Horizontal scaling**
 
-    A horizontally scalable system is one that can increase or decrease capacity by adding or removing compute resources. In this example, more pods are deployed when demand spikes (scale out). Pods are removed when demand drops (scale in). 
+    A horizontally scalable system is one that can increase or decrease capacity by adding or removing compute resources. In this example, more pods are deployed when demand spikes (scale out). Pods are removed when demand drops (scale in).
 
     ![Pods scaling out and in.](./images/W09Img180AmazonEksClusterHorizontalScaling.png)
 
@@ -1028,7 +1028,7 @@ This diagram shows Kubernetes automatic scaling; focusing on Cluster Autoscaler,
 
 #### Cluster Autoscaler
 
-The Kubernetes Cluster Autoscaler automatically adjusts the number of nodes in your cluster when pods fail to launch. The failure to launch can result from a lack of resources or when nodes in the cluster are underused and their pods can be rescheduled onto other nodes in the cluster. In Amazon EKS, this is accomplished by adding your worker nodes to EC2 Auto Scaling groups. A simple way to configure this is to deploy a cluster with managed node groups using eksctl. 
+The Kubernetes Cluster Autoscaler automatically adjusts the number of nodes in your cluster when pods fail to launch. The failure to launch can result from a lack of resources or when nodes in the cluster are underused and their pods can be rescheduled onto other nodes in the cluster. In Amazon EKS, this is accomplished by adding your worker nodes to EC2 Auto Scaling groups. A simple way to configure this is to deploy a cluster with managed node groups using eksctl.
 
 Amazon EC2 Auto Scaling automatically adjusts capacity to maintain steady, predictable performance at the lowest possible cost. The dynamic scaling capabilities of EC2 Auto Scaling automatically increase or decrease capacity based on load or other metrics. When demand goes up, Amazon EC2 Auto Scaling scales out. When demand goes down, Amazon EC2 Auto Scaling scales in. The number of instances will not go above the maximum or below the minimum.
 
@@ -1261,7 +1261,7 @@ Kubernetes uses four types of services. A *service* is a logical collection of p
 
     ![NodePort](./images/W09Img272KubernetesServicesNodePort.png)
 
-    The NodePort service is exposed on each node using a static port and can be accessed from outside the cluster by requesting <NodeIP>:<NodePort>. Internally, the NodePort service connects to a ClusterIP service that Kubernetes creates automatically. 
+    The NodePort service is exposed on each node using a static port and can be accessed from outside the cluster by requesting ```<NodeIP>:<NodePort>```. Internally, the NodePort service connects to a ClusterIP service that Kubernetes creates automatically.
 
 3. LoadBalancer
 
@@ -1286,6 +1286,378 @@ With Kubernetes ingress objects, you can reduce the number of load balancers you
 Kubernetes Ingress Objects
 
 ### Integrating Amazon EKS with Other Services
+
+#### Managing storage in Amazon EKS
+
+Running your workloads on an Amazon Elastic Kubernetes Service (Amazon EKS) cluster provides the benefit of using other AWS services, including several storage services. In this topic, you explore how to manage your application workload storage requirements with Amazon Elastic Block Store (Amazon EBS) and Amazon Elastic File System (Amazon EFS). While only two storage services are covered, additional AWS storage services are available for Amazon EKS. To learn more, see [Storage](https://docs.aws.amazon.com/eks/latest/userguide/storage.html) in the *Amazon EKS User Guide*.
+
+#### Kubernetes persistent storage
+
+Application workloads requiring data persistence independent of the pod lifecycle require at least two Kubernetes objects, a persistent volume (PV), and a persistent volume claim (PVC). Recall that a PV is similar to ephemeral volumes but has a lifecycle independent of any individual pod. A PVC is a request for storage by a cluster user, which means the request includes details about storage amount, storage access, and storage performance.
+
+Manual administration of persistent volumes poses a scalability challenge for cluster administrators. A third object, storage class, provides the benefit of automating persistent volume management in a Kubernetes cluster. Cluster administrators use storage classes to present persistent storage options to cluster users. Cluster users must specify their desired storage class in a PVC. An Amazon EKS cluster uses these three Kubernetes objects for persistent storage.
+
+In addition to the three objects, a Container Storage Interface (CSI) driver is necessary for allowing a Kubernetes cluster access to a desired storage provider. The CSI is a standard for exposing arbitrary block and file storage systems to containerized workloads on container orchestration systems like Kubernetes. Both Amazon EBS and Amazon EFS have their respective CSI drivers, which run as containerized applications in Amazon EKS cluster nodes. The CSI drivers make the necessary AWS API calls to their respective AWS storage service on behalf of a storage class object.
+
+##### Using Amazon EBS
+
+When a cluster user submits a PVC with the requisite parameters, the Amazon EBS storage class calls on the EBS CSI driver to allocate storage per the PVC request. The EBS CSI driver makes the necessary AWS API calls to create an EBS volume and attach the volume to the designated cluster node. When attached, the persistent volume is allocated to the PVC. The Amazon EBS CSI driver can be configured to use the various functionalities of Amazon EBS, including volume resizing, volume snapshot creation, and so forth.
+
+The following diagram shows two examples of how an Amazon EBS volume associates with its PV. Notice that EBS creates a volume for each Amazon Elastic Compute Cloud (Amazon EC2) instance. A good use case for using Amazon EBS volumes for PVs is when application workloads are deployed into a Kubernetes StatefulSet object. To learn more, visit [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) in the Kubernetes documentation.
+
+![Diagram shows two examples of how an Amazon EBS volume associates with its PV.](./images/W09Img290AmazonEksPersistentVolumeEbs.png)
+
+##### Using Amazon EFS
+
+A Kubernetes storage class backed by Amazon EFS will direct the Amazon EFS CSI driver to make calls to the appropriate AWS APIs to create an access point to a preexisting file system. When a PVC is created, a dynamically provisioned PV will use the access point for access to the Amazon EFS file system and then bind to the PVC.
+
+The following diagram illustrates how a single Amazon EFS file system can be accessed by two pod replicas running on separate cluster nodes. Notice that the same file system is mounted in each pod and in two separate Availability Zones. A good use case for Amazon EFS for persistent storage is when an application workload requires replicas to span across worker nodes and access the same application data.
+
+![Diagram illustrates how a single Amazon EFS file system can be accessed by two pod replicas running on separate cluster nodes.](./images/W09Img292AmazonEksPersistentVolumeEfs.png)
+
+#### Pods running on AWS Fargate
+
+The previous section illustrates how both Amazon EBS and Amazon EFS provide storage to managed or self-managed worker nodes. Running pods on Fargate simplifies the requirement and management of persistent storage. Between the two storage providers, Amazon EFS is the only storage provider for pods running on AWS Fargate, mainly because of its serverless aspect.
+
+Additionally, a pod running on Fargate automatically mounts an Amazon EFS file system, without needing the CSI driver installation and configuration.
+
+#### Demonstration: Defining Persistence and Volume Storage
+
+**Note**: *Helm* is a package manager for Kubernetes. Helm Charts are used to define, install, and upgrade Kubernetes applications. Many preconfigured Helm charts are available through public repositories.
+
+For this demonstration, a previously configured Amazon EKS cluster running a managed node group will be used. Command line access to the Amazon EKS cluster is necessary to complete the tasks in this demonstration, so the command line interface, or CLI, with full permissions to the Kubernetes cluster will be used.
+
+Start by examining the current state of the cluster.
+
+![kubectl get pv](./images/W09Img300AmazonEksKubectlGetPv.png)
+
+At the moment, the cluster does not have any persistent storage nor is the cluster configured with the Amazon EBS CSI driver.
+
+The CSI driver empowers the Kubernetes cluster to manage and mount the storage on your behalf. To interact with the Amazon EBS service, the Amazon EBS CSI driver requires explicit permissions to the AWS APIs.
+
+Next, download an AWS Identity and Access Management, or IAM, policy that allows the CSI driver's service account to make calls to the AWS APIs. Then, create the IAM policy. The new policy is named **EBS_CSI_Driver_Policy**.
+
+![Download and create IAM policy.](./images/W09Img302AmazonEksDownloadCreateIamPolicy.png)
+
+Next, use **eksctl** to create an IAM role and attach the IAM policy to it. In the background,
+
+![eksctl create iamserviceaccount](./images/W09Img304AmazonEksctlCreateIamServiceAccount.png)
+
+Amazon EKS calls the CloudFormation API to create the new role, attach the EBS CSI driver policy to it, and then map the role to a service account.
+
+The command specifically creates a service account named **ebs-csi-controller-sa** in the **kube-system** namespace and attaches the previously created IAM policy.
+
+With the IAM role and service account now associated, the next step is to deploy the Amazon EBS CSI driver. The driver can be deployed using a Helm chart or a YAML manifest file. In this demonstration, Helm is used to deploy the driver.
+
+First, add the **aws-ebs-csi-driver** Helm repository, then pull the repository chart listing.
+
+![Add helm repository.](./images/W09Img306AmazonEksAddHelmRepoForCsiDriver.png)
+
+Next, install a release of the driver in the **kube-system** namespace using the Helm chart. The command requires custom values that specify the image repository located in **us-west-2** and the name of the service account for the driver. Because the previously created service account will be used, there is no need to create a new one.
+
+![Install CSI driver.](./images/W09Img308AmazonEksHelmInstallCsiDriver.png)
+
+With the Amazon EBS CSI driver installed, the next step is to verify that the driver is working properly. To do so, deploy a storage class, persistent volume, and a pod that runs a sample app that writes to the persistent volume.
+
+In this demonstration, the following steps highlight dynamic volume provisioning.
+
+Start by cloning the Amazon EBS CSI GitHub repository to the local system.
+
+![Clone Amazon EBS CSI repo.](./images/W09Img310AmazonEksCloneCsiRepo.png)
+
+Navigate to the **dynamic-provisioning** manifests directory to deploy the **ebs-sc** storage class and **ebs-claim** persistent volume claim.
+
+![Storage Class manifests.](./images/W09Img312AmazonEksRepoManifests.png)
+
+For this demonstration, the **ebs-sc** storage class is a Kubernetes resource that will automatically provision an Amazon EBS volume on behalf of the requesting cluster user. The storage class makes the necessary Kubernetes API calls to activate the EBS CSI driver. A cluster user makes storage requests from a storage class using a persistent volume claim, which is another Kubernetes resource that contains the storage requirements.
+
+![Create Storage Class.](./images/W09Img314AmazonEksCreateStorageClass.png)
+
+Now, examine the **ebs-sc** storage class.
+
+![kubesctl describe sc](./images/W09Img316AmazonEksInspectStorageClass.png)
+
+Note that the storage class uses the **WaitForFirstConsumer** volume binding mode. This means that volumes are not dynamically provisioned until a pod specifies the appropriate persistent volume claim.
+
+Next, confirm the status of the PVC.
+
+![kubectl get pvc](./images/W09Img318AmazonEksKubectlGetPvc.png)
+
+This command output shows the ebs-claim PVC is in a pending state. In this demonstration, the claim specifies 4 GB of storage from Amazon EBS. When the corresponding pod with this PVC is declared to the Kubernetes API, the Amazon EBS CSI driver will provision and attach a 4 GB volume to the target Amazon EC2 worker node.
+
+Next, create the pod and check the status of the PVC. The pod specifies that the container process write the date repeatedly to the /data directory, which is backed by an Amazon EBS volume.
+
+![Create a pod.](./images/W09Img320AmazonEksKubectlCreatePod.png)
+
+![kubectl get pvc 2](./images/W09Img322AmazonEksKubectlGetPvc2.png)
+
+Now, confirm that the pod is writing data to the persistent volume. Use the exec command to enter the container and verify that it can write to the /data/out.txt file.
+
+![Check the volume inside the pod.](./images/W09Img324AmazonEksKubectlExec.png)
+
+The output printed on screen demonstrates that the Amazon EBS volume was correctly configured and mounted to the Amazon EC2 worker node.
+
+##### Additional Information
+
+* [https://docs.aws.amazon.com/eks/latest/userguide/ebs-csi.html](https://docs.aws.amazon.com/eks/latest/userguide/ebs-csi.html)
+* [https://docs.aws.amazon.com/eks/latest/userguide/managing-ebs-csi-self-managed-add-on.html](https://docs.aws.amazon.com/eks/latest/userguide/managing-ebs-csi-self-managed-add-on.html)
+* [https://github.com/kubernetes-sigs/aws-ebs-csi-driver](https://github.com/kubernetes-sigs/aws-ebs-csi-driver)
+
+---
+
+### Deploying applications to Amazon EKS
+
+Several methods exist for deploying applications to a Kubernetes cluster running on Amazon EKS. Using the **kubectl** command to deploy applications to the cluster is suitable for testing and development purposes. However, using **kubectl** to deploy microservices is not ideal for production because of poor scalability and high administration overhead.
+
+#### Microservices software development lifecycle
+
+![Microservices software development lifecycle.](./images/W09Img330AmazonEksMicroservicesSoftwareDevelopmentLifecycle.png)
+
+1. **Software developer teams**
+
+    In the microservices model, software developer teams are responsible for developing and maintaining each microservice that makes up part of the application.
+
+2. **Interdependent services**
+
+    Software developers commit their coding for their service using continuous integration. Passing initial testing, the new versions of software are sent through to the respective delivery pipeline.
+
+3. **Delivery pipelines**
+
+    Delivery pipelines decouple your teams and efficiently release independently of other teams. Because tasks that build, test, and deploy applications are repetitive, automating these tasks is the preferred method.
+
+---
+
+#### Application deployment to Amazon EKS
+
+Continuous integration and continuous delivery (CI/CD) is a DevOps model of implementing a microservices software development lifecycle. With continuous integration, developers frequently commit to a shared repository using a version control system, such as Git. A continuous integration service automatically builds and runs unit tests on the new code changes to immediately surface errors. Continuous delivery expands on continuous integration by automating an end-to-end release through to production.
+
+##### Continuous delivery with AWS services
+
+You can use Kubernetes and AWS together to create a fully managed, continuous delivery pipeline for container-based applications. This approach uses Kubernetes’ open source system to manage containerized applications and the AWS developer tools to manage source code, builds, and pipelines.
+
+![Diagram displaying AWS continuous delivery architecture can be created for containerized applications.](./images/W09Img332AmazonEksMicroservicesAwsCdArchitecture.png)
+
+1. **Commit code**
+
+    Developers commit code to a repository, such as Amazon CodeCatalyst. AWS Glue automatically detects the changes to the repository and processes the code changes through the pipeline.
+
+2. **AWS CodeBuild**
+
+    CodeBuild packages the code changes and any dependencies, and builds a Docker image. As an option, another pipeline stage tests the code and the package by also using CodeBuild.
+
+3. **Amazon ECR**
+
+    The Docker image is pushed to Amazon ECR after a successful build stage, test stage, or both.
+
+4. **AWS Lambda**
+
+    AWS Glue invokes a Lambda function to prepare the built and tested artifact for deployment to the Kubernetes cluster. Changes to running applications usually include a change in the image tag.
+
+5. **Declare update to Kubernetes**
+
+    After the deployment manifest update is completed, Lambda invokes the Kubernetes API to deploy or update the application in the Kubernetes cluster.
+
+6. **Deploy application**
+
+    Kubernetes performs a rolling update of the pods in the application deployment to match the Docker image specified in Amazon ECR.
+
+---
+
+#### Gaining observability
+
+Observability is the ability to analyze and view data or processes. It is achieved only after monitoring data (such as metrics) has been compiled. Observability is a term often used interchangeably with monitoring, but they are two different concepts. In this section, you examine the challenges of observability in a microservices environment; review the components of monitoring, including metrics, logging, and tracing; and explore examples of observability.
+
+##### Gaining insight is challenging
+
+![Hundreds of hosts with thousands of containers.](./images/W09Img334AmazonEksMicroservicesObservability.png)
+
+Gaining insight is challenging in any environment. However, it’s more difficult in a microservices environment because there are many potential metrics that you can choose from. Selecting the right ones is not easy.
+
+Containers, in particular, are difficult to monitor because they are generally more transient than your normal workloads. Processes must be in place to capture logs and other useful artifacts from running containers. You must then store these logs and artifacts in a durable, searchable location.
+
+#### The value of insight
+
+With good insight of your applications running in your Amazon EKS cluster, you can answer important questions.
+
+* Customer experience: Are your applications providing the best experience?
+* Performance and cost: How are your changes affecting overall performance and cost?
+* Trends: Do you need to scale?
+* Troubleshooting and remediation: Where did the problem occur and how can it be resolved?
+* Learning and improvement: How do you detect and prevent problems in the future?
+
+#### Three main sources of full observability
+
+Three main sources of full observability are logs, metrics, and traces.
+
+* **Logs**
+
+    Logs collect and aggregate log files from resources and then filters actionable insights from background noise.
+
+* **Metrics**
+
+    Metrics collect and visualize data regarding the health and performance of resources measured over intervals of time. The ability to configure alerts to warn you when key performance indicators run out of bounds is also desirable.
+
+* **Traces**
+
+    Traces follow the path of a request as it passes though different services. Tracing helps developers understand how your application and its underlying services are performing. This helps to identify and troubleshoot the root cause of performance issues and errors.
+
+#### Examples of observability
+
+Many tools exist to ingest data from the three main sources of observability. Often, using multiple tools are necessary for a full solution. In this section, two examples are provided to showcase how both AWS managed tools and open source tools can work with an Amazon EKS cluster.
+
+##### Example: Amazon CloudWatch Container Insights
+
+The following image is an example of how CloudWatch Container Insights can be configured to collect, aggregate, and visualize metrics and logs from Amazon EKS. CloudWatch Container Insights also provides diagnostic information, such as container restart failures, to help you isolate issues and resolve them quickly.
+
+![CloudWatch Container Insights example.](./images/W09Img336AmazonEksContainerInsights.png)
+
+1. **FluentBit agent**
+
+    A log collector with a CloudWatch plugin runs as a DaemonSet on every node. This example uses Fluentd, an open source log collection and aggregation tool. Another option is FluentBit, which is a lightweight version of Fluentd.
+
+2. **CloudWatch metrics**
+
+    The CloudWatch agent runs as a DaemonSet on each worker node. The agent collects and ships metrics data to CloudWatch for further processing.
+
+3. **Amazon EKS control plane logs**
+
+    You can collect Amazon EKS control plane metrics by turning on control plane logging for an Amazon EKS cluster. CloudWatch collects metrics information from these logs, which you can view using CloudWatch Logs Insights.
+
+4. **CloudWatch data access**
+
+    The metrics that Container Insights collects are available in CloudWatch automatic dashboards and also viewable in the  Metrics section of the CloudWatch console. In addition to CPU, memory, disk, and network metrics, Container Insights provides diagnostic information, such as container restart failures, to help with troubleshooting issues.
+
+5. **CloudWatch Logs Insights**
+
+    CloudWatch Logs Insights helps you interactively search and analyze your log data in CloudWatch Logs. You can perform queries to help you more efficiently and effectively respond to operational issues.
+
+---
+
+##### Open source tools for logs and metrics
+
+The following image shows an example of how various open source tools can be configured to collect, aggregate, and visualize metrics and logs from Amazon EKS. Customers opting for open source tools for collecting metrics and logs are free to self-manage those tools themselves or can use the AWS managed equivalents. In this case, AWS provides [Amazon Managed Service for Prometheus](https://aws.amazon.com/prometheus/), [Amazon Managed Grafana](https://aws.amazon.com/grafana/), and [Amazon OpenSearch Service](https://aws.amazon.com/opensearch-service/) as options.
+
+![Open source tools for logs and metrics.](./images/W09Img338AmazonEksOpensourceForLogsMetrics.png)
+
+1. **Prometheus agents**
+
+    Prometheus agents run in a DaemonSet, which means one agent per worker node. Agents collect and ship metric data to a Prometheus server.
+
+2. **Prometheus server**
+
+    Prometheus is the name of an open-source time series database used to collect and store metrics from many different sources including your application workloads if configured to do so. The Prometheus project is a graduated Cloud Native Computing Foundation (CNCF) project like Kubernetes and is a popular solution.
+
+3. **Grafana**
+
+    Grafana provides dashboards to visualize and query your metrics collected by Prometheus.
+
+4. **FluentBit agents**
+
+    Similar to the Prometheus agents, FluentBit agents run on each worker. The agents collect and ship logging data to the OpenSearch server.
+
+5. **OpenSearch**
+
+    OpenSearch is a community-driven, open-source log analytics tool derived from Apache 2.0 licensed Elasticsearch 7.10.2.  Logging data is ingested for log analytics.
+
+---
+
+#### Demonstration: Logging and monitoring in an Amazon EKS cluster using the AWS Management Console
+
+Observability is a crucial process for ensuring the health and status of application workloads, and the platform that runs them. Determining the appropriate metrics for containerized application workloads is difficult because of the ephemeral nature of containers. Also, the vast selection of metrics adds to the difficulty of deciding which metrics are relevant for monitoring application workloads. In this demonstration, you will explore logging and monitoring options for a newly configured Amazon EKS cluster and its core component pieces using the AWS Management Console.
+
+For this demonstration, a new installation of Amazon EKS cluster named **dev** located in the **us-west-2** Region will be used. The cluster has one Amazon EC2 worker node in a managed node group. Control plane logging has not been activated for the cluster.
+
+![AWS Management Console.](./images/W09Img340AmazonEksMonitoringMgmtConsole.png)
+
+Start by navigating to the Amazon EKS service console. Search for the Amazon EKS service by typing “EKS” in the search bar. Next, choose the Elastic Kubernetes Service under the Services category.
+
+![Amazon EKS service console.](./images/W09Img342AmazonEksMonitoringMgmtConsoleEks.png)
+
+Next, choose the **Clusters** link on the left side of the screen under the Amazon EKS heading. The next screen shows that one Amazon EKS cluster exists named **dev**.
+
+![EKS Clusters: dev Cluster.](./images/W09Img344AmazonEksClustersDev.png)
+
+Proceed with choosing the **dev** cluster, then choose the **Configuration** tab. Next, choose the **Logging** sub-tab.
+
+![Cluster logging.](./images/W09Img346AmazonEksClustersDevLogging.png)
+
+Amazon EKS control plane logging provides audit and diagnostic logs directly from the Amazon EKS control plane to CloudWatch Logs in your account. Control plane logging can be managed from this card by choosing the **Manage logging** button. The options include logging for the Kubernetes API server, Controller manager, Scheduler, and so forth. You have the option to activate any or all logging for these components. When activated, logs are sent as log streams to a log group in CloudWatch.
+
+Now, choose the **Manage logging** button. On the next screen, toggle all control plane logging options to Enabled status. Choose the **Save changes** button. The logging update can take up to 4 to 5 minutes. Logs will appear in the CloudWatch Logs under the dev cluster name. The next step is to generate logs, then review them from the CloudWatch console.
+
+![Manage logging.](./images/W09Img348AmazonEksClustersDevLoggingManageLogging.png)
+
+![Save Manage Logging.](./images/W09Img350AmazonEksClustersDevLoggingUpdateHistory.png)
+
+Open a command line interface, or CLI, where with kubectl access. For this demonstration, the kubectl utility has been configured with permissions to run workloads on the dev cluster. To generate logs, use the load generator example from the Autoscaling demonstration:
+
+```shell
+kubectl apply -f https://k8s.io/examples/application/php-apache.yaml
+```
+
+![Deploy Apache.](./images/W09Img352AmazonEksClustersDevApacheDeploy.png)
+
+```shell
+kubectl run -it load-generator --rm --image=busybox --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
+```
+
+![Run Load Generator.](./images/W09Img354AmazonEksClustersDevRunLoadGenerator.png)
+
+This example uses a simple PHP application that performs CPU-intensive computations when receiving an HTTP GET event. The load generator continuously makes calls to the application. Let the load generator run for 2 minutes.
+
+From the AWS Management Console, navigate to the CloudWatch service. Search for the CloudWatch service by typing, “cloudwatch” in the search bar. Finally, choose the CloudWatch Service under the Services category.
+
+![dev Cluster Update History.](./images/W09Img356AmazonEksClustersDevLoggingUpdateHistory2.png)
+
+![CloudWatch Console](./images/W09Img358AmazonEksClustersCloudWatch.png)
+
+On the left side of the screen, expand the Logs menu, then choose **Log groups**.
+
+![CloudWatch Log Groups.](./images/W09Img360AmazonEksClustersCloudWatchLogGroups.png)
+
+From the **Log groups** card, choose the **Log group** associated with the dev cluster. For this demonstration, **/aws/eks/dev/cluster** is that **Log group**. The log group name format is ```/aws/eks/<cluster-name>/cluster```.
+
+![CloudWatch Log Group /aws/eks/dev/cluster.](./images/W09Img362AmazonEksClustersCloudWatchChooseLogGroup.png)
+
+The top card, **Log group details**, shows various points of data including Retention, Metric filters, log storage, and so forth. The Log streams card shows various log streams that correspond to the control plane logging configuration that was made earlier. Each log stream has a unique identifier appended to the name.
+
+![CloudWatch Log Group details.](./images/W09Img364AmazonEksClustersCloudWatchLogGroupDetails.png)
+
+Next, choose a **kube-apiserver** log stream. The next screen shows options to filter events by time and by various word combinations. Below that are the captured logs showing the time the log was recorded and the message written by the Kubernetes API server.
+
+![CloudWatch Log Stream.](./images/W09Img366AmazonEksClustersCloudWatchLogGroupLogStreamLogEvents.png)
+
+Expand one of the entries to see the full contents of the message. As log stream data grows or ages, the log stream names are rotated.
+
+![CloudWatch Log Message.](./images/W09Img368AmazonEksClustersCloudWatchLogGroupLogStreamLogEventMessage.png)
+
+Next, choose the **Container Insights** from the menu on the left side of the screen. For this demonstration, the dev cluster has all the requisite configured components to activate this CloudWatch service. CloudWatch Container Insights collect, aggregate, and summarize metrics and logs from your containerized applications and microservices. This screen shows options to filter by time or by cluster, resources, and alarms. The Resources card shows the containers that are sending logs to CloudWatch. You can see the name of the resource, like a pod, namespace, and so forth. You also can see the name of the cluster where the resource resides, alarm status, and compute consumption, such as CPU and memory. If alarms are active, then you can see more details on the Alarms card.
+
+![Container Insights.](./images/W09Img370AmazonEksClustersCloudWatchContainerInsights.png)
+
+![Container Insights Resources.](./images/W09Img372AmazonEksClustersCloudWatchContainerInsightsResources.png)
+
+![Container Insights Alarms.](./images/W09Img374AmazonEksClustersCloudWatchContainerInsightsAlarms.png)
+
+Next, choose **Performance monitoring** from the dropdown menu near the top of the screen.
+
+![Container Insights Performance Monitoring.](./images/W09Img376AmazonEksClustersCloudWatchContainerInsightsPerformanceMonitoring.png)
+
+The next screen shows various data regarding resource usage of containers running in Amazon EKS. You can filter the view by AWS service, cluster namespace, nodes, and so forth.  Additionally, you can create various dashboards that suit your logging requirements for both Amazon EKS cluster and your application workloads.
+
+![Container Insights Dashboard.](./images/W09Img378AmazonEksClustersCloudWatchContainerInsightsDashboard.png)
+
+##### Additional Information
+
+* [https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)
+* [https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html)
+* [https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-EKS-logs.html](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-EKS-logs.html)
+
+---
+
+### Maintaining an Amazon EKS Cluster
+
+#### Maintaining add-ons
 
 ---
 
