@@ -1659,6 +1659,339 @@ The next screen shows various data regarding resource usage of containers runnin
 
 #### Maintaining add-ons
 
+Add-ons extend the operational capabilities of Amazon EKS clusters, but they are not specific to any one application. This includes software like observability agents or Kubernetes drivers that allow the cluster to interact with underlying AWS resources for networking, compute, and storage. Add-on software is typically built and maintained by the Kubernetes community, cloud providers like AWS, or third-party vendors. In this topic, you explore the challenges of maintaining third-party apps and the complexity it adds to upgrade scenarios.
+
+#### Default Amazon EKS add-ons
+
+Amazon EKS automatically installs on every cluster the following add-ons:
+
+* Amazon Virtual Private Cloud (Amazon VPC) container network interface (CNI)
+* kube-proxy
+* CoreDNS
+
+These add-ons provide core functionality to your cluster and run as pods in your cluster's data plane (pods running on cluster nodes or as AWS Fargate pods).
+
+The manner of maintaining these add-ons depends on how they were implemented in your cluster. For example, if you create a cluster using the AWS Management Console or with eksctl using a configuration file, the managed Amazon EKS add-ons are installed. You can use the AWS Management Console, eksctl, or the AWS Command Line Interface (AWS CLI) utility to maintain and automatically upgrade them. However, if you create a cluster using eksctl without a config file or using any other tool, the self-managed kube-proxy, Amazon VPC CNI, and CoreDNS add-ons are installed. You will use the kubectl command line tool to maintain and upgrade the add-ons directly in the cluster.  
+
+All Amazon EKS add-ons include the latest security patches and bug fixes, and they are validated by AWS to work with Amazon EKS. With Amazon EKS add-ons, you can consistently ensure that your Amazon EKS clusters are secure and stable, and reduce the amount of work that you need to do to install, configure, and update add-ons.
+
+---
+
+Self-managed Amazon EKS default add-ons will not appear in the AWS Management Console. You can convert self-managed add-ons to managed by manually reinstalling them using the methods previously mentioned.
+
+---
+
+#### Third-party add-ons
+
+Amazon EKS clusters often contain many outside products, such as ingress controllers, continuous delivery systems, monitoring tools, and other workflows. These types of add-ons are installed and configured by you. When you are planning to upgrade the Kubernetes version of your cluster, you must identify all the agents, operators, and services that are compatible with the new cluster version. In some cases, you might need to also test new versions of the add-ons in the upgraded cluster to validate that the add-on is ready for production usage. Ultimately, you need to determine the correct order to upgrade components during the cluster upgrade cycle.
+
+Minor releases of Kubernetes often make changes to the built-in APIs, which means any third-party add-ons must be reviewed to ensure that they are not using deprecated APIs and are configured for any new APIs.
+
+#### Summary of third-party add-on challenges
+
+* Test and validate third-party add-on dependencies.
+* Determine the correct order to upgrade components.
+* Plan for API changes.
+
+#### Amazon EKS managed add-ons
+
+![Amazon EKS managed add-ons.](./images/W09Img380AmazonEksClustersAddOnsManagement.png)
+
+1. **List of managed add-ons**
+
+    To locate the Amazon EKS managed add-ons, choose the Configuration tab, and then choose Add-ons.
+
+2. **Add-ons**
+
+    The available managed add-ons are shown in separate cards. The current Amazon EKS cluster shows three managed add-ons — **coredns**, **kube-proxy**, and **vpc-cni**.
+
+3. **Add-on management**
+
+    Amazon EKS cluster administrators have a choice to edit, remove, or add new add-ons to a cluster. Choosing the Edit button provides options to upgrade add-ons.
+
+#### Managing upgrades
+
+New Kubernetes versions can introduce significant changes. The impact of these changes can vary greatly, even among upgrades of the same type. In this section, you will examine the Amazon EKS upgrade process along with various upgrade strategies for your Amazon EKS worker nodes.
+
+#### Upgrading an Amazon EKS cluster
+
+Upgrading an Amazon EKS cluster is a nontrivial task and requires careful planning. When you run Kubernetes on Amazon EKS, you have the benefit of AWS managing the upgrade of your Kubernetes control plane when you are ready to proceed. The Amazon EKS platform defines which Kubernetes versions are supported in Amazon EKS.
+
+When deciding whether to upgrade to a new Kubernetes version, consider the following:
+
+* What is the benefit of upgrading to the next version of Kubernetes?
+* Which team is responsible for completing the upgrade of a Kubernetes version?
+* What downstream components, such as nodes and add-ons, will also need to be upgraded?
+* In what order will the downstream dependencies need to get upgraded?
+* What impact will there be to applications during the upgrade?
+* Do any applications in the ecosystem use Kubernetes APIs? Consider doing an impact analysis to these applications as well.
+
+---
+
+#### Amazon EKS upgrade process
+
+Any upgrade plan must take into account how the Amazon EKS cluster upgrade occurs. The following is the sequence of events that occur during the cluster upgrade.
+
+1. **API server nodes**
+
+    During an upgrade, Amazon EKS launches new API server nodes with the upgraded Kubernetes version to replace the existing ones. Amazon EKS performs standard infrastructure and readiness health checks for network traffic on these new nodes to verify that they are working as expected.
+
+2. **Automatic rollback**
+
+    If any of these checks fail, Amazon EKS reverts the infrastructure deployment and your cluster remains on the previous Kubernetes version. Running applications are not affected, and your cluster is not left in an unrecoverable state. Amazon EKS regularly backs up all managed clusters, and mechanisms exist to recover clusters, if necessary.
+
+3. **Possible minor service interruptions**
+
+    To upgrade the cluster, Amazon EKS requires two to three free IP addresses from the subnets provided when you created the cluster. If these subnets do not have available IP addresses, the upgrade can fail. Additionally, if any of the subnets or security groups provided during cluster creation have been deleted, the cluster upgrade process can fail.
+
+4. **Upgrade nodes and Kubernetes add-ons**
+
+    Amazon EKS does not modify any of your running applications, cluster worker nodes, Amazon EKS add-ons, or Kubernetes add-ons when you upgrade your cluster's control plane. You will need to perform the necessary tasks to complete the cluster upgrade process.
+
+---
+
+#### Upgrading cluster worker nodes
+
+* **Self-managed nodes**
+
+    Upgrade using AWS CloudFormation template, eksctl, and kubectl.
+
+* **Managed node groups**
+
+    Upgrade using the AWS Management Console or eksctl.
+
+* **AWS Fargate**
+
+    No node upgrades are required. Underlying infrastructure is upgraded automatically.
+
+---
+
+#### Selecting an upgrade strategy for worker nodes
+
+The worker node upgrade process depends mainly on whether worker nodes are in a managed group or a self-managed group. The following sections provides high-level details for both types of groups.
+
+##### Managed worker nodes
+
+If you are running managed node groups, Amazon EKS automatically updates your nodes for you when you initiate a managed node group update. When you upgrade a managed node group version, Amazon EKS does the following:
+
+* Amazon EKS creates a new Amazon Elastic Compute Cloud (Amazon EC2) launch template version for the EC2 Auto Scaling group associated with your node group. The new template uses the target Amazon Machine Image (AMI) for the upgrade.
+* The EC2 Auto Scaling group is upgraded to use the latest launch template with the new AMI.
+* The EC2 Auto Scaling group maximum size and desired size are incremented to ensure that new EC2 instances are created along with your existing EC2 instances.
+* The EC2 Auto Scaling group launches a new instance with the new AMI to satisfy the increased size of the node group.
+* Amazon EKS checks the nodes in the node group for the eks.amazonaws.com/nodegroup-image label. Amazon EKS cordons all nodes in the node group that are not labeled with the latest AMI ID. This prevents nodes that have already been upgraded from a previous failed upgrade from being cordoned.
+* Amazon EKS randomly selects a node in your node group and sends a termination signal to the EC2 Auto Scaling group. Then, Amazon EKS sends a signal to drain the pods from the node. After the node is drained, it is terminated. This step is repeated until all nodes are using the new AMI version.
+* The EC2 Auto Scaling group maximum size and desired size are decremented by 1 to return to your pre-upgrade values.
+
+There are two options for the update strategy:
+
+* **Rolling update** — This option respects PodDisruptionBudgets for your cluster. The update fails if Amazon EKS is unable to gracefully drain the pods that are running on this node group because of a PodDisruptionBudget issue.
+* **Force update** — This option does not respect PodDisruptionBudgets. It forces node restarts.
+
+To learn more about the details of the managed node group upgrade process, visit [Managed node update behavior](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-update-behavior.html) in the *Amazon EKS User Guide*.
+
+##### Self-managed worker nodes
+
+If you are upgrading self-managed node groups, you have the following two strategies to consider:
+
+* **Migrate to a new node group** — Create a new node group and migrate your pods to that group.
+* **Update the existing self-managed node group** — Update the AWS CloudFormation stack for an existing node group to use the new AMI.
+
+Between these two methods, migrating to a new node group is the preferred upgrade strategy, because it is more graceful than updating the AMI ID in an existing CloudFormation stack. The migration process drains the old nodes after a new stack is ready to accept the existing pod workload.
+
+##### Migrating to new self-managed node group
+
+![Node group running a previous version of Kubernetes and a new node group running the latest supported version.](./images/W09Img382AmazonEksClustersMigratingToNewSelfManagedNodeGroup.png)
+
+1. **Suspend scheduling**
+
+    One of the first steps during an upgrade is to suspend scheduling on old node groups.
+
+2. **Start application migration**
+
+    Use tools such as Flagger for canary deployments with a fallback mechanism in place. You can greatly reduce risk by pushing one application at a time to new nodes to verify compatibility. To learn more about Flagger, visit the [Flagger](https://docs.flagger.app/) documentation.
+
+3. **Large node groups**
+
+    Be careful using this method with large node groups that are already straining resource availability.
+
+---
+
+#### Demonstration: Upgrading an Amazon EKS Cluster
+
+Kubernetes releases multiple versions throughout the year, which provide new features, security patches, and bug fixes. As such, you must implement a regular maintenance cycle that includes periodic upgrades to your Amazon EKS cluster. In this demonstration, you will examine upgrading an Amazon EKS cluster version, the node group version, and the default managed cluster add-ons.
+
+For this demonstration, a new installation of a Kubernetes cluster version 1.20 located in the us-west-2 Region will be upgraded using the AWS Management Console. The cluster has one Amazon EC2 node in a managed node group.
+
+Start by navigating to the Amazon EKS service console. Search for the Amazon EKS service by typing “EKS” in the search bar. Finally, select the Elastic Kubernetes Service under the Services category.
+
+![Amazon EKS service console.](./images/W09Img390AmazonEksConsole.png)
+
+The landing page shows that one Amazon EKS cluster named dev exists. The status shows active and running Kubernetes v1.20. A banner states that new Kubernetes versions are available for the cluster. Although a link to update the cluster shows on this screen, proceed with choosing the dev cluster, then choose the Configuration tab.
+
+![Amazon EKS service console: Clusters](./images/W09Img394AmazonEksConsoleClusterConfiguration.png)
+
+The next screen presents details about the dev cluster including a banner prompting you to upgrade the cluster to a newer version along with a second banner stating that new versions are available for one add-on. Choose the Update cluster version button to begin the cluster upgrade process. For Kubernetes version, select the 1.21 version and choose Update. This process will only upgrade the Kubernetes control plane components to the latest supported release of v1.21. The next screen shows the update is in progress. Control plane component upgrades can take up to 25 minutes to complete.
+
+![Amazon EKS service console: Update Cluster.](./images/W09Img396AmazonEksConsoleClusterUpdate.png)
+
+![Amazon EKS service console: Update Cluster in progress.](./images/W09Img398AmazonEksConsoleClusterUpdateInProgress.png)
+
+![Amazon EKS service console: Update Cluster is complete.](./images/W09Img400AmazonEksConsoleClusterUpdateComplete.png)
+
+Now that the control plane upgrade is complete, the Cluster configuration card shows Kubernetes version 1.21 is now the current version of the cluster and the status shows active. Choose the Update history sub-tab. All configuration and version updates to the cluster are logged here. The details in the Update history card state that the upgrade was successful.
+
+![Amazon EKS service console: Update history.](./images/W09Img402AmazonEksConsoleClusterUpdateHistory.png)
+
+If the upgrade failed, then the result could also be found here. Before moving on, notice a banner shows that new AMI release versions are available for one node group and a second banner states that new versions are available for three add-ons.
+
+Next, update the worker node to the same Kubernetes minor version as the upgraded cluster. Choose the **Compute** sub-tab.
+
+![Amazon EKS service console: Compute.](./images/W09Img404AmazonEksConsoleClusterConfigurationCompute.png)
+
+Choose the **ng-dev** link under the Group name heading.
+
+![Amazon EKS service console: Node Group.](./images/W09Img406AmazonEksConsoleClusterNodeGroup.png)
+
+Choose the **Update node group** button to start the node group upgrade process. On the next screen, leave the defaults settings of **Update the Node Group** version toggled on and **Rolling update** as the Update strategy. Choose the **Update** button. The update for the one worker node takes several minutes to complete, though additional nodes in the node group can take additional time.
+
+![Amazon EKS service console: Update Node Group.](./images/W09Img408AmazonEksConsoleClusterUpdateNodeGroup.png)
+
+![Amazon EKS service console: Update Node Group in progress.](./images/W09Img410AmazonEksConsoleClusterUpdateNodeGroupInProgress.png)
+
+![Amazon EKS service console: Update Node Group complete.](./images/W09Img412AmazonEksConsoleClusterUpdateNodeGroupComplete.png)
+
+With the update to the managed node group complete, the node group configuration shows Kubernetes version 1.21 is now the current version. Choose the **Update history** sub-tab. All version updates to managed node groups are logged here. The details in the Update history card state that the upgrade was successful. Similarly, if the upgrade failed, then the result can be found here.
+
+![Amazon EKS service console: Node Group Update History.](./images/W09Img414AmazonEksConsoleClusterNodeGroupUpdateHistory.png)
+
+The last step for this demonstration is to upgrade the managed add-ons. Choose dev from the breadcrumb list, then choose the **Add-Ons** sub-tab.
+
+![Amazon EKS service console: Add-Ons.](./images/W09Img416AmazonEksConsoleClusterConfigurationAddOns.png)
+
+Because the cluster was upgraded to v1.21, all three add-ons now have new versions available. For this demonstration, only the coredns add-on will be upgraded.
+
+![Amazon EKS service console: Add-On Cards.](./images/W09Img418AmazonEksConsoleClusterConfigurationAddOnsCoredns.png)
+
+Scroll down to the Add-on cards, and then choose the **coredns** link.
+
+![Amazon EKS service console: Coredns Add-On.](./images/W09Img420AmazonEksConsoleAddOnCoredns.png)
+
+Choose the Update now button to start the upgrade process. The next screen shows the recommended version update and the option to override the existing configuration. If updating add-ons fail, then overriding the configuration forces the update to succeed. For this demonstration, leave the version update and check the override existing configuration box to force the update. Finally, choose the **Update** button.
+
+![Amazon EKS service console: Update Coredns Add-On.](./images/W09Img422AmazonEksConsoleAddOnUpdateCoredns.png)
+
+The coredns add-on upgrade is complete. Scroll down to the Update history card. Each add-on has an Update history card that shows the logs for each update. The details of the card state the upgrade was successful. If the upgrade failed, the result can be found here, and the add-on status will show as degraded.
+
+![Amazon EKS service console: Coredns Add-On Update History.](./images/W09Img424AmazonEksConsoleAddOnCorednsUpdateHistory.png)
+
+##### Additional Information
+
+* [https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html](https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html)
+* [https://docs.aws.amazon.com/eks/latest/userguide/update-managed-node-group.html](https://docs.aws.amazon.com/eks/latest/userguide/update-managed-node-group.html)
+* [https://docs.aws.amazon.com/eks/latest/userguide/managing-coredns.html](https://docs.aws.amazon.com/eks/latest/userguide/managing-coredns.html)
+
+---
+
+### Managing Amazon EKS Costs
+
+#### Overview
+
+One of the [Six Pillars of the AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/) is cost optimization, which is summarized as running systems to deliver business value at the lowest price point. This topic describes the primary drivers of cost in Amazon Elastic Kubernetes Service (Amazon EKS) with a specific attention to compute cost options using the framework as the point of reference.
+
+#### Amazon EKS pricing model
+
+The control plane of an Amazon EKS cluster makes up the smallest amount of cost as represented in the following graphic. Compute resources make up the largest source of cost for the cluster.
+
+![Amazon EKS pricing model.](./images/W09Img430AmazonEksPricingModel.png)
+
+1. **Compute resources**
+
+    Compute services, like Amazon Elastic Compute Cloud (Amazon EC2) and AWS Fargate, are likely to make up the majority of the cost of the EKS cluster. The total cost of ownership differs depending on which compute resource is running in the cluster. The difference in overall cost between running workloads on Fargate or with EC2 instances depends on the practice of rightsizing and reducing the waste of underused compute capacity.
+
+2. **Networking services**
+
+    Amazon EKS clusters can use a variety of networking and content-delivery services, such as load balancers, that contribute to overall cost.
+
+3. **Control plane**
+
+    Customers incur a charge per cluster, but this cluster charge makes up a small part of the overall cost.
+
+---
+
+#### Cost of an Amazon EKS cluster
+
+A review of a simplified Amazon EKS cluster diagram provides an initial step for calculating the cost of running an Amazon EKS cluster consisting of compute and networking resources. The following reference architecture shows an example of a viable Amazon EKS cluster. As the architecture is for reference, additional components (additional storage, networking, and so forth) are excluded.
+
+![An Amazon EKS cluster with AWS resources deployed in two Availability Zones.](./images/W09Img432AmazonEksClusterExample.png)
+
+The reference architecture of an Amazon EKS cluster shown consists of the following AWS objects that incur costs.
+
+| Service | Number of Items |
+| ------- | --------------- |
+| Amazon EKS control plane | 1 |
+| Networking services (Application Load Balancer, NAT gateway)| 3 |
+| Compute services (Amazon EC2) | 14 |
+
+The diagram shows that compute services such as Amazon EC2 instances have the largest impact on cost for an Amazon EKS cluster. The actual amount depends on the instance type.
+
+#### Managing compute costs
+
+AWS provides a variety of purchasing options for compute resources that act as the worker nodes in your cluster.
+
+* **On-Demand**
+
+    Pay for the compute resources your workloads actually consume as they consume those resources. This is a good choice for workloads with spikes in demand that are stateful or do not tolerate interruption well.
+
+* **Savings Plan or Reserved Instances**
+
+    Savings Plans and Reserved Instances are good choices for steady-state workloads, such as databases.
+
+* **Compute Savings Plans**
+
+    Savings Plans are a flexible pricing model that offer low prices on Amazon EC2 and Fargate usage in exchange for a commitment to a consistent amount of usage (measured in dollars per hour) for a 1- or 3-year term. When you sign up for a Savings Plan, you will be charged the discounted Savings Plans price for your usage up to your commitment.
+
+    Visit the [Savings Plans pricing page](https://aws.amazon.com/savingsplans/) for additional information.
+
+* **Reserved Instances**
+
+    Commit to a certain amount of compute for 1 or 3 years at a discounted price. Amazon EC2 Reserved Instances provide a significant discount compared to On-Demand pricing, and they provide a capacity reservation when used in a specific Availability Zone or Region.
+
+    Visit the [Amazon EC2 Reserved Instances pricing page](https://aws.amazon.com/ec2/pricing/reserved-instances/) for additional information.
+
+* **Spot or Fargate Spot**
+
+    Take advantage of unused Amazon EC2 capacity in the AWS Cloud, paying much less than On-Demand Instances without the commitment of Reserved Instances. This is a good choice for stateless or other fault-tolerant workloads, even if they experience spikes in demand.
+
+---
+
+#### How managed services reduce cost
+
+Amazon EKS is itself a great example of a managed service that removes the undifferentiated heavy lifting of managing your cluster’s control plane. You can also make greater use of managed services in Amazon EKS by using managed node groups instead of manually managing your worker nodes.
+
+Using managed services accomplishes the following:
+
+* Reduces your total cost of ownership by saving on engineering hours
+* Enhances productivity because people can focus on development
+* Improves security, stability, and compliance
+
+#### To learn more
+
+In this topic, you learned about the Amazon EKS pricing model and the primary drivers of cost for an Amazon EKS cluster. You can calculate your Amazon EKS cluster architecture cost using the AWS Pricing Calculator.
+
+* [AWS Pricing Calculator](https://calculator.aws/#/)
+
+---
+
+### [Lab: Deploying Containerized Applications to Amazon EKS](./labs/W092Lab2DeployingApptoEks.md)
+
+In this hands-on lab, you deploy and run a pre-built containerized application on an Amazon Elastic Kubernetes Service (Amazon EKS) cluster using an AWS integrated development environment (IDE). You will gain experience with the workflow of managing Kubernetes on AWS using multiple tools and approaches.
+
+In this lab, you will perform the following tasks:
+
+* Configure IDE
+* Deploy an Amazon EKS cluster and managed node group
+* Deploying Containerized Tasks to Amazon EKS Using Imperative and Declarative Approaches
+
 ---
 
 ## WORKING WITH AMAZON ECS
