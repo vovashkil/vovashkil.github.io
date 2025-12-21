@@ -1992,9 +1992,620 @@ In this lab, you will perform the following tasks:
 * Deploy an Amazon EKS cluster and managed node group
 * Deploying Containerized Tasks to Amazon EKS Using Imperative and Declarative Approaches
 
+### Knowledge Check
+
+#### What is a Kubernetes service?
+
+* Logical collection of pods and a means to access them
+
+Wrong answers:
+
+* Logical collection of pods and a means to schedule them
+* Tooling that ensures that all (or some) nodes run a copy of a pod
+* Tooling that maintains a stable set of replica pods running at any given time
+
+##### Explanation
+
+In Kubernetes, a service is a logical collection of pods and a means to access them. The service is continually updated with the set of pods available, eliminating the need for pods to track other pods.
+
+The other options are incorrect because:
+
+* Kubernetes service is not just a collection of pods. A service is an abstraction that defines a logical set of pods and provides network connectivity to those pods without exposing the actual pod IPs directly.
+* Services do not ensure that pods are running on nodes. That functionality is provided by other Kubernetes objects, like ReplicaSets or deployments.
+* Services provide more functionality beyond just maintaining replicas of pods. They abstract the pod IPs and enable service discovery.
+
+#### What is the Amazon Virtual Private Cloud (Amazon VPC) container network interface (CNI) plugin?
+
+* Plugin that allows Kubernetes pods to have the same IP address inside the pod as they do on the VPC network
+
+Wrong answers:
+
+* Logical networking component in a VPC that represents a virtual network card
+* Method for connecting instances in a private subnet to the internet
+* Kubernetes object that exposes an application running on a set of pods
+
+##### Explanation
+
+Amazon EKS integrates VPC networking into Kubernetes using the CNI plugin for Kubernetes. The CNI plugin allows Kubernetes pods to have the same IP address inside the pods as they do on the VPC network.
+
+The other options are incorrect because:
+
+* The CNI plugin is specifically related to enabling networking for Kubernetes pods and services running on Amazon EKS or other containerized workloads, not for connecting EC2 instances to the internet.
+* While Kubernetes has objects like services and ingresses that expose applications, the VPC CNI plugin is not a Kubernetes object. It is an underlying networking component that integrates with the Amazon VPC networking model.
+* The VPC CNI plugin does not assign the same IP addresses to pods as on the VPC network. Instead, it provisions an elastic network interface for each pod to allow outgoing connections over the VPC network.
+
+#### What is the recommended method to update self-managed Amazon Elastic Kubernetes Service (Amazon EKS) cluster nodes to a new version of Kubernetes?
+
+* Replace the nodes with the new Amazon Machine Image (AMI) and migrate the pods to the new group.
+
+Wrong answers:
+
+* Amazon EKS automatically updates cluster nodes when a user updates the control plane.
+* Deploy Update pods as a DaemonSet to each node.
+* Update the AWS CloudFormation stack for the node group to use the new AMI.
+
+##### Explanation
+
+Migrating to a new node group is the preferred upgrade strategy because it is more graceful than updating the AMI ID in an existing AWS CloudFormation stack.
+
+The other the options are incorrect because:
+
+* Amazon EKS does not automatically update self-managed worker nodes.
+* Deploying some "Update pods" is not a sufficient or standard approach, because it does not provide a complete or recommended method for updating Kubernetes versions on self-managed EKS nodes.
+* While AWS CloudFormation can be used to manage EKS node groups, simply updating the CloudFormation stack does not accomplish the update of the Kubernetes version on the existing nodes. Additional steps are required beyond just updating the CloudFormation stack.
+
+#### What is the largest cost driver for Amazon Elastic Kubernetes Service (Amazon EKS)?
+
+* Compute resources
+
+Wrong answers:
+
+* Amazon CloudWatch
+* Amazon EKS instances
+* Network resources
+
+##### Explanation
+
+Compute resources are the largest cost driver for running an Amazon EKS cluster.
+
+The other options are incorrect because:
+
+* CloudWatch is a monitoring and observability service not directly related to the compute costs of running Amazon EKS clusters and workloads. While CloudWatch can be used to monitor Amazon EKS resources, it is not the primary cost driver.
+* Amazon EKS does not provision Amazon Elastic Compute Cloud (Amazon EC2) instances directly. Amazon EKS is a managed Kubernetes control plane service, while the worker nodes (instances) run in Amazon EC2 Auto Scaling groups.
+* While network resources like Elastic Load Balancing, virtual private clouds (VPCs), and so on, are required for Amazon EKS and incur costs, they are typically not the largest cost component compared to the compute resources required for running containerized workloads at scale.
+
+### Summary
+
+#### Amazon EKS
+
+Amazon Elastic Kubernetes Service (Amazon EKS) is a fully managed Kubernetes service provided by AWS. Kubernetes is an open source container orchestration system that helps manage and scale containerized applications.
+
+* **Fully managed service**: Amazon EKS takes care of the provisioning, configuring, and managing of the Kubernetes control plane, allowing users to focus on their applications and workloads.
+* **High availability and scalability**: Amazon EKS provides highly available and scalable Kubernetes clusters, ensuring that applications can handle increasing workloads and traffic.
+
+Integrating Amazon EKS with other services
+
+Integrating Amazon EKS with other AWS services provides many benefits and can further enhance the functionality, performance, and security of Kubernetes workloads. By combining the power of Amazon EKS with other AWS services, you can create a cohesive and scalable Kubernetes platform that meets your organization's specific needs.  
+
+* Amazon Elastic Compute Cloud (EC2) provides scalable computing capacity in the AWS Cloud. Amazon EKS can integrate with Amazon EC2 to provide the underlying infrastructure for Kubernetes clusters, allowing users to launch EC2 instances as Kubernetes nodes. This integration provides a highly scalable and flexible hosting environment for applications.
+* Amazon Relational Database Service (Amazon RDS) is a fully managed relational database service that EKS can integrate with to provide high-performance and highly available databases for Kubernetes applications. With Amazon RDS, users can deploy databases without having to worry about managing the underlying infrastructure, which makes it easier to focus on applications and data.
+* Amazon Simple Storage Service (Amazon S3) enables users to store and retrieve large amounts of data from Kubernetes applications. With this integration, users can build built-for-the-cloud applications that can seamlessly interact with robust object storage. Users benefit from scalable capacity and high availability, as well as advanced data security features, such as server-side encryption.
+
+#### Maintaining an Amazon EKS cluster
+
+Amazon EKS makes managing Kubernetes clusters easier by handling provisioning and lifecycle management, but there are still maintenance tasks to handle. These include upgrading to newer Kubernetes versions, scaling node groups up or down based on demand, continuously monitoring the health of nodes and pods, applying security patches and updates, and replacing unhealthy nodes. Proper maintenance ensures that Amazon EKS clusters stay available, performant, and secure over time as users deploy more applications. Best practices are to enable auto-updates for security patches, monitor cluster metrics, keep node groups rightsized, and test upgrades in non-production first. With good maintenance habits, Amazon EKS provides a robust Kubernetes environment to reliably run containerized applications.
+
+#### Managing Amazon EKS costs
+
+Amazon EKS costs can be managed by rightsizing worker nodes, optimizing pod density, eliminating idle resources, using Spot Instances, and enabling cost allocation tags. Rightsizing worker nodes involves choosing instance types and sizes that match workload needs. Optimizing pod density means maximizing the number of pods per node to improve resource use. Idle resources that aren't being used should be removed to avoid paying for unused capacity. Spot Instances can reduce Amazon EC2 costs by allowing unused Amazon EC2 capacity to be purchased at a discount. Enabling cost allocation tags allows costs to be tracked and attributed to teams, applications, and environments.
+
 ---
 
 ## WORKING WITH AMAZON ECS
+
+### Amazon ECS Overview
+
+#### Deploying Docker containers with Amazon ECS
+
+Amazon Elastic Container Service (Amazon ECS) is a fully managed service for orchestrating containerized applications on AWS. It allows you deploy, at any scale, your Docker containers without having to manually manage the Docker Engine and the various interactions your applications have with other AWS services.
+
+You first store your container images in a Docker repository, such as Amazon Elastic Container Registry. Then, you provide Amazon ECS with three sets of information.
+
+* Container image are you deploying.
+* How you want it deployed, including which compute service to use, usually Amazon Elastic Compute Cloud (Amazon EC2) or AWS Fargate, and rules for scaling and capacity.
+* How other AWS services should be configured to work with your application. Perhaps you need Elastic Load Balancing (ELB) or persistent data with Amazon Elastic File System (Amazon EFS).
+
+Configuring all of this is more or less complex depending on the complexity of your needs.
+
+Once configured, all control plane activities are fully managed by Amazon ECS. AWS manages your network connectivity, scaling (both up and down) across multiple Availability Zones, and the underlying security of the container environment. Amazon ECS also provides you with metrics and logs for monitoring your applications.
+
+#### Amazon ECS components
+
+The following are key components of Amazon ECS.
+
+* **Amazon EC2 container instance**: A container instance is an EC2 instance that is configured to host containers.
+* **Amazon ECS cluster**: An ECS cluster is a logical grouping of tasks or services. A cluster also specifies configuration information for its tasks or services.
+* **Namespace**: A namespace establishes a domain name for a service to enable service-to-service communication.
+* **Service**: A service runs and maintains a specified number of instances of a task definition. It ensures that a new task is launched if one fails or stops.
+* **Task**: A task is a group of containers that run together as an instance. Tasks eliminate the need to manually configure dependencies among containers. They are also necessary for cooperation among containers when they are running serverlessly on Fargate.
+* **Task definition**: A task definition specifies the container(s) that a task is composed of. A task is an instance of a task definition.
+
+#### Amazon ECS use cases
+
+Amazon ECS can be used to quickly deploy your container clusters for a variety of tasks, from rapidly scalable web applications to machine learning operations.
+
+* **Scale Web Applications**
+
+    You can automatically scale and run web applications in multiple Availability Zones with the performance, scale, reliability, and availability of AWS.
+
+* **Support Batch Processing**
+
+    You can use Amazon ECS to support batch workloads. Plan, schedule, and run batch computing workloads across the full range of AWS services, including Amazon EC2, Fargate, and Amazon EC2 Spot Instances.
+
+* **AWS Deep Learning Containers**
+
+    AWS Deep Learning Containers are Docker images that are preinstalled with deep learning frameworks so you can deploy custom machine learning environments quickly. You can skip the complicated process of building and optimizing your environments from scratch. Deep Learning Containers support Apache MXNet, PyTorch, and TensorFlow. You can deploy Deep Learning Containers on Amazon ECS.
+
+* **Deploy in a Hybrid Environment**
+
+    Build container-based applications on premises or in the cloud with Amazon ECS Anywhere. Enjoy consistent tooling, management, workload scheduling, and monitoring across environments.
+
+---
+
+#### Using Amazon ECS
+
+We often want multiple containers running, both for resilience and for scalability. You'll want to spread your container workload out across multiple AWS Availability Zones to avoid single points of failure. And you'll also want to scale your containers, depending on the demand. Containers are fantastic for responding quickly to increased application load, quickly scaling out, and then just as quickly scaling in.
+
+![Container Deployment.](./images/W09Img440ContainerDeployment.png)
+
+* Because your container workload should be able to scale in or out, think of each container instance as ephemeral. This means you'll likely need to integrate with other services to store persistent data in places like EBS volumes or in databases like DynamoDB. To make integrations possible, that also means that you'll need a way to manage the permissions that your container has.
+* Beyond integrations and permissions, as your container workload scales in and out, the containers will need to automatically figure out how to communicate amongst themselves over the network. The network addresses change when the new containers are run and the old ones are retired.
+* New containers need to send their logs and metrics somewhere that we can get to them, like Amazon CloudWatch or a third-party monitoring service.
+
+Container orchestration platforms handle spinning up our containers and bringing them down, making sure to wire up the networking to our specifications, handling permissions, and providing integrations with other services. There are many container orchestrations platforms.
+
+![Container Orchestration Platforms.](./images/W09Img442ContainerOrchestration.png)
+
+1. Docker Swarm - could be used to manage the container lifecycle on your own, using EC2 for compute.
+2. Amazon Elastic Container Service, or Amazon ECS
+3. Amazon Elastic Kubernetes Service, or Amazon EKS
+
+![Container Orchestration Platforms on AWS.](./images/W09Img444ContainerOrchestrationOnAws.png)
+
+An orchestration platform components:
+
+* **control plane**
+* **data plane**
+
+![Orchestration Platform Concepts.](./images/W09Img446AmazonEcsControlPlaneDataPlane.png)
+
+In the cloud, the **control planes** are responsible for provisioning software, any user or service-requested configurations, and managing the lifecycle of resources. The control plane is also responsible for helping the data plane do its work.
+
+A **data plane provides** the capacity to perform whatever work the control plane requests to be done. Let's take Amazon Elastic Container Service, or Amazon ECS, for example. ECS is considered the control plane, and the compute platform on which ECS runs its containers is called the data plane. You interact with the control plane via an API, and the tool carries out the tasks that you requested, using the data plane as the resources.
+
+The data plane, in this case, is a cluster where your containers are hosted. You'll need to run a cluster of compute resources, like Amazon EC2 instances, and then your containers will be placed across this cluster. Because this cluster is hosted on EC2, you can customize and control these hosts for containers, like using a custom AMI, for example.
+
+A **cluster** is the **logical grouping of compute resources**, and there are different types of launch types that you can use for this cluster. The first being EC2 instances, and the second being the serverless compute platform AWS Fargate.
+
+The container's control plane is the ECS service itself, as it orchestrates the containers on your behalf, and provides an entry point for communication through the API. The compute platform the instances are run on top of is the data plane.
+
+---
+
+### Defining Tasks and Services
+
+To prepare your containerized application to run in ECS, you first create what is called a task definition.
+
+![ECS Tasj Definition.](./images/W09Img500AmazonEcsTaskDefinition.png)
+
+It is essentially a blueprint for your deployment. The task definitions are used to specify various parameters for your application, which include things like what Docker image to use, how much CPU and memory to use for each container, the launch type, the Docker networking mode, any login configurations, any data volumes that should be used, IAM roles that your app may need to integrate with other services, and more customizable aspects for your container deployment.
+
+![ECS Task Definition Blueprint.](./images/W09Img502AmazonEcsTaskDefinitionBluePrint.png)
+
+Once you create your cluster and task definition, you can then run the task. A task itself is the instantiation of a task definition within a cluster.
+
+![ECS Cluster Key Terms.](./images/W09Img504AmazonEcsKeyTerms.png)
+
+* Within ECS, you have a **scheduler**. The scheduler is responsible for placing tasks on your cluster, essentially the when and where of running your tasks. For scheduling, you have several different options available.
+
+    You can define a service that runs and maintains a **specified number of tasks simultaneously**, **manually run tasks**, **schedule tasks**, and **use custom schedulers** with ECS.
+
+* ECS allows you to run and maintain a specified number of instances of a task definition simultaneously, and this is called a **service**. Services can be run behind a load balancer, which can be used to specify deployment configurations and can be deleted, which would stop all the running tasks associated with the service.
+
+* A **container agent** runs on each compute node within an ECS cluster, like an EC2 instance, for example, if you are using the EC2 launch type. This agent sends information about the resource's current running tasks and resource utilization to Amazon ECS, as well as starting and stopping tasks whenever it receives a request from the control plane, or ECS.
+
+#### Task definitions
+
+While deploying an application using containers greatly simplifies the process over deploying the application directly to a host, there are still configuration decisions that must be made for a successful deployment. Since manually making these decisions for each deployment is time consuming and error prone, you'll usually want to automate that process in some way.
+
+Amazon ECS uses task definitions for this.  A *task definition* is a blueprint for your application. It is a JSON file defining the parameters for deploying the container(s) that make up your application. Here are some of the parameters that you can specify in a task definition.
+
+* **AWS Identity and Access Management (IAM) roles**: The access rules for the application are defined at the task level.
+* **Container configuration**: These include memory and CPU allocation, the operating system the containers in the task run on, and the networking mode the containers will use.
+* **Container definition**: These are the actual container images that will be launched as Docker containers and their properties. This includes the image to be launched and its networking, logging, and storage configuration.
+* **Launch type**: This determines how to launch a task. This is usually either on an Amazon EC2 container instance or serverlessly on AWS Fargate.
+* **Logging**: Logging is optional in Amazon ECS. This is where you determine what, if anything, to log for your containers.
+* **Starting command**: This defines the entry point to the application when the task has launched.
+
+Once you've created a task definition, you can launch a task based on that definition. With Amazon ECS, tasks are the lowest-level launch option available. You cannot directly launch containers from a repository using Amazon ECS. (You can do so without using Amazon ECS, however. AWS does not prevent you from managing your Docker applications however you like.)
+
+##### AWS IAM roles
+
+An important parameter of a task definition to look at is *taskRoleArn*. This is an optional IAM role defined for the task. Setting it allows all containers in the task permission to call AWS APIs as specified in that IAM role.
+
+In addition to AWS API calls, when setting up an Amazon EFS volume, *iam* is an optional parameter (defaulting to DISABLED) that can be set to ENABLED to use the task's IAM role when mounting the file system. This makes the mount available only to the task's containers (or other instances of that IAM role) and requires configuring transit encryption.
+
+##### Container configuration
+
+Amazon ECS task definitions include requirements for the configuration of the host environments. These will limit what EC2 instances can be specified and will be applied when launching tasks on Fargate. Commonly configured items include the following:
+
+* **Networking mode**: This parameter is optional for both Amazon EC2 and Fargate launch types. Not specifying it, however, means accepting the default networking: Docker's built-in virtual networking. On Linux, networking can also be disabled or set to use Linux's own networking directly. For both platforms, you can choose awsvpc (AWS Virtual Private Cloud), which treats each container is though it were an EC2 instance for networking purposes. awsvpc requires further configuration before a task can be launched using it.
+* **Runtime platform**: This includes the OS family and the CPU type. It is required for Fargate deployment but will default to Linux and X86_64 if not provided. Windows Server options are also available, and if Linux is specified, ARM64 CPUs can be specified. It is optional for an Amazon EC2 deployment.
+* **Task size**: This is also required for Fargate launch types and optional for Amazon EC2 types. Task size includes a CPU value and a memory value. These have fixed options and must correlate to each other and to the OS specified for deployment. While memory is a limit, CPU isn't guaranteed to be so. (CPU usage can easily be throttled back if excess becomes unavailable. Excess memory usage is not so easily recovered.) Fargate tasks will launch on instances with sufficient resources for the task size, while Amazon EC2 tasks will fail if the instance provisioned doesn't have the required resources available.
+
+##### Container definition
+
+The container definition includes parameters that map to the underlying Docker container creation parameters. Commonly set parameters include the following:
+
+* *name*: This is used to connect containers to each other. Whether it will be used or not, it is required.
+* *image*: This is the container image and the repository it can be found in that is to be launched. It is required.
+* *memory*: This is the amount of memory made available to the container. It is a hard limit, and the container will be killed if it needs more. This is independent of the Amazon ECS task size parameter. If used, task size must be sufficient for this limit to be met for all containers in the task. It is optional.
+* *memoryReservation (Linux only)*: This is a soft limit on the memory available to the container. This lets a container have a hard memory limit that's high enough for peak usage without reserving that amount all of the time. It is optional.
+* *portMappings*: This maps container ports to host ports or defines container ports for awsvpc networking. It is optional but required for network access into or out from the container. Additional parameters are available to further define networking for the container. It is optional.
+
+Additionally, this section can contain parameters that map to the docker run command. These include:
+
+* *cpu*: This is the number of CPU units for the given container. Like memory, if task size is specified, it must be greater than the sum of all cpu values for the containers in the task. It is optional.
+* *logConfiguration*: This is a JSON object containing the log driver used by the container and any options, if necessary. It is optional.
+
+##### Launch type – Amazon EC2
+
+An Amazon ECS container instance is simply an EC2 instance running container-hosting software. Therefore, all of the options available for EC2 instances are available to host your containers, as well. You have the option to configure memory- or compute-optimized instances to fit the needs of your application.
+
+Like any EC2 instance, you'll also need to configure what billing option(s) are used and how the instances scale. None of these details are in the task definition, however. At this stage, you'll only need to have the following parameter in your JSON file:
+
+* **{"requiresCompatibilities":"EC2"}**
+
+This ensures that tasks launched from this definition are deployed only to Amazon EC2 container instances.
+
+Once your EC2 instances are running, you're responsible for managing and maintaining them, just as with any EC2 instance. Under the shared responsibility model, this includes updating the OS, configuring the network and firewall, and managing encryption. Amazon ECS will manage the security of interactions with your containers, but you need to manage the security of your host instances.
+
+Launch type is optional. If not specified, the task can be launched in any manner Amazon ECS supports.
+
+##### Launch type – AWS Fargate
+
+Fargate is a serverless platform for hosting container instances. Fargate can be a good choice when you don't have specific needs for the underlying instance. You're responsible for managing the access and security of your code and containers, but Amazon ECS handles everything below that.
+
+With Fargate, you can control limited aspects of how the task must be hosted but cannot specify what type of EC2 instance(s) it runs on when you deploy.
+
+##### Storage
+
+Storage is partially defined as part of the container definition, but it contains a number of parameters.
+
+For the container's ephemeral storage:
+
+* *readOnlyRootFilesystem (Linux only)*: This can be set to true to give the container read-only access to its own root file system. It is optional, and the default is false.
+
+For persistent storage external to the container:
+
+* *mountPoints*: This is an array of JSON objects defining the *sourceVolume*, *containerPath*, and, optionally, *readOnly*. Read only is false by default. *mountPoints* is optional.
+
+For sharing across containers:
+
+* *volumesFrom*: This is an array of JSON objects containing the *sourceContainer*, which maps to the name of the other container. It also contains an optional *readOnly*, which defaults to *false*.
+
+You can optionally pass a list of volumes to the Docker daemon on a container instance, which makes them available to all containers on that instance, regardless of task. These can be local to the container instance, Amazon EBS or Amazon EFS volumes, FSx Windows File Server volumes, or Docker-managed volumes.
+
+The optional *name* parameter of a volume is used as the *sourceVolume* value in *mountPoints*.
+
+#### Services
+
+An Amazon ECS service automates the launching and maintaining of tasks for a particular task definition. This lets you launch a specified number of tasks, either on Amazon EC2 or AWS Fargate, and be assured that that number of tasks will be maintained. The service will relaunch tasks if any stop or fail, or if the AWS infrastructure they are running on goes down.
+
+A service manages this based on the scheduler strategy you define. The two options for this are as follow:
+
+* **DAEMON**: The daemon strategy places exactly one task on each container instance specified in your cluster. Since this strategy places tasks on specific EC2 instances, it is not available for Fargate tasks.
+* **REPLICA**: The replica strategy automatically places and maintains the specified number of tasks across the cluster it is contained in. You can control how this is done, but by default, it spreads them across Availability Zones within the deployment Region.
+
+Services are not required, but serve as a way to standardize deployment of tasks for a given task definition. You can have multiple services for one task definition to easily manage varying deployment needs. Suppose you need to deploy to multiple Regions that support widely different numbers of customers. You can define multiple services to ensure that enough capacity exists in each Region to support its customer base without overprovisioning.
+
+##### Launch type and capacity provider strategy
+
+*launchType* and *capacityProviderStrategy* are mutually exclusive parameters and determine how tasks are deployed across EC2 instances. *launchType* can only have the values of **EC2**, **FARGATE**, or **EXTERNAL** (for deployments off of AWS).
+
+* ***launchType***
+
+Specifying a launch type of FARGATE tells ECS to maintain and scale your tasks using on-demand EC2 instance space according to the remaining parameters of the service definition.
+
+Specifying a launch type of EC2 tells ECS to deploy on EC2 instances that you manage yourself. It will still do so according to the remaining parameters, but only so far as it can without controling the autoscaling of the instances.
+
+* ***capacityProviderStrategy***
+
+A capacity provider strategy is an array of JSON objects specifying a *capacityProvider* and, optionally, a *weight* and *base*.
+
+For Fargate, there are two pre-defined capacity providers -- **FARGATE** and **FARGATE_SPOT**. FARGATE_SPOT is Fargate run on EC2 spot instances rather than on-demand instances. It has the same cost advantages and predictability disadvantages as any other use of spot instances.
+
+EC2 capacity providers are created by you. Options for this include creating them manually in the Amazon ECS console, creating them within your AWS CloudFormation template, or making an API call to Amazon ECS's CreateCapacityProvider.
+
+Capacity providers must contain a globally unique name and an auto-scaling group (which must have been previously created itself). You can also configure scaling policies such as whether Amazon ECS manages scaling actions and whether EC2 instances with running Amazon ECS tasks cannot be terminated.
+
+When you add a capacity provider to a capacity provider strategy you can choose to assign it a *weight* or a *base*. A weight is value relative to the other capacity providers in a strategy that determines how the tasks are deployed across the capacity providers.
+
+For instance, you could define a FARGATE provider with a *weight* of 2 and a FARGATE_SPOT provider with a weight of 8 within a capacity provider strategy. If Amazon ECS has deployed 1000 tasks, 200 hundred of them will be in Fargate on EC2 on-demand instances, while 800 would be in Fargate on EC2 spot instances. This would allow you to balance cost with maintaining a minimum guaranteed level of availability.
+
+Within a capacity provider strategy, a *base* value can be given to one capacity provider. This specifies the minimum number of tasks to be deployed on that provider.
+
+If neither of these parameters are provided, deployment follows the default capacity provider for the cluster the service is launched on.
+
+##### Other common parameters
+
+* *serviceName*: The name of the service. This must be unique within any particular cluster. It is required.
+* *cluster*: The Amazon Resource Name (ARN) or short name of the cluster on which this service will run. It is optional and defaults to the *default* cluster, which is automatically created by ECS.
+* *taskDefinition*: This is the task definition this service runs. It is required for ECS to act as deployment controller.
+* *platformFamily*: This specifies the operating system on which the containers managed by this service will be run for Fargate deployments. It is required for Fargate deployments, but will default to LINUX. If specified for an EC2 deployment, it will be ignored.
+* *platformVersion*: This is also only relevant to Fargate deployments. It is not required and defaults to LATEST. It can be set to any version currently supported by Fargate.
+* *schedulingStrategy*: This can be REPLICA or DAEMON. If it is not provided, it defaults to REPLICA. Fargate only supports REPLICA.
+* *placementStrategies*: This is an array of placementStrategy JSON objects.
+* *desiredCount*: This is the number of instances of the task definition managed by this service. It is required for REPLICA scheduling.
+* *deploymentController*: This defaults to the ECS controller. You can also choose to use AWS Code Deploy (CODE_DEPLOY) or any third party deployment tool you like (EXTERNAL).
+* *networkConfiguration*: This is required if the task definition specifies *awsvpc* networking.
+
+#### Scheduling and placing tasks
+
+When considering hosting workloads on ECS, you will need to determine a few things before getting started.
+
+You'll need to determine when to run the container. This is called scheduling your container. Then, you will need to determine where to place the container, so which instance or node is it going to be placed on? And finally, you will need to determine how you want to scale this container in or out, dependent on your use case and on demand.
+
+![Amazon ECS Scheduling Engine.](./images/W09Img510AmazonEcsSchedulingEngine.png)
+
+* Starting with the concept of container scheduling, one option is to deploy the container manually. Launch a container and place it on an instance yourself. However this is not scalable, so you should be using container orchestration software, like Amazon ECS, to do this for you.
+* With ECS, scheduling tasks and placing tasks are handled by the scheduling engine and the placement engine. The scheduling engine's whole goal is to provide logic around how and when to start and stop containers. So you specify which task definition to start, and the scheduling engine will make the necessary calls to the control plane to start that task on a specific instance.
+
+   ![Amazon ECS Scheduler.](./images/W09Img512AmazonEcsServiceScheduler.png)
+
+* However, how you decide to schedule your tasks is not one size fits all. There are all sorts of different types of applications or different types of requirements. So, ECS provides different types of schedulers for you to choose from.
+
+##### Service scheduler
+
+First, there is the service scheduler. You can use the service scheduler to specify how you want your task to run, and how many copies of that task you want to run. The service scheduler will maintain this number and reschedule tasks if they fail. For example, if you want, say, five instances of your task running across your cluster, and one of those tasks fails, the service scheduler will replace that task so you have five running at all times.
+
+![Amazon ECS Service scheduler.](./images/W09Img512AmazonEcsServiceScheduler.png)
+
+##### Daemon scheduler
+
+The service scheduler also allows the daemon scheduling strategy. The daemon strategy will help ensure that a specific task is running at all times on every node in your cluster. This may be ideal for shared services that other containers on the node need access to, such as monitoring or logging tasks.
+
+![Amazon ECS Daemon scheduler.](./images/W09Img514AmazonEcsDaemonScheduler.png)
+
+##### Cron-like Scheduler
+
+Another type of scheduler is to schedule your tasks using a cron-like strategy with Amazon EventBridge. If you want to schedule a task to run at a particular time of day or on a particular day of the week, this strategy would help you achieve that.
+
+![Amazon ECS Cron-like scheduler.](./images/W09Img516AmazonEcsCronLikeScheduler.png)
+
+##### Custom Scheduler
+
+Now, if these schedulers don't work for you or your use case, you do have some other options. You could create your own scheduler, leverage third-party schedulers, or fall back on running tasks manually, especially for one-time jobs or for periodic batch jobs that you don't need to keep running, or manage, over long periods of time. And also consider using AWS Batch to run containers for these types of workloads.
+
+#### Placement engine
+
+![Amazon ECS Placement Engine.](./images/W09Img520AmazonEcsPlacementEngine.png)
+
+ECS placement engine's goal is to place your task on an instance that has an appropriate amount of memory and CPU space, as well as runs your task in a configuration that you choose. You can customize placement by using task placement strategies and task placement constraints.
+
+![Amazon ECS Placement Engine Constraints and Stratefies.](./images/W09Img522AmazonEcsPlacementConstraintsStrategies.png)
+
+After the placement engine determines that it has enough space for the container, the first thing that the engine looks at is the task placement constraints. You can use task placement constraints to filter which instances you want to put containers on. You can filter based off of AMI ID, instance type, tags, and more. For example, if you have two tasks that should run together, or two tasks that should never run together, you could use a task placement constraint called affinity to do that. Or, let's say you have a task that has a compliance requirement to use a certain AMI ID. You could use the task placement constraint to help ensure that your containers are placed only on instances using that particular AMI.
+
+Then, the engine uses algorithms called task placement strategies to determine how to place your containers. There are several task placement strategies that you could take advantage of. For example, you could use the binpack task placement strategy, which will pack your containers as dense as they can across your instances in your cluster. This is a great strategy if you want to reduce cost. Another option is to use the spread task placement strategy, which spreads your tasks across instances for high availability.
+
+ECS supports strategy chaining. So, if you want to be cost conscious and binpack your instances as densely as possible while also maintaining high availability, you can do that.
+
+So let's take a look at a diagram of how this works.
+
+![ECS Placement Strategy example.](./images/W09Img524AmazonEcsPlacementCliExample.png)
+
+In the API call shown here, we are asking ECS to use the spread placement strategy combined with a binpack placement strategy on memory for our six instances. When the command is made, ECS first ensures that we have high availability across Availability Zones, and then it begins packing the containers afterwards.
+
+---
+
+### Configuring Amazon ECS
+
+#### Amazon ECS Demonstration
+
+Simplified structure of components when running an app on ECS:
+
+* cluster
+* tasks
+* services
+* ECS agent
+
+##### Simple container example
+
+Let's consider a container that runs a few commands in a Bash shell and exits.
+
+```bash
+docker run amazonlinux:2 bash -c "yum install -y cowsay ; echo 'hello from my container' | cowsay"
+```
+
+* This is the command to docker to run the amazonlinux:2 image. ```Bash``` is the command to run in the container, and everything after that are the arguments to Bash. The -c parameter is passing the Bash shell a string of commands to run.
+* When you run it you see an ASCII-like cow saying hello.
+
+Let's run this exact same command in an ECS cluster in my AWS account. For this we need to create a cluster. This is a grouping of compute resources where my containers are going to run. The resources can be one or more EC2 instances that you manage in your account, or Fargate resources that are managed by AWS.
+
+##### Creating a cluster in the console
+
+* Choose **Create cluster**.
+* Call it, **demo-cluster**.
+* For networking, go with the defaults, and launch the cluster in the default VPC.
+* For infrastructure, launch EC2 instances in the account as a home for the ECS cluster.
+
+![ECS Create Cluster.](./images/W09Img530AmazonEcsCreateCluster.png)
+
+* Once  EC2 is selected, the console is going to create an Auto Scaling group to maintain the cluster instances. Choose the AMI that the instances will use and the instance type. Set the auto scaling minimum to 2. Choose **Create**. ECS is going to create and configure the cluster resources. The EC2 instances will be configured to install the ECS agent.
+
+![ECS Create Cluster Auto-Scaling Group.](./images/W09Img532AmazonEcsCreateClusterAutoScalingGroup.png)
+
+![ECS Create Cluster Auto-Scaling Group Capacity.](./images/W09Img534AmazonEcsCreateClusterAutoScalingGroupCapacity.png)
+
+##### Adding a task definition
+
+A *task definition* is a group of settings ECS needs to know to run containers in the cluster. The task definition defines the Docker images, CPU, memory resources, networking, logging, mounted storage, and IAM roles for authentication.
+
+![Amazon ECS Task Definition.](./images/W09Img536AmazonEcsCreateClusterTaskDefinition.png)
+
+* the task definition has a single container.
+* the image to be used is **amazonlinux:2**.
+* the command being run on the container is a Bash shell command.
+* in the logConfiguration, set up a location in CloudWatch Logs, for shipping the output of the container.
+* memory setting. This is a hard limit. The container will be launched with a parameter to restrict the memory available.
+* the *executionRoleArn* will be used to authenticate any AWS operations from the ECS container agent. The role is also used to authenticate when the agent needs to pull an image from an ECR private repository. There is also a task role ARN setting that's used to authenticate requests from a container in a task. For example, talking to DynamoDB.
+* family name.
+* *requiresCompatibility*, this is a list of the compute types we plan to run the task on.
+
+##### Running the task
+
+* From the cluster, **Tasks**, **Run new task**.
+* Change the launch type to **EC2** to run the container on the fleet of EC2 instances created for this cluster.
+
+![ECS Run Task: Launch Type configuration.](./images/W09Img538AmazonEcsCreateClusterTaskLaunchType.png)
+
+* Choose the task definition by family name and revision. Leave the desired tasks as 1, and **deploy**.
+
+![ECS Task launched.](./images/W09Img540AmazonEcsCreateClusterTaskCreationComplete.png)
+
+The ECS scheduler is now going to find an instance in the fleet to run the task. The scheduler looks at the available memory and CPU to find the right home for the task. If to check the Logs tab, you can see the output from the container that has run and exited.
+
+##### Summary
+
+* A cluster was created.
+* When the cluster was created, the console configured an Auto Scaling Group to maintain a fleet of EC2 instances as the resources for the cluster. Each of those instances has the ECS agent installed. The agent is needed to perform tasks on the instance, like pulling images, launching containers, and reporting metrics, like CPU and memory.
+* A task definition wa registered. Inside the task definition was all the information ECS needs to run the container: the image, any commands, logging, roles for authentication.
+
+A simple way to see a container run is to tell ECS to create a task. ECS handles everything from here. The scheduler is finding the instance to run the task. Then, the ECS agent on the instance is used to run the container.
+
+The container output logs are shipped to CloudWatch Logs.
+
+---
+
+#### Amazon ECS clusters
+
+An Amazon ECS cluster is the highest-level grouping of containers. If you take no action when deploying your containers, a default cluster is created for each Region you deploy in. If you want to control the configuration of the cluster, or group your containers into completely separate environments, you can create your own clusters, as well.
+
+A cluster spans a single Region and groups any combination of tasks and services. This means that it can also contain any combination of deployment options. Your cluster can contain tasks hosted on AWS Fargate and tasks hosted on Amazon Elastic Compute Cloud (Amazon EC2) instances. It can contain a mix of EC2 instance types. You can even add on-premises hosts to a cluster.
+
+By grouping your tasks and services together, clusters allow for a single point of configuration. Several important configuration options can be applied at the cluster level, including the following:
+
+* Network the tasks and services run in
+* Namespace where all of the tasks and services will be located
+* Monitoring with Amazon CloudWatch Container Insights
+* AWS Identity and Access Management (IAM) access controls
+
+#### When to create a new cluster
+
+Amazon ECS clusters are ultimately logical groups of tasks or services. While a task or service is a containerized version of a modular application, a cluster with multiple tasks or services is like multiple applications that run on the same host. You can control communication among tasks using IAM roles, but you can't control them with network configuration. Additionally, all of the tasks on the same cluster share the same Auto Scaling Group, just like all of the applications on the same service share the same hardware.
+
+Like with a physical deployment, you want applications that work closely together to be in the same cluster. For instance, if you have two apps and a desktop and mobile website for accessing the same system, you might have two tasks for the web traffic and one or two tasks providing the APIs the apps need. Another task handles the core logic for all of them. It could make sense to have all of these hosted on the same cluster.
+
+However, best practice for a physical deployment would be to have sensitive data on a different server separated by a network with equivalent firewall protection to your external network. This could include the database containing all of your users' information. Doing this makes it far less likely that your company will be the next one providing customers with 10 years of identity theft protection. Likewise, when some of your tasks need to be public-facing, components that absolutely should not be public facing are best placed on a different cluster.
+
+Other parallels apply as well. Separating development, testing, and production instances on different clusters allows for the tasks to be configured identically, including naming, across the deployment pipeline.
+
+Resource management is also a concern, even though it is far less so in the cloud. Suppose one of the applications you have is a crypto trading platform. These are notorious for having extreme, unpredictable variability in usage, often leading to periods of poor performance exactly when users need them to be performing well. You wouldn't want the tasks involved in this application to be deployed on a cluster shared with other applications you provide.
+
+If you did, the next 120,000% spike in a meme coin could temporarily grind all of the applications to a halt or cause tasks to fail to launch due to resources being unavailable. If this spike happened at the same time as your co-hosted news aggregator spiked (which would be likely), the applications could bring each other down.
+
+When tasks have relatively predictable usage, especially when their peaks are known to be at different times, colocation on a single cluster can have significant cost benefits by keeping deployed EC2 instances running closer to capacity.
+
+Beyond creating multiple clusters because they're indicated for better security or up time, logical groups of tasks or services can be used simply to make your deployments easier to manage. You can have a cluster dedicated to all of your web frontends. You can have a cluster specific to tasks that need to be deployed on memory or compute optimized, or that cannot be deployed on Spot Instances. Not that those things can't all be done on a single cluster, but if that's the way you group them in your company, you can mirror that in their deployment.
+
+#### Amazon ECS scheduling demonstration
+
+To create an application that is always available like a web application, you need to package up the web application as a container image, write a task that references the image, and have ECS run the task.
+
+Multiple containers are to be launched on multiple hosts for redundancy and the ability to scale. You'll need to load balance requests coming into the multiple containers on the hosts, and, finally, you'll want to monitor and maintain a desired number of containers.
+
+An ECS service will do all of this. A service will maintain a desired number of task instances for you. The service create the tasks for you.
+
+##### Task Definition
+
+![ECS Task Definistion.](./images/W09Img550AmazonEcsTaskDefinition.png)
+
+* Under image, there's the NGINX web server standing in for the web application. A *portMapping* is defined, with only a *containerPort* and no *hostPort*. This is telling ECS to publish port 80 from the container with an available port in the ephemeral range. If a host port is set here, the first container to launch would take the port, and it wouldn't be able to launch any more of the same container on the same host. You can use an available ephemeral port to run multiple instances of the same container on the same host.
+
+##### Service Definistion
+
+![ECS Service Definistion.](./images/W09Img552AmazonEcsServiceDefinition.png)
+
+* It contains the cluster, the name for the service, and the taskDefinition.
+* The scheduling strategy can be either **REPLICA** or **DAEMON**. REPLICA scheduling can maintain the desired count of task instances across my hosts. The scheduler will attempt to spread tasks across Availability Zones. DAEMON scheduling will create one task on each of your cluster hosts. This may be used for a sidecar-type deployment, like deploying a proxy or a service container on every instance.
+* The loadBalancer target group to be used, which container and port to be load balanced. The task might have multiple containers to find. We need to tell ECS which one we are interested in. The containers on the host are going to be launched with an available ephemeral port. ECS will add the containers to the Application Load Balancer target group with the correct host port. This information then can be used in the security group rules for your ECS instances.
+
+##### ECS Cluster Services
+
+![ECS Cluster Services.](./images/W09Img554AmazonEcsClusterServices.png)
+
+Here's the newly created service. The console is telling that we have three tasks running.
+
+##### ECS Cluster Service Tasks
+
+![ECS Cluster Service Tasks.](./images/W09Img556AmazonEcsClusterServiceTasks.png)
+
+On the **Tasks** tab, there're the individual task instances and the containers running. If you switch over to the load balancer and open the DNS name for the load balancer in a new tab, you see the default NGINX homepage. The containerized web application has been deployed.
+
+##### Updating an Application running on Amazon ECS
+
+Let's imagine we decided to change my application from NGINX to Apache Web Server.
+
+* The first thing is to create a new revision of my task definition. Task definitions are immutable. We don't edit them, we just create a new revision.
+* Then, we update the service definition to use the new revision of the task. ECS will work with the agent on my instances to rip and replace my containers. New containers will be created, registered with the load balancer, and old containers removed.
+
+Let's create the new task revision in the console. Navigate over to the task definition and **create a new revision**. Change the location of the container image to an Apache container.  Them **Create**.
+
+![Create a Task Definistion revision.](./images/W09Img558AmazonEcsClusterTaskNewRevision.png)
+
+The service needs to be updated to use the new revision of the task. Return to the cluster and edit the **webapp-service**. Update the **Task definition**, **Revision number**. Then, **Update the service**.
+
+![ECS Edit Service.](./images/W09Img560AmazonEcsClusterEditService.png)
+
+On the **Task** tab, there are now multiple **webapp-tasks**. Some are revision 2, from the initial deployment, and some are revision 3.
+
+![ECS Registered Targets.](./images/W09Img562AmazonEcsClusterLbRegisteredTargets.png)
+
+Check the target group for the load balancer. The new containers are being registered with the load balancer. It will take a little bit of time for health checks to pass, and new requests coming into the load balancer will be routed to the containers.
+
+Refresh the load balancer tab, now it's connected to the new Apache containers.
+
+##### Summary
+
+ECS Service can be used to create tasks. If one of the tasks were to fail or exit, the ECS service will create a new task instance to replace it. The service is integrated with a load balancer to route requests to the containers running on ECS hosts.
+
+---
+
+#### Amazon ECS Networking
+
+There are five options for networking Docker containers on Amazon EC2. *bridge* and *default* use Docker's own virtual networking on Linux and Windows, respectively. On Linux, *host* can be used to bypass Docker's virtual networking and configure the containers to directly use the host's networking. On Linux you can also choose *none* to have no networking connectivity at all.
+
+Networking with Amazon Virtual Private Cloud (Amazon VPC) is supported for both Linux and Windows, and it's fully managed by Amazon ECS, making it generally preferable when using Amazon ECS to orchestrate your containers. Configuring a task with AWS VPC allocates the task it's own elastic network interface (ENI) and primary private IPv4 address. This lets the task be treated as though it were an EC2 instance for networking purposes.
+
+As with actual EC2 instances, tasks using *awsvpc* networking can communicate with each other through a virtual private cloud (VPC). Within a task, containers can communicate with each other over the localhost address.
+
+Notice that a *task* receives and ENI and, for networking purposes, is indistinguishable from an EC2 instance running AWS VPC networking. That's not restricted to tasks launching on Amazon EC2. While Fargate is serverless and has limited options for configuration, Fargate tasks' networking is completely configurable.
+
+##### Cluster configuration
+
+Clusters for Fargate launch types do not support or require networking options, as those are manage serverlessly.
+
+Clusters for EC2 instances are, by default, launched into the Region's default subnets and use the security groups associated with those subnets. You can choose from the existing subnets. You can also choose an existing security group or create a new one. As with any security group, you must specify at least one inbound rule.
+
+##### Service definition parameters
+
+*networkConfiguration* is only supported and required for *awsvpn* task definitions. It specifies subnets (required), security groups, and public IP addresses.
+
+##### Task definition parameters
+
+* *networkMode*:This must be *awsvpn* for networking to function as discussed here.
+* *taskRoleArn*: The IAM role specified here is used to communicate with other AWS services.
+* *executionRoleArn*: An AWS Identity and Access Management (IAM) role needed in some particular circumstances, such as access to private repositories or AWS Secrets Manager.
 
 ---
 
