@@ -1982,7 +1982,7 @@ In this topic, you learned about the Amazon EKS pricing model and the primary dr
 
 ---
 
-### [Lab: Deploying Containerized Applications to Amazon EKS](./labs/W092Lab2DeployingApptoEks.md)
+### [Lab: Deploying Containerized Applications to Amazon EKS](./labs/W092Lab2DeployingAppToEks.md)
 
 In this hands-on lab, you deploy and run a pre-built containerized application on an Amazon Elastic Kubernetes Service (Amazon EKS) cluster using an AWS integrated development environment (IDE). You will gain experience with the workflow of managing Kubernetes on AWS using multiple tools and approaches.
 
@@ -2609,6 +2609,481 @@ Clusters for EC2 instances are, by default, launched into the Region's default s
 
 ---
 
+### Using Amazon ECS with External Services
+
+It is entirely possible for a containerized application to need nothing that isn't contained in the container. Suppose you would like to enter the crowded-but-popular realm of browser-based word games and language apps. You've written a crossword game for building vocabulary that can generate puzzles from dictionaries you provide in any language. You have many deployment options that involve nothing other than containers.
+
+Perhaps you have one container that presents the web interface based on the platform the request is received from and another containing dictionary files and the logic for building crosswords. You put the frontend in a service with REPLICA scheduling to scale effectively with load. You have built the generating logic to cache recent puzzles for efficiency, and put it in a service with DAEMON scheduling to ensure its availability.
+
+While this would be a useful web app as is, some very important functionality cannot be provided with this configuration.
+
+#### Storage
+
+One of the key potential drawbacks to containers is that their built-in storage is ephemeral. Since Docker containers are always launched as new instances from their repository, they all start fresh. They have whatever data was packed into their Docker images. When they end, any changes to that data is lost. Further complicating this for an Amazon Elastic Container Service (Amazon ECS) deployment is that all containers are separate from each other.
+
+So in the case of your crossword game, none of the generated puzzles are shared with other containers or maintained after the containers in which they were saved end. This is fine for data you don't want to keep. So, you'd have to decide: Do you want to build up a persistent library of puzzles or keep them mostly generated?
+
+Suppose people are using this game to improve their skill in, say, Danish. Wouldn't they be interested in knowing things like how well they've been completing puzzles and what words they've shown trouble with? This has implications for the complexity of your program, but it's utterly impossible without being able to store relevant data persistently. This is especially true in an Amazon ECS orchestration of your containers, since they might be connecting to a different one every time they load the page. You need a way to track user progress outside of your containers.
+
+Additionally, while dictionaries are not large files and storing them in each container isn't that costly, correcting them requires redeploying all the containers. Shared data like this is usually best placed outside of your containers in persistent storage.
+
+Through API calls, your containers can access any persistent external storage, not just those on AWS. This includes Amazon Simple Storage Service (Amazon S3), databases hosted on AWS or on premises, or remote file servers. However, there are five options for configuring Amazon ECS managed storage.
+
+1. **Amazon Elastic Block Store (Amazon EBS)**
+
+    Amazon EBS volumes are cost-effective, durable, and provide high throughput. Amazon EBS volumes are attached to tasks or services at launch time, allowing for the same definition to be used with differing Amazon EBS support. Importantly, each Amazon EBS volume is created for the task it is attached to. That is, each task has its own EBS volume. By default these volumes are removed when the task ends.
+
+    This does not make Amazon EBS volumes useless. If a task is going to be long running, data can be loaded on the the Amazon EBS volume when it is started and then stored out to something sharable before ending. Only consistency among currently running tasks would be lost, which might not be a concern. When compared to storing static data in a container, an Amazon EBS volume loaded from a snapshot is both faster and more secure, if configured to be so.
+
+    Amazon EBS volumes can only be attached to Linux tasks.
+
+2. **Amazon Elastic File System (Amazon EFS)**
+
+    Amazon EFS is a dynamically scaled, persistent, shared file storage service that can be used by Fargate and EC2 launch types of either Windows or Linux containers. As a distributed file system, it can scale quickly with demand. It is the simplest choice when a shared file space is needed across instances of the same task definition.
+
+    At lower usage levels, Amazon EFS is slower than Amazon EBS and costs more to use than effectively provisioned Amazon EBS solutions. However, as it scales out, it becomes increasingly cost-effective and faster, such that there is no performance benefit to Amazon EBS
+
+3. **Bind points**
+
+    Bind points were they earliest way to provide persistent storage to a Docker container. They are simply direct locations on the host machine that are bound to directory locations in the Docker container.
+
+    In a traditional, physically hosted Docker deployment, they allow containers to be ended and started while maintaining data. They also allow for multiple containers on the same host to work with the same data.
+
+    With AWS hosting, however, these bind points are on the local EC2 instance. This prevents them from being shared across containers not on the same instance. In the case of your crossword game, the state of the game could significantly change when the page is reloaded and a different EC2 instance is accessed. In Amazon ECS, these are also ephemeral. While you can ensure that an underlying EC2 instance won't shut down while a service is active on it, it can't be prevented from shutting down at all.
+
+    Bind points can be used with both Amazon EC2 and Fargate launch types.
+
+4. **Docker volumes**
+
+    Docker volumes are mounted directories on the local host and managed by Docker. They're not dependent on the hosts file system organization, and they can be mounted on network shares when deploying Docker manually. However, on its own Amazon ECS will only mount Docker volumes to the host EC2 instance. A third-party volume driver can be used to mount to an external file store, but only for Linux containers.
+
+    Docker volumes cannot be used with Fargate launch types.
+
+5. **FSx for Windows File Server**
+
+    FSx provides fully managed Microsoft Windows file servers on a Windows file system. Windows containers can use these for shared, persistent, distributed file storage.
+
+    FSx cannot be used on Linux or with Fargate launch types.
+
+#### Observability
+
+Observability includes logs, metrics reported by Amazon CloudWatch, and real-time traces provided by AWS X-Ray.
+
+1. **Logs**
+
+    Container logging is configured in the *logConfiguration* parameter of the task definition. Specifying the *awslogs* log driver here allows Amazon ClowdWatch Logs to access the log files in containers defined in the task definition.
+
+    AWS CloudTrail logs record actions taken in Amazon ECS, such as details of a request made.
+
+2. **Metrics**
+
+    Amazon CloudWatch includes Amazon ECS Container Insights metrics. Making use of these simply requires setting or updating the settings for an Amazon ECS cluster to set *containerInsights* to *enabled*. You can also deploy the CloudWatch agent to your running EC2 instances through AWS CloudFormation to receive instance-specific metrics.
+
+    Metrics include the following:
+
+    * Number of EC2 instances running
+    * Number of deployments of a given service on a given cluster
+    * Amount of Amazon EBS filesystem storage allocated to a given service on a given cluster
+    * Amount of ephemeral storage reserved or used by a given service on a given cluster if running on Fargate Linux
+    * Number of tasks PENDING or RUNNING for a given service on a given cluster
+    * Total number of services on a given cluster
+
+    If CloudWatch agent is deployed, metrics related to CPU, file system, memory, and networking are available for a single EC2 instance in a cluster.
+
+3. **Traces**
+
+AWS X-Ray has a Docker container image on Amazon Elastic Container Registry (Amazon ECR) to simplify using it with Docker containers. You can include it in your task definition along with your own containers, and then configure the environment for the containers you want it to interact with by setting the *AWS_XRAY_DEMON_ADDRESS* environment variable in your container's definition to the name and port your defined for the X-Ray daemon.
+
+#### AWS Systems Manager
+
+AWS Systems Manager can be used to access your Amazon EC2 container instances. There are two prerequisites for this.
+
+Like using Systems Manager with an ordinary EC2 instance, the AWS Systems Manager Agent (SSM Agent) must be installed on the container instances. This is simplest if you choose a prebuilt Amazon Machine Image (AMI) for your container images that has the SSM Agent installed or ensure your custom AMI does. SSM Agent can only be installed after deployment on some Linux instances and has to be installed on each EC2 instance individually. This is not particularly practical on managed instances.
+
+You also must ensure that the container instance role (ecsInstanceRole) has been assigned the Amazon *SSMManagedInstanceCore* policy.
+
+You can then use `Run Command` in Systems Manager to perform actions on container instances. Importantly, when working with instances running the Amazon ECS Container Agent, `Run Command` can be applied to multiple container instances at the same time. For instance, suppose an AMI is discovered to need a security patch that doesn't require a restart. You can immediately apply that to all running instances. Compare this to individually updating all pre-patch instances or unnecessarily restarting them to get the new AMI.
+
+You can also perform interactive maintenance, such as restarting a hung service or stopping Docker images that X-Ray has shown to be responding poorly.
+
+---
+
+### Managing Amazon ECS Costs
+
+AWS gives you a lot of choice in how to deploy to the cloud as well as how to pay for the services you need. Choosing AWS services and pricing plans is a balance between ensuring that you can meet the needs of your customers and your business in a way that makes everyone happy without overbuying. Amazon Elastic Container Service (Amazon ECS) costs nothing to use. Your only charges are for the compute resources Amazon ECS uses while managing your containers. As Amazon Elastic Compute Cloud (Amazon EC2) and AWS Fargate are different compute types, there are different cost models for them.
+
+#### Amazon ECS on Amazon EC2
+
+If you use Amazon EC2 beyond the free tier, you have to consider costs. The simplest way to use Amazon EC2 is on-demand. On-demand pricing lets you pay for what you use, which is useful if you are not able to effectively predict how much capacity you will need. It can be very useful while you're establishing usage patterns. However, depending on how you actually use capacity, it can end up being a costly convenience.
+
+For continuous workloads that cannot be interrupted, AWS Savings Plans are almost always a better way to go. With a Savings Plan, you commit to a given amount of usage in dollars per hour up front for either one or three years. Then, for usage that is at or below that amount, you pay a discounted rate. If you exceed that amount, you pay the on-demand rate for the remainder. Compute Savings Plans especially are simple to use, as they apply to all of the compute resources you use—Amazon EC2, AWS Lambda, or Fargate. Your upfront commitment automatically applies to the service with the greatest savings first.
+
+Take a look at three examples of applying a savings plan to four hours of usage. For simplicity, assume that the savings plan is 50% of on-demand pricing for all compute services you use. For each of these, assume that you've committed to $100/hour of undiscounted usage. You'll have prepaid part of this at the beginning of the one- or three-year period, but that pre-payment is applied as $50 for every hour of the period.
+
+In the first example, your usage stays relatively consistent hour to hour and you've committed based on good data around your usage.
+
+| Hour | Raw (on-demand) cost | Savings Plans cost | On-Demand cost | Total |
+| ---- | -------------------- | ------------------ | -------------- | ----- |
+| 1 | $115 | $50 | $15 | $65 |
+| 2 | $85 | $50 | $0 | $50 |
+| 3 | $90 | $50 | $0 | $50 |
+| 4 | $110 | $50 | $10 | $60 |
+| Totals | $400 | $200 | $25 | $225 |
+
+This example is a clear win for you for those 4 hours. Usage patterns like this that hold over the long term are clear cases for Savings Plans and can be set up very close to optimally even without closely analyzing usage patterns.
+
+Next, look at an example where your usage is highly variable.
+
+| Hour | Raw (on-demand) cost | Savings Plans cost | On-Demand cost | Total |
+| ---- | -------------------- | ------------------ | -------------- | ----- |
+| 1 | $10 | $50 | $0 | $50 |
+| 2 | $345 | $50 | $245 | $295 |
+| 3 | $30 | $50 | $0 | $50 |
+| 4 | $15 | $50 | $0 | $50 |
+| Totals | $400 | $200 | $245 | $445 |
+
+In this example, your average usage over the four hours is the same as in the previous example. Your usage varies from far exceeding your commitment to being a small fraction of your commitment. Since the commitment and discount are per hour you've ended up paying more than you would have with on demand.
+
+While highly variable usage cannot benefit as much as consistent usage from Savings Plans, you can still achieve more modest benefits. Consider the same usage, but with a $30/hour usage commitment instead of a $100/hour commitment.
+
+| Hour | Raw (on-demand) cost | Savings Plans cost | On-Demand cost | Total |
+| ---- | -------------------- | ------------------ | -------------- | ----- |
+| 1 | $10 | $15 | $0 | $15 |
+| 2 | $345 | $15 | $305 | $320 |
+| 3 | $30 | $15 | $0 | $15 |
+| 4 | $15 | $15 | $0 | $15 |
+| Totals | $400 | $60 | $305 | $365 |
+
+This looks a lot less dramatic than the first case, but this is still an 8.75% discount over fully on demand. Unless you have significant time with no usage at all, Savings Plans can save some money.
+
+---
+
+EC2 Reserved Instances aren't usually a viable option for ECS cost management as they prevent ECS from scaling the number of instanced up and down based on usage.
+
+---
+
+#### Fargate
+
+Cost wise, Fargate is similar to on-demand. That is, simplest is seldom cheapest. Fargate has two mitigating factors, however. First, for highly variable usage, configuring and managing Amazon EC2 launch types to optimize cost can be daunting. EC2 instances are billed by instance time, not processing time. While your scheduler can be optimized to keep instances at higher usage, quick drops in usage will still leave mostly idle instances being billed. Second, Fargate requires very little work or thought on your part. That's time you and the rest of your company have to do your own jobs.
+
+Nevertheless, it is important to rightsize your Fargate tasks. Oversizing your Fargate tasks can lead to overpayment by factors of two or three in severe cases.
+
+As mentioned above, Savings Plans are cost-based an applicable to all compute services. While consistent workloads are less expensive on well-configured EC2 deployments, Savings Plans will still always reduce the cost of Fargate deployments when right-sized.
+
+#### Spots
+
+Spot Instances and Fargate Spot are almost always options to consider for reducing costs. While both rely on Amazon EC2 Spot Instances and thus are not suited to long-running tasks that can't be interrupted or any tasks that need high availability, they can be part of a capacity provider strategy in many cases. Setting part of your capacity to run on Spot Instances can provide inexpensive compute resources when they are available, while using Fargate or other Amazon EC2 resources when Spot Instances are unreliable.
+
+#### Get help
+
+You don't have to make these decisions in the dark or by trial and error. AWS Compute Optimizer is a service that you can opt into as long as you are paying for Amazon CloudWatch monitoring. The default version is free and analyzes the past 14 days of CloudWatch metrics to provide recommendations for rightsizing your services. Compute Optimizer provides recommendations for the following services:
+
+* Amazon EC2 instance
+* Amazon EC2 Auto Scaling groups
+* Amazon EBS volumes
+* AWS Lambda functions
+* Amazon ECS services on AWS Fargate
+* Amazon Relational Database Service (Amazon RDS)
+
+Additionally, for a small monthly fee, you can activate Compute Optimizer enhanced infrastructure metrics. This additional service processes 3 months worth of Amazon EC2, Auto Scaling group, or Amazon RDS data to identify monthly or quarterly usage patterns. You choose exactly which resources to receive enhanced infrastructure metrics for.
+
+---
+
+### [Lab: Deploying Containers on AWS Fargate Using Amazon ECS and Amazon ECR](./labs/W094Lab3DeployingContainersToFargateOnEcs.md)
+
+In this hands-on lab, you will learn how to build, deploy, and run containerized applications on AWS using Amazon Elastic Container Service (Amazon ECS), Elastic Container Registry (Amazon ECR), and Fargate.
+
+In this lab, you will perform the following tasks:
+
+* Locate the container image in Amazon ECR
+* Create a task definition
+* Create an ECS cluster
+* Add containerized tasks to the cluster on Fargate
+
+---
+
+### Knowledge Check
+
+#### Which values are part of the task size that can be specified for a task definition?
+
+* CPU and memory
+
+Wrong answers:
+
+* Memory and ephemeral storage
+* CPU, memory, and persistent storage
+* Ephemeral and persistent storage
+
+##### Explanation
+
+The other options are incorrect because persistent storage needs to be explicitly configured and ephemeral storage is either dependent on the underlying Amazon Elastic Compute Cloud (Amazon EC2) container instance or managed by Fargate.
+
+#### What is a capacity provider?
+
+* Service on which a container can be hosted
+
+Wrong answers:
+
+* Array of available host types
+* Serverless host for containers
+* Service that distributes load across Amazon Elastic Compute Cloud (Amazon EC2) instances
+
+##### Explanation
+
+The other options are incorrect because of the following:
+
+* A capacity provider strategy contains an array of capacity providers, which are, roughly speaking, host types.
+* Fargate is a serverless host for containers.
+* Auto Scaling groups distribute load across Amazon EC2 instances.
+
+#### What is an Amazon Elastic Container Service (Amazon ECS) cluster?
+
+* Logical grouping of tasks or services
+
+Wrong answers:
+
+* Collection of Amazon Elastic Compute Cloud (Amazon EC2) instances
+* Collection of physical servers that act as one
+* Grouping of related container images
+
+##### Explanation
+
+The other options are incorrect because of the following:
+
+* Amazon ECS clusters can group both Amazon EC2 container instances and Fargate launch types.
+* A collection of physical servers that act as one is, indeed, a cluster, but not an Amazon ECS cluster.
+* Related container images are grouped together in a task.
+
+---
+
+### Summary
+
+#### Amazon Elastic Container Service (Amazon ECS) components
+
+You learned the relationship among containers, tasks, services, and clusters as well as their respective images and definitions.
+
+#### Container hosting
+
+You learned about AWS Fargate, Amazon Elastic Compute Cloud (Amazon EC2) container instances, and capacity provider strategies that distribute hosting across multiple types of both services.
+
+#### Amazon ECS integration
+
+You learned how Amazon ECS integrates with persistent storage and Amazon CloudWatch, and AWS X-Ray metrics, logs, and traces. You also learned how EC2 container images can be managed with AWS Systems Manager.
+
+#### Amazon ECS pricing
+
+You learned about some of the complexities of Amazon ECS pricing, some easy ways users end up paying more than they need to, and some strategies for lowering costs. You also learned how AWS Compute Optimizer can help you rightsize your hosting to reduce costs.
+
+---
+
 ## SELECTING A COMPUTE SERVICE
+
+### Comparing AWS Compute Services
+
+These are factors that you will need to consider when choosing a compute option for your own applications.
+
+#### Amazon EC2
+
+With Amazon Elastic Compute Cloud (Amazon EC2), you have direct control of your entire computing environment with the exception of management and maintenance of the hardware. You choose what type of hardware platform you need, and you fully control your operating system and software. If you want or need to manage your applications the same way you would in your own server rooms without having to deal with the actual server rooms, this is what Amazon EC2 does.
+
+As the foundational compute service on AWS, Amazon EC2 is always an option.
+
+##### Control
+
+With Amazon EC2, you're in charge. Everything from the operating system up is your responsibility. These are some common workloads that can be performed on Amazon EC2 the same way they can be performed in your own data centers.
+
+* **Testing system updates before deployment**: It's common for updates to drivers or operating systems to be applied to a testing environment prior to being rolled out to production.
+* **Operating system configuration**: Task priority, startup configuration, security settings, and everything else from whether a major component is installed to minor tweaks are under your control.
+* **Custom OS features**: Suppose you have a legacy application that only supports network communication through an RS232, 9-pin serial port. Rather than rewrite the application to work with Ethernet, you installed an emulator so the OS presents the port to applications. You can carry that over to your EC2 instance.
+* **Complex solutions**: Amazon EC2 lets you set up complicated networking configurations. It lets you work with multiple storage solutions at the same time. It lets you use a non-standard encryption algorithm customized to your data.
+
+##### Customizability
+
+Amazon EC2 provides more than 750 instance types to provide the hardware support you need. In addition to being able to choose from general purpose, memory optimized, storage optimized, and the like, you have additional options when configuring Amazon EC2.
+
+* **Dedicated hosts**: These are full physical machines that only your instances are running on. A primary use for these is compliance with security or data privacy regulations or policies. You can even have these connected to your sites via dedicated networks. In this way, AWS is effectively your own private data center.
+* **Bare metal instances**: These require a dedicated host and are EC2 instances that run directly on the hardware, rather than as a type 1 (hardware-hosted) virtual machine. This allows you the same full access to the underlying hardware that you would have on your own machines. One reasonably common use case for this is the need to run your own type 2 (OS-hosted) virtual machines to support software needing legacy operating systems.
+
+##### Integration
+
+Amazon EC2 integrates with virtually every other part of AWS and can interact with any non-AWS service you can work with on the internet. The other compute services you looked at are managed, which requires that interoperability with some other AWS services requires specific support to be developed for them. For instance, Amazon Elastic Container Service (Amazon ECS) was released as a preview with full Docker integration in late 2014. Auto Scaling support came in 2016, integration with Amazon Elastic File System (Amazon EFS) in 2000, and integration with Amazon Elastic Block Store (Amazon EBS) in January 2024.
+
+When a service is launched that supports compute, it supports Amazon EC2.
+
+##### Scalability, redundancy, and longevity
+
+Some of the initial selling points for Amazon EC2 when it launched in 2006—third after Amazon Simple Queue Service (Amazon SQS) and Amazon Simple Storage Service (Amazon S3)—were that deploying your computing systems in the cloud allowed you to scale more easily, achieve better redundancy and recovery, and keep your systems up longer and more consistently. This is truer than ever today. Amazon EC2 can support long-running, stateful applications.
+
+---
+
+#### Containers
+
+Amazon Elastic Kubernetes Service (Amazon EKS) and Amazon ECS are container orchestration services. Containers can provide for ease of code portability and deployment by wrapping up applications and their particular environment requirements. Choosing which container service to use is quite simple. Are you using Kubernetes or an Open Container Initiative (OCI)-compliant container system, like Docker?
+
+##### Ease of development and deployment
+
+Being able to pack up everything above the OS level and deploy it as a unit is the main point of a container. As the analogy to shipping containers goes, if we take the time to put everything into a standardized container, it becomes easy to load and unload those containers from the ship. Or, in your case, the server or cloud hosting solution. Look at some examples.
+
+* **Deployment pipelines**: You can run a containerized application locally and deploy it to your pipeline, and it should succeed or fail all the way through, even if Testing has patches that Prod doesn't.
+* **Team development**: Multiple developers on the same project don't have to be forced to maintain their systems in identical states to avoid "but it worked on my machine" issues. So long as the application is containerized and tested before changes are pushed, code should work on everyone's machines.
+* **Cloud migrations**: You can often take your entire application, no matter now large, and containerize it to be able to deploy it to the cloud easily.
+
+All of that said, if the particular support the application needs isn't entirely above the OS level or can't be completely packed into the container, this advantage can evaporate quickly. If you need complicated networking, you need to take action at the system level. You can, of course, deploy your containers directly to Amazon EC2, but you lose the benefits of orchestration. Persistent storage can still be difficult to manage, although Amazon EFS support in Amazon EKS and then Amazon ECS has mitigate that significantly.
+
+##### Isolation
+
+Another primary motivation behind containerizing applications is to isolate them from one another when they are running on the same system. If you have a number of services that interact with each other but use a mix of different Python runtimes and Java Virtual Machines, it can be difficult to run them on the same system. If they're intended to be accessed via API calls, configuring their network parameters to cooperate on a single system can be a challenge.
+
+Containers, however, act as though they are separate machines with their own external network connections. This allows you to treat communication among services on a single machine the same way you would if they were on different machines.
+
+Containers are also very valuable when you're looking to refactor a monolithic legacy system into one based on microservices (or even larger services). As you pull functionality from the monolith, you can containerize the new service, so that its APIs can be used in the remaining legacy code. You can then build APIs in the monolith to handle calls back to it. This makes pulling further functionality from it simpler, as the interface to those services is already in use.
+
+##### Scalability
+
+Containers are very simple to deploy, update, and scale out, provided their workload is suitable to containerization otherwise. This can both speed up your pipeline and make automatic scaling faster. They can also scale out without needing new instances, provided the underlying EC2 instances have sufficient capacity to run multiple copies of the same container.
+
+However, looking back to isolation, when a container scales out, it does so by creating new, completely separate containers. Imagine running an online multiplayer game where everyone who logged in was placed in whatever container had capacity and you needed to manage cross-container communication through a network. This, of course, is done in actual games that host in multiple Regions, but usually cross-Region communication is limited to messaging, and it doesn't include interactive play.
+
+Amazon EC2 runs a single instance on a cluster across Availability Zones. When it adds additional hosts, it adds them to the same instance. So scaling an EC2 instance means that all players in the Region would continue to be able to play with each other.
+
+---
+
+Containers are most indicated when you have an application that has supporting software particular to it. They are also indicated when the application needs to scale quickly. However, if they need shared state while running or need system-level customization, they're unlikely to be an effective choice.
+
+---
+
+#### Serverless hosting
+
+Serverless hosting options are AWS Lambda and AWS Fargate. These are differenyt but focus for now on a serverless solution, in general, might or might not be the one for your application.
+
+##### Fully managed environments
+
+The advantage here is that you barely have to think about what your code is running on. You need to pick your runtime for Lambda. There is minimal configuration needed for Fargate, dependent on whether you're running it with Amazon ECS or Amazon EKS. Both Lambda and Fargate are simple to launch and scale quickly and automatically.
+
+The disadvantage is that you're barely able to think about what your code is running on. You can't customize network or underlying instance type. You can't maintain state internally or across individual launches. With Fargate, that's true of the containers themselves, so unless you need more specific control over what the hardware provides, Fargate's usually a viable choice for container hosting.
+
+Lambda's management, on the other hand, includes a 15 minute time limit and the requirement that it be started with a call to a function that includes all of the data it needs to run.
+
+##### Rapid scaling
+
+If you have an application or code that's appropriate to the limitations of a serverless host, both Fargate and Lambda are superb at scaling almost immediately. Every time a Lambda function is called or triggered, if there's not one currently available, another is started.
+
+Since Fargate doesn't let you specify particular EC2 instance types, it can be scaled onto any available host with sufficient capacity. Scaling your containers on Amazon EC2 requires that an instance you've chosen be available, which will require spinning up new instances more frequently.
+
+---
+
+Serverless is all about simplicity and freeing you from concerns unrelated to your applications. Your applications or Lambda code need to be able to work within the limitations of serverless. You also might be able to configure Amazon EC2 to give you better performance for less money. But the time spent on those gains might not be the best use of your time.
+
+---
+
+#### Tying it all together
+
+The four compute services presented earlier create a continuum, from instances you can fully manage to serverless hosting fully managed for you.
+
+On the left we have Amazon EC2. Here, you have control of everything above the hypervisor. For a bare metal instance, you control everything above the hardware.
+
+Next, your code is still running on EC2 instances and OSes you specify, but the container orchestration tool manages everything outside of the container.
+
+Moving to Fargate, you still have some control over what resources your containers have available to them and you're still running a full application. Your container contains everything above the system level your application needs to run.
+
+On the far right you have AWS Lamda functions. You have a limited choice of runtimes that you can use and some options for networking and the like. Your deployment package is just code—your business logic and necessary libraries, for instance. You have no control over what instances Lambda runs your functions on or how it manages them.
+
+Ultimately, the decision comes down to which options can effectively run your code and how much control you need—or want—to have.
+
+---
+
+### Addressing Python Deployment Considerations
+
+All other considerations aside, you're going to need to create and manage your applications in whatever manner you deploy them. You will need to monitor logs from your running applications, manage packages, and ensure the runtime is correctly installed.
+
+#### Logging
+
+* On Amazon EC2, working with logs is manual or managed by software you've written or installed on the instance.
+* Lambda sends logs to Amazon CloudWatch Logs.
+* Amazon ECS and Amazon EKS have their own particular logging methods and capabilities.
+
+#### Package management
+
+* On Amazon EC2, you install and update packages using pip, just like on your development machine
+* With Lambda, you need to acquire your dependencies and include them in the deployment package. Changes require redeploying the Lambda function.
+* With a containerized solution, pip can be run from within the container. Docker can be accessed with Secure Shell (SSH), and software in the container can run it, as well. However, containers are independent of each other, unlike Amazon EC2, which is a single instance across a hardware cluster. Updating and redeploying the container is required, so Amazon Elastic Container Service (Amazon ECS) or Amazon Elastic Kubernetes Service (Amazon EKS) can cycle the new version into use.
+
+#### Runtime management
+
+* On Amazon EC2, you're working with a full machine instance, so installing and updating the Python runtime is done with DNF, as it would be on your local development machine.
+* With Lambda, you can choose the runtime when you create your Lambda function from a .zip file or use an AWS base image with the correct runtime for your deployment container.
+* With a containerized solution, the Python runtime will be included in the container image.
+
+---
+
+It's important that your application is fitting to the best way of deploying it given your current needs. However, evaluating what maintenance you will need to perform and how you will need to do that is an important consideration. Deploying an application is a long-term commitment, and at first, it always turns out to be more trouble than you thought it would be.
+
+The upside to deploying on AWS is that you can always change how you're deploying your application. AWS is built around making those changes as painless as possible.
+
+---
+
+### Knowledge Check
+
+#### Which serverless compute option would be ideal for taking a set of numerical data and performing a statistical operation on the result?
+
+* AWS Lambda
+
+Wrong answers:
+
+* Amazon Elastic Container Service (Amazon ECS) on AWS Fargate
+* Amazon Elastic Kubernetes Service (Amazon EKS) on AWS Fargate
+* Amazon Elastic Compute Cloud (Amazon EC2)
+
+##### Explanation
+
+Lambda is designed for stateless functions that perform quickly. If an application is a single function, Lambda should always be a strong consideration.
+
+The other options are incorrect because, while they all could perform the task, they all require far more resources and configuration than Lambda requires.
+
+#### Which compute service allows a user to test operating system updates before deployment?
+
+* Amazon EC2
+
+Wrong answers:
+
+* Amazon Elastic Container Service (Amazon ECS) on Amazon Elastic Compute Cloud (Amazon EC2)
+* Amazon Elastic Kubernetes Service (Amazon EKS) on AWS Fargate
+* AWS Lambda
+
+##### Explanation
+
+The other options are incorrect because they all manage the host operating system for the user.
+
+#### Why would a user choose Amazon Elastic Container Service (Amazon ECS) on AWS Fargate as a deployment environment?
+
+* The application is a robust personal finance application that experiences considerable spikes in usage at the end of months, end of quarters, and leading up to tax filing day.
+
+Wrong answers:
+
+* The application is stateless, and the company is standardized on Kubernetes.
+* The application is a batch application needing NVIDIA Tensor Cores to run.
+* The application is a player versus player combat game with up to 500 people on each side.
+
+##### Explanation
+
+Fargate can scale quickly for individuals to use the application, but other than needing to save data to an external database or file store between sessions, it requires minimal interaction with other services and has only transient state internally.
+
+The other options are incorrect because of the following:
+
+* Amazon ECS cannot manage Kubernetes containers.
+* Fargate does not let users specify high performance computing (HPC) EC2 instances.
+* Fargate cannot be allocated the resources needed to support 1,000 concurrent users in a real-time game. When scaled, neither Fargate nor Amazon ECS maintain a single, more capable instance across the cluster. Therefore, keeping data synchronous across the containers must be done with data-heavy API calls. This would interfere with the need for data to be consistent and available in real time.
+
+---
+
+### Summary
+
+#### Compute service strengths and weaknesses
+
+You examined and compared the points of strength and weakness for the compute services you looked at in this module. You also learned some tips for when it makes sense to consider one service over another.
+
+#### Managing Python applications on AWS
+
+You reviewed and compared the processes for managing Python applications on Amazon Elastic Compute Cloud (Amazon EC2), AWS Lambda, and containers. You took a high level look at the processes needed for each to set up the Python runtime, install packages using pip, and interact with application logs.
 
 ---
