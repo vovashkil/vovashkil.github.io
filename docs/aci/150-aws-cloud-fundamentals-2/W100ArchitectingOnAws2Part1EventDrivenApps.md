@@ -370,9 +370,564 @@ Data replication is when copies of data are stored in multiple locations. Some c
 * **Notification and subscription mechanisms**: Provide notification and subscription mechanisms, where clients can subscribe to specific data changes and be asynchronously notified of updates. This enables efficient data propagation.
 * **Batch and scheduled replication**: Consider batch-processing or scheduled replication approaches to reduce the impact of continuous replication on the overall system performance. By incorporating these strategies for asynchronous communication, you can effectively manage eventual consistency and implement robust data replication mechanisms in your distributed systems. The choice of specific strategies will depend on the requirements, constraints, and characteristics of your application.
 
+### Converting to Microservices
+
+To build a successful microservices-based application, it is important to start with a well-defined business domain and clear service boundaries. Additionally, adopting a continuous integration and continuous deployment and continuous integration (CI/CD) pipeline can help streamline the development and deployment process. Implementing service discovery, load balancing, and fault tolerance mechanisms is crucial for ensuring the reliability and scalability of the application.
+
+Using AWS services like AWS Lambda, Amazon API Gateway, and Amazon DynamoDB can provide a powerful and flexible infrastructure to support the microservices architecture. Finally, implementing robust monitoring and observability tooling is essential for maintaining the health and performance of the application.
+
+Converting from a monolithic application to a microservice-based application involves the following key steps:
+
+1. Assess your current architecture and workloads.
+2. Identify the right services and tools for your use case.
+3. Determine the necessary changes to your development and deployment processes.
+4. Architect and implement the microservices.
+5. Gradually migrate to microservices, starting with smaller components.
+
+* [Migrating Applications from Monolithic to Microservices on AWS](https://aws.amazon.com/blogs/apn/migrating-applications-from-monolithic-to-microservice-on-aws/)
+
+#### Mindset shifts when moving to microservices
+
+Changing from a monolithic architecture to microservices requires several mental shifts. To learn more about these shifts, expand each of the following categories.
+
+##### Cultural shifts
+
+Transitioning from a "single team, single codebase" mindset to a "multiple autonomous teams, multiple codebases" approach is essential for fostering a culture of experimentation and continuous improvement, and a willingness to embrace change.
+
+By encouraging this shift, organizations can cultivate a mindset of shared responsibility and cross-functional collaboration across the teams. Emphasizing the importance of agility, flexibility, and the ability to respond quickly to changing business requirements will help the organization to thrive in the face of evolving market demands.
+
+##### Organizational shifts
+
+The organization should be restructured from a centralized, hierarchical structure to a more decentralized, autonomous team-based structure. Cross-functional teams should be established, each responsible for specific microservices or domain-driven capabilities.
+
+These teams should be empowered to make independent decisions, develop, and deploy their microservices without relying on a central authority. Furthermore, a governance model should be implemented that balances autonomy and consistency across the organization.
+
+##### Communication shifts
+
+The organization should shift from a predominantly asynchronous communication model, such as email and documentation, to a more real-time, event-driven communication model. This can be achieved by encouraging the use of messaging protocols, APIs, and event-driven architectures to enable seamless communication between microservices.
+
+Clear guidelines and standards should be established for inter-service communication, API design, and data exchange to ensure consistency and facilitate collaboration. Additionally, mechanisms for service discovery, service registration, and service monitoring should be implemented to facilitate communication between distributed components and enable the smooth operation of the system.
+
+##### Ownership shifts
+
+The organization should transition from a centralized ownership model to a decentralized, domain-based ownership model. Clear ownership and accountability should be assigned to specific teams for each microservice or domain-driven capability. This empowers teams to make autonomous decisions regarding the design, development, and deployment of their microservices.
+
+Additionally, mechanisms for cross-team collaboration and coordination should be implemented to ensure coherence and consistency across the overall system. Lastly, a shared responsibility model should be established where teams collaborate and share knowledge to maintain the overall system health.
+
+---
+
+### Knowledge Check
+
+#### A cloud architect is designing a new application for a retail company. Which benefit of the sustainability pillar of the AWS Well-Architected Framework should the architect consider?
+
+* Helping to analyze and optimize the environmental impact of the architecture
+
+Wrong answers:
+
+* Ensuring reliable operation of applications in the face of changes and disruptions
+* Providing a framework for implementing security controls
+* Enabling efficient use of computing resources to minimize costs
+
+##### Explanation
+
+The sustainability pillar helps analyze and optimize the environmental impact of architectures.
+
+The other options are incorrect because:
+
+* Ensuring reliable operation is a benefit of the reliability pillar.
+* Implementing security controls is a benefit of the security pillar.
+* Efficient use of computing resources to minimize costs is a benefit of the cost optimization pillar.
+
+#### A team is designing a modern, event-driven application on AWS. Which of these are characteristics of a modern application architecture? (Select TWO.)
+
+* Event-driven and decoupled
+* API-driven and cloud-centered
+
+Wrong answers:
+
+* Monolithic, on-premises deployment
+* Tightly coupled system components
+* Vertically scalable
+
+##### Explanation
+
+Modern applications are typically designed to be event driven, with decoupled components that communicate asynchronously.
+
+They are also designed to be horizontally scalable, using cloud-centered technologies and APIs rather than being monolithic and deployed on premises.
+
+The other options are incorrect because they describe characteristics of traditional, legacy application architectures.
+
+#### A company wants to modernize their monolithic application to improve scalability, flexibility, and fault tolerance. Which benefit of the reliability pillar of the AWS Well-Architected Framework should the company consider?
+
+* Ensuring reliable operation of applications in the face of changes and disruptions
+
+Wrong answers:
+
+* Helping architects analyze and optimize the environmental impact of their architectures
+* Providing a framework for implementing security controls
+* Enabling efficient use of computing resources to minimize costs
+
+##### Explanation
+
+The reliability pillar of the AWS Well-Architected Framework ensures reliable operation of applications in the face of changes and disruptions, which aligns with the company's goals of improving scalability, flexibility, and fault tolerance.
+
+The other options are incorrect because they describe the benefits of other pillars of the framework, not the reliability pillar.
+
+#### A company is transitioning from a monolithic application to a microservices-based architecture on AWS. Which shifts should the company expect during this transition? (Select TWO.)
+
+* Organizational shift to a decentralized, autonomous team-based structure
+* Communication shift to a more real-time, event-driven model
+
+Wrong answers:
+
+* Cultural shift to a "single team, single codebase" mindset
+* Ownership shift to a centralized, hierarchical model
+* Technical shift to a tightly coupled, monolithic architecture model
+
+##### Explanation
+
+Transitioning to microservices requires a shift in organizational structure, moving from a centralized to a decentralized model with autonomous teams responsible for individual services.
+
+It also necessitates a shift in communication patterns, from asynchronous to more real-time, event-driven interactions between services.
+
+The cultural shift should be towards a "multiple autonomous teams, multiple codebases" mindset, not a "single team, single codebase" approach.
+
+The ownership model should also shift to a more decentralized, domain-based ownership, not a centralized, hierarchical model.
+
+The technical shift is towards a decoupled architecture, with a microservices architecture, not the other way around.
+
+---
+
+### Summary
+
+There are six pillars of the Well-Architected Framework:
+
+* Operational excellence
+* Security
+* Reliability
+* Performance efficiency
+* Cost optimization
+* Sustainability
+
+#### Modern applications
+
+Modern applications use events to communicate between microservices. An application using microservices for its architecture composes software into small independent components or services. Each service performs a single function and communicates with other services through a well-defined interface. Because they run independently, you can update, modify, deploy, or scale each service as required.
+
+##### Characteristics of a modern application
+
+Modern applications have the following characteristics:
+
+* Event-driven and decoupled architecture
+* Real-time data streaming
+* Horizontal scalability
+* Use of managed services
+* API-driven and originating in the cloud
+
+##### Functions supported by microservices
+
+AWS has services that can help with the following purposes:
+
+* Data ingestion and streaming
+* Messaging and event-driven architecture
+* Data storage and database
+* Event management and orchestration
+* Analytics and big data
+* Compute and serverless
+
+#### Microservices
+
+Within a monolithic application, there are a client-side UI, a database, and a server-side application. Developers build all these modules on a single code base. Features such as user management, threads, and posts are all a part of that code base.
+
+With a microservice-based application, the architecture is distributed and each microservice works to accomplish these features individually. Instead of exchanging data within the same code base, the microservices communicate with an API.
+
+##### Benefits of using microservices
+
+* Scalability
+* Reduced risk of failure
+* Faster launch, migration, or rollback
+* Enhanced collaboration and development productivity
+
+##### Challenges of using microservices
+
+* Complexity
+* Communication overhead
+* Misaligned services
+* Complex versioning and compatibility
+
+#### Communication protocols
+
+Communication protocols are sets of rules and standards that define how data is transmitted and received between different devices or systems on a network. They specify the format, timing, sequencing, and error checking of data communication. When designing an application, there are several decisions that need to be made.  Synchronous and asynchronous communication protocols can be used by applications.
+
+Asynchronous communication is an essential aspect of distributed systems, and it plays a crucial role in achieving eventual consistency and effective data replication.
+
+#### Converting to microservices
+
+To build a successful microservices-based application, it is important to start with a well-defined business domain and clear service boundaries. Additionally, adopting a CI/CD pipeline can help streamline the development and deployment process. Implementing service discovery, load balancing, and fault tolerance mechanisms is crucial for ensuring the reliability and scalability of the application.
+
+Converting from a monolithic application involves the following key steps:
+
+1. Assess your current architecture and workloads.
+2. Identify the right services and tools for your use case.
+3. Determine the necessary changes to your development and deployment process.
+4. Architect and implement the microservices.
+5. Gradually migrate to microservices, starting with smaller components.
+
+##### Mindset shifts
+
+Changing from a monolithic architecture to microservices requires several mental shifts:
+
+* **Cultural shifts**: It is advised to move from a "single team, single codebase" mindset to a "multiple autonomous teams, multiple codebases" approach to foster a culture that allows for experimentation, improvement, change, and the ability to deal with them. This shift helps organizations be more agile and respond quickly to changing business needs in an evolving market.
+* **Organizational shifts**: The organization should transition from a centralized, hierarchical structure to a more decentralized, team-based structure. Cross-functional teams should be established, each responsible for specific microservices or domain-driven capabilities. These teams should be empowered to make independent decisions and deploy their microservices without relying on a central authority. Additionally, a governance model should be implemented to balance the autonomy of the teams with consistency across the organization.
+* **Communication shifts**: An improved communication system across the organization involves adopting protocols, APIs, and event-driven architectures to enable seamless communication between services. Clear guidelines and standards must also be established for better consistency and collaboration through service discovery, registration, and monitoring. This will result in a more real-time and collaborative system.
+* **Ownership shifts**: Organizations should transition from a centralized ownership model to a system in which teams have clear ownership for certain areas, and in turn, make autonomous decisions about their specific services. This promotes cross-team collaboration and coordination to ensure consistent capabilities across the overall system. A final suggestion is to create a shared responsibility model to maintain system health through collaboration and knowledge sharing.
+
 ---
 
 ## DESIGNING MODERN EVENT-DRIVEN APPLICATIONS
+
+### Event-Driven Architectures
+
+An event-driven architecture uses events to communicate between decoupled services and is common in modern applications built with microservices.
+
+An event is a change in state, or an update, like an item being placed in a shopping cart on an ecommerce website. Events can either carry the state (the item purchased, its price, and a delivery address) or events can be identifiers (a notification that an order was shipped).
+
+Often, the applications built using microservices are serverless in nature. Serverless applications are those where the underlying infrastructure is abstracted and wholly managed by a cloud provider. Serverless applications let developers concentrate on code writing and complex and scalable computing without the need to administer hardware or servers. This further increases the flexibility and cost reduction that microservices already provide.
+
+Serverless applications are inherently event driven, because they are often initiated by events, such as HTTP requests, database updates, or message queue events.
+
+---
+
+Event-driven architectures use events to communicate between and invoke decoupled services.
+
+---
+
+Like microservices, serverless applications are event-driven and use technology-agnostic APIs with decoupled communications.
+
+Event-driven code is executed in response to an event, such as a change in state or an endpoint request. In event-driven architectures, state and code are decoupled, and integration between components is typically done with messaging to create asynchronous connections.
+
+To be successful with these types of architectures, it's critically important to get the integrations right. Event-driven patterns aren’t new. Many of them were documented in the book "Enterprise Integration Patterns: Designing, Building, and Deploying Messaging Solutions" (Gregory Hope and Bobby Woolf) which was written in 2003.
+
+However, at that point, techniques for implementing them could be expensive to build and run, and could create lock-in that made it difficult to scale. With today’s cloud-based serverless technologies, you can implement event-driven patterns with a lot less overhead.
+
+AWS Lambda is a serverless compute service that is well suited to event-driven architectures. AWS Lambda is event driven by nature.
+
+![Event-driven Architecture with Lambda.](./images/W09Img600EventDrivenArchtectureWithLambda.png)
+
+Lambda functions execute based on an event source and get data from the event source via the event object. Lambda functions consume and produce events that other services can then consume. Lambda has native support for events produced by message and streaming services like Amazon Simple Queue Service (SQS), Amazon Simple Notification Service (SNS), and Amazon Kinesis that can be used to create asynchronous integrations.
+
+Serverless architecture patterns use Lambda with other managed services that are also serverless. In addition to message and streaming services, serverless architectures use managed services like Amazon API Gateway for API management, Amazon DynamoDB for data stores, and AWS Step Functions for orchestration. This lets you create Lambda functions focused on business logic, while AWS managed services do more of the undifferentiated lifting between integrated components.
+
+![Serverless integrations with Lambda.](./images/W09Img602EventDrivenArchtectureWithLambdaAndAwsServices.png)
+
+#### Event-driven architecture use cases
+
+In the following examples, the event-driven architecture allows the applications to respond to various user actions, sensor inputs, and external data sources in a timely and efficient manner. The applications can then update their user interfaces, initiate backend processes, and communicate with other services or devices based on these events, providing a seamless and responsive user experience.
+
+##### Smartwatch or Fitness tracker
+
+With these kinds of devices, real-time data processing is paramount. Because of this, event-driven architecture becomes a suitable model. The following events would cause updates to the user interface, data synchronization with the companion application, and analysis of the user's activity and health metrics:
+
+* Heart rate changes
+* Step count changes
+* Sleep pattern changes
+* Workout start and end
+* Notifications from connected devices
+
+##### eCommerce
+
+The entire shopping experience is a series of events within the online storefront. Some example events that might cause updates to the system as you are shopping or an email to be sent about your order are the following:
+
+* Product added to cart
+* Checkout process initiated
+* Payment successful or failed
+* Order status changes
+
+##### Financial Trading
+
+In financial trading systems, real-time updates to a user's portfolio, market data visualizations, and implementation of trading strategies can all be driven by events. The following are some common events that would happen within this kind of system:
+
+* Stock price changes
+* Market news updates
+* User trading actions (buy, sell, place orders)
+
+---
+
+Expanding on the ecommerce use case, the following illustrates a simple event-driven workflow. This workflow is a serverless pattern to process orders within an ecommerce workflow using a RESTful microservice.
+
+1. The order information comes in through an API call over HTTP.
+2. Amazon API Gateway handles requests and responses to those API calls.
+3. Lambda contains the business logic to process the calls.
+4. DynamoDB provides persistent storage.
+
+#### Event-driven architecture components
+
+Event-driven architecture has three main components: **event producers**, **event routers**, and **event consumers**. These components work together to create a loosely coupled, scalable, and resilient system.
+
+##### Event producer
+
+Event producers are the components or services that generate events and publish them to an event routing mechanism, such as a stream, message queue, or a pub-sub system.
+
+They are responsible for detecting or creating significant occurrences or changes in the system and packaging them as discrete event messages. Their event messages contain relevant information about the event, such as the type of event, the timestamp, and any associated data.
+
+Event producers have no direct knowledge of the event consumers and simply publish the events to the event routing mechanism.
+
+**Examples of event producers**: Amazon Simple Storage Service (Amazon S3), Amazon DynamoDB, and AWS CloudTrail
+
+##### Event router
+
+Event routers are responsible for ingesting a high throughput of events from event producers and forwarding them to the appropriate event consumers. The event router acts as an intermediary between the event producers and the event consumers, decoupling them from each other. It might buffer events for replay and multiple consumers.
+
+Event routers are decoupled from event producers and event consumers and can be implemented using various technologies, such as a message queue, a pub-sub system, or a message broker. The event router is responsible for managing the distribution of events, ensuring reliable delivery, and providing features like message queueing, filtering, and event transformation.
+
+**Examples of event routers**: Amazon EventBridge and AWS Lambda
+
+##### Event consumer
+
+Event consumers are the components or services that are subscribed to streams and queues. They receive and process the events from the event routers that are published by the event producers.
+
+Event consumers are responsible for processing the event messages, performing any necessary business logic, and taking appropriate actions based on the received events. Event consumers are decoupled from the event producers, allowing them to be added, removed, or modified independently without affecting the overall system. Because of this, they have no knowledge of what produces an event.
+
+Event consumers can be synchronous (blocking) or asynchronous (non-blocking) in their processing, depending on the requirements of the system. Sometimes, event consumers send events to new destinations.
+
+**Examples of event consumers**: Amazon Simple Queue Service (Amazon SQS) and AWS Lambda
+
+#### Example of event-driven architecture
+
+AWS provides a set of fully managed services that you can use to build and run serverless, event-driven, applications. Serverless applications don’t require you to provision, maintain, and administer servers for backend components, such as compute, databases, storage, stream processing, messaging, and queueing.
+
+![Architecture diagram with a POST sent through Amazon API Gateway, processed, and ending with an SMS notification.](./images/W09Img610EventDrivenArchtectureExample.png)
+
+This architecture diagram shows a simple SMS notification service where each part of the process is decoupled. Operating independently from each other protects against traffic spikes and makes it easier to troubleshoot each individual part of the process.
+
+1. **Receiving requests and API calls**
+
+    Amazon API Gateway receives all requests for the service. It carries out all the tasks involved in accepting and processing API calls.
+
+2. **Amazon SQS**
+
+    Amazon API Gateway feeds messages to an application messaging queue built in Amazon SQS. The messages are processed by a worker service. This queue provides a buffer for the worker service if traffic spikes occur.
+
+3. **AWS Fargate and DynamoDB**
+
+    The worker service writes the processed message to a DynamoDB table. The worker receives a response when the request is complete.
+
+    The containerized worker service uses serverless hosting in AWS Fargate, which automatically scales hosting capacity with each newly launched container.
+
+4. **Amazon SNS**
+
+    When the worker receives a success response, it notifies Amazon SNS, which pushes an SMS notification to all subscribed users.
+
+#### Benefits of event-driven architecture
+
+Event-driven architectures offer several benefits that make them a popular choice for modern software systems. Some of the key benefits of event-driven architecture include the following:
+
+* **Rapid integration**: Because events are directed towards receptors that have detailed knowledge about their consumption, systems can be integrated together in more flexible ways, only needing to react to specific events of interest, according to the business needs.
+* **High concurrency**: Events are often processed in parallel by many different components, allowing a high level of concurrency and better utilization of available resources.
+* **Advanced real-time systems**: The event-driven model is often associated with real-time systems, where timely responses to events are required.
+
+#### Disadvantages of event-driven architecture
+
+It's important to note that although event-driven architectures provide many benefits, they also come with some challenges. The following are some common challenges:
+
+* **Complexity amplification**: Event-driven architecture can lead to an increase in system complexity, particularly when events are firing often, and there's a substantial amount of state management involved. This can escalate complexity, debugging efforts, and overall development time.
+* **System design dynamics**: Event-driven systems demand integration points throughout the system, which can introduce areas of failure and fragility into what might look like a monolithic paradigm. Poor integration design can introduce points of failure and performance bottlenecks, and make it harder to troubleshoot elements.
+* **Testing intricacies**: Event-driven architecture can make unit testing a system almost impossible. In a system where the sequence of events is crucial, unit testing can become difficult. Function-level integration testing, brownfield testing (simulating an events sequence), and extensive debugging can become staple items in the tester's toolbox.
+
+### Eventual Consistency in Event-Driven Architectures
+
+* **Eventual consistency**
+
+    Eventual consistency is a model used in distributed systems, where the system guarantees that if no new updates are made to a given data item, eventually all accesses to that item will return the last updated value. In these systems, updates to data might take some time to propagate to all replicas, and during this time, different replicas might have different versions of the same data. Eventual consistency is often used in scenarios where immediate consistency is not critical, and the system prioritizes availability and partition tolerance over strong consistency.
+
+* **Event-driven architecture**
+
+    Event-driven architecture is an architectural pattern where the flow of the program is determined by events, such as user actions, sensor outputs, or messages from other systems. In this architecture style, components of the system communicate with each other by producing, detecting, and reacting to events. Events are typically published to an event bus, which decouples the event producers from the event consumers, allowing for asynchronous and scalable communication.
+
+#### AWS services with eventual consistency
+
+Most AWS services support some form of eventual consistency, but the specific details can vary from service to service.
+
+* **Amazon S3**
+
+    Amazon S3 provides eventual consistency for overwrite PUTS and DELETE operations. This means that subsequent read requests might not immediately reflect the update.
+
+* **DynamoDB**
+
+    DynamoDB supports both strong consistency and eventual consistency. By default, DynamoDB read operations use eventual consistency, but you can choose to use strongly consistent reads if necessary.
+
+* **Amazon SQS**
+
+    Amazon SQS uses a distributed, replicated architecture, which means that messages in a queue might not be immediately visible to all consumers. This is an example of eventual consistency.
+
+* **Amazon SNS**
+
+    Amazon SNS employs a distributed architecture, and message delivery is not guaranteed to be immediate. This is another example of eventual consistency.
+
+* **Amazon ElastiCache with Redis**
+
+    When using the Redis engine, Amazon ElastiCache provides eventual consistency for read operations, because the data is replicated across multiple nodes.
+
+* **Amazon RDS**
+
+    When using the MySQL, PostgreSQL, or Oracle DB engines in a multi-AZ configuration, Amazon RDS can provide eventual consistency for read replicas.
+
+---
+
+#### CAP theorem tradeoffs
+
+The CAP theorem is a fundamental principle in distributed systems that states that a distributed system can only guarantee at most two out of the following three properties:
+
+* **Consistency (C)**: Consistency means that all clients see the same data at the same time. In other words, when a client writes data, all other clients should see the same data immediately.
+* **Availability (A)**: Availability means that the system is always ready to serve a client's request. The system should respond to every request, regardless of whether the data is consistent or not.
+* **Partition tolerance (P)**: Partition tolerance means that the system can continue to operate even when there is a network failure or a network partition (a situation where the network is divided into two or more independent networks).
+
+This tradeoff occurs because when a network partition occurs, the system has to choose between consistency and availability. Consider the example of a database sharded between five different nodes. A network break could occur that separates two nodes from the other three, creating two partitions. Using the CAP theorem, one potential outcome is that the partition with the most nodes becomes the leader and operates as if it contains all the nodes, and the other two nodes are taken offline. This would be an example of losing availability in favor of consistency.
+
+1. **Consistency and availability (CA) system**
+
+    In a CA system, the system maintains consistency and availability, but it cannot handle network partitions. This means that if a network partition occurs, the system will either become unavailable or lose consistency.
+
+2. **Consistency and partition tolerance (CP) system**
+
+    In a CP system, the system maintains consistency and partition tolerance, but it might sacrifice availability. This means that if a network partition occurs, the system will become unavailable until the partition is resolved.
+
+3. **Availability and partition tolerance (AP) system**
+
+    In an AP system, the system maintains availability and partition tolerance, but it might sacrifice consistency. This means that if a network partition occurs, the system will remain available, but it might return stale or inconsistent data.
+
+---
+
+In practice, most distributed systems choose to sacrifice one of the three properties to achieve the other two. The choice between availability and consistency depends on the specific requirements of the system and the trade-offs that the system designer is willing to make.
+
+For example, a banking application might prioritize consistency over availability, because it is crucial to ensure that all transactions are recorded accurately.
+
+A content delivery network for a video streaming provider might prioritize availability over consistency, because it is more important to serve content quickly than to ensure that all clients see the same data at the same time.
+
+---
+
+#### Eventual consistency in real life
+
+An end user updating their profile in a social media application is an example of data that is usually eventually consistent.
+
+1. **User updating profile**: A user updates their profile information, such as their profile picture, bio, or location, on a social media platform.
+2. **Initial stale data**: When the user initially views their profile, the updated information mighty not be immediately visible. Instead, the user sees the previous, stale data.
+3. **Eventual consistency**: Over time, as the platform's data replication and synchronization processes take effect, the updated profile information is propagated across the system. Eventually, the user's profile will display the new, up-to-date information.
+
+#### Eventual compared with strong consistency
+
+So why use eventual consistency? Wouldn't it be better to have data that is as accurate as possible? Well, there are also trade-offs when choosing strong consistency. The following provides a summary of the trade-offs for each choice and as use cases for each consistency model:
+
+* **Strong consistency**: This consistency model can lead to increased latency and higher cost. It is typically used for critical data that requires instant visibility such as financial transactions and gaming.
+* **Eventual consistency**: This consistency model provides faster performance and lower costs. It is typically used for use cases such as social media posts and product catalogs, where instant visibility is not necessary.
+
+Event-driven architecture can use eventual consistency to handle data updates in a distributed system. In an event-driven architecture, when an event occurs, it can activate updates to data stored across multiple distributed nodes or services. Because these updates might take time to propagate to all replicas, the system can use an eventual consistency model to ensure that the data eventually converges to a consistent state, even if intermediate states temporarily exhibit inconsistencies.
+
+The asynchronous and decoupled nature of event-driven architecture aligns well with the relaxed consistency guarantees provided by eventual consistency. So the system can maintain availability and responsiveness while managing the complexity of distributed data management. Eventual consistency and event-driven architecture are distinct concepts. However, they can be used together effectively in the design of scalable and fault-tolerant distributed systems, where data consistency is not the primary concern, but rather overall system availability and responsiveness.
+
+---
+
+### Knowledge Check
+
+#### An ecommerce company wants to build a decoupled, event-driven architecture to handle their order processing workflow. Which AWS services would be most suitable to implement this? (Select TWO.)
+
+* Amazon Simple Notification Service (Amazon SNS)
+* Amazon EventBridge
+
+Wrong answers:
+
+* Amazon Simple Queue Service (Amazon SQS)
+* Amazon DynamoDB
+* Amazon EC2
+
+##### Explanation
+
+Amazon SNS provides a publish-subscribe model to decouple the order processing components, allowing them to communicate asynchronously.
+
+Amazon EventBridge can be used to ingest events from various sources, route them to the appropriate targets, and orchestrate the overall order processing workflow.
+
+The other options are incorrect because:
+
+* Amazon SQS and DynamoDB are also useful in event-driven architectures, but they are not the primary services for decoupling and event routing in this scenario.
+* Amazon EC2 is not directly involved in the event-driven aspects of the architecture.
+
+#### A content delivery network (CDN) for a video streaming provider is implementing a distributed system. It is important to the CDN to serve content quickly and not fail if messages are dropped or delayed between components of the system. Which properties of the CAP theorem might the CDN prioritize?
+
+* Availability
+* Partition tolerance
+
+Wrong answers:
+
+* Consistency
+* Scalability
+* Fault tolerance
+
+##### Explanation
+
+A content delivery network for a video streaming provider needs to  prioritize Availability and Partition Tolerance over Consistency, because it is more important to serve content quickly and reliably, than to ensure that all clients see the same data at the same time.
+
+The other options are incorrect because:
+
+* Consistency is not as important to the CDN. The CDN doesn't care that all clients see the same data at the same time.
+* Scalability and Fault tolerance are not properties of the CAP theorem.
+
+#### An ecommerce company wants to implement an event-driven architecture to handle order processing. They plan to use Amazon Simple Notification Service (Amazon SNS) and Amazon Simple Queue Service (Amazon SQS) to decouple the components. Which primary benefit will this architecture provide?
+
+* Rapid integration between components
+
+Wrong answers:
+
+* Improved data consistency
+* Reduced system complexity
+* Simplified testing and monitoring
+
+##### Explanation
+
+Event-driven architectures, like the one using Amazon SNS and Amazon SQS, promote decoupling and asynchronous communication between components.
+
+This allows for rapid integration and changes, because the components do not have to know about each other's implementation details.
+
+The other options are incorrect because:
+
+* Event-driven architectures can also provide improved data consistency through eventual consistency models, reduced system complexity, and simplified testing and monitoring. However, the primary benefit in this scenario is the rapid integration between the order processing components.
+
+---
+
+### Summary
+
+An event is a change in state, or an update, like an item being placed in a shopping cart on an ecommerce website. Events can either carry the state (the item purchased, its price, and a delivery address) or events can be identifiers (a notification that an order was shipped).
+
+```text
+Event-driven architectures use events to communicate between and invoke decoupled services.
+```
+
+#### Event-driven architecture components
+
+Event-driven architecture has three main components:
+
+* **Event producers**: Event producers are technologies or services that receive, detect, or create events and are then published to a message queue or similar systems like pub-sub.  They package significant occurrences or changes in the system as discrete event messages that contain relevant event details, timestamps, and any associated data. Event producers don't know the consumers and simply publish the events to be received by them later.
+* **Event routers**: Event routers act as middlemen between producers and consumers of events, decoupling them and managing the distribution of events. They can use technologies like message queues, pub-sub systems, or message brokers to achieve the required function. They can buffer events for replay purposes, ensuring the same events get delivered reliably.
+* **Event consumers**: Event consumers are services that subscribe to event streams and queues, processing the received events and performing actions based on them. They are decoupled from the event producers, meaning that they can be added, removed, or modified without affecting the overall system. This loose connection offers flexibility and independent scalability of the system. Consumer processing can be synchronous or asynchronous, with the system requirement determining this.
+
+#### Eventual consistency
+
+Eventual consistency is a model used in distributed systems where the system guarantees that if no new updates are made to a data item, all accesses will eventually return the last updated value. In these systems, updates might take time to propagate to all replicas, so different replicas might have different versions temporarily. Eventual consistency is used when immediate consistency is not critical, and the system prioritizes availability and partition tolerance over strong consistency.
+
+The following AWS services support eventual consistency:
+
+* Amazon S3
+* DynamoDB
+* Amazon SQS
+* Amazon SNS
+* ElastiCache
+* Amazon RDS
+
+#### CAP theorem
+
+The CAP theorem is a fundamental principle in distributed systems that states that a distributed system can only guarantee at most two out of the following three properties:
+
+* **Consistency (C)**: Consistency means that all clients see the same data at the same time. In other words, when a client writes data, all other clients should see the same data immediately.
+* **Availability (A)**: Availability means that the system is always ready to serve a client's request. The system should respond to every request, regardless of whether the data is consistent or not.
+* **Partition Tolerance (P)**: Partition tolerance means that the system can continue to operate even when there is a network failure or a network partition (a situation where the network is divided into two or more independent networks).
 
 ---
 
