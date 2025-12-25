@@ -932,3 +932,327 @@ The CAP theorem is a fundamental principle in distributed systems that states th
 ---
 
 ## IMPLEMENTING EVENT-DRIVEN ARCHITECTURES WITH AWS SERVICES
+
+### Using Amazon SQS in Event-Driven Architectures
+
+Amazon Simple Queue Service (Amazon SQS) is an AWS service that provides a simple and cost-effective queuing service that allows you to pass messages among different components of an application or infrastructure. The following are the key ways that it participates in an event-driven architecture:
+
+* **Decoupling**: Amazon SQS provides a way to decouple components in an event-driven architecture. It acts as a message broker, allowing producers (event publishers) to send messages to a queue without the need to directly interact with the consumers (event subscribers). This decoupling enables greater flexibility, scalability, and fault tolerance.
+* **Asynchronous communication**: Amazon SQS facilitates asynchronous communication between components in an event-driven system. Producers can publish events to the queue without waiting for consumers to process them, allowing the system to scale and handle high-volume workloads more effectively.
+* **Reliable message delivery**: Amazon SQS ensures reliable message delivery by providing at-least-once delivery semantics. Messages placed in the queue are persisted and can be consumed multiple times if necessary, ensuring that events are not lost.
+* **Dead-letter queues**: Amazon SQS supports the use of dead-letter queues, which allow you to capture and analyze messages that could not be successfully processed by the consumers. This feature helps identify and address issues in the event processing pipeline.
+* **Message visibility timeout**: Amazon SQS allows you to configure a message visibility timeout, which determines the time window during which a consumer has to process a message before it becomes visible to other consumers. This feature helps ensure that messages are processed exactly once, even in the face of consumer failures.
+* **Integration with other AWS services**: Amazon SQS integrates seamlessly with other AWS services, such as Lambda, Amazon SNS, and Amazon CloudWatch. You can build complex event-driven architectures and automate event processing workflows.
+* **Scalability and elasticity**: Amazon SQS is a highly scalable service that can automatically handle fluctuations in message volume. As the number of producers and consumers changes, Amazon SQS can dynamically scale to accommodate the workload, ensuring that the system remains responsive and efficient.
+* **Delayed message delivery**: Amazon SQS provides the ability to delay the delivery of messages to the queue, which can be useful in certain event-driven scenarios where you need to introduce a deliberate delay before processing an event.
+
+By using the key functions and features of Amazon SQS, you can design and implement highly scalable, fault-tolerant, and decoupled event-driven architectures that can efficiently handle a wide range of workloads and event processing requirements.
+
+#### Using Amazon SQS as an event consumer
+
+In this architecture diagram from Databases and Caching, API Gateway forwards the request to Amazon SQS to ensure that requests are handled in order. The architecture uses a serverless matchmaker composed of Amazon SQS, AWS Lambda, and Amazon DynamoDB. Both the streaming instance and signaling servers are hosted in the same Amazon Elastic EC2 instance.
+
+![This architecture shows a simple implementation of a feature on AWS.](./images/W09Img620SqsEventConsumer.png)
+
+---
+
+### Using Amazon SNS in Event-Driven Architectures
+
+Amazon Simple Notification Service (Amazon SNS) is an AWS service that provides a fully managed publish-subscribe (pub-sub) system that plays a crucial role in event-drive architecture. The following are the key ways that it participates in an event-driven architecture:
+
+* **Publish-subscribe model**: Amazon SNS follows a pub-sub model, allowing producers (publishers) to send messages to consumers (subscribers) without direct coupling. Publishers can publish messages to SNS topics, and subscribers can subscribe to these topics to receive the messages.
+* **Topic-based messaging**: Amazon SNS organizes messages into topics, which act as logical access points and event channels. Topics provide a way to group related messages and decouple event producers from event consumers.
+* **Event distribution**: Amazon SNS can distribute messages to multiple subscribers simultaneously, enabling event fan-out and scalable event propagation. Subscribers can be diverse, including Amazon SQS queues, AWS Lambda functions, HTTP/S endpoints, email addresses, and more.
+* **Reliability and durability**: Amazon SNS provides high availability and fault tolerance, ensuring reliable message delivery. Messages are durably stored and can be replicated across multiple Availability Zones for increased resilience.
+* **Scalability and performance**: Amazon SNS can handle high-volume event traffic, scaling automatically to accommodate changes in message throughput. It can deliver millions of messages per second, making it suitable for event-driven architectures with large-scale event processing requirements.
+* **Integration with other AWS services**: Amazon SNS integrates seamlessly with other AWS services, enabling event-driven workflows and integration patterns. It can activate actions in services like AWS Lambda, Amazon SQS, Amazon S3, and Amazon Kinesis, facilitating end-to-end event-driven architectures.
+* **Flexible subscription options**: Amazon SNS supports various subscription types, including HTTP/S, email, SMS, mobile push notifications, and Amazon SQS queues. This flexibility allows you to choose the appropriate delivery mechanism based on the event consumer's requirements.
+* **Dead-letter queues**: Amazon SNS provides the ability to configure dead-letter queues, which can capture and store failed message deliveries for further investigation and processing. This feature helps in monitoring and troubleshooting event-driven architectures.
+* **Message filtering**: Amazon SNS supports message filtering, allowing subscribers to receive only the events that they are interested in based on specific criteria. This feature helps in reducing unnecessary event processing and optimizing resource utilization.
+
+By using the key functions and features of Amazon SNS, you can build scalable, reliable, and decoupled event-driven architectures, for efficient and flexible event processing and distribution across your applications and services.
+
+#### Pub-sub messaging
+
+Publish-subscribe messaging, or pub-sub messaging, is an asynchronous communication model that makes it easy for developers to build highly functional and architecturally complex applications in the cloud. In modern cloud architecture, applications are decoupled into smaller, independent building blocks called services. Pub-sub messaging provides instant event notifications for these distributed systems. It supports scalable and reliable communication between independent software modules.
+
+##### Pub-sub components
+
+A pub-sub system has four key components.
+
+* **Messages**
+
+    A message is communication data sent from sender to receiver. Message data types can be anything from strings to complex objects representing text, video, sensor data, audio, or other digital content.
+
+* **Topics**
+
+    Every message has a topic associated with it. The topic acts like an intermediary channel between senders and receivers. It maintains a list of receivers who are interested in messages about that topic.
+
+* **Subscribers**
+
+    A subscriber is the message recipient. Subscribers have to register (or subscribe) to topics of interest. They can perform different functions or do something different with the message in parallel.
+
+* **Publishers**
+
+    The publisher is the component that sends messages. It creates messages about a topic and sends them once only to all subscribers of that topic. This interaction between the publisher and subscribers is a one-to-many relationship. The publisher doesn’t need to know who is using the information it is broadcasting, and the subscribers don’t need to know where the message comes from.
+
+##### Pub-sub features
+
+Applications developed with a pub-sub pattern have separate application and communication logic. The messaging infrastructure decouples message delivery between publishers and subscribers, and broadcasts to different subscribers asynchronously. This provides the following features. To learn more, expand each of the following categories.
+
+* **Push delivery**
+
+    Pub-sub messaging instantly pushes asynchronous event notifications when messages are published to the message topic. Subscribers are notified when a message is available.
+
+* **Multiple delivery protocols**
+
+    Topics connect to multiple types of endpoints, such as message queues, serverless functions, HTTP servers, and email addresses.
+
+* **Fanout**
+
+    This scenario happens when a message is sent to a topic and then replicated and pushed to multiple endpoints. Fanout provides asynchronous event notifications, which in turn allow for parallel processing.
+
+* **Filtering**
+
+    The filtering feature empowers the subscriber to create a message filtering policy. So, they will only get the notifications that they’re interested in, as opposed to receiving every single message posted to the topic.
+
+* **Multiplexing**
+
+In some cases, publishers can also be subscribers. You can multiplex message streams and create systems that link together in an internally consistent manner.
+
+##### Pub-sub and event-driven architecture benefits
+
+The pub-sub model enables event-driven architecture, which is required in several modern applications. You can use events to initiate and communicate between decoupled services. An event is a change in state, or an update, like an item being placed in a shopping cart.
+
+Pub-sub messaging provides significant advantages to developers who build applications that rely on real-time events. The following are some of these benefits:
+
+* **Eliminating polling**: Message topics allow instantaneous, push-based delivery, eliminating the need for message consumers to periodically check, or poll, for new information and updates. This promotes faster response time and reduces the delivery latency that can be particularly problematic in systems where delays cannot be tolerated.
+* **Dynamic targeting**: The pub-sub pattern makes the discovery of services easier, more natural, and less error prone. Instead of maintaining a roster of peers so that an application can send messages, a publisher will simply post messages to a topic. Then any interested party will subscribe its endpoint to the topic and start receiving these messages. Multiple subscribers can change, upgrade, or disappear, and the system adjusts dynamically.
+* **Decoupling and scaling independently**: Pub-sub makes the software more flexible. Publishers and subscribers are decoupled and work independently from each other, which allows you to develop and scale them independently. You can decide to handle orders one way this month and then another the following month. Adding or changing functionality won’t send ripple effects across the system, because pub-sub allows you to flex how everything works together.
+* **Simplified communication**: Code for communications and integration is some of the hardest code to write. The publish-subscribe model reduces complexity by removing all the point-to-point connections with a single connection to a message topic. The topic will manage subscriptions to decide what messages should be delivered to which endpoints. Fewer callbacks result in looser coupling, plus code that is easier to maintain and extend.
+* **Durability**: Pub-sub messaging services often provide very high durability, and at-least-once delivery, by storing copies of the same message on multiple servers.
+* **Security**: Message topics authenticate applications that try to publish content and allow you to use encrypted endpoints to secure messages in transit over the network.
+
+#### Integrating Amazon SNS and Amazon SQS for decoupling
+
+In an event-driven architecture, integrating Amazon SNS and Amazon SQS can be a powerful way to achieve decoupling between different components of the system. The following is how you can integrate these two services to implement a decoupled event-driven architecture:
+
+1. **Create an SNS topic**: Create an SNS topic that will serve as the event bus. This topic will be the central point where all the events are published.
+2. **Subscribe SQS queues to the SNS topic**: Create one or more SQS queues and subscribe them to the SNS topic. This means that whenever a message is published to the SNS topic, it will be delivered to all the subscribed SQS queues.
+3. **Publish events to the SNS topic**: The components in your system that generate events (the publishers) will publish those events to the SNS topic. These components don't need to know anything about the downstream consumers of the events.
+4. **Consume events from the SQS queues**: The components in your system that consume the events (the subscribers) will receive the events from the SQS queues. These components don't need to know anything about the upstream producers of the events.
+
+---
+
+### [Lab: Using Amazon SNS and SQS in Event-Driven Architectures](./labs/W100Lab1SnsSqsEvenDrivenArchitecture.md)
+
+In this lab, you configure an Amazon Simple Storage Service (Amazon S3) bucket to invoke an Amazon Simple Notification Service (Amazon SNS) notification whenever an object is added to an Amazon S3 bucket. You learn how to create and interact with Amazon Simple Queue Service (Amazon SQS) queues, and learn how to invoke an AWS Lambda function using Amazon SQS.
+
+In this lab, you will perform the following tasks:
+
+* Create an Amazon SNS topic.
+* Create Amazon SQS queues.
+* Create event notifications in Amazon S3.
+* Create AWS Lambda functions using preexisting code.
+* Invoke an AWS Lambda Function from SQS queues
+* Monitor AWS Lambda S3 functions through Amazon CloudWatch Logs.
+
+---
+
+### Using Amazon DynamoDB in Event-Driven Architectures
+
+Amazon DynamoDB is a fully managed NoSQL database service that is well suited for event-driven architecture due to its key features and functions. The following are the key ways that it participates in an event-driven architecture:
+
+* **Scalability and high availability**: DynamoDB is a fully managed service that automatically scales up or down based on the workload, ensuring high availability and eliminating the need for manual provisioning or scaling. This is crucial in event-driven architectures, where the workload can fluctuate significantly based on the occurrence of events.
+* **Low latency data access**: DynamoDB provides fast and consistent data access, with single-digit millisecond latency for reads and writes. This makes it suitable for event-driven systems that require real-time responses to events.
+* **Event sourcing and change data capture (CDC)**: Amazon DynamoDB Streams can be used to capture changes to the data, which is a key requirement for event sourcing and CDC patterns in EDA. These streams can be used to invoke downstream actions and process events in real time.
+* **Integration with other AWS services**:** DynamoDB seamlessly integrates with other AWS services, such as AWS Lambda, Amazon Kinesis, and Amazon SNS, which are commonly used in event-driven architectures. This allows for the creation of event-driven workflows and the ability to react to events in a serverless and scalable manner.
+* **Flexible data model**: The DynamoDB document-based data model, where data is stored in JSON-like documents, is well suited for event-driven architectures that often deal with semi-structured or unstructured data. This flexibility allows for easy modeling of event data and related information.
+* **Transactions and conditional writes**: DynamoDB supports ACID-compliant transactions, which is important for maintaining data consistency in event-driven systems. Conditional writes can also be used to ensure that events are processed in the correct order and that the data remains consistent.
+
+By using these features and functions, DynamoDB can play a crucial role in building robust and scalable event-driven architectures. It provides real-time processing, data consistency, and seamless integration with other AWS services.
+
+#### Amazon DynamoDB Streams
+
+Amazon DynamoDB Streams provides a real-time data synchronization capability that helps decouple application components at no extra cost. It is included in the store-and-query pricing of Amazon DynamoDB, a fully managed NoSQL database service.
+
+With DynamoDB Streams, you can make your applications always up to date. You do this by capturing and transferring changes made to your data lake in DynamoDB and then streaming this synchronized data to downstream destinations such as databases, cache systems, or analytics services. Here's how it works.
+
+* **Data change capture**: DynamoDB Streams enable you to capture and record every change (write) made to your tables as a stream of consistency points. A consistency point is a snapshot of the data as it existed at a specific point in time. Each such snapshot, or record, captures key-value changes from that point onward and doesn't capture changes that occurred before that time.
+* **Stream generation**: DynamoDB Streams begin generating streams when you enable them, which is a quick operation. When the streams are enabled, for every new write operation performed on the table, a new record is created in the stream, capturing the information about that write operation.
+* **Destination criteria**: DynamoDB supports two types of destinations to receive this data: stream names and snapshots. When you set up a destination, you choose where to send the stream records. And you can select between sending the data to another DynamoDB table (optimal when you want to maintain the data in real time), or to take a snapshot of the data at a specific point in time for long-term storage.
+* **Ease of integration**: Decoupling your applications is simplified because you only need to configure the destination of your choice when you set up the DynamoDB Streams, and then enable the destination. There's no need to replatform or reconcile your applications to use the real-time updates. After set up, you can write and read from your application as a completely separate system.
+* **Extensibility**: The nature of the service supports a wide variety of applications. For example, you can use the data in Amazon Kinesis to analyze streams in real time and build a customized streaming ingestion pipeline for real-time data processing. Or you can save the data in Amazon S3 to analyze it at your convenience.
+
+#### Common use cases of Amazon DynamoDB in event-drive architecture
+
+##### Send welcome emails for new users
+
+In an event-driven architecture, the creation of a new user account can be considered an event. When a new user is created, an event can be launched to store the user's information in a DynamoDB table. This table can be used to keep track of new users and their associated data, such as addresses. Upon the creation of a new user, a serverless function, such as a Lambda function, can run to send a welcome email to the new user's email address stored in the DynamoDB table. This approach ensures that the welcome email is sent immediately after the user's account is created, providing a seamless and timely onboarding experience.
+
+##### Notify fraud detection system
+
+In an event-driven architecture, suspicious activities or potential fraud events can launch notifications to a fraud detection system. A DynamoDB table can be used to store the details of these suspected fraud events, such as the user's information, transaction details, and any other relevant data. When a potential fraud event occurs, an event can be generated, and a serverless function (for example, AWS Lambda) can be initiated to write the event details to the DynamoDB table. The fraud detection system can then read from the DynamoDB table, analyze the data, and take appropriate actions. These actions can include flagging the account, initiating further investigation, or invoking additional security measures. This approach allows the fraud detection system to react promptly to potential fraud events and maintain a comprehensive audit trail in the DynamoDB table.
+
+##### Append changes to audit log table
+
+In an event-driven architecture, any changes or updates made to your system's data can be considered events. A DynamoDB table can be used as an audit log to record these events and changes. Whenever a change occurs in your system, an event can be generated. And a serverless function (for example, AWS Lambda) can be initiated to append the details of the change to the DynamoDB audit log table. The audit log table can store information such as the modified data, the user who made the change, the timestamp, and any other relevant metadata. This approach ensures that you have a comprehensive and tamper-proof audit trail of all changes made to your system, which can be valuable for compliance, troubleshooting, and data lineage purposes.
+
+##### Propogate changes in other tables
+
+In an event-driven architecture, changes made to one table or entity can prompt updates or propagation of those changes to other related tables or entities. DynamoDB can be used to facilitate this propagation process by acting as a central hub for events and changes. Whenever a change occurs in a table, an event can be generated and written to a DynamoDB table. Other serverless functions (for example, AWS Lambda) can be initiated by these events to read the changes from the DynamoDB table and propagate the updates to the relevant tables or entities in your system. This approach ensures that your system maintains data consistency and integrity across multiple tables and components, even in a distributed and event-driven architecture.
+
+---
+
+### Using Amazon EventBridge in Event-Driven Architectures
+
+Amazon EventBridge is a serverless event bus that is fully managed by AWS. An event bus is a software design pattern that allows different components of an application to communicate with each other by sending and receiving events. It is a central hub that facilitates the exchange of messages between different parts of an application, without the components having to know about each other's existence. The following are the key ways that it participates in an event-driven architecture:
+
+* **Event ingestion and routing**: EventBridge can ingest events from various sources, both on premises and cloud, in various formats such as JSON, logs, and API calls. All events within EventBridge are guaranteed to be stored after 7 days (for long-term archival), and can be replayed to support end-to-end data integrity and audit trails. EventBridge has powerful routing rules that are defined to route events to various target destinations such as AWS services or third-party systems based on the event data or attributes.
+* **Decoupled event processing**: In EventBridge, event processing occurs at runtime with virtually no drag on infrastructure, so that applications can continue to process batches in the background while new events arrive. It uses inference to determine the source of the event, so there's no need to predefine schemas, which simplifies running any custom event processing logic.
+* **Event transformation and scheduling**: EventBridge supports event patching (modifying an event before it's passed on) and creating new events within an event stream (called events stretching), allowing much more flexibility. You can schedule events for prompts at predefined intervals or according to specific time or date patterns.
+* **Integrations with core AWS services**: EventBridge integrates seamless with many core AWS services such as Amazon S3, Amazon RDS, Amazon CloudFront, and Lambda. Users can also connect to event streams from hundreds of third-party applications and services through open APIs (like Amplify, IBM Cloud, or Microsoft Azure).
+* **Security and governance**: EventBridge uses a serverless architecture to provide a scalable and managed event bus for your application. It provides audit trails and APIs to control access to your event stream for enhanced security. It also offers customer-managed encryption for data at rest.
+
+By using these features, you can build highly scalable, fault-tolerant, and decoupled event-driven architectures that efficiently process and respond to events in real time. This helps you build more agile and responsive applications.
+
+#### Event routing and processing
+
+The core strength of EventBridge lies in its event routing capabilities. You can define rules or prompts for incoming events based on attributes, patterns, or destinations. This means that you can strategically route events to targeted destinations like Lambda functions, AWS services, databases, or even external systems, enabling parallel processing or orchestration.  It routes and processes events in the following ways:
+
+* **Event sources**: EventBridge can receive events from a variety of sources, including AWS services (for example, Amazon EC2, AWS Lambda, or Amazon S3). It can also receive events from software as a service (SaaS) applications and your own applications.
+* **Event bus**: The EventBridge event bus collects and distributes events. When an event occurs in one of the connected sources, it is sent to the event bus.
+* **Event rules**: Amazon EventBridge uses rules to determine how to process the incoming events. These rules define the criteria for matching events and the actions to take when a match is found.
+* **Event targets**: When an event matches a rule, EventBridge can send the event to one or more target services or applications, such as AWS services (for example, Lambda, Amazon SNS, or Amazon SQS) and your own applications.
+* **Event transformation**: EventBridge can transform the incoming event data into the format required by the target service or application. This allows you to integrate disparate systems without having to write custom code to transform the data.
+* **Event replay**: EventBridge provides the ability to replay past events, which can be useful for debugging or reprocessing data.
+* **Event filtering**: EventBridge allows you to filter events based on various criteria, such as the event source, event type, or event detail.
+* **Event scheduling**: EventBridge can be used to schedule events, so you can automate tasks and workflows.
+* **Event monitoring and logging**: EventBridge integrates with CloudWatch, so you can monitor and log the events processed by the service.
+
+#### Event schemas and rules
+
+EventBridge schemas and rules are two important components of the Amazon EventBridge service.
+
+* **Schemas**
+
+    Schemas in EventBridge define the structure and format of event data, ensuring consistent interpretation and processing. They can be registered in the schema registry, allowing management and sharing across your organization. By using schemas, you can guarantee proper event formatting and reliable event consumption and processing.
+
+* **Rules**
+
+    EventBridge rules determine how events are routed and processed. They specify what happens when an event comes in. Rules are used for incoming events, defining criteria to match against. Event data can be transformed, such as adding attributes, before being sent to a target service.
+
+Together, Amazon EventBridge schemas and rules provide a comprehensive and flexible event management solution that you can use to define, validate, and process events across your applications and services. Schemas ensure the consistency and integrity of event data. Rules help you create custom event-driven workflows and integrate your applications with ease.
+
+---
+
+### [Lab: Building Decoupled Architectures with Amazon EventBridge](./labs/W102Lab2BuildingDecoupledArchitecturesWithAmazonEventBridge.md)
+
+In this lab, you learn how to use an HTTP API to drive event-driven architecture. You also initiate AWS Lambda functions by invoking Amazon EventBridge rules directly from Amazon API Gateway.
+
+In this lab, you will perform the following tasks:
+
+* Create a Lambda function and configure environment variables.
+* Create EventBridge rules targeting Lambda functions.
+* Create an HTTP API and WebSocket endpoint using API Gateway.
+* Create an API Gateway method to integrate with EventBridge.
+
+---
+
+### Knowledge Check
+
+#### A media company wants to build an event-driven architecture to automatically process and analyze user-generated content. They plan to use Amazon Simple Notification Service (Amazon SNS) to distribute events to various downstream services. Which features of Amazon SNS are relevant to this specific use case? (Select TWO.)
+
+* Amazon SNS can distribute messages to multiple subscribers simultaneously, enabling event fan-out.
+* Amazon SNS integrates with other AWS services like AWS Lambda, enabling event-driven workflows.
+
+Wrong answers:
+
+* Amazon SNS supports message filtering, allowing subscribers to receive only the events that they are interested in.
+* Amazon SNS provides strong data consistency guarantees for message delivery.
+* Amazon SNS provides a web-based management console for configuring and monitoring SNS topics.
+
+##### Explanation
+
+Amazon SNS can distribute messages to multiple subscribers simultaneously, enabling event fan-out, which is crucial for the media company's use case of processing and analyzing user-generated content across multiple downstream services.
+
+Additionally, the integration of Amazon SNS with other AWS services like Lambda allows the company to build event-driven workflows to automate the processing of the content.
+
+The other options are incorrect because:
+
+* Amazon SNS does support message filtering, allowing subscribers to receive only the events that they are interested in. And Amazon SNS provides a web-based management console for configuring and monitoring SNS topics. Although these are also useful features, fan-out and service integration are the MOST important in this scenario.
+* Amazon SNS does not provide strong data consistency guarantees, but rather focuses on high availability and reliability.
+
+#### A software development company wants to build an event-driven architecture to automatically propagate changes made to one Amazon DynamoDB table to other related tables. Which DynamoDB feature would be MOST useful for this use case?
+
+* DynamoDB Streams to capture changes made to the tables and trigger updates to other tables
+
+Wrong answers:
+
+* DynamoDB Accelerator (DAX) to provide in-memory caching and low-latency access to the tables
+* DynamoDB backup and restore to create point-in-time backups of the tables
+* DynamoDB global tables to maintain multiple, fully replicated tables across AWS Regions
+
+##### Explanation
+
+This allows the company to build an event-driven architecture that automatically propagates changes across the system, ensuring data consistency and integrity.
+
+The other options are incorrect because although they are useful DynamoDB features, DynamoDB Streams is the MOST relevant for this use case of propagating changes between tables in an event-driven manner.
+
+#### A company is building an event-driven architecture using Amazon EventBridge to decouple and integrate various components of their application. Which benefits of using EventBridge in this scenario are accurate? (Select TWO.)
+
+* Providing a scalable and managed event bus to ingest and route events from various sources
+* Integrating seamlessly with other AWS services like AWS Lambda, Amazon Simple Notification Service (Amazon SNS), and Amazon Simple Queue Service (Amazon SQS)
+
+Wrong answers:
+
+* Enabling the use of event transformation and scheduling to enhance the flexibility of event processing
+* Ensuring strong data consistency and atomicity across the event-driven architecture
+* Simplifying the development and deployment of the event-driven application
+
+##### Explanation
+
+Amazon EventBridge provides a scalable and managed event bus that can ingest events from various sources and integrate with other AWS services, enabling flexible and decoupled event-driven architectures.
+
+The other options are incorrect because:
+
+* EventBridge supports eventual consistency, not strong consistency.
+* EventBridge is a service that is used to build the event-driven architecture, not a solution that simplifies the entire application development and deployment process.
+
+---
+
+### Summary
+
+#### Amazon SQS
+
+Amazon SQS is an AWS service that provides a simple and cost-effective queuing service. You can pass messages among different components of an application or infrastructure. It plays a crucial role in event-driven architectures by decoupling components, enabling asynchronous communication, and ensuring reliable message delivery. Amazon SQS acts as a message broker, allowing producers to send messages to a queue without directly interacting with the consumers. This decoupling enables greater flexibility, scalability, and fault tolerance.
+
+Additionally, the service facilitates asynchronous communication, allowing producers to publish events without waiting for consumers to process them. This improves the system's ability to handle high-volume workloads. Amazon SQS ensures reliable message delivery by providing at-least-once delivery semantics, and it supports the use of dead-letter queues to capture and analyze messages that could not be successfully processed. The message visibility timeout feature helps ensure that messages are processed exactly once, even in the face of consumer failures.
+
+Furthermore, Amazon SQS integrates seamlessly with other AWS services, enabling the construction of complex event-driven architectures and automated event processing workflows. The service is highly scalable and can dynamically accommodate fluctuations in message volume, ensuring that the system remains responsive and efficient. By using the key features of Amazon SQS, organizations can design and implement highly scalable, fault-tolerant, and decoupled event-driven architectures that can efficiently handle a wide range of workloads and event processing requirements.
+
+#### Amazon SNS
+
+Amazon SNS is an AWS service that provides a fully managed pub-sub system, which plays a crucial role in event-driven architecture. It follows a pub-sub model, allowing producers (publishers) to send messages to consumers (subscribers) without direct coupling. Amazon SNS organizes messages into topics, which act as logical access points and event channels, enabling event fan-out and scalable event propagation.
+
+The service provides high availability, fault tolerance, and scalability, handling high-volume event traffic and delivering messages reliably. It integrates seamlessly with other AWS services, facilitating end-to-end event-driven architectures. Amazon SNS supports various subscription types and offers features like dead-letter queues and message filtering, providing flexibility and enhancing the monitoring and optimization of event-driven architectures.
+
+#### DynamoDB
+
+Amazon DynamoDB is a fully managed NoSQL database service that is well suited for event-driven architecture due to its key features and functions. The service offers scalability, high availability, and low latency data access. It offers event sourcing and change data capture, seamless integration with other AWS services, a flexible data model, and transactions and conditional writes. These features make DynamoDB a crucial component in building robust and scalable event-driven architectures. It enables real-time processing, data consistency, and seamless integration.
+
+#### DynamoDB Streams
+
+Amazon DynamoDB Streams provides a real-time data synchronization capability that helps decouple application components. Applications can stay up to date by capturing and transferring changes made to the data lake in DynamoDB and streaming this synchronized data to downstream destinations. The service captures and records every change made to the tables as a stream of consistency points. It generates streams when enabled, and supports two types of destinations to receive the data: stream names and snapshots. This ease of integration and extensibility simplifies the decoupling of applications, enabling real-time updates without the need for replatforming or reconciling.
+
+#### EventBridge
+
+Amazon EventBridge is a serverless event bus that is fully managed by AWS. It allows different components of an application to communicate with each other by sending and receiving events, without the components having to know about each other's existence. EventBridge can ingest events from various sources, both on premises and cloud, and route them to various target destinations based on defined rules. It provides features such as decoupled event processing, event transformation and scheduling, and integration with core AWS services. The EventBridge event routing and processing capabilities are its core strength, allowing you to define rules for incoming events and strategically route them to targeted destinations for parallel processing or orchestration. Overall, EventBridge enables the building of highly scalable, fault-tolerant, and decoupled event-driven architectures that efficiently process and respond to events in real time.
+
+#### Lab recaps
+
+In the *Using Amazon SNS in Event-Driven Architectures* lab, you configured an Amazon S3 bucket to prompt an Amazon SNS notification when an object is added to the bucket. This involved creating an Amazon SNS topic, three Amazon SQS queues, an Amazon S3 event notification, and three AWS Lambda functions. You also uploaded an object to the Amazon S3 bucket and validated the processed file.
+
+In the *Building Decoupled Architectures with Amazon EventBridge* lab, you used an HTTP API to implement an event-driven architecture. You created an AWS Lambda function, configured its environment variables, and set up EventBridge rules to prompt the Lambda function. You also created an HTTP API and WebSocket endpoint using Amazon API Gateway, and configured an API Gateway method to integrate with EventBridge.
+
+---
