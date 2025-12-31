@@ -793,42 +793,1052 @@ The AWS Management Console can be used to create combinations of AWS Step Functi
 
 ## DESIGNING A REAL-TIME PROCESSING APPLICATION ARCHITECTURE
 
----
-
-### Lab Environment: Navigating Through Kinesis
-
----
-
 ### Real-Time Processing Architectures
+
+Real-time data processing refers to the continuous ingestion, analysis, and processing of application data, typically within milliseconds to seconds of receiving that data. Real-time data processing differs from batch processing, where data is periodically processed in larger batches, using a predetermined processing interval. Real-time processing enables immediate decision-making based on the most up-to-date information. With the rise of big data analytics and the need for instant insights, real-time data processing has become increasingly important in areas like finance and technology management.
+
+#### Understanding real-time processing
+
+**Real-time processing** is used when application data has to be instantly available so that actions can be taken using the most up-to-date information.
+
+In today's fast-paced world, data is being generated at an unprecedented rate. From financial transactions and social media interactions to sensor readings and log files, data constantly flows around us in real-time.
+
+To keep up with this deluge of data, applications must process and analyze data as it arrives, with little to no delays. This is where real-time processing comes into play.
+
+One type of real-time processing is **stream processing**.
+
+**Stream processing** is a technique for ingesting and analyzing continuous streams of data as it is generated or received, without storing the entire dataset first. Unlike batch processing, where data is collected and processed in batches at scheduled intervals, real-time processing handles data as it arrives, enabling immediate analysis and decision-making.
+
+**Batch processing** is like waiting for some packages to arrive at your home. Instead of opening each package as it arrives, you collect all the packages and open them at once at a scheduled time, like after dinner or on Saturday.
+
+In contrast, **real-time processing** is like opening each package as soon as it arrives, processing its contents immediately, and then taking action based on what's inside.
+
+In the context of applications running in the AWS Cloud, batch processing is suitable for scenarios where data can be processed periodically, such as generating daily reports or running analytics on historical data. However, real-time processing is essential for applications that require immediate responses or decisions based on incoming data.
+
+Real-time processing is crucial for a wide range of industries and applications:
+
+* financial services
+* real-time processing is essential for fraud detection
+* risk management
+* high-frequency trading, where milliseconds can make a significant difference
+
+Real-time processing is also found in ecommerce and retail, supporting personalized shopping recommendations, dynamic pricing, and inventory management based on customer behavior and sales data.
+
+With the proliferation of connected devices, real-time processing is necessary for monitoring sensor data, predictive maintenance, and real-time decision-making in industrial applications.
+
+Lastly, social media and online gaming also rely on real-time processing for analyzing user interactions, delivering personalized content, and ensuring a seamless user experience.
+
+To help implement real-time processing in all these industries, AWS offers a variety of services and tools. Applications can use these services to ingest, process, and analyze data streams in real time, which translates to faster decision-making, improved customer experiences, and more efficient operations.
+
+* Amazon Kinesis Video Streams
+* Amazon Kinesis Data Streams
+* Amazon Data Firehose
+Amazon Managed Streaming for Apache Kafka
+
+#### Examples of real-time processing workloads
+
+**Real-time processing** is an approach used by developers to implement the continuous ingestion, analysis, and processing of application data. The following sections describe examples of applications from the financial and technology sectors that use real-time data processing.
+
+##### Financial applications
+
+* **Securities trading**
+
+Applications that track securities trading activity are critical components in the fast-paced financial services industry, where split-second decisions can have significant financial implications. Real-time processing is a necessity for these applications to capture and analyze data as it streams in from various sources. This data allows traders, investors, and financial institutions to make informed decisions based on the most up-to-date information.
+
+Real-time processing also supports compliance with regulatory bodies that mandate timely reporting of securities transactions. Financial services firms that rely on swift execution of trades for their income also benefit from real-time processing.
+
+* **Fraud detection**
+
+Applications for credit card transaction processing play a crucial role in ensuring secure and efficient financial transactions. By incorporating real-time data processing, these systems can rapidly analyze and respond to potential fraudulent activities. This helps reduce financial losses for both merchants and customers.
+
+Real-time data processing also supports instant risk assessments, allowing for proactive measures to mitigate potential threats and maintain a high level of trust and confidence among consumers.
+
+* **Inventory management**
+
+Inventory management systems use real-time data processing to accurately control prices, reduce costs associated with excess inventory, and improve supplier satisfaction. Real-time data processing enables dynamic pricing adjustments based on supply and demand, and minimize the risk of unsold inventory. Just-in-time inventory replenishment and reduced carrying costs associated with stockpiling excess inventory can also be implemented by processing sales and inventory data in real time. Real-time data processing streamlines communication with suppliers. This enables more efficient order fulfilment and fosters better supplier relationships through improved transparency and responsiveness.
+
+##### Technology applications
+
+* **Network monitoring**
+
+Network monitoring software must process data in real time to effectively manage network traffic and efficiently allocate resources. By continuously analyzing network data streams, the software can identify patterns, anomalies, and congestion points that might require immediate action. Real-time processing ensures that network routing and resource allocation decisions are made promptly.
+
+* **Cybersecurity**
+
+Effective monitoring and mitigation of malicious activities on computer systems necessitates real-time analysis of data. By continuously examining processes as they run, security software can promptly identify and address potential threats. For instance, when malware infiltrates a system, it often manifests as rogue processes consuming excessive resources or exhibiting suspicious behaviors. Real-time process monitoring allows security software to detect such anomalies quickly, facilitating swift containment and remediation measures before the malware can cause significant harm.
+
+* **Telecommunications**
+
+The dynamic nature of telecommunications systems demands constant data ingestion. Processing data in real time ensures a seamless and uninterrupted stream of current data is available to these systems.
+
+For example, weather forecasting applications rely on real-time satellite and remote sensor data to accurately predict and track weather patterns. Real-time analysis of temperature, humidity, wind speed, and atmospheric pressure data are just a few of the data elements needed to make accurate weather predictions.
+
+#### Stream processing for real-time data
+
+Each of the example use cases presented in the preceding sections use **stream processing** to deliver the required application capabilities. Stream processing of data refers to a technique for processing and analyzing continuous streams of data in real time or near real time. Specifically, stream processing involves ingesting, processing, and analyzing data as it is generated or received, without having to store the entire dataset first.
+
+Most streaming data architectures consist of the five logical layers shown here. Each layer is composed of multiple purpose-built components that address specific requirements for real-time ingestion, storage, processing, and analysis of streaming data.
+
+![Workflow using icons to represent the five layers of a typical data streaming architecture.](./images/W11Img150RealTimeProcessingArchitecture.png)
+
+1. **Data stream source**
+
+    Your source of streaming data can include sources like sensors, social media platforms, log files, and mobile devices.
+
+2. **Data stream ingestion**
+
+    The stream ingestion layer is responsible for pulling data into the data stream storage layer. It provides the ability to collect data from tens of thousands of data sources and ingest in near real time.
+
+3. **Data stream storage**
+
+    The data stream storage layer is responsible for providing scalable and cost-effective components to store streaming data. The streaming data can be stored in the order it was received for a set duration of time, and can be accessed indefinitely during that time.
+
+4. **Data stream processing**
+
+    The data stream processing layer is responsible for transforming data into a consumable state. This includes validating, cleaning, transforming, and enriching the data. The streaming data is read in the order it is produced, allowing for real-time analytics or building event driven applications.
+
+5. **Data stream destination**
+
+    The data stream destination layer is specific to your application's use case. Your destination might be an event-driven application, data lake, data warehouse, database, or a search service.
+
+```text
+AWS provides services that support each of the five layers of the data streaming architecture. These services are discussed in detail in subsequent sections.
+```
+
+#### Other real-time processing mechanisms
+
+In addition to the stream processing of data, two other mechanisms are also used to support real-time processing of data: materialized views and event sourcing.
+
+##### Materialized views
+
+Views are a feature in most relational and nonrelational databases. A view is a virtual table that represents a subset of data from one or more underlying base tables. Views do not physically store any data of their own. Instead, views provide a logical representation of the data based on a predefined database query. Whenever a view is accessed, the query underlying the view is run as part of the interaction with the view.
+
+The example shown here uses a view called classList. The view uses data from four tables that store student, course, teacher, and student registration data. The query behind the view joins these four tables using the ID columns (StudentId, CourseId, TeacherId). The Registration table is the hub that stores the ID values for each course in which a student is registered.
+
+![Columns and rows of 4 tables, the SQL query to join them, and the view created from the SQL command.](./images/W11Img152RealTimeProcessingMaterializedView.png)
+
+The course list materialized view continuously reflects the data from the four underlying tables.
+
+Views provide real-time access to data because their contents are dynamically updated by the underlying tables whenever data in those tables changes. This means that any changes made to the base tables are immediately reflected in the view, providing real-time access to the most up-to-date data. In this example, when any changes are made to the data in the Students, Courses, Teachers, or Registration tables, the classList view will be automatically updated to reflect those changes.
+
+Materialized views are similar to views, except that materialized views store a separate physical copy of the data that is returned by the query underlaying the view. As a result, materialized views can sometimes improve the performance of databases queries by precomputing and caching the results of complex queries. However, unlike regular views, materialized views aren't dynamically updated. Materialized views have to be refreshed using a regularly scheduled refresh operation or some other mechanism to keep the data in the materialized view current.
+
+The following table contrasts the characteristics of views and materialized views.
+
+| Characteristic | View | Materialized view |
+| -------------- | ---- | ----------------- |
+| View physically stores a copy of the data from the tables that define the view. | No | Yes |
+| When accessing the view, the query defining the view is also executed. | Yes | No |
+| View data always matches the table data used to define the view. | Yes | No |
+| View requires a separate action to synchronize its data with the tables used to define the view. | No | Yes |
+
+##### Event sourcing patterns
+
+Many serverless applications deployed in the AWS Cloud use event-driven architectures. The event sourcing pattern is a way of managing and storing data in applications by capturing all changes to the application state as a sequence of **immutable** events. In the context of the event sourcing pattern, an immutable event refers to an event that, after it's created and stored in the event store or log, cannot be changed or deleted. It is a permanent record of something that happened in the application at a specific point in time.
+
+For example, if an event represents a customer placing an order, the details of that event, such as the customer's information, the items ordered, and the timestamp, are recorded in an immutable event. Even if the customer later changes their address or cancels the order, the original event representing the order placement remains unchanged in the event store.
+
+The event sourcing pattern naturally lends itself to an event-driven architecture, where events can be consumed by other components or services, enabling better scalability and decoupling of systems. Although the event sourcing pattern can introduce some complexity and overhead, it is recommended as a best practice for applications using an event-driven architecture, especially in distributed or mission-critical systems.
 
 ### Implementing Real-Time Processing with AWS
 
+Several AWS services offer capabilities for processing streaming data in real time. These include services for data streaming and real-time data processing, Amazon OpenSearch Service, Amazon DynamoDB, the GraphQL features of AWS AppSync, Amazon ElastiCache, and Amazon MemoryDB for Redis.
+
+#### Services for data streaming and real-time data processing
+
+AWS offers several services for data streaming and real-time data processing. These services include Amazon Kinesis Data Streams, Amazon Data Firehose, and Amazon Managed Service for Apache Flink.
+
+##### Amazon Kinesis Data Streams
+
+`Amazon Kinesis Data Streams` is a scalable and serverless service that you can use to collect, process, and analyze large amounts of real-time data. It can handle millions of records per second, making it suitable for ingesting continuous data streams from applications, devices, or sensors.
+
+Examples of use cases where Kinesis Data Streams can be used include the following:
+
+* **Real-time analytics** – Kinesis Data Streams can be used to process and analyze real-time data for real-time analytics, such as analyzing website traffic, tracking user behavior, or detecting fraud.
+* **Data streaming and event processing** – Kinesis Data Streams can be used to stream data from various sources and process it in real time, such as for a log analysis pipeline or an event-driven architecture.
+* **Real-time notifications** – Kinesis Data Streams can be used to send out real-time notifications, such as emails or texts, based on data that's coming in through a data stream.
+
+##### Amazon Data Firehose
+
+With `Amazon Data Firehose`, you can automatically capture and load data from various sources into data stores like Amazon S3, Amazon Redshift, and Amazon OpenSearch Service. It can capture streaming data from sources such as web applications, mobile apps, and Internet of Things (IoT) devices, and then load it into your chosen data store for further analysis or processing.
+
+Firehose differs from the Kinesis Data Streams service. `Firehose` is designed for capturing and loading streaming data into data stores. `Kinesis Data Streams` is designed for real-time processing and analysis of streaming data within your applications.
+
+Examples of use cases where Firehose can be used include the following:
+
+* **Data warehousing** – Firehose can be used as part of a data warehousing solution to load data into Amazon Redshift or other big data stores in real time.
+* **Data transformation** – Firehose can be used to load streamed data directly into analytics-friendly file formats like Apache Parquet and Apache Hudi. These formats allow you to directly query and derive insights from your data using AWS analytics services.
+* **Data intelligence** – Firehose can be used to load streaming data into existing data intelligence tools and dashboards. This helps provide up-to-the-minute data for business decision-making.
+
+##### Amazon Managed Service for Apache Flink
+
+`Amazon Managed Service for Apache Flink` is a service that you can use to process and analyze streaming data in real time. It is commonly used in applications that must continuously process large amounts of data, such as IoT devices, websites, mobile apps, and sensors.
+
+Amazon Managed Service for Apache Flink differs from Kinesis Data Streams. `Amazon Managed Service for Apache Flink` focuses on processing and analyzing data in real time using SQL or Java code, whereas `Kinesis Data Streams` is designed for ingesting and storing streaming data.
+
+Examples of use cases whereAmazon Managed Service for Apache Flink can be used include the following:
+
+* **Predictive maintenance** – Amazon Managed Service for Apache Flink can be used to analyze streaming sensor data from industrial equipment to predict and prevent failures.
+* **Clickstream analysis** – Amazon Managed Service for Apache Flink is helpful when analyzing user interactions on websites or mobile apps to improve user experience and engagement.
+* **Fraud detection** – Amazon Managed Service for Apache Flink can be used to Identify suspicious transactions or activities in financial data streams.
+
+##### Choosing an Amazon Kinesis service
+
+Many of these services offer the same or similar capabilities when it comes to dealing with real-time streaming data. Which of the these services to use in your application architecture depends on your specific use case. For example, if your application is a real-time analytics and machine learning use case, this might favor using Kinesis Data Streams. Alternatively, if your application is performing bulk data loading of data, and performing analytics on that data, Firehose might make a better choice. Factors such as cost and performance will also help drive your design decisions.
+
+```text
+See the next section, Use Cases: Using Kinesis for Real-Time Processing, for examples of application architectures that include one or more AWS real-time, data streaming services.
+```
+
+#### Amazon MSK
+
+`Apache Kafka` is a distributed streaming platform that allows applications to publish and subscribe to streams of data. Kafka acts as a broker, receiving data from producers and storing it in topics, which are then consumed by applications or services that subscribe to those topics.
+
+Amazon Managed Streaming for Apache Kafka (Amazon MSK) is a fully managed service for building and running Apache Kafka applications on AWS. Amazon MSK handles tasks like provisioning, configuring, and managing Apache Kafka clusters.
+
+Both Kinesis Data Streams and Amazon MSK are services that support real-time data streaming. Therefore, many of the use cases for other Amazon Kinesis services also apply to Amazon MSK.
+
+However, Amazon MSK is constructed on the foundations of Apache Kafka. Apache Kafka uses a producer-subscriber model, and provides a different feature set and underlying architecture for supporting data streaming. Amazon MSK is particularly well suited for applications that were designed around Apache Kafka but also need integration with other AWS services. Amazon MSK offers direct integration with AWS services like Lambda, Amazon S3, and CloudWatch.
+
+#### OpenSearch Service
+
+`Amazon OpenSearch` Service provides a fully managed and scalable solution for searching and analyzing large amounts of data in real time.
+
+OpenSearch Service uses real-time indexing to ensure that streaming data is quickly accessible.
+
+OpenSearch Service is frequently used in conjunction with the Amazon Kinesis services.
+
+Examples include the following:
+
+* You can use `Kinesis Data Streams` to continuously stream data from various sources into OpenSearch Service. For example, Kinesis Data Streams can be used to capture website clickstream data and stream it into OpenSearch Service to analyze user behavior in real time.
+* `Kinesis Data Firehose` can capture, transform, and load streaming data into OpenSearch Service. You could use Kinesis Data Firehose to automatically load application logs or IoT sensor data into OpenSearch Service for centralized log analysis and data visualization.
+* `Kinesis Data Analytics` can be used to process and analyze data in real time before sending it to OpenSearch Service. For example, Kinesis Data Analytics can be used to process and enrich IoT sensor data, and then send the processed data to OpenSearch Service for further analysis and visualization.
+
+```text
+Log analysis and auditing are two common use cases where Amazon Kinesis services and Amazon OpenSearch Service are used to analyze real-time data.
+```
+
+#### Amazon DynamoDB
+
+`Amazon DynamoDB` is a fully managed NoSQL database service. It can support real-time processing of data at scale because it provides single-digit millisecond latency response times. Even as table sizes or request volumes increase, performance remains fast due to automatic partitioning of data and throughput capacity across servers. This makes DynamoDB well-suited for use cases that require real-time reads and writes.
+
+#### GraphQL service AWS AppSync
+
+`GraphQL` is a feature in the `AWS AppSync` service that offers a query and manipulation language for APIs. GraphQL provides a flexible and intuitive syntax to describe data requirements and interactions. The benefits of GraphQL are best described by using an example. Consider an order tracking system that requires that notifications are sent to customers whenever an order status changes from packed, to shipped, to out for delivery, to delivered.
+
+A REST API would issue separate requests for each order status, which could quickly become inefficient, especially with a large number of orders or frequent status changes.
+
+GraphQL provides an alternative to this approach. With GraphQL, you can describe exactly what data you need in a single request, and the server will send back only that data in a predictable format. GraphQL makes your application more efficient because it reduces the number of requests that complex applications need to make when accessing data from many different sources.
+
+Architecture icon for AWS AppSync which includes GraphQL.
+GraphQL is based on a subscription model. If GraphQL subscribes to a publisher, producer, event source, or data stream that tracks order changes, a message will be sent to a topic whenever an order status changes. This will make real-time updates to changes in order status possible, which offers two key advantages. First, it reduces the number of requests needed, enhancing system performance and scalability. Second, it ensures a uniform data retrieval and delivery method by consolidating real-time data requirements into a single GraphQL subscription.
+
+#### Data caching
+
+To perform real-time processing of data, applications require low latency and fast response times when accessing that data. One way to deliver the required performance is to hold the data in memory until the real-time processing is complete. This technique is referred to as `data caching`, and AWS provides two services designed for this purpose: Amazon ElastiCache and Amazon MemoryDB for Redis.
+
+##### Amazon ElastiCache
+
+`Amazon ElastiCache` improves application performance when processing real-time data by caching frequently used data in memory. This reduces the load on application databases.
+
+ElastiCache supports two types of in-memory data stores: Redis and Memcached. These two data stores differ in terms of their data handling capabilities, but both are purpose-built data caches.
+
+Ultimately, the specific use case, desired performance characteristics, required level of flexibility, and data durability requirements will determine whether Redis or Memcached is the best fit for a given application.
+
+##### Amazon MemoryDB for Redis
+
+`Amazon MemoryDB for Redis` also uses an in-memory data cache to improve application performance by caching frequently used data in memory.
+
+MemoryDB delivers this by using a distributed, multi-Availability Zone, in-memory database. This architecture delivers not only ultra-low latency and high query throughput, it also provides high data durability and consistency.
+
+These characteristics make MemoryDB well-suited for workloads where high data ingestion rates of streaming data are critical.
+
+The following table is helpful when determining which of these in-memory data caching services to consider for your application.
+
+|Amazon ElastiCache | Amazon MemoryDB for Redis |
+| -------------------- | -------------------- |
+| * You want to speed up data access from your existing main database or data storage system.<br>* You require microsecond read and write speeds.<br>* You want to use the open-source Redis data structures and APIs to access data stored in a primary database or data store.<br>* You don't require a durable, long-lasting database behind the data cache. | * Your workloads require reading data in microseconds and writing data in a few milliseconds.<br>* You need to build an application using the same data structures and programming interfaces as the open-source Redis database, but with a durable, long-lasting database instead of just a cache.<br>* You want to simplify your application's design and reduce costs by replacing a separate database and cache with a single, fast, and reliable database. |
+
 ### Use Cases: Using AWS Services for Real-Time Processing
+
+The following sections discuss some typical architectures that incorporate AWS streaming services for handling an application's real-time data streaming requirements. You should aim to conceptually understand how the AWS services for real-time data processing integrate with one another, and the general operational function that each service delivers.
+
+#### Monitoring machinery in real time using Amazon Data Firehose
+
+A company performs log analysis that involves searching, analyzing, and visualizing IoT data generated by their manufacturing machinery. The data includes logs and metrics such as number of components produced by the machine per hour, defect rates for parts produced by the machine, and employee compliance with safety procedures. This data is variable and complex, but it also provides valuable operational intelligence for the business.
+
+In this use case, the IoT data is initially collected in an Amazon S3 bucket. There are several users, including auditors, and members of the machinery maintenance team, that need to access the data. The following diagram illustrates the application architecture, with IoT data as input that drives near real-time dashboards for the users.
+
+![Architecture diagram of a real-time monitoring system for machinery.](./images/W11Img160RealTimeMonitoringForMachinery.png)
+
+1. **IoT data is collected**
+
+    Operational data from multiple IoT devices attached to machinery is collected in an Amazon S3 bucket.
+
+2. **S3 PUT events are published**
+
+    Amazon S3 PUT events are published to Amazon SQS.
+
+3. **Lambda polls messages**
+
+    AWS Lambda polls the events from Amazon SQS and invokes a Lambda function to move data into Amazon Data Firehose.
+
+4. **Firehose sends data**
+
+    Firehose passes the data in real time to OpenSearch Service and a data lake.
+
+5. **Auditors access dashboard**
+
+    Maintenance team members use the OpenSearch Service dashboard to monitor the streaming machinery metrics in real time. Auditors use the analysis tools of their choice to review the data in the data lake.
+
+#### Streaming data from an SaaS application using Amazon Kinesis services
+
+A company uses a popular human resources (HR) application that is delivered using a software as a service (SaaS) model. The company needs to copy selected HR data, in real time, from the SaaS vendor's platform into the company's payroll and time management systems in the AWS Cloud.
+
+In this use case, the SaaS vendor uses a publish-subscribe (pub-sub) messaging model to allow their customers to pull data from the HR SaaS application. Therefore, the Amazon MSK service is used to ingest data from the HR application. When the HR data is ingested, enriched, and processed into the company's payroll and time management systems, the company will use the Amazon QuickSight service to analyze the data. The following diagram illustrates the application architecture, with data from the HR SaaS application as input, and near real-time data reporting using QuickSight.
+
+![Architecture diagram of a real-time data ingestion system for an SaaS application.](./images/W11Img162RealTimeIngestionForSaas.png)
+
+1. **Amazon MSK**
+
+    Near real-time data is published from the external HR application running on the vendor's SaaS platform. Amazon MSK subscribes and ingests the streaming data as it is published.
+
+2. **Lambda**
+
+    Lambda reads the data from Amazon MSK. At this point, any required data transformation or enrichment can be performed.
+
+3. **Amazon Data Firehose**
+
+    The Lambda function passes its transformed and enriched data to Firehouse, for storage in an S3 bucket.
+
+4. **AWS Glue**
+
+    AWS Glue performs any additional required transformations on the data stored in Amazon S3, then loads the data into Amazon Redshift.
+
+5. **Amazon QuickSight**
+
+    After data is in Amazon Redshift, QuickSight can be used to create reports and analysis using the transformed and enriched HR data.
+
+#### Real-time recommendations using OpenSearch Service
+
+A music streaming service has thousands of subscribed users who listen to millions of songs each month. To ensure compliance with copyright laws, the company collects real-time data about the songs that users are listening to. This data includes the artists who performed the songs and the composers who wrote the songs.
+
+Additional non-copyright-related data is also collected for marketing purposes. This includes data like the genre for each song, the subscriber's geographic location, the date and time the song was heard, and the device type that the subscriber used to listen. The company uses this information to make real-time recommendations to subscribers for new artists and songs. Formulating these recommendations requires searches across both semi-structured and unstructured data.
+
+Past research by the company shows that these recommendations must be made as quickly as possible to have the greatest positive impact on the listener's experience. To deliver on these requirements, the company uses a DynamoDB table with streams to replicate listener data into OpenSearch Service. This combination provides a near real-time, full-text search capability to feed the recommendation process. The following diagram illustrates the application's data architecture with Amazon DynamoDB and Amazon OpenSearch Service.
+
+![Architecture diagram of a real-time recommendation system.](./images/W11Img164RealTimeRecommendationsWithOpenSearch.png)
+
+1. **DynamoDB**
+
+    DynamoDB is used as a durable data store for the data that subscribers generate while using the music streaming service.
+
+2. **Kinesis Data Streams and Firehose**
+
+    DynamoDB has an integration with Kinesis Data Streams to perform `change data capture (CDC)`. This means that any update, deletion, or new item on the DynamoDB table is collected by Kinesis Data Streams and sent to Firehose for processing.
+
+3. **Lambda**
+
+    Kinesis Data Firehose passes the data changes to Lambda. Lambda makes appropriate calls to OpenSearch Service to index the data in near real time.
+
+4. **OpenSearch Service**
+
+    The recommendation portion of the music streaming application can now use the full indexed and cached data to quickly generate user recommendations in near real time.
+
+#### Customer call center management with OpenSearch Service
+
+A manufacturer of premium kitchen appliances operates a call center to provide support to its customers. Purchasers of the company's appliances can call the support center 24 hours a day and get answers to their questions about how to use, clean, and maintain their appliances. The manufacturer uses Amazon Connect, a contact center service that enables businesses to deliver better customer service through features like interactive voice response and call routing. Amazon Connect also integrates with other AWS services to deliver analytics capabilities on data collected during call center interactions.
+
+The following diagram illustrates the application's data architecture that uses Amazon Connect and OpenSearch Service to stream and then analyze contact center data.
+
+![Architecture diagram for real-time ingestion of Amazon Connect data.](./images/W11Img166RealTimeCustomerCallCenterWithOpenSearch.png)
+
+1. **Amazon Connect sends metrics to CloudWatch**
+
+    Amazon CloudWatch receives Amazon Connect instance metrics and uses a subscription filter to forward the metrics to Amazon Kinesis Data Firehose.
+
+2. **Amazon Connect sends streams to Kinesis Data Streams**
+
+    Amazon Connect streams segments of customer service agent events through Kinesis Data Streams.
+
+3. **Amazon Connect sends events to Amazon EventBridge**
+
+    Amazon Connect streams case event and voice events through Amazon EventBridge.
+
+4. **Lambda forwards to Amazon Data Firehose**
+
+    EventBridge forwards the events to Firehose by using Lambda.
+
+5. **Firehose invokes Lambda**
+
+    Firehose invokes a Lambda function for data cleansing and transformation.
+
+6. **Lambda transforms using a schedule**
+
+    Lambda captures third-party data and Amazon Connect reporting API data on a scheduled basis. Lambda transforms the data as needed, then calls Amazon OpenSearch Service to forward logs to the OpenSearch index specific to the data source.
+
+7. **Firehose sends data to OpenSearch Service**
+
+    Firehose directly ingests data to Amazon OpenSearch Service and into the OpenSearch index specific to the data source.
+
+8. **Gain insights using OpenSearch Dashboard**
+
+    The OpenSearch Dashboard is configured to visualize the Amazon Connect index data located in OpenSearch Service.
 
 ### Kinesis Data Streams and OpenSearch Service
 
+Several of the real-time processing architectures use `Amazon Kinesis Data Streams` and `Amazon OpenSearch Service` as part of their application design. These services are central to many solutions related to streaming data challenges.
+
+#### Architecture and operation of Kinesis Data Streams
+
+* **Data producer**: typically, an application that produces data records, assigns a partition key data record before putting the data record to the Kinesis Data Stream using the PUT record or PUT records API call.
+
+![Kinesis Data Streams Architecture: Producers.](./images/W11Img170KinesisDataStreamProducers.png)
+
+* **Data stream**: a logical grouping of shards. A data stream by default is retained for a minimum of 24 hours, but it can be extended up to seven days.
+
+![Kinesis Data Streams Architecture: Data Streams.](./images/W11Img172KinesisDataStreams.png)
+
+* **Shard**: a temporary holding space to accumulate data until it is processed. It is the base throughput unit of a Kinesis Data Stream and append-only log that defines a unit of stream capability. A Shard contains a sequence of records ordered by arrival time. One shard can ingest up to `1000` records each second and emit up to `two megabytes each second`. If your customer requires a higher ingestion capability, then they must add more shards.
+
+![Kinesis Data Streams Architecture: Shards.](./images/W11Img174KinesisDataStreamShard.png)
+
+The default soft shard quota is region specific but a customer can request a limit increase.
+
+* **Data record**: unit of data stored in the Amazon Kinesis Stream and is composed of a sequence number, partition key, and data blob. The data blob is the data of interest that a data producer adds to the stream. The data payload is encoded using base 64. The maximum size of the data blob is one megabyte before encoding.
+
+![Kinesis Data Streams Architecture: Data Records.](./images/W11Img176KinesisDataStreamDataRecord.png)
+
+* **Partition key**: meaningful identifier such as user id for click stream or a time stamp. The partition key is specified by the data producer while putting data into a Kinesis Data Stream and is used by data consumer to replay or build a history using it. It plays a role in how the data streams are stored and managed by Amazon Kinesis Data Stream.
+
+* **Sequence number**: unique identifier for each record and is assigned by Kinesis Data Streams when the data producer calls the PUT record or PUT records API to add data to the data stream.
+
+* **Data consumer**: This can be a distributed Kinesis application or another AWS service such as Amazon Kinesis Data Firehose or Kinesis Data Analytics that retrieves data from all shards in a stream as it is generated in real time. The data consumer can run analytics or pass it on to another service for processing or just store it.
+
+![Kinesis Data Streams Architecture: Consumers.](./images/W11Img178KinesisDataStreamConsumers.png)
+
+As the diagram shows producers put data records into a data stream which are stored in shards. The consumer processes the data records from the shards and then emits them to another AWS service.
+
+![inesis Data Streams Architecture.](./images/W11Img180KinesisDataStreamConsumerServices.png)
+
+```text
+Amazon Kinesis Data Firehose is now called Amazon Data Firehose. Amazon Kinesis Data Analytics is now called Amazon Managed Service for Apache Flink.
+```
+
+##### Kinesis Data Streams terminology
+
+* **Data producer**
+
+    A data source that produces data records, which includes a partition key assigned by the producer
+
+* **PutRecord**
+
+    The API call used by a data producer to put a record into the Kinesis data stream
+
+* **Shard**
+
+    Temporary holding space used to accumulate data from the data producer until it is processed
+
+* **Data stream**
+
+    A logical grouping of shards
+
+* **Data blob**
+
+    The data of interest that the data producer puts into the stream
+
+* **Sequence number**
+
+    Unique identifier automatically assigned to each data record
+
+* **Data record**
+
+    Unit of data stored in the Amazon Kinesis data stream. Composed of a partition key, data blob, and sequence number
+
+* **Data consumer**
+
+    AWS service that retrieves shards from the stream, reads each data record within the shard, and then either processes that data or passes it on to another service or application
+
+##### Kinesis Data Streams concepts
+
+![Kinesis Data Streams concepts.](./images/W11Img190KinesisDataStreamConcept.png)
+
+1. **Data producers**
+
+    Data producers put data records into a data stream.
+
+2. **Data stream**
+
+    Data stream records are stored in shards.
+
+3. **Shard data records**
+
+    Shard data records are composed of a primary key, sequence number, and data blob.
+
+4. **Data consumers**
+
+    The data consumers process the data records from the shards.
+
+5. **Data records**
+
+    The data records are emitted to another AWS service or application by the consumer.
+
+#### Architecture and operation of OpenSearch Service
+
+Amazon OpenSearch Service is a fully managed cloud search service that provides fast search capabilities for real-time data when used in conjunction with Amazon Kinesis Data Streams. Specifically, OpenSearch Service allows for the collection, storage, and analysis of real-time data to provide extremely fast search results by indexing new data as it is streaming.
+
+OpenSearch Service integrates with existing AWS cloud services, including the following:
+
+* AWS Identity and Access Management (IAM) for fine-grained access control
+* Amazon S3 for data persistence
+* Kinesis Data Streams, Lambda, and Amazon Redshift for data processing and analysis
+
+The architecture of OpenSearch Service consists of a `single`endpoint for use with the OpenSearch APIs, known as the `domain endpoint`. The domain endpoint provides access to the service's administrative functionality, such as creating and managing indexes, creating and managing data streams, and managing users and roles.
+
+OpenSearch Service uses API gateway to handle the routing of OpenSearch Service API calls to the backend Elasticsearch domains. The API gateway also includes rate limiting, request validation, and authentication features.
+
+##### OpenSearch Service terminology
+
+* **Amazon OpenSearch Service domain**
+
+    A cluster of compute resources. The number and type of resources are based on the settings, instance types, instance counts, and storage resources that you specify when the domain is created.
+
+* **Data nodes**
+
+    Responsible for storing and indexing the data in the OpenSearch Service cluster.
+
+* **Master node**
+
+    Responsible for cluster management operations, such as adding or removing nodes, allocating shards to data nodes, and managing cluster state.
+
+* **Domain endpoint**
+
+    A single domain endpoint that acts as the entry point for all OpenSearch Service API requests. The domain endpoint abstracts away the underlying cluster topology and provides a unified interface for interacting with the OpenSearch Service cluster.
+
+* **Domain index**
+
+    An index is a collection of documents that have similar characteristics. It is a logical partition of data within an OpenSearch Service cluster. Having at least two replicas for each index in your OpenSearch Service domain is considered a good design practice. By having multiple replicas of an index, you ensure that your data remains available even if one or more nodes in the cluster fail.
+
+##### OpenSearch Service concepts
+
+* The Amazon OpenSearch Service is configured and managed using the OpenSearch Service portion of the AWS Management Console, the AWS CLI, or any of the language-specific AWS SDKs.
+* Master nodes do not store data or participate in data-related operations.
+* Data nodes handle operations such as creating, reading, updating, and deleting data, search queries, and aggregations.
+* You can customize the number of nodes for each node type based on your specific requirements. Factors such as the amount of data that you need to store, the expected query load, and the desired level of fault tolerance and high availability will all impact the domain configuration.
+* A single domain endpoint distributes incoming client requests across the available data nodes in the cluster. If new data nodes are added or existing nodes are removed, the domain endpoint automatically adjusts to include or exclude those nodes.
+
+This diagram shows the components of the Amazon OpenSearch Service architecture and its operational characteristics.
+
+![Architecture diagram on an Amazon OpenSearch Service deployment.](./images/W11Img200AmazonOpenSearchServiceDeployment.png)
+
+1. **Domain endpoint**
+
+    The domain endpoint abstracts away the underlying cluster topology and provides a unified interface for interacting with the OpenSearch cluster.
+
+2. **Domain master nodes**
+
+    In the default domain configuration for Amazon OpenSearch Service, three master nodes are distributed across three different Availability Zones within the same AWS Region.
+
+3. **Domain data nodes**
+
+    In the default domain configuration for Amazon OpenSearch Service, two data nodes are deployed within a single Availability Zone. However, you also have the option to configure the data nodes to be distributed across Availability Zones, if desired, for increased data availability and durability.
+
+This architecture diagram incorporates several configuration characteristics that are designed to prevent data loss and minimize OpenSearch Service cluster downtime in the event of a service disruption. Specifically, the recommended Multi-AZ with standby deployment option creates the following configuration:
+
+* The domain deployed across three Availability Zones (AZs)
+* Three dedicated master nodes
+* Six data nodes. AWS recommends three, or a multiple of three, data nodes
+* At least two replicas for each index in your domain
+
+With the Multi-AZ with standby configuration, OpenSearch Service creates a domain across three Availability Zones, with each zone containing a complete copy of data and with the data equally distributed in each of the zones. The domain reserves nodes in one of these zones (Availability Zone C in this example) as standby, which means that those nodes won't serve search requests. Instead, these standby nodes are automatically activated in less than a minute when OpenSearch Service detects a failure in the underlying infrastructure.
+
+```text
+AWS also offers an on-demand, serverless configuration for Amazon OpenSearch Service that is called Amazon OpenSearch Serverless. The serverless offering is primarily intended for supporting log analytics and full-text searching use cases.
+```
+
 ---
 
-### Lab: Navigating Through Kinesis
+### [Lab: Navigating Through Kinesis](./labs/W110Lab1NavigatingThroughKinesis.md)
+
+This is a two-part lab. In part one of the lab, you will create an AWS Lambda function from a blueprint and create a stream using Amazon Kinesis Data Streams. You will then invoke the function with data from your stream and monitor the process with Amazon CloudWatch.
+
+In part two of the lab, you will learn the basics of event-driven programming using Amazon DynamoDB, the DynamoDB Streams feature, and AWS Lambda. You will walk through the process of building a real-world application using triggers, which combine DynamoDB Streams and Lambda.
+
+In this lab, you will perform the following tasks:
+
+* Create a stream using Amazon Kinesis Data Streams.
+* Create an AWS Lambda function.
+* Test your function.
+* Create tables in Amazon DynamoDB.
+* Configure Amazon DynamoDB Streams.
 
 ---
 
 ### Real-Time Data Storage Options
 
+Several AWS services can process, analyze, and manage streaming data in real time. However, many applications require a mechanism for storing the streaming data long term. AWS offers several storage services that are purpose-built for persisting real-time data.
+
+#### NoSQL databases
+
+NoSQL databases emerged as a response to the limitations of traditional relational (SQL) databases. Relational databases typically perform poorly when handling large volumes of unstructured or semi-structured data. However, NoSQL databases are designed to be more scalable, flexible, and better suited for handling both big data and real-time web applications. Most data stores used for real-time streaming data are classified as NoSQL databases. AWS provides several NoSQL-based data storage services such as key-value, document, wide-column, in-memory, and graph, to meet the requirements of different types of real-time workloads and use cases.
+
+#### Key-value databases
+
+Key-value databases are NoSQL databases that store data as a collection of `key-value pairs`. A key-value pair consists of a unique identifier (the key) and its associated data (the value) stored together. Both the keys and the values can be anything, and they range from simple text to complex objects like photos, video, or audio files. One advantage of key-value databases is that they are highly partitionable. That means that data that shares the same range of key values will be stored together. Careful use of partitions in an application's design provides performance that other database types cannot achieve. Because of this performance benefit, key-value databases are commonly used to support high-traffic web applications that produce large amounts of real-time data.
+
+`Amazon DynamoDB` uses an AWS key-value architecture to store and access data. Each DynamoDB table must have a primary index, which can be based on either a simple hash key or composite hash key with range key.
+
+Simple hash keys use a distributed hash table layer to index on a unique key. The key is hashed over multiple processing and storage partitions to optimally distribute the workload.
+
+Composite hash keys with range keys give you the ability to create a primary key that is composed of two attributes: a hash attribute and a range attribute. When you query against this type of key, the hash attribute must be uniquely matched, but a range (low to high) can be specified for the range attribute.
+
+Many AWS services use the concept of key-value-based partitioning to deliver performance benefits. For example, key-value partitioning can be used to distribute data across multiple database nodes, or to assign data to separate processing units called shards, to allow for parallelization and faster processing of data. This node-based distributed data architecture allows key-value databases like DynamoDB to scale horizontally, adding additional nodes as data, shard storage requirements, and processing demands increase.
+
+```text
+By default, DynamoDB uses an eventual data consistency model. This means that when an item in a table is updated, the changes are propagated to all copies of the data over a period of time. And reads performed immediately after the update might not reflect the latest data. If this behavior is not suitable, a strongly consistent model can be configured for the table instead.
+```
+
+#### In-memory databases
+
+In-memory databases also use the key-value approach to storing data, but they are designed for applications where millisecond latency is not fast enough. When applications require microsecond response times accessing data, in-memory databases can meet the need. Examples of where the ultra-fast performance of in-memory databases is needed include the following:
+
+* Website content caching
+* Storing user session information
+* Calculating gaming leaderboards
+* Facilitating bid processing
+* Feeding weather and geospatial data to mobile devices
+
+`Redis`, which means `Remote Dictionary Server`, and `Memcached` are two popular open-source in-memory databases. Both of these databases can be used as in-memory caching mechanisms to improve application performance.
+
+AWS offers two managed service options to provide in-memory database capabilities based on the Redis and Memcached open-source databases:
+
+* `Amazon ElastiCache for Memcached` and `Amazon ElastiCache for Redis`
+* `Amazon MemoryDB for Redis`
+
+With both the ElastiCache and MemoryDB services, the purpose of the fully managed Redis and Memcached technologies is to cache database content in memory to improve response time when reading and writing data to an underlying database.
+
+However, in the case of Redis, the database for which data is being cached by Redis differs between ElastiCache and MemoryDB.
+
+##### Amazon MemoryDB for Redis
+
+`Amazon MemoryDB` for Redis is a durable, in-memory database for workloads that require an ultra-fast, Redis-compatible primary database. Consider using MemoryDB in the following cases:
+
+* When an application requires a durable database with full transaction protections that provides microsecond read and single-digit millisecond write latency
+* When an application requires a cluster-based database with scalability to hundreds of terabytes and a Multi-AZ transaction log for fast database recoveries and restarts
+* When an application architecture uses Redis data structures and APIs and requires a primary durable database to store application data
+* When an application architecture can be simplified and costs reduced by replacing a database design that uses a separate cache for durability and performance
+
+![Image summarizing the benefits of Amazon MemoryDB for Redis.](./images/W11Img210AmazonMemoryDbForRedis.png)
+
+##### Amazon ElastiCache for Redis
+
+`Amazon ElastiCache` for Redis is a service that is commonly used to cache data from other databases and data stores using Redis. Consider using ElastiCache for Redis in the following cases:
+
+* When an application needs a cache to achieve microsecond read and write performance to an existing primary database, such as Amazon RDS
+* When it is acceptable to an application that some cached data changes might be lost during a database failure
+* When an application needs to use Redis data structures and APIs are needed to access data stored in an existing primary database
+
+![Image summarizing the benefits of Amazon ElastiCache for Redis.](./images/W11Img212AmazonElastiCacheForRedis.png)
+
+---
+
+Amazon ElastiCache can be used with either Redis or Memcached, two popular, open-source, in-memory data stores known for their ease of use and high performance.
+
+However, there are important differences to consider when choosing between the two. Memcached is designed with simplicity in mind, offering a straightforward key-value store. On the other hand, Redis provides a rich set of features, making it suitable for a wide range of use cases beyond simple caching.
+
+For reference, the following table compares some of the features of Memcached and Redis.
+
+| Characteristics | Memcached | Redis |
+| --------------- | --------- | ----- |
+| Sub-millisecond latency | Yes | Yes |
+| Developer ease of use | Yes | Yes |
+| Data partitioning | Yes | Yes |
+| Support for several programming languages | Yes | Yes |
+| Advanced data structures available | — | Yes |
+| Multithreaded architecture | Yes | — |
+| Snapshots | — | Yes |
+| Replication | — | Yes |
+| Transactions | — | Yes |
+| Pub-sub support | — | Yes |
+
+```text
+Use ElastiCache for applications that are simply caching content from another database. Use MemoryDB for applications that want to use Redis as the primary database.
+```
+
+#### Time series databases
+
+Time series databases efficiently collect, synthesize, and derive insights from data that changes over time and with queries that span time intervals. Common application uses for this type of database include the following:
+
+* Analysis of sensor data from industrial and medical telemetry data
+* Looking for patterns in stock pricing data
+* Tracking order fulfillment times
+* Monitoring trouble ticketing systems
+
+`Amazon Timestream` is a fast, scalable, and serverless time series database service that can store and analyze trillions of events. Timestream is optimized for timestamped data, with very high data ingestion capabilities by automatically scaling up or down to adjust capacity and performance.
+
+Timestream also manages the lifecycle of time series data, keeping recent data in memory and moving historical data to a cost-optimized storage tier. The adaptive query engine in Timestream accesses and analyzes recent and historical data together, without having to specify its location. The Timestream built-in time series analytics functions are helpful for identifying trends and patterns in data in near real time.
+
+#### Streaming and messaging services
+
+Streaming and messaging services are not actually databases in their own right. However, they are used as mechanisms to deliver real-time data to, or read aggregated data from, real-time data streaming sources. Amazon real-time data services can be used with Amazon S3 and Amazon DynamoDB to persist streaming data. However, there are three other AWS services that can also be used to handle real-time data ingestion, processing, and analysis from various sources: `Amazon MQ`, `Amazon EventBridge`, and `Amazon Simple Queue Service (Amazon SQS)`.
+
+##### Amazon MQ
+
+Amazon MQ is a managed message broker service. `Message brokers` allow different software systems, often using different programming languages and on different platforms, to communicate and exchange data in real time. Messages are the mechanism used for exchanging the data. A `message` can be any type of data or information that must be transmitted between different components of a distributed system or application. Application logs and events, database changes, incoming sensor data, financial transactions, user actions or commands, and notifications are all examples of messages in this context.
+
+The main components in a message broker service are as follows:
+
+* **Message queue** stores messages until they are delivered to their intended recipients.
+* **Message producer** creates a message and places it on the message queue. This component is also called a publisher.
+* **Message consumer** receives a message by taking it from the message queue. This component is also called a subscriber.
+
+![A producer sending a message to a queue, and a consumer pulling a message from the queue.](./images/W11Img220AmazonMqBrokerService.png)
+
+Components of a message broker service.
+
+`Amazon MQ` is a fully managed service, so you don't have to configure or maintain the infrastructure that underlies these components. Amazon MQ also acts as a message broker, connecting producers and consumers to queues, and defining the protocol, message formats, and delivery rules for messages.
+
+For real-time streaming data applications, Amazon MQ can be used to ingest and buffer the incoming streams of data from various sources. The message broker can route and distribute this data to different consumer systems and applications in real time for processing and analytics.
+
+##### EventBridge
+
+`Amazon EventBridge` is a serverless event bus service. An `event bus` is a software architecture pattern that facilitates communication between different services in a distributed system through the use of events.
+
+An event bus architecture is conceptually similar to that of Amazon MQ, except that EventBridge is event driven, and Amazon MQ is message driven. An event bus architecture consists of three components:
+
+* **Event producers** – Components or services that generate events when something of interest occurs, such as a user action, system state change, or external data source update
+* **Event consumers** – Components or services that subscribe to specific types of events that they are interested in and receive and process those events from the event bus
+* **Event bus** – Central messaging system that receives events from producers, routes them based on predefined rules or subscriptions, and delivers them to interested consumers
+
+Event buses typically provide mechanisms to route events to the appropriate consumers based on event types, topics, or other criteria. They also filter capabilities to ensure that consumers only receive relevant events. In this way, the event bus acts as a central hub or messaging system that decouples event producers from event consumers, allowing them to communicate asynchronously without being tightly coupled. This loose coupling promotes scalability, flexibility, and maintainability of the overall architecture.
+
+Amazon EventBridge simplifies building event-driven applications by acting as a central hub for routing events from AWS services to targets like Lambda functions, Amazon Kinesis streams, or Amazon Simple Queue Service (Amazon SQS) queues.
+
+In application architectures that store real-time streaming data, EventBridge can be used to ingest and route the data streams from various sources to a target like Amazon Kinesis, where the data can be processed, analyzed, and stored for further use.
+
+#### Amazon SQS
+
+`Amazon Simple Queue Service (Amazon SQS)` is a message queuing service that allows for the storage and retrieval of messages in real time. In an application architecture, Amazon SQS can be used to store streaming data that is generated by various components, enabling asynchronous communication and guaranteeing message delivery. Amazon SQS facilitates distributed applications by providing a reliable mechanism for handling large amounts of data and buffering temporary spikes in workload.
+
+Like Amazon MQ, Amazon SQS also uses a publisher-queue-subscriber model. However, Amazon SQS provides for two types of queues.
+
+The `first queue type is a first-in, first-out (FIFO) queue`, which guarantees that items will be processed only once, and in the order in which they entered the queue.
+
+The other queue type is a `standard queue`, which will process each item, but the processing order might not match the order in which the items were queued. Using a standard queue, it's also possible that an item might be delivered to a subscriber more than once.
+
+The appropriate queue type to choose will depend on the requirements of your application.
+
+Real-time data streaming applications can produce massive amounts of data. Amazon SQS can be used to store real-time streaming data by having application components send streaming data to SQS queues.
+
+After it is queued, the data can be consumed and processed by other components in a decoupled, asynchronous way. Producers send data to the queues without waiting for consumers. Consumers can process the data asynchronously as it becomes available.
+
+In this way, SQS queues can be used as temporary buffers to handle high throughput streaming data in a scalable and reliable way, without data loss.
+
+#### Comparing real-time data storage options
+
+The following table summarizes the storage services discussed in this section by listing the benefits, challenges, and typical use cases for each service.
+
+| Database service | Benefits | Challenges | Use cases |
+| ---------------- | -------- | ---------- | --------- |
+| Amazon DynamoDB | Fast performance, scalability, durability | No complex querying or sorting, eventual transaction consistency only | User profiles, log data and sensor data, real-time analytics |
+| Amazon MemoryDB for Redis | Very low latency, high throughput, Multi-AZ deployments | Data loss if system fails, high memory usage, challenging with large datasets | Leaderboards, session management, real-time analytics |
+| Amazon ElastiCache for Redis | Low latency, scalability through sharding | Data loss if system fails, high memory usage, challenging with large datasets | Leaderboards, session management, real-time analytics |
+| Amazon Timestream | Serverless, scaling storage and throughput independently | Limited query capabilities, no transaction support | Analyzing time series, telemetry, and IoT data |
+| Amazon MQ | Managed message broker, supporting popular queueing formats | Limited message size | Financial services, broadcasting |
+| Amazon EventBridge| Serverless, integrating many event sources | Limited event transformation capabilities | Microservices integrations and ETL processing |
+| Amazon Simple Queue Service (Amazon SQS) | Decouples systems, scales massively | Potentially high latency, limited ordering guarantees | Order management, workload balancing, and distributed task management |
+
 ### Evaluating Storage Options
 
+AWS offers many options for storing application data. Choosing the right storage services impacts the application architecture and operational costs. Factors that you should consider when evaluating your storage options include the characteristics of your application data, expected data access patterns, and your application's performance needs.
+
+#### Characteristics of application data
+
+One factor that drives your selection of storage service for your real-time data streaming application is the data itself. Factors to assess include the following:
+
+* The types of data that each service is able to store and process varies by service, for example, text, audio, video, or images.
+* The structure of the data in the application should also be assessed. For example, DynamoDB supports key-value and document data models with nested data structures. Amazon MemoryDB for Redis and Amazon ElastiCache for Redis are also key-value stores, but use Redis data structures.
+* The data retention requirements of the application is another factor. Most AWS database services can store data indefinitely. But Amazon SQS queues only retain data up to 14 days and Amazon ElastiCache for Memcached is an in-memory store with no built-in retention.
+
+The characteristics of each storage service in terms of different types of real-time streaming application are summarized in the following table.
+
+| Database service | Data types | Data structures | Data retention |
+| ---------------- | ---------------- | -------------------- | -------------------- |
+| Amazon DynamoDB | Suitable for text data. Can store objects up to 400 KB, but generally not suitable for image, video, or music data. | Key-value and document model, supports nested data structures | Configurable, no upper limit |
+| Amazon MemoryDB for Redis | Suitable for text data | Key-value store with data structures like strings, hashes, lists, sets | Configurable, no upper limit |
+| Amazon ElastiCache | Suitable for text data | Key-value store with data structures like strings, hashes, lists, sets | No built-in retention |
+| Amazon Timestream | Suitable for time series text data | Time series data model, optimized for time series data and metadata | Configurable, no upper limit |
+| Amazon MQ | Suitable for transmitting and queuing text, image, video, and music data | Message queues and topics | Configurable, based on broker settings |
+| Amazon EventBridge | Suitable for routing and processing text events | Event data (JSON format) | Configurable, no upper limit |
+| Amazon Simple Queue Service (Amazon SQS) | Suitable for processing and queuing text, image, video, and music data | Message queues | Configurable, up to 14 days |
+
+```text
+For storing large binary data like images, videos, or music files, you would typically use Amazon Simple Storage Service (Amazon S3) or Amazon Elastic File System (Amazon EFS). These services are designed to efficiently store and retrieve large amounts of binary data.
+```
+
+#### Expected data access patterns
+
+When choosing a storage service for a real-time data streaming application, it is important to look at how much read and write activity the application will be performing under load. Factors to consider include the following:
+
+* **The amount of read and write activity the application will be performing under load** – For example, if your application expected read and write activity is going to be balanced between read and write workloads, DynamoDB and Amazon SQS are good choices.
+* **The frequency and volume with which streaming data will be ingested into the system** – If your application's data ingestion volume and frequency is expected to be high, DynamoDB, Timestream, and EventBridge are a good fit.
+* **The application's requirements for querying and analyzing the real-time data after it is stored** – If your application must be optimized for time series data analysis and queries, Timestream is a good solution.
+
+The data access pattern characteristics of each storage service for real-time streaming data applications are summarized in the following table.
+
+| Database service | Read and write activity | Data ingestion volume and frequency | Query and analysis capabilities |
+| ---------------- | -------------------- | -------------------- | -------------------- |
+| Amazon DynamoDB | Balanced reads and writes | Volume: High, hundreds of gigabytes or terabytes per hour or day<br>Frequency: High, using constant or near-constant streams of data | Limited query capabilities |
+| Amazon MemoryDB for Redis | Read-heavy, with 10:1 ratio of reads to writes, and thousands of read requests per second or more  | Volume: Moderate, gigabytes or tens of gigabytes per hour or day<br>Frequency: High, using constant or near-constant streams of data | Limited to Redis data structures and operations |
+| Amazon ElastiCache | Read-heavy, with 10:1 ratio of reads to writes, and thousands of read requests per second or more | Volume: Moderate, gigabytes or tens of gigabytes per hour or day<br>Frequency: High, using constant or near-constant streams of data | Limited to Redis or Memcached data structures and operations |
+| Amazon Timestream | Write-heavy, with a 10:1 ratio or writes to reads, and thousands of write requests per second or more | Volume: High, hundreds of gigabytes or terabytes per hour or day<br>Frequency: High, using constant or near-constant streams of data | Optimized for time series data analysis and queries |
+| Amazon MQ | Balanced reads and writes | Volume: Moderate, gigabytes or tens of gigabytes per hour or day<br>Frequency: High, using constant or near-constant streams of data | Limited to message routing and delivery |
+| Amazon EventBridge | Write-heavy, with a 10:1 ratio or writes to reads, and thousands of write requests per second or more | Volume: High, hundreds of gigabytes or terabytes per hour or day<br>Frequency: High, using constant or near-constant streams of data | Limited to event routing and delivery |
+| Amazon Simple Queue Service (Amazon SQS)| Balanced reads and writes | Volume: Moderate, gigabytes or tens of gigabytes per hour or day<br>Frequency: Moderate, using occasionally streaming data or periodic bursts of data| Limited to message queueing and delivery |
+
+#### Application performance requirements
+
+Understanding the performance requirements for your application is important when selecting a storage service for a real-time data streaming application. Considerations include the following:
+
+* Evaluate how fast data reads and writes have to occur to meet the application's performance requirements. `Latency` is the delay between the time that a request to read or write data is made, and the time when the data is received or written. MemoryDB and ElastiCache are the fastest storage services, offering sub-millisecond latency due to their in-memory nature.
+* The application scalability requirements are another consideration when choosing a storage service. `Scalability` refers to a service's ability to grow as demands on the service grows. Fortunately, every AWS service is designed for scalability, and this is true for DynamoDB, MemoryDB, ElastiCache, Timestream, EventBridge, and Amazon SQS.
+* The application's requirements for the durability and availability of your application data must be examined. For example, DynamoDB, MemoryDB, Timestream, Amazon MQ, and Amazon SQS provide durable data storage mechanisms that are also high availability through replication across multiple Availability Zones.
+
+The performance characteristics of each storage service for real-time streaming data applications are summarized in the following table.
+
+| Database service | Read and write latency | Scalability | Durability and availability |
+| ---------------- | ---------------------- | ----------- | --------------------------- |
+| Amazon DynamoDB | Low (single-digit milliseconds) | Highly scalable | Durable, Multi-AZ replication |
+| Amazon MemoryDB for Redis | Very low (sub-millisecond) | Highly scalable | Durable, Multi-AZ replication |
+| Amazon ElastiCache for Redis | Very low (sub-millisecond) | Highly scalable | Not durable, in-memory store |
+| Amazon ElastiCache for Memcached | Very low (sub-millisecond) | Highly scalable | Durable, in-memory store |
+| Amazon Timestream | Low (single-digit milliseconds) | Highly scalable | Durable, Multi-AZ replication |
+| Amazon MQ | Moderate (depends on broker configuration) | Scalable (by adding brokers) | Durable, messages persisted to disk |
+| Amazon EventBridge | Low (milliseconds) | Highly scalable | Not durable, event delivery is best effort |
+| Amazon Simple Queue Service (Amazon SQS) | Low (milliseconds) | Highly scalable | Durable, messages persisted to disk |
+
 ### Activity: Selecting the Appropriate Storage Option
+
+The AnyCompany team is designing a new mobile app to support a promotional event. The app will allow customers to use their mobile device to submit rebates for items they have purchased during the promotion. This application has three core functions.
+
+#### The first function is to collect the customer rebate data. This data is continuously streamed into the application from the customer's mobile device, in real-time, as the customer makes their purchases. Which AWS service should we consider if we want to ingest real-time data from customers?
+
+* Amazon Kinesis Data Streams
+
+Wrong answers:
+
+* Amazon EMR
+* Amazon Timestream
+* Amazon DynamoDB
+
+##### Explanation
+
+Amazon Kinesis Data Streams can handle millions of records per second, making it suitable for ingesting continuous data streams from the customer mobile devices.
+
+#### The second function the application needs to perform is super-fast lookups to confirm the customer is a Rewards Club Member before processing the rebate. Which AWS service should we consider for ensuring these lookup operations have sub-millisecond latency?
+
+* Amazon MemoryDB for Redis
+
+Wrong answers:
+
+* Amazon DynamoDB
+* Amazon SQS
+
+##### Explanation
+
+Amazon MemoryDB for Redis provides sub-millisecond response times by caching the real-time data in memory. Amazon ElastiCache for Redis is another option that could meet this requirement.
+
+#### The application needs to perform is submission of the rebates to an external financial application. The financial application will issue the rebate funds to the customer. The rebate issuing process is initiated every 15 minutes to ensure the timely processing of a customer's submitted rebate claim. Which AWS service should we consider for storing the real-time rebate requests until the rebate issuance operation is started?
+
+* Amazon SQS
+
+Wrong answers:
+
+* Amazon DynamoDB
+* Amazon OpenSearch Service
+
+##### Explanation
+
+Amazon SQS allows you to decouple the rebate submission process from the financial application's refund process. This decoupling helps to improve the scalability and reliability of both applications, as neither of them is reliant on the other's availability and processing speed.
 
 ---
 
 ### Knowledge Check
 
+#### Which layer of the five logical data architecture layers is responsible for transforming data from the data stream storage layer?
+
+* Data stream processing
+
+Wrong answers
+
+* Data stream source
+* Data stream ingestion
+* Data stream destination
+
+##### Explanation
+
+`Data stream processing` layer provides the ability to collect data from tens of thousands of data sources and ingest in near real time.
+
+The other responses are incorrect because:
+
+* The source layer is responsible for providing data.
+* The ingestion layer is responsible for pulling in data.
+* The destination layer is responsible for using data.
+
+#### How are Amazon Managed Service for Apache Flink and Amazon Kinesis Data Streams related?
+
+* Kinesis Data Streams acts as the source of streaming data, from which Amazon Managed Service for Apache Flink reads to process the data using SQL or Java code before outputting the results to various destinations.
+
+Wrong answers:
+
+* Kinesis Data Streams reads data from streaming sources and passes it to Amazon Managed Service for Apache Flink, where the data is analyzed using Amazon DynamoDB.
+* Amazon Managed Service for Apache Flink acts as the source of streaming data, from which Kinesis Data Streams reads to process the data using SQL or Java code before outputting the results to various destinations.
+* Kinesis Data Streams reads data from streaming sources and passes it to Amazon Managed Service for Apache Flink, where the data is analyzed using Amazon CloudWatch Logs.
+
+##### Explanation
+
+Kinesis Data Streams and Amazon Managed Service for Apache Flink services are often used together because they provide complimentary capabilities for supporting real-time analytics. **Kinesis Data Streams acts as the source of streaming data, from which Amazon Managed Service for Apache Flink reads to process the data using SQL or Java code before outputting the results to various destinations.**
+
+The other responses are incorrect because:
+
+* DynamoDB is not a data analysis tool. It is a key-value data store.
+* CloudWatch Logs is not used for analyzing data. Is is used to centralize the logs from systems, applications, and AWS services.
+
+#### A developer is looking for a way to improve the performance of an application's search and analytics capabilities on real-time data. The application uses Amazon Kinesis Data Streams to deliver the real-time data. Which service should the developer consider adding to the application architecture to speed up querying and analysis of streaming data as it arrives?
+
+* Amazon OpenSearch Service
+
+Wrong answers:
+
+* Amazon ElastiCache for Redis
+* Amazon DynamoDB
+* Amazon MemoryDB for Redis
+
+##### Explanation
+
+Amazon OpenSearch Service integrates with Amazon Kinesis Data Streams to enhance lookups on streaming data by indexing and storing data in real time for fast search and analytics.
+
+The other responses are incorrect because:
+
+* Both Amazon ElastiCache for Redis and Amazon MemoryDB for Redis are data caching mechanisms. They do not enhance the performance of an application's search and analytics capabilities on real-time data.
+* Amazon DynamoDB is a NoSQL database for storing unstructured data using a key-value format. It provides fast read and write capabilities, but it does not index data and cache streaming data in real time.
+
+#### An application that uses real-time streaming to report on traffic conditions is experiencing performance issues. The performance issues usually occur during busy traffic times in the morning and evening. The application architect thinks that caching the most recent traffic data in memory will improve the application performance during these peak usage times. Which services should the application architect consider adding to the application architecture to achieve this design? (Select TWO.)
+
+* Add Amazon ElastiCache to the architecture.
+* Add Amazon MemoryDB for Redis to the architecture.
+
+Wrong answers:
+
+* Add Amazon CloudFront to the architecture.
+* Add Amazon MQ to the architecture.
+* Add Amazon EventBridge to the architecture.
+
+##### Explanation
+
+**Amazon ElastiCache** and **Amazon MemoryDB for Redis** services can provide sub-millisecond response times for queries against data cached in memory.
+
+The other responses are incorrect because:
+
+* Amazon CloudFront is used to improve the performance of accessing static content, not real-time streaming data.
+* Amazon MQ is not a caching mechanism. It is used to pass data between dissimilar systems using a queueing system.
+* Amazon EventBridge is not a caching mechanism. It is used to pass events between AWS services.
+
+#### A developer is considering real-time streaming data storage options for a new application. Which statements about the streaming data storage options are correct? (Select THREE.)
+
+* Some AWS storage options for streaming data support only text data.
+* When sub-millisecond latency is required, Amazon MemoryDB for Redis and Amazon ElastiCache for Redis should be considered.
+* Consider using Amazon DynamoDB if the access pattern for the streaming data is expected to have balanced reads and writes, with high data ingestion volume and speed.
+
+Wrong answers:
+
+* Neither Amazon MemoryDB for Redis nor Amazon MQ provide durable data storage.
+* Amazon MQ is suitable for transmitting and queuing all data types except text.
+* When data ingestion volume and frequency are both high, Amazon Simple Queue Service (Amazon SQS) is the best option for processing streaming data.
+
+##### Explanation
+
+The other responses are incorrect because:
+
+* Neither Amazon MemoryDB for Redis nor Amazon MQ provide durable data storage is incorrect because Amazon MQ does provide durable storage.
+* Amazon MQ is suitable for transmitting and queuing all data types except text is incorrect. Amazon MQ can also process text data.
+* When data ingestion volume and frequency are both high, Amazon SQS is the best option for processing streaming data is incorrect because Amazon SQS is a queuing mechanism, which is better suited to slow to moderate data ingestion volume and frequency.
+
 ---
 
 ### Summary
 
+#### Five-layer architecture model
+
+![Workflow showing the 5 layers of a streaming data architecture: Source, ingestion, storage, processing, and destination.](./images/W11Img230RealTimeAppArchitectureLayers.png)
+
+Standard data streaming architecture model.
+
+A standard five-layer architecture model is used by many applications to handle stream processing of real-time data.
+
+Examples of applications with these architecture characteristics were discussed. These included financial applications like those for securities trading, fraud detection, and inventory management. Examples of technology-supporting applications like networking monitors, cybersecurity tools, and telecommunications were also discussed.
+
+#### AWS Services for real-time appliucation architecture layers
+
+AWS offers several services that are designed to handle one or more of the five architecture layers of a real-time application.
+
+These services include `Amazon Kinesis Data Streams`, `Amazon Data Firehose`, `Amazon Managed Service for Apache Flink`, and `Amazon Managed Streaming for Apache Kafka (Amazon MSK)`. `Amazon OpenSearch Service`, `Amazon DynamoDB`, and `GraphQL` are also examples of services that are used in real-time application architectures.
+
+![Image of AWS architecture using several AWS srvices for real-time applucations.](./images/W11Img232RealTimeAppAwsServices.png)
+
+The two in-memory databases, Amazon ElastiCache and Amazon MemoryDB for Redis are also used to support streaming data requirements.
+
+Decorative image of an application architecture that uses real-time and data streaming AWS services.
+
+![Image of AWS architecture using Amazon Kinesis Data Streams and Amazon OpenSearch Service.](./images/W11Img234KinesisDataStreamsAndOpenSearch.png)
+
+In particular, the Amazon Kinesis family of services is heavily used in real-time data streaming application architectures. Examples of this included the following:
+
+* Monitoring machinery in real time using Amazon Data Firehose
+* Streaming data from an SaaS application using Amazon Kinesis Data Streams
+* Making real-time recommendations using Amazon OpenSearch Service
+* Supporting customer call center management with OpenSearch Service
+
+The operational details of Amazon Kinesis Data Streams begin with a data producer, then PutRecord API, shards, data streams, data blobs, sequence numbers, and data records. Data consumers are at the end of the processing stream.
+
+An OpenSearch Service domain, master nodes, data nodes, and domain endpoints all comprise the operational details of the Amazon OpenSearch Service. The OpenSearch service is frequently used in conjunction with Kinesis Data Streams.
+
+#### DynamoDB and in-memory databases like ElastiCache and MemoryDB om real-time web applications
+
+Key-value databases like DynamoDB and in-memory databases like ElastiCache and MemoryDB are commonly used for real-time web applications. Amazon Timestream is a fast, scalable, and serverless time series database optimized for storing and analyzing timestamped data. Services like Amazon MQ, EventBridge, and Amazon SQS can be used for real-time data ingestion, processing, and analysis from various sources.
+
+AWS offers various storage services for real-time data streaming. Choosing the right one impacts application architecture and operational costs. Factors to consider include data characteristics, access patterns, performance needs, data types, data structure, retention requirements, read and write activity, ingestion volume and frequency, and querying and analysis requirements.
+
+#### Lab recap
+
+In the *Navigating Through Kinesis* lab, you have created an AWS Lambda function from a blueprint and created a stream using Amazon Kinesis Data Streams.
+
+You also invoked the function with data from your stream and monitored the process with Amazon CloudWatch.
+
+You also experienced the basics of event-driven programming using Amazon DynamoDB, the DynamoDB Streams feature, and AWS Lambda.
+
 ---
 
 ### Additional Resources
+
+* [Event Sourcing Pattern](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/event-sourcing.html)
+
+    Additional details on how event sourcing can be used to maintain a history of state changes, and promotes auditability, traceability, and the ability to analyze past states.
+
+* [Comparing In-Memory Database Options](https://aws.amazon.com/nosql/in-memory/)
+
+    A discussion of how ElastiCache for Redis is commonly used as a cache, and Amazon MemoryDB is a durable database designed for applications with high performance requirements.
+
+* [Creating AWS Serverless Batch Processing Architectures](https://aws.amazon.com/blogs/compute/creating-aws-serverless-batch-processing-architectures/)
+
+    A blog post that explains a serverless solution for batch processing to implement a file intake process. This example uses AWS Step Functions for orchestration, AWS Lambda functions for on-demand instance compute, Amazon S3 for storing the data, and Amazon Simple Email Service (Amazon SES) for sending emails.
+
+* [Architectural Patterns for Real-Time Analytics Using Amazon Kinesis Data Streams, Part 1](https://aws.amazon.com/blogs/big-data/architectural-patterns-for-real-time-analytics-using-amazon-kinesis-data-streams-part-1/)
+
+    A review of two common architectural patterns that use Amazon Kinesis Data Streams for real-time data analytics.
+
+* [NoSQL Databases](https://aws.amazon.com/nosql/)
+
+    More information on how NoSQL databases are purpose-built for specific data models and stores data.
 
 ---
