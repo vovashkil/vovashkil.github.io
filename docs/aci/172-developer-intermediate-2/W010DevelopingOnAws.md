@@ -917,3 +917,604 @@ In this activity, you will review and install the pet shelter application's depe
     In the terminal window, chose the `Local: http://localhost:8081/preview` link while simultaneously holding down the `Ctrl` key on PC or `Command` key on macOS.
 
     You will see an application webpage open up in your browser.
+
+### Activity: Building a User Interface with React
+
+#### JSX
+
+**JavaScript XML (JSX)** is a syntax extension for JavaScript that you can use to write HTML-like code within your React JavaScript (.jsx) or TypeScript (.tsx) files. It is a core part of the React library and is used to describe the structure and appearance of user interfaces.
+
+JSX provides a concise and familiar syntax for defining the structure of React components. With it, you can write markup that looks very similar to HTML, but with the full power of JavaScript. This makes it easier to create and manage complex user interfaces, because you can combine markup and logic in the same file.
+
+Here's an example of a React component using JSX:
+
+```jsx
+import React from "react";
+
+export default function HelloWorld {
+  return ( 
+    ‹div>
+      <h1>Hello, World!</h1>
+      ‹p»This is a React component using JSX.</p>
+    ‹/div>
+  );
+}
+```
+
+In this example, the `return` statement inside the `HelloWorld` component function is not returning a string or HTML markup directly but JSX syntax. JSX code gets compiled into regular JavaScript by tools like Babel or the React JSX transformer. This is taken care by Vite when you run `npm run dev` or `npm run build`. For example, the previous JSX code would be compiled to something like this:
+
+```js
+React.createElement(
+  "div",
+  null,
+  React.createElement("h1", null, "Hello, World!"),
+  React.createElement("p", null, "This is a React component using JSX.")
+);
+```
+
+Although this compiled code might look more verbose, JSX provides a more intuitive and readable way to structure components, especially as they become more complex.
+
+JSX also allows you to embed JavaScript expressions within the markup by wrapping them in curly braces {}. This helps you to dynamically render content based on variables, props, or function calls. Inside the curly braces, you can type the name of a variable or any JavaScript expression. In the following example, the copyright year is dynamic and not hard coded to ease maintenance.
+
+```jsx
+<p>&copy; {new Date().getFullYear)}, AnyCompany Inc. All rights reserved.</p>
+```
+
+Similarly to Django templates, JSX simplifies the process of building user interfaces. It provides a declarative and easy-to-read syntax for defining React component structures. It bridges the gap between markup and logic, making it easier to reason about and maintain your React applications.
+
+##### Activity
+
+1. **Run the pet shelter application**
+
+    If you don’t already have the application running, run the pet shelter application in your browser by running `npm run dev` from the React project’s root directory:
+
+    * Run the `cd ~/environment/pet-shelter-client` command.
+    * Run the `npm run dev` command.
+    * Open the application in the browser.
+
+2. **Modify the code**
+
+    ![IDE view showing the code for `Header.jsx`.](./images/W01Img090ReactAppHeaderJsx.png)
+
+    Locate one of the jsx files under `src > components` and make some modification inside the JSX part of the code. Specifically, follow these steps:
+
+    * Choose the `Header.jsx` file. This code represents the html and JavaScript for the aquamarine-colored header in the application.
+    * In the `Header.jsx` file, change the content inside the `<h1>` tags to say `AnyCompany Pets for All` and save the file. Notice that it changes the header in the preview application running in the browser.
+    * Revert the content inside the `<h1>` tags to say A`nyCompany Pet Shelter`. Notice that it changes again.
+
+#### React components
+
+Traditionally, to produce a webpage, you need to write one HTML file like index.html. In a multi-page web interface, you will also write several other HTML files with HTML links from one to another.
+
+As you have learned in the previous lesson, React allows you to create a single-page application (SPA) with a single HTML page and JavaScript manipulating the Document Object Model (DOM). React asks you to consider the user interface that you have in mind as many small building blocks put together. These blocks are called `components`. After all of the components in a page are coded, React will generate the final HTML and JavaScript that client browsers can download, interpret, and render.
+
+React components can be composed together to build complete user interfaces. Smaller components can be combined to create larger, more complex components. This gives you a logical application structure, easy to understand, discuss, and rearrange. It also promotes code reuse for some smaller components seen in different tabs, for instance.
+
+A React component must encapsulate its logic, managing its own data state and handling user events interacting with the UI elements. That way, the component is self-contained, following the principle of `separation of concerns`. It makes it easy to place the component anywhere on the UI.
+
+![Pet shelter app page.](./images/W01Img100ReactAppPage.png)
+
+Consider the pet shelter application or any webpage out there.
+
+For the pet shelter, if the middle part has to be replaced when choosing a tab, you can consider that part as a component that can be replaced by other components.
+
+If the top and bottom parts are fixed, they can also be considered as two components.
+
+The following picture illustrates the React components of the pet shelter UI.
+
+![Pet shelter application React component hierarchy.](./images/W01Img102ReactComponents.png)
+
+In most React applications, `App` is the root component. For the pet shelter application, it encapsulates all the components that constitute the main landing page. This page has three horizontal layers represented by the `Header`, `Home`, and `Footer` components.
+
+The `Header` component embeds a title and a navigation bar. When you choose an option in the navigation bar, it triggers the replacement of the `Home` component with another component, such as the `Pets` or `Adopt` component. These components display a list of pets and a form to submit an adoption application, respectively.
+
+The `Footer` component displays copyright information.
+
+---
+
+Here is an example of a React component, called Welcome.
+
+The import is optional starting from React version 17. This is because React's new JSX transform can automatically inject the necessary imports for JSX code without requiring an explicit import. This is also welcome to avoid what looks like an error (an unused import) from a static analysis perspective.
+
+```jsx
+// optional since React 17
+import React from "react";
+
+export default function Welcome() {
+  return <h1>Hello World</h1>;
+}
+```
+
+As you see with this `Welcome(`) example, React components can be defined as functions returning a JSX element, in this case an `<h1>` element. Such component is called a `functional component`. Functional components are the modern and recommended way of creating components in React. For your information, in addition to functional components, React also supports class components.
+
+The `export default` prefix is not specific to React but a standard JavaScript syntax. It lets you mark the function in a file so that you can later import it from other files.
+
+##### Activity
+
+Open your practice environment to modify the application structure with React components using the following guide.
+
+---
+
+A component is created and then inserted into the App.jsx to be rendered. It won't be rendered if it's just a standalone component that is not in some way connected to App.jsx.
+
+---
+
+1. **Create a new component**
+
+    ![AWS Cloud9 navigator pane showing Footer.jsx file.](./images/W01Img110ReactComponentsFooterJsx.png)
+
+    To create a new component for a footer, create a file named `Footer.jsx` (case sensitive) in the `src > components` directory.
+
+2. **Add the code**
+
+    Copy and paste the following code into `Footer.jsx` file:
+
+    ```jsx
+    import React from 'react'
+
+    const Footer = () => {
+       return (
+           <div className='footer'>
+               <p>Official Pet Shelter site of AnyCompany Pets</p>
+               <p>© 2024 AnyCompany Pet Shelter. All rights reserved.</p>
+           </div>
+       )
+    }
+
+    export default Footer
+    ```
+
+    Save the file.
+
+3. **Import the footer**
+
+    ![AWS Cloud9 editor view showing the code for App.jsx. The import Footer line is highlighted.](./images/W01Img112ReactComponentsImportFooter.png)
+
+    Notice that nothing has changed in the application yet. The footer code has been created, but it still must be inserted into the React application’s page to show up. But first, it has to be imported.
+
+    Open the `App.jsx` file in the `src` directory and insert the following line under all the import statements:
+
+    ```jsx
+              import Footer from "./components/Footer"
+    ```
+
+    This statement will import the footer component that we just created.
+
+    Save the file.
+
+4. **Render the footer**
+
+    ![AWS Cloud9 editor view showing the code for App.jsx. The `<Footer/>` line is highlighted.](./images/W01Img114ReactComponentsRenderFooter.png)
+
+    To display the component, it must be inserted inside the `App.jsx` file.
+
+    Inside the `App.jsx` file, add the following code under the closing `</main>` tag:
+
+    ```jsx
+              <Footer/>
+    ```
+
+5. **Save the file**
+
+    ![Pet shelter home page showing the footer component.](./images/W01Img116ReactComponentsAppWithFooter.png)
+
+    Save the file and observe the footer in the bottom of the application.
+
+---
+
+#### Props
+
+Often, you will need to pass data from a parent component to a child component. React components use `props` to communicate data with each other.
+
+The following modified `Welcome` component takes in `props` as an argument. It uses a name in JSX to make the component more dynamic and reusable.
+
+```jsx
+export default function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>;
+}
+```
+
+To pass data as props to a child component, see the following example. In this example, the values `Jane` and `Carlos` are passed to two separate instances of the `Welcome` component. You can pass any JavaScript value through props, including objects, arrays, and functions.
+
+```jsx
+import Welcome from "./components/Welcome";
+
+export default function App() {
+  return (
+    ‹div>
+      <Welcome name="Jane" />
+     <Welcome name="Carlos" />
+    </div>
+  );
+}
+```
+
+##### Activity
+
+Open your practice environment to do some refactoring using component properties.
+
+1. Preview the pet shelter application in your browser by running `npm run dev`.
+2. Analyze the code of the `Pets` and `AdoptionForm` components. See that the code hardcoding the pets array is present twice. Duplicating code is considered an anti-pattern, and it must be fixed.
+3. Move that duplicated code to the `App` root component and pass `pets` as data arguments to both `Pets` and `AdoptionForm`. As a result, the `App` component initializes a `pets` variable that is passed to two different components.
+4. Check that you do not have any errors in the terminal and that the application still works in the browser.
+
+---
+
+#### React Hooks
+
+Functional components can use `React Hooks`, which allow you to refresh data from the backend and store data in memory, for instance.
+
+Here are some of the two most commonly used React Hooks:
+
+* **useState** – This Hook is a way to store and manage data in your React components.
+* **useEffect** – This Hook allows you to perform side effects in components, such as fetching data, subscribing to events, or manually changing the DOM. It runs by default after every render.
+
+##### useState Hook
+
+When you see a need to keep data in memory in the frontend, you can use the useState Hook. useState declares a state variable that you can update directly. Think of it as a container that holds information that can change over time, such as user input, form data, or even the results of a fetch request.
+
+In this example, the `Counter` component uses the useState Hook to manage its state and update the count when a button is chosen. The useState Hook takes one argument, the initial value of the state variable, as in `useState(0)` for an integer. The count starts at zero. The useState Hook returns an array with two elements: the current initialized state variable, as in `count`, and a function to later update that state as in `setCount`.
+
+```jsx
+import { useState } from "react";
+
+export default function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>Click me</button>
+    </div>
+  );
+}
+```
+
+The `setCount` function is used within JSX to update the count counter when the user chooses a button as in `setCount(count + 1)`.
+
+Note that if you are using React Hooks (such as useState or useEffect) or even other React APIs (like React.memo or React.lazy) in your functional component, you always need to add explicit imports in your code, as in `import { useState } from "react"`.
+
+##### Activity
+
+Open your practice environment to see where `useState` is being used.
+
+1. Open the `Pet`s component code under `src/components`.
+2. Study how the `cat/dog filter` works. A `useState` Hook stores the current filter value in the `filter` variable. The value is updated with the `setFilter()` function when the user interacts with the `select` HTML element.
+
+---
+
+#### React Fragments
+
+A component function must return only one single element, like a `<div>` or `<span>`. When you want to render multiple elements side by side, like `<h1>` and `<p>`, you need to wrap them in a parent element. However, sometimes adding an extra parent element can lead to unnecessary nesting and affect the layout or styling of your components.
+
+A `React Fragment` allows you to group a list of children elements without adding an extra node to the DOM tree. The `<React.Fragment>` element acts as a virtual wrapper for grouping elements without adding an extra node. This maintains a cleaner DOM structure. You must remember that `<React.Fragment>` is provided by React. It is not a new HTML element.
+
+In the following example, the `<h1>` and `<p>` elements are wrapped inside a `<React.Fragment>` instead of a `<div>` or another HTML element. When rendered, the browser will only see the `<h1>` and `<p>` elements without any additional wrapping element.
+
+```jsx
+export default function Hello() {
+  return (
+    <React.Fragment>
+      <h1>Hello</h1>
+      <p>This is a paragraph.</p>
+    </React.Fragment>
+  );
+}
+```
+
+React also provides a shorthand syntax for `<React.Fragment>` using empty tags `<> </>`, as in the following code.
+
+```jsx
+export default function Hello() {
+  return (
+    <>
+      <h1>Hello</h1>
+      <p>This is a paragraph.</p>
+    </>
+  );
+}
+```
+
+##### Activity
+
+Open your practice environment to experiment with React Fragment following steps in the following guide.
+
+1. **Add a JSX element**
+
+    ![AWS Cloud9 editor view showing the Footer.jsx file. The added line for the paragraph element has an error marker.](./images/W01Img120ReactComponentsAddJsxElement.png)
+
+    Open the `Footer.jsx` component that you created in the previous activity.
+
+    Add the following adjacent JSX element under the closing div element:
+
+    ```jsx
+              <p>This is a paragraph.</p>
+    ```
+
+    Notice the error indicated by a red "X" marker on the line.
+
+    Save the file. Notice that the React application crashes.
+
+2. **Fix the error**
+
+    ![Footer.jsx file in the editor. The line for the paragraph element is wrapped in a JSX fragment. The error is fixed. The line is displayed.](./images/W01Img122ReactComponentsFixError.png)
+
+    Fix the error by wrapping the `div` and `paragraph` into a JSX fragment.
+
+    Look at lines 5 and 11 in this screenshot. The JSX fragments `<>` and `</>` in the code are used to group multiple elements together without adding extra nodes to the DOM. In this manner, you can return adjacent elements from the `Footer` component.
+
+    The paragraph line now appears at the bottom of the footer.
+
+---
+
+### Activity: Testing a React Application
+
+While you are developing or when you have committed some changes to the code repository, automatic tests can be run. The JavaScript or TypeScript code can be statically analyzed with a linter to validate that you are coding according to best practices.
+
+The application logic inside your functions and classes can also be tested against the business requirements. This can be achieved when you have coded some function tests.
+
+In this lesson, you will learn about static analysis and function testing in the context of a React application.
+
+#### Static analysis
+
+A `linter` is a tool that crawls into your code to identify potential problems and gives you a warning or an error. These flags can appear in your code editor or in your terminal. Linters are extremely valuable for interpreted languages like Python and JavaScript because there is no compiler to detect errors during development time. JavaScript and TypeScript can be analyzed by a linter called `ESLint`. When Vite creates your React project, ESLint is preinstalled and accessible in your terminal through the command `npm run lint`.
+
+##### Linter rules
+
+In a project with multiple developers, ESLint can enforce obeying to standard ESLint rules, specific React rules (preinstalled by Vite), and even custom rules that your team creates. Rules can be enabled and disabled. You can also decide if a rule triggers a warning or an error. Configuring rules is done in the `.eslintrc.cjs` file of your React Vite project.
+
+As examples, consider the following rules that you might encounter in the next activity and lab:
+
+* **no-unused-vars** – A variable that is declared and not used anywhere in your code generates an error. The variable must be removed or commented out to avoid confusion for other programmers. Also, the same rule displays warnings for unused function arguments.
+* **no-const-assign** – When you have declared a variable with the `const` keyword, you must not modify that constant. Modifying constants is flagged as error. Note that the TypeScript compiler enforces this check.
+* **no-unreachable** – Any statements after `return`, `throw`, `break`, or `continue` cannot be executed. These unreachable statements are a mistake and must be removed.
+* **react/no-unknown-property** – In JSX, most DOM properties and attributes should be camelCased to be consistent with standard JavaScript style. For instance, it is very common to use the `class` keyword in JSX, as in `<div class="hello">Hello</div>`. This is flagged with the following error message: `Unknown property 'class' found, use 'className' instead`.
+
+---
+
+##### Activity
+
+Open your practice environment to see how the linter can increase the quality of your code.
+
+1. Install eslint with `npm install eslint --save-dev`.
+2. Run the linter with `npm run lint`. You should see several errors, at least concerning source code under `src/utils.js` and `src/components/Header.jsx`.
+3. Edit the source code to fix the errors and rerun the linter until all is clear.
+
+#### Unit testing
+
+JavaScript developers are using `Jest` when it comes to unit testing. Jest is applicable on React projects. But if you have created your React project using Vite, an extra Vite library can be installed. `Vitest` is a Vite powered testing framework that has the advantage of being Jest compatible.
+
+##### Testing a JavaScript function
+
+Consider the following file called `utils.js` including a simple sum function.
+
+```jsx
+// utils.js
+export function sum(a, b) {
+  return a + b;
+}
+```
+
+Testing this function is done in a separate file called `utils.test.js`.
+
+```jsx
+// utils.test.js
+import { describe, test, expect } from 'vitest';
+import { sum } from './utils';
+
+describe("#sum", () = {
+  test('adds 1 + 2 to equal 3', () => {
+    expect (sum(1, 2)).toBe(3);
+  });
+});
+```
+
+* Using `describe()` from Vitest, you can define a new suite as a set of related tests and other nested suites. A suite lets you organize your tests. In this example code, a suite is defined for the sum function. It receives two arguments, a textual description for the suite and a function that holds the tests.
+* Inside describe, one or multiple `test()` from Vitest are included. It is aliased as `it()` by some programmers. A test defines a set of related expectations. It receives two arguments, a textual description for the test and a function that holds the expectations to test.
+* Typically, a test includes one or more `expect()` from Vitest. Expect is used to create assertions. Assertions are functions that can be called to assert a statement. In this example, you expect the sum of 1 and 2 to be 3.
+
+##### Code coverage
+
+In terms of lines of code, the previous test covers 100 percent of utils.js. Code coverage is maybe not sufficient, but it is a good indicator to understand if you have enough unit tests. Increasing code coverage will increase your confidence in committing changes to production. Vitest comes with an extra library to calculate code coverage metrics. The coverage is shown in the terminal when all unit test errors are fixed, but also in an HTML report.
+
+![Sample output of code coverage metrics produced by Vitest.](./images/W01Img130RUnitTestCoverageExample.png)
+
+This example taken from the activity shows all the available metrics. Each line represents a source code file or directory. Under each column, you can see the code coverage percentage for the code statements, branches, functions, and lines.
+
+For instance, 47 percent of the lines under the `src/component`s folder are covered.
+
+Also, this report indicates the uncovered line numbers on the right-hand side. These are good candidates for your next tests.
+
+##### Testing React components
+
+A React component is a building block for a UI. This is often tested manually and visually by previewing the application in a browser. The graphical elements can be automatically tested. The technique to do so is called `headless browser testing`, the head in this case being the UI.
+
+In your React project, two extra libraries must be installed with npm. First, you need the React Testing Library as a lightweight solution for testing React components. As a complement, `jsdom` emulates enough of a subset of a web browser to be useful for testing and scraping real-world web applications.
+
+Testing a React component still involves using Vitest `describe`, `test`, and `expect`. But, additionally, you need a way to load a component or choose a button. This is provided by the React Testing Library. The following functions come handy:
+
+* The `render()` function renders a React component into the DOM.
+* The screen object supports all the queries to fetch elements from the DOM. For instance, `screen.getByRole("button")` fetches the button of the loaded component. Also, `screen.getByText("Load Greeting")` searches for all elements that have a text node matching the string.
+* The `userEvent` object simulates user interactions by dispatching the events that would happen if the interaction took place in a browser.
+* `toBeInTheDocument()` and `toHaveTextContent()` are custom React matchers, applicable to `expect()` inside a `test()`.
+
+This following test example imports and loads a React component defined in Hello.jsx with `render(<Hello />)`. The test triggers a click using `userEvent.click()` on a DOM element fetched with `screen.getByText()`. The test expects as a result to see some heading to be displayed and a button to be disabled.
+
+```jsx
+// Hello.test.jsx
+import { describe, test, expect } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import "@testing-library/jest-dom";
+import Hello from "../components/hello";
+
+test("loads and displays greeting", async () => {
+  // Setup
+  render(<Hello />);
+
+  // Action
+  await userEvent.click(screen.getByText("Load Greeting"));
+
+  // Expectations
+  expect(screen.getByRole("heading")).toBeInTheDocument();
+  expect(screen.getByRole("heading" )).toHaveTextContent("hello there");
+  expect(screen.getByRole("button" )).toBeDisabled();
+});
+```
+
+##### Activity
+
+Open your practice environment to run some tests and fix some bugs.
+
+1. Browse through the test code under the `src/__test__` folder. Study how the `App.jsx` component is tested in `App.test.`jsx` using the React Testing Library.
+2. Run the tests from the terminal with `npm run test`. You should have one passing test ("Should render the main page correctly") and one failing test ("Should show the footer with copyrights").
+3. Fix the source code until all tests pass. (Hint: take a close look at the copyright year in `Footer.jsx` and compare it to the year in the test file.)
+4. Rerun the tests to see the code coverage report.
+
+---
+
+### Importance of Using a Version Control System
+
+#### Way of working
+
+A `version control system (VCS)` allows multiple developers to collaborate on the same codebase simultaneously. Each developer can work on their own branch and merge their changes into a main branch when ready. It means that you can work on multiple features simultaneously on multiple branches. After the changes are tested and approved, they can be merged back into the main branch and other branches. This provides a lot of flexibility.
+
+It takes some time to get used to such way of working though, because it can seem complicated at first. But it allows team members to perform peer reviews on pull requests and comment on changes before merging. This increases code quality because it can catch bugs early on. In a distributed VCS like Git, you can work offline and synchronize later.
+
+Such a system keeps a complete backup and detailed history of all changes made, including who made the changes and when. It can also keep track of why the change was made if the developer supplies the reason when they save the change. This makes it possible to compare versions and revert to a previous version. Also, if you accidentally delete files, you can easily recover them. When it comes to application deployment and continuous integration and continuous delivery (CI/CD), a VCS can also play a role because it supports tagging. It makes it easier to manage releases and do some support.
+
+As an example, imagine that a bug was found in production where version 1.2.3 is deployed. You can start by branching from tag `prod-v1.2.3`. Then you can build and run the code on a test server or in your developer environment, if possible. You can do some debugging, track down the issue, apply some fix on your branch, run some tests, create a pull request, ask for peer review, merge back on main, run all tests, apply a new tag `prod-v1.2.4`, and redeploy in production.
+
+#### Essential Git commands
+
+##### Configure global settings
+
+`git config --global <name> <value>` writes Git configuration settings to the global ~/.gitconfig file. For example, you can use it to set your username and email address.
+
+##### Create an empty Git repository
+
+`git init` creates an empty Git repository, basically a .git directory with subdirectories. Running git init in an existing repository is safe. It will not overwrite things that are already there.
+
+##### Create a new branch
+
+`git switch -c <branch>` creates a new branch and switches to it.
+
+##### Stage all modified files
+
+`git add` adds file contents to the index. This command updates the index using the current content found in the working tree, to prepare the content staged for the next commit. The `git add` command will not add ignored files.
+
+##### Show the working tree status
+
+`git status` displays paths that have differences between the index file and the current HEAD commit. It also shows paths that have differences between the working tree and the index file, and paths in the working tree that are not tracked by Git. The git status command can be used to obtain a summary of which files have changes that are staged for the next commit.
+
+##### Record changes to the repository
+
+`git commit -m "message"` creates a new commit containing the current contents of the index (staged files) and the given log message describing the changes. The branch is updated to point to the new commit.
+
+##### Export commits to remote branches
+
+`git push` uploads local repository content to a remote repository. Pushing is how you transfer commits from your local branches to remote branches.
+
+#### Git repository hosting services
+
+A Git repository hosting service is a platform that provides remote storage for code repositories. These services offer a streamlined way for developers to work together on projects, track changes, and manage code across distributed teams using Git as the version control system. A Git repository hosting service typically provides features that include the following:
+
+* Version control and collaboration tools
+* Issue tracking and code review functionality
+* Access controls and user management
+* Web-based user interface for repository management
+* Support for integration with CI/CD pipelines
+
+---
+
+### [Lab: Building a Frontend with a Code Framework](./labs/W010Lab1BuildingFrontendWithCodeFramework.md)
+
+In this lab, you connect to the IDE, install needed software to support AWS development, and then create a web application using React, Vite, and JavaScript. You also install unit test software and author a unit test. Finally, you create a Git repository and commit the application source code to it so that it is preserved and version controlled.
+
+This is the first in a sequence of labs in which you incrementally build a microservices-based cloud solution for an ecommerce company’s website.
+
+---
+
+### Knowledge Check
+
+#### What is the primary advantage of using a single-page application (SPA) over a traditional multi-page web application?
+
+* Smoother user experience with minimal page refreshes
+
+Wrong answers:
+
+* Faster initial load times
+* Improved security
+* Better search engine optimization
+
+##### Explanation
+
+When a user interacts with the user interface, the DOM gets modified directly in the browser like a native client application without any round trip to the backend.
+
+The other options are incorrect for the following reasons:
+
+* Faster initial load times: With an SPA, all the frontend content including scripts is initially downloaded. The application gets faster later on updates but not initially.
+* Improved security: An SPA is likely exposing more code on the client side in regard to GUI logic. This is not really improving security.
+* Better search engine optimization: An SPA concerns the static content. Searching data is done through an API in the backend.
+
+#### How is a React component created in JavaScript? (Select TWO.)
+
+* Create a function.
+* Return a single JSX element.
+
+Wrong answers:
+
+* Create a React Fragment.
+* Return HTML as a string.
+* Return a React Hook.
+
+##### Explanation
+
+A React component can be created as a function component or a class component. Here, a functional component must return a single JSX argument. It is possible to return a React Fragment.
+
+The other options are incorrect for the following reasons:
+
+* Create a React Fragment: A React Fragment is used to group several JSX elements in a functional component.
+* Return HTML as a string: A functional component does not return a string; it returns a JSX element.
+* Return a React Hook: Hooks can be used inside a functional component but not to be returned.
+
+#### Which React Testing Library's method is first used when testing a React component?
+
+* render
+
+Wrong answers:
+
+* config
+* cleanup
+* screen
+
+##### Explanation
+
+This React Testing Library's method renders a React element into the Document Object Model (DOM). This is the first step before interacting with the component and doing some assessments.
+
+The other options are incorrect for the following reasons:
+
+* The config method changes global options for the React Testing Library.
+* The cleanup method unmounts React trees that were mounted with render.
+* The screen is not a method but an object that is used to query the DOM to get elements.
+
+### Summary
+
+* The React framework is used in the frontend to develop single-page applications (SPAs). An SPA is a website loaded on a single HTML page.
+* npm is a package manager for the JavaScript programming language. It manages packages that are needed by your React project. Vite helps improve your developer experience with project scaffolding and hot module replacement (HMR) updates. Vite provides a familiar file structure in React projects.
+* JavaScript and TypeScript can be used to code React web applications. TypeScript brings types to JavaScript. JSX is specific to React components and lets you write markup that looks very similar to HTML, but with the full power of JavaScript.
+* A React application is composed of components. They are self-contained and reusable. They can be written as functions, take props as argument, and return JSX code, sometimes with the help of React Fragments. Also, React Hooks make it possible to use state and other React features without writing a class component.
+* It is possible to improve the code quality by applying static analysis and unit testing. A linter is used for static analysis. ESLint is a linter for JavaScript and TypeScript. Unit testing can be achieved with Vitest and the React Testing Library. React components can be functionally tested using a headless approach.
+* Git is a distributed version control system for tracking changes in source code during software development. Many organizations use Git repository hosting services to manage code across distributed teams.
+
+### Additional Resources
+
+* [React](https://react.dev/learn)
+* [React testing library](https://testing-library.com/docs/react-testing-library/intro/)
+* [npm](https://docs.npmjs.com/)
+* [Vite](https://vite.dev/guide/)
+* [Vitest](https://vitest.dev/guide/)
+* [ESLint](https://eslint.org/docs/latest/)
+* [Git](https://git-scm.com/docs)
+
+---
