@@ -36,4 +36,5 @@ In this 11-week course, you can expect to spend approximately 3 hours each week 
 * Week 1:
   * [Developing on AWS](./W010DevelopingOnAws.md)
 * Week 2:
+  * [Building the Pets Microservice](./W020BuildingPetsMicroservices.md)
 * Week 3:
