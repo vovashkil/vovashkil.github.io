@@ -38,3 +38,19 @@ In this 11-week course, you can expect to spend approximately 3 hours each week 
 * Week 2:
   * [Building the Pets Microservice](./W020BuildingPetsMicroservices.md)
 * Week 3:
+  * [Building the Adoptions Microservice Part 1](./W030BuildingAdoptionMicroservicePart1.md)
+* Week 4:
+  * [Building the Adoptions Microservice Part 2](./W040BuildingAdoptionMicroservicePart2.md)
+* Week 5:
+
+* Week 6:
+
+* Week 7:
+
+* Week 8:
+
+* Week 9:
+
+* Week 10:
+
+* Week 11:
