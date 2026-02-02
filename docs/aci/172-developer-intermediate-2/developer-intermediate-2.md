@@ -42,7 +42,7 @@ In this 11-week course, you can expect to spend approximately 3 hours each week 
 * Week 4:
   * [Building the Adoptions Microservice Part 2](./W040BuildingAdoptionMicroservicePart2.md)
 * Week 5:
-
+  * [Securing the Application](./W050SecuringApplication.md)
 * Week 6:
 
 * Week 7:
