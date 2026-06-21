@@ -44,7 +44,7 @@ In this 11-week course, you can expect to spend approximately 3 hours each week 
 * Week 5:
   * [Securing the Application](./W050SecuringApplication.md)
 * Week 6:
-
+  * [Adding a Reporting Microservice](./W060ReportingMicroservice.md)
 * Week 7:
 
 * Week 8:
